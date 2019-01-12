@@ -4,25 +4,20 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { AppComponent } from './components/app.component';
-var AppModule = /** @class */ (function () {
-    function AppModule() {
+import { Component } from '@angular/core';
+var AppComponent = /** @class */ (function () {
+    function AppComponent() {
+        this.title = 'Welcome to Angular';
+        this.subtitle = '.NET Core + Angular CLI v7 + Bootstrap & FontAwesome + Swagger Template';
     }
-    AppModule = __decorate([
-        NgModule({
-            declarations: [
-                AppComponent
-            ],
-            imports: [
-                BrowserModule
-            ],
-            providers: [],
-            bootstrap: [AppComponent]
+    AppComponent = __decorate([
+        Component({
+            selector: 'app-root',
+            templateUrl: './app.component.html',
+            styleUrls: ['./app.component.css']
         })
-    ], AppModule);
-    return AppModule;
+    ], AppComponent);
+    return AppComponent;
 }());
-export { AppModule };
-//# sourceMappingURL=app.module.js.map
+export { AppComponent };
+//# sourceMappingURL=app.component.js.map
