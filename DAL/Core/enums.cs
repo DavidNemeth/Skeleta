@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DAL
+namespace DAL.Core
 {
-    public interface IUnitOfWork
-    {
-		int SaveChanges();
+	public enum Gender
+	{
+		None,
+		Female,
+		Male
 	}
 }
