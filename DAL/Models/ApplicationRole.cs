@@ -33,6 +33,7 @@ namespace DAL.Models
 
 		}
 
+
 		/// <summary>
 		/// Initializes a new instance of <see cref="ApplicationRole"/>.
 		/// </summary>
@@ -45,7 +46,11 @@ namespace DAL.Models
 		{
 			Description = description;
 		}
-		
+
+
+
+
+
 		/// <summary>
 		/// Gets or sets the description for this role.
 		/// </summary>
@@ -54,7 +59,9 @@ namespace DAL.Models
 		public string UpdatedBy { get; set; }
 		public DateTime CreatedDate { get; set; }
 		public DateTime UpdatedDate { get; set; }
-				
+
+
+
 		/// <summary>
 		/// Navigation property for the users in this role.
 		/// </summary>

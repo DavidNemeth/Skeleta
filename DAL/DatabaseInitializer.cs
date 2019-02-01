@@ -1,13 +1,11 @@
-﻿using DAL.Core;
-using DAL.Core.Interfaces;
-using DAL.Models;
+﻿using DAL.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using DAL.Core;
+using DAL.Core.Interfaces;
+
 
 namespace DAL
 {
@@ -15,6 +13,9 @@ namespace DAL
 	{
 		Task SeedAsync();
 	}
+
+
+
 
 	public class DatabaseInitializer : IDatabaseInitializer
 	{
@@ -48,7 +49,19 @@ namespace DAL
 
 				_logger.LogInformation("Inbuilt account generation completed");
 			}
+
+
+
+
+
+
+			await _context.SaveChangesAsync();
+
+			_logger.LogInformation("Seeding initial data completed");
+
 		}
+
+
 
 		private async Task EnsureRoleAsync(string roleName, string description, string[] claims)
 		{
@@ -79,9 +92,9 @@ namespace DAL
 
 			if (!result.Item1)
 				throw new Exception($"Seeding \"{userName}\" user failed. Errors: {string.Join(Environment.NewLine, result.Item2)}");
-					   
+
+
 			return applicationUser;
 		}
 	}
 }
-

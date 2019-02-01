@@ -26,31 +26,22 @@ namespace Skeleta
 {
 	public class Startup
 	{
+		public IConfiguration Configuration { get; }
+
+
 		public Startup(IConfiguration configuration)
 		{
 			Configuration = configuration;
 		}
 
-		public IConfiguration Configuration { get; }
 
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
 			services.AddDbContext<ApplicationDbContext>(options =>
 			{
-				options.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"], b => b.MigrationsAssembly("Skeleta"));
+				options.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"], b => b.MigrationsAssembly("skeleta"));
 				options.UseOpenIddict();
-			});
-
-			services.AddMvc()
-				.AddJsonOptions(opt => opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore) //ignores self reference object 
-				.SetCompatibilityVersion(CompatibilityVersion.Version_2_2); //validate api rules
-
-			services.AddLogging(loggingBuilder =>
-			{
-				loggingBuilder.AddConfiguration(Configuration.GetSection("Logging"));
-				loggingBuilder.AddConsole();
-				loggingBuilder.AddDebug();
 			});
 
 			// add identity
@@ -62,14 +53,14 @@ namespace Skeleta
 			services.Configure<IdentityOptions>(options =>
 			{
 				// User settings
-				options.User.RequireUniqueEmail = true;
+				options.User.RequireUniqueEmail = false;
 
 				//    //// Password settings
-				//    //options.Password.RequireDigit = true;
-				//    //options.Password.RequiredLength = 8;
-				//    //options.Password.RequireNonAlphanumeric = false;
-				//    //options.Password.RequireUppercase = true;
-				//    //options.Password.RequireLowercase = false;
+				options.Password.RequireDigit = false;
+				options.Password.RequiredLength = 4;
+				options.Password.RequireNonAlphanumeric = false;
+				options.Password.RequireUppercase = false;
+				options.Password.RequireLowercase = false;
 
 				//    //// Lockout settings
 				//    //options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
@@ -111,15 +102,27 @@ namespace Skeleta
 			// Add cors
 			services.AddCors();
 
-			services.AddSwaggerGen(c =>
-			{
-				c.SwaggerDoc("v1", new Info { Title = "Skeleta API", Version = "v1" });
-			});
+			// Add framework services.
+			services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
+			// In production, the Angular files will be served from this directory
 			services.AddSpaStaticFiles(configuration =>
 			{
 				configuration.RootPath = "wwwroot/clientapp/dist";
-			});			
+			});
+
+			services.AddSwaggerGen(c =>
+			{
+				c.SwaggerDoc("v1", new Info { Title = "Skeleta API", Version = "v1" });
+				c.OperationFilter<AuthorizeCheckOperationFilter>();
+				c.AddSecurityDefinition("oauth2", new OAuth2Scheme
+				{
+					Type = "oauth2",
+					Flow = "password",
+					TokenUrl = "/connect/token",
+					Description = "Note: Leave client_id and client_secret blank"
+				});
+			});
 
 			services.AddAuthorization(options =>
 			{
@@ -155,16 +158,19 @@ namespace Skeleta
 			services.AddSingleton<IAuthorizationHandler, AssignRolesAuthorizationHandler>();
 
 			// DB Creation and Seeding
-            services.AddTransient<IDatabaseInitializer, DatabaseInitializer>();
+			services.AddTransient<IDatabaseInitializer, DatabaseInitializer>();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 		public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, ILogger<Startup> logger, IDatabaseInitializer databaseInitializer)
-		{ 			
+		{
+			loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+			loggerFactory.AddDebug(LogLevel.Warning);
 			loggerFactory.AddFile(Configuration.GetSection("Logging"));
-			Utilities.ConfigureLogger(loggerFactory);
 
-            EmailTemplates.Initialize(env);
+			Utilities.ConfigureLogger(loggerFactory);
+			EmailTemplates.Initialize(env);
+
 			if (env.IsDevelopment())
 			{
 				app.UseDeveloperExceptionPage();
@@ -185,6 +191,7 @@ namespace Skeleta
 				logger.LogCritical(LoggingEvents.INIT_DATABASE, ex, LoggingEvents.INIT_DATABASE.Name);
 				throw new Exception(LoggingEvents.INIT_DATABASE.Name, ex);
 			}
+
 
 			//Configure Cors
 			app.UseCors(builder => builder
