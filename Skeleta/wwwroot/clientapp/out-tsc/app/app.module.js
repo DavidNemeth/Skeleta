@@ -5,24 +5,45 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, ErrorHandler } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HttpClientModule } from '@angular/common/http';
+import { ToastaModule } from 'ngx-toasta';
+import { MaterialModule } from './material.module';
+import { AppRoutingModule } from './app-routing.module';
+import { AppErrorHandler } from './app-error.handler';
 import { AppComponent } from './components/app.component';
+import { HomeComponent } from './components/home/home.component';
 var AppModule = /** @class */ (function () {
     function AppModule() {
     }
     AppModule = __decorate([
         NgModule({
             declarations: [
-                AppComponent
+                AppComponent,
+                HomeComponent,
             ],
             imports: [
-                BrowserModule
+                BrowserModule,
+                BrowserAnimationsModule,
+                HttpClientModule,
+                FormsModule,
+                ReactiveFormsModule,
+                AppRoutingModule,
+                ToastaModule.forRoot(),
+                MaterialModule
             ],
-            providers: [],
+            providers: [
+                { provide: ErrorHandler, useClass: AppErrorHandler }
+            ],
             bootstrap: [AppComponent]
         })
     ], AppModule);
     return AppModule;
 }());
 export { AppModule };
+export function getBaseUrl() {
+    return document.getElementsByTagName('base')[0].href;
+}
 //# sourceMappingURL=app.module.js.map
