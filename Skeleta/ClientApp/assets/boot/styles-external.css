@@ -1,4 +1,4 @@
-#pre-bootstrap {
+.pre-load {
   background-color: #262626;
   bottom: 0px;
   left: 0px;
@@ -8,28 +8,32 @@
   z-index: 999999;
 }
 
-  #pre-bootstrap div.messaging {
-    color: #FFFFFF;
-    font-family: Metropolis-Regular;
-    left: 0px;
-    margin-top: -107px;
-    position: absolute;
-    right: 0px;
-    text-align: center;
-    top: 50%;
-  }
+.pre-loadMessaging {
+  color: #FFFFFF;
+  left: 0px;
+  margin-top: -107px;
+  position: absolute;
+  right: 0px;
+  text-align: center;
+  top: 50%;
+}
 
-  #pre-bootstrap h1 {
-    font-size: 26px;
-    line-height: 35px;
-    margin: 0px 0px 20px 0px;
-  }
+.pre-loadh1 {
+  font-family: Arial;
+  font-weight: bold !important;
+  color: white;
+  font-size: 26px;
+  line-height: 35px;
+  margin: 0px 0px 20px 0px;
+}
 
-  #pre-bootstrap p {
-    font-size: 18px;
-    line-height: 14px;
-    margin: 0px 0px 0px 0px;
-  }
+.pre-loadp {
+  font-family: Calibri;
+  color: #cacaca;
+  font-size: 18px;
+  line-height: 14px;
+  margin: 0px 0px 0px 0px;
+}
 
 
 

@@ -1,14 +1,15 @@
-<div id="pre-bootstrap" *ngIf="!removePrebootScreen" [class.prebootShow.app-component]="!isAppLoaded" class="app-component prebootStep">
-	<div class="messaging">
-		<h1 style="color:white">
-			Loaded!
-		</h1>
-		<p>
-			SKELETA APPLICATION SYSTEM - <span class="appName" style="font-style:italic">Skeleta</span><span class="appName">App</span> &copy; <a href="https://github.com/davidnemeth">David Nemeth</a>
-		</p>
+<!--<div *ngIf="!removePrebootScreen" [class.prebootShow.app-component]="!isAppLoaded" class="pre-load app-component prebootStep">
+  <div class="pre-loadMessaging">
+    <h1 class="pre-loadh1">
+      Loaded!
+    </h1>  
+      
+    <p class="pre-loadp">
+      SKELETA APPLICATION SYSTEM - <span class="appName" style="font-style:italic">Skeleta</span><span class="appName">App</span> &copy; <a href="https://github.com/davidnemeth">David Nemeth</a>
+    </p>
 
-	</div>
-</div>
+  </div>
+</div>-->
 
 <div class="main-container">
 	<!--<div class="alert alert-app-level">
@@ -17,8 +18,8 @@
 	<header class="header-6">
 		<div class="branding">
 			<a routerLink="" class="nav-link">
-				<clr-icon shape="connect" class="is-solid is-success"></clr-icon>
-				<span class="title">Project Skeleta</span>
+				<clr-icon shape="atom"></clr-icon>
+				<span class="title">Skeleta System</span>
 			</a>
 		</div>
 		<div class="header-nav">
@@ -36,13 +37,16 @@
 					<clr-icon shape="user" class="is-solid has-badge--success"></clr-icon>
 					<clr-icon shape="caret down"></clr-icon>
 				</button>
-				<clr-dropdown-menu *clrIfOpen clrPosition="bottom-right">
-
-					<a routerLink="" clrDropdownItem>{{userEmail}}</a>
-					<a routerLink="" clrDropdownItem>Profile</a>
-					<a routerLink="" clrDropdownItem>Admin</a>
-					<a (click)="logout()" clrDropdownItem href="javascript:;">{{'loginScreen.Logout' | translate}}</a>
-				</clr-dropdown-menu>
+        <clr-dropdown-menu *clrIfOpen clrPosition="bottom-right">
+          <label class="dropdown-header">{{userEmail}}</label>
+          <div class="dropdown-divider"></div>
+          <a routerLink="" clrDropdownItem>Profile</a>
+          <a routerLink="" clrDropdownItem>Admin</a>
+          <a routerLink="" clrDropdownItem>Settings</a>
+          <a routerLink="" clrDropdownItem>Tasks</a>
+          <div class="dropdown-divider"></div>
+          <a (click)="logout()" clrDropdownItem href="javascript:;">{{'loginScreen.Logout' | translate}}</a>
+        </clr-dropdown-menu>
 			</clr-dropdown>
 		</div>
 	</header>

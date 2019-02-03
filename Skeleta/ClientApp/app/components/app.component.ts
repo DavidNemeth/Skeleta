@@ -64,8 +64,8 @@ export class AppComponent implements OnInit, OnDestroy {
 
 	ngOnInit() {
 		// 1 sec to ensure all the effort to get the css animation working is appreciated :|, Preboot screen is removed .5 sec later
-		setTimeout(() => this.isAppLoaded = true, 1000);
-		setTimeout(() => this.removePrebootScreen = true, 1500);
+		setTimeout(() => this.isAppLoaded = true, 10);
+		setTimeout(() => this.removePrebootScreen = true, 15);
 		this.collapsed = true;
 
 		setTimeout(() => {

@@ -9,6 +9,8 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { ToastaModule } from 'ngx-toasta';
 import { MaterialModule } from './material.module';
 import { ClarityModule } from "@clr/angular";
+import { ChartsModule } from 'ng2-charts';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 import { GroupByPipe } from './pipes/group-by.pipe';
 
@@ -28,49 +30,53 @@ import { AccountService } from './services/account.service';
 import { AppComponent } from './components/app.component';
 import { HomeComponent } from './components/home/home.component';
 import { LoginComponent } from './components/login/login.component';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
 
 @NgModule({
-	declarations: [
-		AppComponent,
-		HomeComponent,
-		LoginComponent,
-		GroupByPipe
-	],
-	imports: [
-		BrowserModule,
-		BrowserAnimationsModule,
-		HttpClientModule,
-		FormsModule,
-		ReactiveFormsModule,
-		AppRoutingModule,
-		TranslateModule.forRoot({
-			loader: {
-				provide: TranslateLoader,
-				useClass: TranslateLanguageLoader
-			}
-		}),
-		ToastaModule.forRoot(),
-		MaterialModule,
-		ClarityModule
-	],
-	providers: [
-		{ provide: 'BASE_URL', useFactory: getBaseUrl },
-		{ provide: ErrorHandler, useClass: AppErrorHandler },
-		AppTranslationService,
-		LocalStoreManager,
-		AppTitleService,
-		NotificationEndpoint,
-		NotificationService,
-		AccountEndpoint,
-		AlertService,
-		AccountService,
-		ConfigurationService,
-		EndpointFactory
-	],
-	bootstrap: [AppComponent]
+  declarations: [
+    AppComponent,
+    HomeComponent,
+    LoginComponent,
+    GroupByPipe,
+    DashboardComponent
+  ],
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
+    HttpClientModule,
+    FormsModule,
+    ReactiveFormsModule,
+    AppRoutingModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useClass: TranslateLanguageLoader
+      }
+    }),
+    ToastaModule.forRoot(),
+    MaterialModule,
+    ClarityModule,
+    ChartsModule,
+    NgxChartsModule
+  ],
+  providers: [
+    { provide: 'BASE_URL', useFactory: getBaseUrl },
+    { provide: ErrorHandler, useClass: AppErrorHandler },
+    AppTranslationService,
+    LocalStoreManager,
+    AppTitleService,
+    NotificationEndpoint,
+    NotificationService,
+    AccountEndpoint,
+    AlertService,
+    AccountService,
+    ConfigurationService,
+    EndpointFactory
+  ],
+  bootstrap: [AppComponent]
 })
 export class AppModule { }
 
 export function getBaseUrl() {
-	return document.getElementsByTagName('base')[0].href;
+  return document.getElementsByTagName('base')[0].href;
 }

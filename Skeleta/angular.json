@@ -45,9 +45,7 @@
 						"ClientApp/favicon.ico",
 						"ClientApp/assets"
 					],
-					"styles": [
-						"node_modules/@clr/icons/clr-icons.min.css",
-						"node_modules/@clr/ui/clr-ui.min.css",
+					"styles": [											
 						"ClientApp/styles.css"
 					],
 					"scripts": [

@@ -1,12 +1,12 @@
 /* You can add global styles to this file, and also import other style files */
 
+@import '../node_modules/@clr/icons/clr-icons.min.css';
+@import '../node_modules/@clr/ui/clr-ui.min.css';
 
-@font-face {
-	font-family: Metropolis-Regular;
-	src: url(assets/fonts/Metropolis/TrueType/Metropolis-Regular.ttf) format("opentype");
+
+.website-logo {
+  background-image: url('assets/boot/containerboard_hungary_big.svg');
+  margin-right: 11px;
+  height: 36px !important;
+  width: 36px !important;
 }
-
-body {
-	font-family: Metropolis-Regular;
-}
-

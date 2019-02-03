@@ -40,7 +40,10 @@
 		"@clr/angular": "1.0.5",
 		"@clr/icons": "1.0.5",
 		"@clr/ui": "1.0.5",
-		"@webcomponents/custom-elements": "1.2.1"
+		"@webcomponents/custom-elements": "1.2.1",
+		"ng2-charts": "^1.6.0",
+		"chart.js": "^2.7.3",
+		"@swimlane/ngx-charts": "^10.0.0"
 	},
 	"devDependencies": {
 		"@angular-devkit/build-angular": "~0.12.1",
