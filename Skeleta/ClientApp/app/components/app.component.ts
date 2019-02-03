@@ -270,7 +270,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
 	over(value: boolean): void {
 		this.collapsed = value;
-		console.log(this.collapsed);
+      console.log(this.shouldShowLogin);
 	}
 
 	onLoginShown() {

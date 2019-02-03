@@ -9,8 +9,16 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { ToastaModule } from 'ngx-toasta';
 import { MaterialModule } from './material.module';
 import { ClarityModule } from "@clr/angular";
-import { ChartsModule } from 'ng2-charts';
-import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { Ng2GoogleChartsModule } from 'ng2-google-charts';
+
+import { FusionChartsModule } from 'angular-fusioncharts';
+import FusionCharts from 'fusioncharts/core';
+import Column2d from 'fusioncharts/viz/column2d';
+import stackedcolumn3dline from 'fusioncharts/viz/stackedcolumn3dline'
+import gantt from 'fusioncharts/gantt'
+import FusionTheme from 'fusioncharts/themes/es/fusioncharts.theme.fusion';
+
+FusionChartsModule.fcRoot(FusionCharts, Column2d, stackedcolumn3dline, FusionTheme, gantt);
 
 import { GroupByPipe } from './pipes/group-by.pipe';
 
@@ -31,6 +39,10 @@ import { AppComponent } from './components/app.component';
 import { HomeComponent } from './components/home/home.component';
 import { LoginComponent } from './components/login/login.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { FusionComponent } from './components/fusion/fusion.component';
+import { ThemesComponent } from './components/themes/themes.component';
+import { MachinechartComponent } from './components/charts/machinechart/machinechart.component';
+import { ShiftschartComponent } from './components/charts/shiftschart/shiftschart.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +50,11 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
     HomeComponent,
     LoginComponent,
     GroupByPipe,
-    DashboardComponent
+    DashboardComponent,
+    FusionComponent,
+    ThemesComponent,
+    MachinechartComponent,
+    ShiftschartComponent
   ],
   imports: [
     BrowserModule,
@@ -56,8 +72,8 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
     ToastaModule.forRoot(),
     MaterialModule,
     ClarityModule,
-    ChartsModule,
-    NgxChartsModule
+    FusionChartsModule,
+    Ng2GoogleChartsModule
   ],
   providers: [
     { provide: 'BASE_URL', useFactory: getBaseUrl },

@@ -48,8 +48,8 @@ var AppComponent = /** @class */ (function () {
     AppComponent.prototype.ngOnInit = function () {
         var _this = this;
         // 1 sec to ensure all the effort to get the css animation working is appreciated :|, Preboot screen is removed .5 sec later
-        setTimeout(function () { return _this.isAppLoaded = true; }, 1000);
-        setTimeout(function () { return _this.removePrebootScreen = true; }, 1500);
+        setTimeout(function () { return _this.isAppLoaded = true; }, 10);
+        setTimeout(function () { return _this.removePrebootScreen = true; }, 15);
         this.collapsed = true;
         setTimeout(function () {
             if (_this.isUserLoggedIn) {
@@ -238,7 +238,7 @@ var AppComponent = /** @class */ (function () {
     });
     AppComponent.prototype.over = function (value) {
         this.collapsed = value;
-        console.log(this.collapsed);
+        console.log(this.shouldShowLogin);
     };
     AppComponent.prototype.onLoginShown = function () {
         this.alertService.showStickyMessage('Session Expired', 'Your Session has expired. Please log in again', MessageSeverity.info);
