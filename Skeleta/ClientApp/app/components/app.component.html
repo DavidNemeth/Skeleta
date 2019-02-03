@@ -10,21 +10,20 @@
 	</div>
 </div>
 
-
 <div class="main-container">
 	<!--<div class="alert alert-app-level">
 		App Level Alert
 	</div>-->
 	<header class="header-6">
 		<div class="branding">
-			<a href="" class="nav-link">
+			<a routerLink="" class="nav-link">
 				<clr-icon shape="connect" class="is-solid is-success"></clr-icon>
 				<span class="title">Project Skeleta</span>
 			</a>
 		</div>
 		<div class="header-nav">
-			<a href="" class="active nav-link"><span class="nav-text">Dashboard</span></a>
-			<a href="" class="nav-link"><span class="nav-text">Interactive Analytics</span></a>
+			<a routerLink="" class="active nav-link"><span class="nav-text">Dashboard</span></a>
+			<a routerLink="" class="nav-link"><span class="nav-text">Interactive Analytics</span></a>
 		</div>
 		<form class="search">
 			<label for="search_inout">
@@ -38,18 +37,20 @@
 					<clr-icon shape="caret down"></clr-icon>
 				</button>
 				<clr-dropdown-menu *clrIfOpen clrPosition="bottom-right">
-					<a href="" clrDropdownItem>Profile</a>
-					<a href="" clrDropdownItem>Admin</a>
-					<a href="" clrDropdownItem>Log out</a>
+
+					<a routerLink="" clrDropdownItem>{{userEmail}}</a>
+					<a routerLink="" clrDropdownItem>Profile</a>
+					<a routerLink="" clrDropdownItem>Admin</a>
+					<a (click)="logout()" clrDropdownItem href="javascript:;">{{'loginScreen.Logout' | translate}}</a>
 				</clr-dropdown-menu>
 			</clr-dropdown>
 		</div>
 	</header>
 	<div class="content-container">
-		<div class="content-area" on-mouseover='over(true)'>
+		<div class="content-area" on-mouseover='over(true)'>			
 			<router-outlet></router-outlet>
 		</div>
-		<clr-vertical-nav on-mouseover='over(false)' [clrVerticalNavCollapsible]=true  [(clrVerticalNavCollapsed)]="collapsed">
+		<clr-vertical-nav on-mouseover='over(false)' [clrVerticalNavCollapsible]=true [(clrVerticalNavCollapsed)]="collapsed">
 			<a clrVerticalNavLink routerLink="./home" routerLinkActive="active">
 				<clr-icon clrVerticalNavIcon shape="user"></clr-icon>
 				Normal
@@ -75,10 +76,11 @@
 				Credit
 			</a>
 		</clr-vertical-nav>
-	</div>
+	</div>	
 </div>
 
-<div id="footer">
+
+<!--<div id="footer">
 	<div class="app-component navbar-fixed-bottom navbar-inner footer">
 		<div class="container">
 			<footer>
@@ -91,4 +93,8 @@
 			</footer>
 		</div>
 	</div>
+</div>-->
+
+<div *ngIf="shouldShowLogin" (onShown)="onLoginShown()" (onHidden)="onLoginHidden()" (onHide)="onLoginHide()">
+	<app-login #loginControl></app-login>
 </div>

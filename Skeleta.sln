@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.28407.52
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Skeleta", "Skeleta\Skeleta.csproj", "{3D71F27F-7699-41F7-842C-782E76B9B1CA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DAL", "DAL\DAL.csproj", "{0A6AF25A-2B18-45FD-9E3B-6EDBB0A5F659}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DAL", "DAL\DAL.csproj", "{0A6AF25A-2B18-45FD-9E3B-6EDBB0A5F659}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

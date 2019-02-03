@@ -35,9 +35,6 @@
 	<ItemGroup>
 	  <Folder Include="ClientApp\app\components\controls\" />
 	  <Folder Include="ClientApp\app\directives\" />
-	  <Folder Include="ClientApp\app\models\" />
-	  <Folder Include="ClientApp\app\pipes\" />
-	  <Folder Include="ClientApp\app\services\" />
 	  <Folder Include="wwwroot\clientapp\" />
 	</ItemGroup>
 

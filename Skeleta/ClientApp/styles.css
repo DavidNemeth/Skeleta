@@ -1,23 +1,12 @@
 /* You can add global styles to this file, and also import other style files */
 
-@import "~font-awesome/css/font-awesome.css";
-@import '~@angular/material/prebuilt-themes/indigo-pink.css';
 
 @font-face {
 	font-family: Metropolis-Regular;
-	src: url(assets/fonts/Metropolis/Metropolis-Regular.otf) format("opentype");
+	src: url(assets/fonts/Metropolis/TrueType/Metropolis-Regular.ttf) format("opentype");
 }
 
 body {
 	font-family: Metropolis-Regular;
-	margin: 0;
 }
 
-.basic-container {
-	padding: 30px;
-}
-
-.version-info {
-	font-size: 8pt;
-	float: right;
-}

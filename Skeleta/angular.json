@@ -41,6 +41,7 @@
 					"polyfills": "ClientApp/polyfills.ts",
 					"tsConfig": "ClientApp/tsconfig.app.json",
 					"assets": [
+						"ClientApp/app/assets",
 						"ClientApp/favicon.ico",
 						"ClientApp/assets"
 					],
