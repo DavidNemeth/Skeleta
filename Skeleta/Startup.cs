@@ -105,10 +105,17 @@ namespace Skeleta
 			// Add framework services.
 			services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
+			//timeout
+			services.AddSession(options =>
+			{
+				// Set a short timeout for easy testing.
+				options.IdleTimeout = TimeSpan.FromMinutes(1);
+			});
+
 			// In production, the Angular files will be served from this directory
 			services.AddSpaStaticFiles(configuration =>
 			{
-				configuration.RootPath = "wwwroot/clientapp/dist";
+				configuration.RootPath = "ClientApp/dist";
 			});
 
 			services.AddSwaggerGen(c =>

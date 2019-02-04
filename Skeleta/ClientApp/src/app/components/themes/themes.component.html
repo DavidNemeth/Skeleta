@@ -1,0 +1,9 @@
+<clr-dropdown>
+  <button class="nav-icon dropdown-toggle" clrDropdownTrigger><clr-icon shape="cog"></clr-icon></button>
+  <clr-dropdown-menu clrPosition="bottom-left">
+    <a (click)="changeLanguage('en')" clrDropdownItem>en</a>
+    <a (click)="changeLanguage('hu')" clrDropdownItem>hu</a>
+    <!--<div class="dropdown-divider"></div>-->
+    <!--<button type="button" class="dropdown-item" *ngFor="let theme of themes" (click)="setTheme(theme)" clrDropdownItem>{{theme.name}}</button>-->
+  </clr-dropdown-menu>
+</clr-dropdown>

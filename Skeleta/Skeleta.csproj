@@ -33,9 +33,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="ClientApp\app\components\charts\" />
-	  <Folder Include="ClientApp\app\components\controls\" />
-	  <Folder Include="ClientApp\app\directives\" />
+	  <Folder Include="ClientApp\src\app\components\controls\" />
+	  <Folder Include="ClientApp\src\app\directives\" />
 	  <Folder Include="wwwroot\clientapp\" />
 	</ItemGroup>
 

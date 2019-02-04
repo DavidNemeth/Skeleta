@@ -1,0 +1,89 @@
+<!--<div *ngIf="!removePrebootScreen" [class.prebootShow.app-component]="!isAppLoaded" class="pre-load app-component prebootStep">
+  <div class="pre-loadMessaging">
+    <h1 class="pre-loadh1">
+      Loaded!
+    </h1>
+
+    <p class="pre-loadp">
+      SKELETA APPLICATION SYSTEM - <span class="appName" style="font-style:italic">Skeleta</span><span class="appName">App</span> &copy; <a href="https://github.com/davidnemeth">David Nemeth</a>
+    </p>
+
+  </div>
+</div>-->
+
+<app-login *ngIf="!isUserLoggedIn"></app-login>
+
+<div *ngIf="isUserLoggedIn" class="main-container">
+
+  <!--<div class="alert alert-app-level">
+    App Level Alert
+  </div>-->
+  <header *ngIf="isUserLoggedIn" class="header header-6">
+    <div class="branding">
+      <a routerLink="" class="nav-link">
+        <clr-icon shape="atom"></clr-icon>
+        <span class="title">Skeleta System</span>
+      </a>
+    </div>
+    <div class="header-nav">
+      <a routerLink="" class="active nav-link"><span class="nav-text">Dashboard</span></a>
+      <a routerLink="" class="nav-link"><span class="nav-text">{{isUserLoggedIn}}</span></a>
+    </div>
+    <form class="search">
+      <label for="search_inout">
+        <input id="search_inout" placeholder="Search all..." type="text" />
+      </label>
+    </form>
+    <div class="header-actions">
+      <clr-dropdown>
+        <button class="nav-icon" clrDropdownTrigger>
+          <clr-icon shape="user" class="is-solid has-badge--success"></clr-icon>
+          <clr-icon shape="caret down"></clr-icon>
+        </button>
+        <clr-dropdown-menu *clrIfOpen clrPosition="bottom-right">
+          <label class="dropdown-header">{{userEmail}}</label>
+          <div class="dropdown-divider"></div>
+          <a routerLink="" clrDropdownItem>Profile</a>
+          <a routerLink="" clrDropdownItem>Admin</a>
+          <a routerLink="" clrDropdownItem>Settings</a>
+          <a routerLink="" clrDropdownItem>Tasks</a>
+          <div class="dropdown-divider"></div>
+          <a (click)="logout()" clrDropdownItem href="javascript:;">{{'loginScreen.Logout' | translate}}</a>
+        </clr-dropdown-menu>
+      </clr-dropdown>
+    </div>
+  </header>
+  <div class="content-container">
+    <div class="content-area">
+      <!--on-mouseover='over(true)'-->
+      <router-outlet></router-outlet>
+    </div>
+    <!--on-mouseover='over(false)'-->
+    <nav *ngIf="isUserLoggedIn" class="sidenav">
+      <section class="sidenav-content collapsible">
+        <a routerLink="" class="nav-link active">
+          Nav Element 1
+        </a>
+        <a routerLink="" class="nav-link">
+          Nav Element 2
+        </a>
+     </section>
+    </nav>
+  </div>
+</div>
+
+
+<!--<div id="footer">
+  <div class="app-component navbar-fixed-bottom navbar-inner footer">
+    <div class="container">
+      <footer>
+        <div class="app-component vcenter_text center-block">
+          <p class="text-center text-muted">
+            <span class="appName" style="font-style:italic">Skeleta</span><span class="appName">App</span> &copy; {{getYear()}}
+            <a href="https://github.com/davidnemeth">David Nemeth</a>
+          </p>
+        </div>
+      </footer>
+    </div>
+  </div>
+</div>-->
