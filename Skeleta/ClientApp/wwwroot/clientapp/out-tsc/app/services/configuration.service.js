@@ -22,7 +22,7 @@ var ConfigurationService = /** @class */ (function () {
         // ***End of defaults***
         this.baseUrl = environment_1.environment.baseUrl || utilities_1.Utilities.baseUrl();
         this.loginUrl = environment_1.environment.loginUrl;
-        this.fallbackBaseUrl = '';
+        this.fallbackBaseUrl = '/fallbackUrl';
         this._language = null;
         this._homeUrl = null;
         this._theme = null;
@@ -210,7 +210,7 @@ var ConfigurationService = /** @class */ (function () {
         }
     };
     var ConfigurationService_1;
-    ConfigurationService.appVersion = '2.7.1';
+    ConfigurationService.appVersion = '1.0.0';
     // ***Specify default configurations here***
     ConfigurationService.defaultLanguage = 'en';
     ConfigurationService.defaultHomeUrl = '/';

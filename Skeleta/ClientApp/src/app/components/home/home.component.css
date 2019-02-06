@@ -1,0 +1,7 @@
+:host(), .side-nav {
+  height: 100%;
+}
+
+:host() {
+  display: flex;
+}

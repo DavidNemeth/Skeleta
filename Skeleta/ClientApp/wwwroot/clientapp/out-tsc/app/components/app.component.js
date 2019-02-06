@@ -39,8 +39,6 @@ var AppComponent = /** @class */ (function () {
         this.dataLoadingConsecutiveFailurs = 0;
         storageManager.initialiseStorageSyncListener();
         translationService.addLanguages(['en', 'hu']);
-        translationService.setDefaultLanguage('en');
-        translationService.changeLanguage('hu');
         this.toastaConfig.theme = 'material';
         this.toastaConfig.position = 'top-right';
         this.toastaConfig.limit = 100;

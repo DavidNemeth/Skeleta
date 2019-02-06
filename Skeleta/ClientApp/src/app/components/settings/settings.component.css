@@ -1,0 +1,52 @@
+@import '../../../styles/vertical-tabs.css';
+
+pre {
+  position: relative;
+  display: block;
+  background: #f7f7f7;
+  white-space: pre;
+  color: #666666;
+  border-left: 3px solid #7b7b7b;
+  border-width: 1px 1px 1px 3px;
+}
+
+clr-tab-content[aria-hidden="false"] {
+  position: relative;
+  display: block;
+  padding: 1rem 0;
+}
+
+clr-tabs.vertical-tabs clr-tab-content[aria-hidden="false"] {
+  padding: 0;
+}
+
+.toggle-switch {
+  display: block;
+}
+
+.sub-title {
+  margin: 1rem 0;
+  padding-left: .5rem;
+}
+
+.just-content {
+  color: #ccc;
+}
+
+
+:host(), .side-nav {
+  height: 100%;
+}
+
+:host() {
+  display: flex;
+}
+
+[hidden] {
+  display: none;
+}
+
+.separator-hr {
+  margin-top: 0;
+  margin-bottom: 10px;
+}

@@ -34,7 +34,7 @@
 
 	<ItemGroup>
 	  <Folder Include="ClientApp\src\app\components\controls\" />
-	  <Folder Include="ClientApp\src\app\directives\" />
+	  <Folder Include="ClientApp\src\styles\components\" />
 	  <Folder Include="wwwroot\clientapp\" />
 	</ItemGroup>
 

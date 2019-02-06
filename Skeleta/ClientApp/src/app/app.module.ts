@@ -43,6 +43,11 @@ import { FusionComponent } from './components/fusion/fusion.component';
 import { ThemesComponent } from './components/themes/themes.component';
 import { MachinechartComponent } from './components/charts/machinechart/machinechart.component';
 import { ShiftschartComponent } from './components/charts/shiftschart/shiftschart.component';
+import { SettingsComponent } from './components/settings/settings.component';
+import { UserManagementComponent } from './components/controls/user-management/user-management.component';
+import { SearchBoxComponent } from './components/controls/search-box/search-box.component';
+import { UserInfoComponent } from './components/controls/user-info/user-info.component';
+import { IfTabActive } from './directives/if-tab-active.directive';
 
 @NgModule({
   declarations: [
@@ -54,7 +59,12 @@ import { ShiftschartComponent } from './components/charts/shiftschart/shiftschar
     FusionComponent,
     ThemesComponent,
     MachinechartComponent,
-    ShiftschartComponent
+    ShiftschartComponent,
+    SettingsComponent,
+    UserManagementComponent,
+    SearchBoxComponent,
+    UserInfoComponent,
+    IfTabActive
   ],
   imports: [
     BrowserModule,
@@ -71,7 +81,7 @@ import { ShiftschartComponent } from './components/charts/shiftschart/shiftschar
     }),
     ToastaModule.forRoot(),
     MaterialModule,
-    ClarityModule,
+    ClarityModule,    
     FusionChartsModule,
     Ng2GoogleChartsModule
   ],
@@ -86,8 +96,11 @@ import { ShiftschartComponent } from './components/charts/shiftschart/shiftschar
     AccountEndpoint,
     AlertService,
     AccountService,
-    ConfigurationService,
+    ConfigurationService,  
     EndpointFactory
+  ],
+  exports: [
+    IfTabActive
   ],
   bootstrap: [AppComponent]
 })

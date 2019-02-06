@@ -1,0 +1,130 @@
+<!--<app-user-management></app-user-management>-->
+<div [@fadeInOut] class="content-container">
+  <div class="content-area" [ngClass]="{ 'flexboxified' : this.flexboxifiedContent }">
+
+    <h3>Clarity tabs - vertical</h3>
+    <div class="toggle-switch sub-title">
+      <input type="checkbox" id="toggle_1" [checked]="tabsVertical" (change)="tabsVertical = !tabsVertical">
+      <label for="toggle_1">tabs orientation</label>
+    </div>
+    <clr-tabs [ngClass]="{ 'vertical-tabs' : this.tabsVertical, 'scrollable' : this.flexboxifiedContent }">
+      <clr-tab vscIfTabActive [activeClass]="'activeTab'">
+        <button clrTabLink id="link1">Currently only horizontal</button>
+        <clr-tab-content id="content1" *clrIfActive>
+          Clarity tabs currently are horizontal<br />
+          <a href="https://vmware.github.io/clarity/documentation/v0.12/tabs">
+            https://vmware.github.io/clarity/documentation/v0.12/tabs
+          </a>
+        </clr-tab-content>
+      </clr-tab>
+      <clr-tab vscIfTabActive [activeClass]="'activeTab'">
+        <button clrTabLink>UX Ready to be vertical</button>
+        <clr-tab-content *clrIfActive>
+          There's a github issue about making them vertical.<br />
+          <a href="https://github.com/vmware/clarity/issues/452">
+            https://github.com/vmware/clarity/issues/452
+          </a>
+        </clr-tab-content>
+      </clr-tab>
+      <clr-tab vscIfTabActive [activeClass]="'activeTab'">
+        <button clrTabLink>CSS only transformed to vertical</button>
+        <clr-tab-content *clrIfActive>
+
+          With little flexbox modification clr-tabs become vertical.
+
+          <p *ngFor="let n of [1, 2, 3, 4, 5]" class="just-content">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque eu odio nisi. Vestibulum dignissim eget massa sit amet feugiat. Quisque auctor mattis quam eu suscipit. Morbi ipsum risus, feugiat vitae sem at, tincidunt elementum magna. Phasellus tristique posuere dui, ut tempus felis sagittis quis. Integer iaculis ultrices elit, sed venenatis eros. Vivamus interdum semper velit eget gravida. Sed finibus eget lacus sed semper. Suspendisse fringilla, tellus in molestie cursus, sapien purus volutpat lacus, eget venenatis erat est vitae libero. Aliquam et orci hendrerit, consequat purus non, imperdiet ipsum.
+          </p>
+        </clr-tab-content>
+      </clr-tab>
+      <clr-tab vscIfTabActive [activeClass]="'activeTab'">
+        <button clrTabLink>Scrollable tab-content</button>
+        <clr-tab-content *clrIfActive>
+
+          What if clr-tabs are inside a flexbox-ed parent element..
+          <div class="toggle-switch">
+            <input type="checkbox" id="toggle_2" [checked]="flexboxifiedContent" (change)="flexboxifiedContent = !flexboxifiedContent" />
+            <label for="toggle_2">flexboxify content</label>
+          </div>
+
+          <hr />
+
+          Currently there's no way to know which clr-tab is active unless we see if its content is not visible.
+<pre>
+  
+  &lt;clr-tab&gt;
+    &lt;clr-tab-content[aria-hidden="false"] ...
+
+</pre>
+          <p>
+            vscIfTabActive to the rescue..
+            <a href="https://opengrok.eng.vmware.com/source/xref/vim-clients.vim-main.perforce.1666/vim-main/applications/h5/ng-next-app/src/app/platform/directives/tabs/if-tab-active.directive.ts">if-tab-active.directive.ts</a>
+          </p>
+<pre>
+  
+  &lt;clr-tab vscIfTabActive [activeClass]="'activeTab'"
+    &lt;clr-tab-content[aria-hidden="false"] ...
+
+</pre>
+
+          <hr />
+
+          <p *ngFor="let n of [1, 2, 3, 4, 5]" class="just-content">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque eu odio nisi. Vestibulum dignissim eget massa sit amet feugiat. Quisque auctor mattis quam eu suscipit. Morbi ipsum risus, feugiat vitae sem at, tincidunt elementum magna. Phasellus tristique posuere dui, ut tempus felis sagittis quis. Integer iaculis ultrices elit, sed venenatis eros. Vivamus interdum semper velit eget gravida. Sed finibus eget lacus sed semper. Suspendisse fringilla, tellus in molestie cursus, sapien purus volutpat lacus, eget venenatis erat est vitae libero. Aliquam et orci hendrerit, consequat purus non, imperdiet ipsum.
+          </p>
+
+
+
+        </clr-tab-content>
+      </clr-tab>
+      <clr-tab vscIfTabActive [activeClass]="'activeTab'">
+        <button clrTabLink>Scrollable clrTabLinks</button>
+        <clr-tab-content>
+          Yes.
+          <div class="btn-group btn-outline-primary btn-sm">
+            <button class="btn" (click)="arrPush(this.additionalTabHeads)">add</button>
+            <button class="btn" (click)="arrPop(this.additionalTabHeads)">remove</button>
+          </div>aditional clrTabLinks ( tab heads )
+        </clr-tab-content>
+      </clr-tab>
+      <clr-tab vscIfTabActive [activeClass]="'activeTab'" *ngFor="let n of this.additionalTabHeads">
+        <button clrTabLink>vertical tab {{ n }}</button>
+      </clr-tab>
+    </clr-tabs>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+  <!--<nav class="sidenav" [clr-nav-level]="1">
+    <section class="sidenav-content">
+      <a routerLink="/settings" [routerLinkActiveOptions]="{ exact: true }" routerLinkActive="active" class="nav-link nav-title">
+        Settings
+      </a>
+      <section class="nav-group">
+        <label>Charts</label>
+        <ul class="nav-list">
+          <li [hidden]="!canViewUsers">
+            <a id="usersTab" [routerLink]="[]" fragment="users" onclick="activateTab('infrastructureActive')" href="#users" data-toggle="tab"><i aria-hidden="true"></i> {{'settings.tab.Users' | translate}}</a>
+          </li>
+        </ul>
+      </section>
+    </section>
+  </nav>-->
+</div>
+

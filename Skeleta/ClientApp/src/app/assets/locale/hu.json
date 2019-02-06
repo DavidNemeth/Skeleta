@@ -1,6 +1,6 @@
 {
 	"app": {
-		"Welcome": "Welcome",
+		"Welcome": "Bejelentkezve",
 		"Notifications": "Notifications",
 		"New": "New"
 	},
@@ -89,19 +89,21 @@
 		"SetDefault": "Set as default"
 	},
 	"users": {
-		"management": {
-			"Search": "Search for user...",
-			"NewUser": "New User",
-			"Edit": "Edit",
-			"Delete": "Delete",
-			"EditUser": "Edit User \"{{name}}\"",
-			"Title": "Title",
-			"UserName": "User Name",
-			"FullName": "Full Name",
-			"Email": "Email",
-			"Roles": "Roles",
-			"PhoneNumber": "Phone Number"
-		},
+    "management": {
+      "Search": "Keresés...",
+      "NewUser": "Új felhasználó",
+      "Edit": "Módositás",
+      "Delete": "Törlés",
+      "EditUser": "Felhasználó Módositása \"{{name}}\"",
+      "Title": "Beosztás",
+      "UserName": "Felhasználónév",
+      "FullName": "Név",
+      "Email": "Email",
+      "Roles": "Jogosultságok",
+      "PhoneNumber": "Telefonszám",
+      "UsersPerPage": "Felhasználó / oldal",
+      "Users": "Felhasználók"
+    },
 		"editor": {
 			"JobTitle": "Job Title: ",
 			"UserName": "User Name:",

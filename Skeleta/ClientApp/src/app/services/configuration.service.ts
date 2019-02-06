@@ -1,4 +1,4 @@
-﻿import { Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 
 import { AppTranslationService } from './app-translation.service';
 import { LocalStoreManager } from './local-store-manager.service';
@@ -21,7 +21,7 @@ interface UserConfiguration {
 @Injectable()
 export class ConfigurationService {
 
-	public static readonly appVersion: string = '2.7.1';
+	public static readonly appVersion: string = '1.0.0';
 
 	// ***Specify default configurations here***
 	public static readonly defaultLanguage: string = 'en';
@@ -35,7 +35,7 @@ export class ConfigurationService {
 
 	public baseUrl = environment.baseUrl || Utilities.baseUrl();
 	public loginUrl = environment.loginUrl;
-	public fallbackBaseUrl = '';
+	public fallbackBaseUrl = '/fallbackUrl';
 
 	private _language: string = null;
 	private _homeUrl: string = null;

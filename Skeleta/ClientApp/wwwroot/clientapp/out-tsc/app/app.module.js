@@ -44,6 +44,10 @@ var fusion_component_1 = require("./components/fusion/fusion.component");
 var themes_component_1 = require("./components/themes/themes.component");
 var machinechart_component_1 = require("./components/charts/machinechart/machinechart.component");
 var shiftschart_component_1 = require("./components/charts/shiftschart/shiftschart.component");
+var settings_component_1 = require("./components/settings/settings.component");
+var user_management_component_1 = require("./components/controls/user-management/user-management.component");
+var search_box_component_1 = require("./components/controls/search-box/search-box.component");
+var user_info_component_1 = require("./components/controls/user-info/user-info.component");
 var AppModule = /** @class */ (function () {
     function AppModule() {
     }
@@ -58,7 +62,11 @@ var AppModule = /** @class */ (function () {
                 fusion_component_1.FusionComponent,
                 themes_component_1.ThemesComponent,
                 machinechart_component_1.MachinechartComponent,
-                shiftschart_component_1.ShiftschartComponent
+                shiftschart_component_1.ShiftschartComponent,
+                settings_component_1.SettingsComponent,
+                user_management_component_1.UserManagementComponent,
+                search_box_component_1.SearchBoxComponent,
+                user_info_component_1.UserInfoComponent
             ],
             imports: [
                 platform_browser_1.BrowserModule,

@@ -1,0 +1,49 @@
+::ng-deep clr-tabs.vertical-tabs {
+  display: flex;
+}
+
+  ::ng-deep clr-tabs.vertical-tabs .nav {
+    flex-direction: column;
+    height: auto;
+    align-items: stretch;
+    box-shadow: none;
+    width: auto;
+    margin-right: 1rem;
+    overflow: auto;
+    flex-shrink: 0;
+  }
+
+    ::ng-deep clr-tabs.vertical-tabs .nav .nav-link {
+      text-align: left;
+      padding: 0 0.5rem;
+      border-radius: 0 0.125rem 0.125rem 0;
+      margin-bottom: 1px;
+      flex-shrink: 0;
+    }
+
+      ::ng-deep clr-tabs.vertical-tabs .nav .nav-link.active, ::ng-deep clr-tabs.vertical-tabs .nav .nav-link:hover {
+        box-shadow: inset 3px 0 0 #007cbb;
+        background-color: #eee;
+      }
+
+::ng-deep .content-area.flexboxified {
+  display: flex;
+  flex-direction: column;
+}
+
+  ::ng-deep .content-area.flexboxified clr-tabs.vertical-tabs.scrollable {
+    flex: 1 1 auto;
+  }
+
+    ::ng-deep .content-area.flexboxified clr-tabs.vertical-tabs.scrollable clr-tab.activeTab {
+      flex: 1 1 auto;
+    }
+
+      ::ng-deep .content-area.flexboxified clr-tabs.vertical-tabs.scrollable clr-tab.activeTab clr-tab-content[aria-hidden="false"] {
+        display: block;
+        position: relative;
+        height: 100%;
+        width: 100%;
+        overflow: auto;
+        padding-right: 1rem;
+      }

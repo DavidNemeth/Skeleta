@@ -40,11 +40,6 @@ var ThemesComponent = /** @class */ (function () {
             this.linkRef.href = theme.href;
             this.document.querySelector('head').appendChild(this.linkRef);
         }
-        if (this.translationService.getBrowserLanguage() == 'en') {
-            this.language = 'hu';
-        }
-        else
-            this.language = 'en';
     }
     ThemesComponent.prototype.setTheme = function (theme) {
         localStorage.setItem('theme', JSON.stringify(theme));
@@ -55,15 +50,14 @@ var ThemesComponent = /** @class */ (function () {
         switch (lang) {
             case 'hu':
                 this.translationService.changeLanguage('hu');
-                this.language = "en";
+                this.translationService.setDefaultLanguage('hu');
                 break;
             case 'en':
                 this.translationService.changeLanguage('en');
-                this.language = "hu";
+                this.translationService.setDefaultLanguage('en');
                 break;
             default:
                 this.translationService.changeLanguage('en');
-                this.language = "en";
         }
     };
     ThemesComponent = __decorate([

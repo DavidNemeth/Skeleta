@@ -1,13 +1,24 @@
-<app-themes></app-themes>
+<div [@fadeInOut] class="content-container">
+  <div class="content-area">
 
-<div class="clr-row">  
-  <div class="clr-col-12">
-    <app-machinechart class="card"></app-machinechart>
-  </div>  
-  <div class="clr-col-8">
-    <app-fusion class="card"></app-fusion>
   </div>
-  <div class="clr-col-4">
-    <app-shiftschart class="card "></app-shiftschart>
-  </div>
+
+
+  <nav class="sidenav" [clr-nav-level]="1">
+    <section class="sidenav-content">
+      <a routerLink="" [routerLinkActiveOptions]="{ exact: true }" routerLinkActive="active" class="nav-link nav-title">
+        Home
+      </a>
+      <section class="nav-group">
+        <label>Charts</label>
+        <ul class="nav-list">
+          <li><a routerLink="/shiftchart" routerLinkActive="active" class="nav-link">Shift Roster</a></li>
+          <li><a routerLink="/machinechart" routerLinkActive="active" class="nav-link">Machine Schedule</a></li>
+          <li><a routerLink="/fusionchart" routerLinkActive="active" class="nav-link">Fusion</a></li>
+          <li><a routerLink="/googlechart" routerLinkActive="active" class="nav-link">GoogleCharts</a></li>
+        </ul>
+      </section>
+    </section>
+  </nav>
+
 </div>

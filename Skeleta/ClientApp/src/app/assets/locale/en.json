@@ -89,19 +89,21 @@
 		"SetDefault": "Set as default"
 	},
 	"users": {
-		"management": {
-			"Search": "Search for user...",
-			"NewUser": "New User",
-			"Edit": "Edit",
-			"Delete": "Delete",
-			"EditUser": "Edit User \"{{name}}\"",
-			"Title": "Title",
-			"UserName": "User Name",
-			"FullName": "Full Name",
-			"Email": "Email",
-			"Roles": "Roles",
-			"PhoneNumber": "Phone Number"
-		},
+    "management": {
+      "Search": "Search for user...",
+      "NewUser": "New User",
+      "Edit": "Edit",
+      "Delete": "Delete",
+      "EditUser": "Edit User \"{{name}}\"",
+      "Title": "Title",
+      "UserName": "User Name",
+      "FullName": "Full Name",
+      "Email": "Email",
+      "Roles": "Roles",
+      "PhoneNumber": "Phone Number",
+      "UsersPerPage": "Users Per Page",
+      "Users": "Users"
+    },
 		"editor": {
 			"JobTitle": "Job Title: ",
 			"UserName": "User Name:",
