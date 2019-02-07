@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { fadeInOut } from '../../services/animations';
@@ -13,6 +13,8 @@ import { ClrTabs } from '@clr/angular';
   animations: [fadeInOut]
 })
 export class SettingsComponent implements OnInit, OnDestroy {
+
+  @Input() class: string;
 
   isProfileActivated = true;
   isPreferencesActivated = false;

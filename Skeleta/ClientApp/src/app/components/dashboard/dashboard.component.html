@@ -1,2 +1,20 @@
 
-  <google-chart class="card" [data]="comboChart" (mouseOver)="mouseOver($event)" (mouseOut)="mouseOut($event)"></google-chart>
+
+    <div class="content-area">
+      <router-outlet></router-outlet>
+    </div>
+    <nav class="sidenav" [clr-nav-level]="1">
+      <section class="sidenav-content">
+        <a routerLink="/dashboard" [routerLinkActiveOptions]="{ exact: true }" routerLinkActive="active" class="nav-link">
+          Smart Board
+        </a>
+        <section class="nav-group">
+          <ul class="nav-list">
+            <li><a routerLink="/dashboard/shiftchart" routerLinkActive="active" class="nav-link">Shift Roster</a></li>
+            <li><a routerLink="/dashboard/machinechart" routerLinkActive="active" class="nav-link">Machine Schedule</a></li>
+            <li><a routerLink="/dashboard/fusionchart" routerLinkActive="active" class="nav-link">Fusion</a></li>
+          </ul>
+        </section>
+      </section>
+    </nav>
+

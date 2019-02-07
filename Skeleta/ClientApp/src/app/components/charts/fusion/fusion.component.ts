@@ -254,7 +254,7 @@ const data = {
 export class FusionComponent implements OnInit {
 
   width = "100%";
-  height = "400px";
+  height = "400";
   type = 'stackedcolumn3dline';
   dataFormat = 'json';
   dataSource = data;

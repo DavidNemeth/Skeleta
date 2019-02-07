@@ -34,8 +34,12 @@ clr-tabs.vertical-tabs clr-tab-content[aria-hidden="false"] {
 }
 
 
-:host(), .side-nav {
+:host {
+  position: relative;
+  display: block;
+  
   height: 100%;
+  width: 100%;
 }
 
 :host() {

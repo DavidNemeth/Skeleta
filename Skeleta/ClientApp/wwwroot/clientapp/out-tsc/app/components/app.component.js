@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var router_1 = require("@angular/router");
 var ngx_toasta_1 = require("ngx-toasta");
+var animations_1 = require("../services/animations");
 var alert_service_1 = require("../services/alert.service");
 var notification_service_1 = require("../services/notification.service");
 var account_service_1 = require("../services/account.service");
@@ -259,11 +260,11 @@ var AppComponent = /** @class */ (function () {
             selector: 'app-root',
             templateUrl: './app.component.html',
             styleUrls: ['./app.component.css'],
+            animations: [animations_1.fadeInOut],
             encapsulation: core_1.ViewEncapsulation.None
         }),
         __metadata("design:paramtypes", [local_store_manager_service_1.LocalStoreManager, ngx_toasta_1.ToastaService,
-            ngx_toasta_1.ToastaConfig,
-            router_1.Router, account_service_1.AccountService,
+            ngx_toasta_1.ToastaConfig, router_1.Router, account_service_1.AccountService,
             alert_service_1.AlertService, notification_service_1.NotificationService,
             app_title_service_1.AppTitleService, auth_service_1.AuthService,
             app_translation_service_1.AppTranslationService, configuration_service_1.ConfigurationService])

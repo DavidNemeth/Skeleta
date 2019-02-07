@@ -10,16 +10,23 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
+var animations_1 = require("../../services/animations");
 var HomeComponent = /** @class */ (function () {
     function HomeComponent() {
+        this.showContainerClass = true;
     }
     HomeComponent.prototype.ngOnInit = function () {
     };
+    __decorate([
+        core_1.HostBinding('class.content-container'),
+        __metadata("design:type", Object)
+    ], HomeComponent.prototype, "showContainerClass", void 0);
     HomeComponent = __decorate([
         core_1.Component({
             selector: 'app-home',
             templateUrl: './home.component.html',
-            styleUrls: ['./home.component.css']
+            styleUrls: ['./home.component.css'],
+            animations: [animations_1.fadeInOut]
         }),
         __metadata("design:paramtypes", [])
     ], HomeComponent);

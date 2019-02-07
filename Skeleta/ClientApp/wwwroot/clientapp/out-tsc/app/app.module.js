@@ -13,9 +13,7 @@ var animations_1 = require("@angular/platform-browser/animations");
 var http_1 = require("@angular/common/http");
 var core_2 = require("@ngx-translate/core");
 var ngx_toasta_1 = require("ngx-toasta");
-var material_module_1 = require("./material.module");
 var angular_1 = require("@clr/angular");
-var ng2_google_charts_1 = require("ng2-google-charts");
 var angular_fusioncharts_1 = require("angular-fusioncharts");
 var core_3 = require("fusioncharts/core");
 var column2d_1 = require("fusioncharts/viz/column2d");
@@ -48,6 +46,7 @@ var settings_component_1 = require("./components/settings/settings.component");
 var user_management_component_1 = require("./components/controls/user-management/user-management.component");
 var search_box_component_1 = require("./components/controls/search-box/search-box.component");
 var user_info_component_1 = require("./components/controls/user-info/user-info.component");
+var if_tab_active_directive_1 = require("./directives/if-tab-active.directive");
 var AppModule = /** @class */ (function () {
     function AppModule() {
     }
@@ -66,7 +65,8 @@ var AppModule = /** @class */ (function () {
                 settings_component_1.SettingsComponent,
                 user_management_component_1.UserManagementComponent,
                 search_box_component_1.SearchBoxComponent,
-                user_info_component_1.UserInfoComponent
+                user_info_component_1.UserInfoComponent,
+                if_tab_active_directive_1.IfTabActive
             ],
             imports: [
                 platform_browser_1.BrowserModule,
@@ -82,10 +82,8 @@ var AppModule = /** @class */ (function () {
                     }
                 }),
                 ngx_toasta_1.ToastaModule.forRoot(),
-                material_module_1.MaterialModule,
                 angular_1.ClarityModule,
-                angular_fusioncharts_1.FusionChartsModule,
-                ng2_google_charts_1.Ng2GoogleChartsModule
+                angular_fusioncharts_1.FusionChartsModule
             ],
             providers: [
                 { provide: 'BASE_URL', useFactory: getBaseUrl },
@@ -100,6 +98,9 @@ var AppModule = /** @class */ (function () {
                 account_service_1.AccountService,
                 configuration_service_1.ConfigurationService,
                 endpoint_factory_service_1.EndpointFactory
+            ],
+            exports: [
+                if_tab_active_directive_1.IfTabActive
             ],
             bootstrap: [app_component_1.AppComponent]
         })

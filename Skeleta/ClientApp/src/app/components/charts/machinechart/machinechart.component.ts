@@ -417,7 +417,7 @@ export class MachinechartComponent implements OnInit {
   }
 
   width = "100%";
-  height = 300;
+  height = 400;
   type = 'gantt';
   dataFormat = 'json';
   dataSource = data;

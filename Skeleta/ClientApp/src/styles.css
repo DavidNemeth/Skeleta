@@ -4,44 +4,26 @@
 @import '../src/app/assets/styles/themes/light.css';
 /*@import '../src/app/assets/styles/themes/dark.css';*/
 
-.header .branding .clr-icon, .header .branding clr-icon, header .branding .clr-icon, header .branding clr-icon {
-  flex-grow: 0;
-  flex-shrink: 0;
-  height: 1.5rem;
-  width: 1.5rem;
-  margin-right: .375rem;
+/*Side-Nav Changes*/
+.sidenav .sidenav-content > .nav-link.active {
+  box-shadow: inset 3px 0 0 #004a70;
+  border-radius: 0 0.125rem 0.125rem 0;
 }
 
-.websiteLogo {
-  flex-grow: 0;
-  flex-shrink: 0;
-  height: 1.5rem;
-  width: 1.5rem;
-  margin-right: .375rem;
-}
-g[class$='creditgroup'] {
-  display: none !important;
+.sidenav .sidenav-content > .nav-link.hover {
+  box-shadow: inset 3px 0 0 #004a70;
+  border-radius: 0 0.125rem 0.125rem 0;
 }
 
-g[class^='raphael-group-'][class$='-creditgroup'] {
-  display: none !important;
+/*DataGrid Changes*/
+.datagrid .datagrid-column, .datagrid .datagrid-cell {
+  line-height: 0.6rem !important;
 }
 
-.nav-title {
-  font-size: large !important;
+.datagrid .datagrid-column, .datagrid .datagrid-cell {
+  line-height: 0.6rem !important;
 }
 
-html, body {
-  height: 100%;
-}
-
-.logo {
-  width: 70%;
-}
-body {
-  margin: 0;
-  overflow: auto;
-}
 .header {
   background-color: #002538 !important;
 }
@@ -54,97 +36,13 @@ body {
   display: flex;
 }
 
-.parent {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
+/*fusion remove link*/
+
+g[class$='creditgroup'] {
+  display: none !important;
 }
 
-/*DataGrid Changes*/
-.datagrid .datagrid-column, .datagrid .datagrid-cell {
-  line-height: 0.6rem !important;
+g[class^='raphael-group-'][class$='-creditgroup'] {
+  display: none !important;
 }
 
-.datagrid .datagrid-column, .datagrid .datagrid-cell {
-  line-height: 0.6rem !important;
-}
-
-a, a:focus, a:visited {
-  color: #001eff;
-}
-
-  a :disabled {
-    opacity: 0.5;
-    text-decoration: none;
-    pointer-events: none;
-  }
-
-button:focus {
-  outline: 0;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*.header-nav .nav-link, .header .header-nav .nav-link {    
-    opacity: 1 !important;
-  }
-  
-  .settings .nav-link, header .header-actions .nav-link, .header .settings .nav-link, .header .header-actions .nav-link {
-    opacity: 1 !important;
-  }
-
-  .settings > .dropdown > .dropdown-toggle, header .header-actions > .dropdown > .dropdown-toggle, .header .settings > .dropdown > .dropdown-toggle, .header .header-actions > .dropdown > .dropdown-toggle {
-    opacity: 1 !important;
-  }*/
-
-/*DataGrid Changes*/
-
-
-/*header .settings > .dropdown > .dropdown-toggle:enabled:hover,
-header .header-actions > .dropdown > .dropdown-toggle:enabled:hover,
-.header .settings > .dropdown > .dropdown-toggle:enabled:hover,
-.header .header-actions > .dropdown > .dropdown-toggle:enabled:hover {
-  background: rgba(255, 255, 255, 0.15) !important;
-}
-
-.header .header-nav .nav-link:hover, header .header-nav .nav-link:hover {
-  background: rgba(255, 255, 255, 0.15) !important;  
-}*/

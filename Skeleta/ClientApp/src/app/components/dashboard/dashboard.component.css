@@ -1,0 +1,9 @@
+/*. display: flex; flex-direction: column; flex: 1 1 auto*/
+
+:host(), .side-nav {
+  height: 100%;
+}
+
+:host() {
+  display: flex;
+}

@@ -7,9 +7,7 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { ToastaModule } from 'ngx-toasta';
-import { MaterialModule } from './material.module';
 import { ClarityModule } from "@clr/angular";
-import { Ng2GoogleChartsModule } from 'ng2-google-charts';
 
 import { FusionChartsModule } from 'angular-fusioncharts';
 import FusionCharts from 'fusioncharts/core';
@@ -39,7 +37,7 @@ import { AppComponent } from './components/app.component';
 import { HomeComponent } from './components/home/home.component';
 import { LoginComponent } from './components/login/login.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
-import { FusionComponent } from './components/fusion/fusion.component';
+import { FusionComponent } from './components/charts/fusion/fusion.component';
 import { ThemesComponent } from './components/themes/themes.component';
 import { MachinechartComponent } from './components/charts/machinechart/machinechart.component';
 import { ShiftschartComponent } from './components/charts/shiftschart/shiftschart.component';
@@ -48,6 +46,7 @@ import { UserManagementComponent } from './components/controls/user-management/u
 import { SearchBoxComponent } from './components/controls/search-box/search-box.component';
 import { UserInfoComponent } from './components/controls/user-info/user-info.component';
 import { IfTabActive } from './directives/if-tab-active.directive';
+import { SmartDashboardComponent } from './components/dashboard/smart-dashboard/smart-dashboard.component';
 
 @NgModule({
   declarations: [
@@ -64,7 +63,8 @@ import { IfTabActive } from './directives/if-tab-active.directive';
     UserManagementComponent,
     SearchBoxComponent,
     UserInfoComponent,
-    IfTabActive
+    IfTabActive,
+    SmartDashboardComponent
   ],
   imports: [
     BrowserModule,
@@ -80,10 +80,8 @@ import { IfTabActive } from './directives/if-tab-active.directive';
       }
     }),
     ToastaModule.forRoot(),
-    MaterialModule,
     ClarityModule,    
-    FusionChartsModule,
-    Ng2GoogleChartsModule
+    FusionChartsModule
   ],
   providers: [
     { provide: 'BASE_URL', useFactory: getBaseUrl },

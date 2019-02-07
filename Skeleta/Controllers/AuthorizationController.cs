@@ -41,11 +41,11 @@ namespace Skeleta.Controllers
 
 		[HttpPost("~/connect/token")]
 		[Produces("application/json")]
-		public async Task<IActionResult> Exchange(OpenIdConnectRequest request)
+		public async Task<IActionResult> Exchange(OpenIdConnectRequest oIdRequest)
 		{
-			if (request.IsPasswordGrantType())
+			if (oIdRequest.IsPasswordGrantType())
 			{
-				var user = await _userManager.FindByEmailAsync(request.Username) ?? await _userManager.FindByNameAsync(request.Username);
+				var user = await _userManager.FindByEmailAsync(oIdRequest.Username) ?? await _userManager.FindByNameAsync(oIdRequest.Username);
 				if (user == null)
 				{
 					return BadRequest(new OpenIdConnectResponse
@@ -67,7 +67,7 @@ namespace Skeleta.Controllers
 
 
 				// Validate the username/password parameters and ensure the account is not locked out.
-				var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, true);
+				var result = await _signInManager.CheckPasswordSignInAsync(user, oIdRequest.Password, true);
 
 				// Ensure the user is not already locked out.
 				if (result.IsLockedOut)
@@ -111,11 +111,11 @@ namespace Skeleta.Controllers
 
 
 				// Create a new authentication ticket.
-				var ticket = await CreateTicketAsync(request, user);
+				var ticket = await CreateTicketAsync(oIdRequest, user);
 
 				return SignIn(ticket.Principal, ticket.Properties, ticket.AuthenticationScheme);
 			}
-			else if (request.IsRefreshTokenGrantType())
+			else if (oIdRequest.IsRefreshTokenGrantType())
 			{
 				// Retrieve the claims principal stored in the refresh token.
 				var info = await HttpContext.AuthenticateAsync(OpenIddictServerDefaults.AuthenticationScheme);
@@ -146,7 +146,7 @@ namespace Skeleta.Controllers
 
 				// Create a new authentication ticket, but reuse the properties stored
 				// in the refresh token, including the scopes originally granted.
-				var ticket = await CreateTicketAsync(request, user);
+				var ticket = await CreateTicketAsync(oIdRequest, user);
 
 				return SignIn(ticket.Principal, ticket.Properties, ticket.AuthenticationScheme);
 			}

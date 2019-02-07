@@ -1,19 +1,4 @@
-<div *ngIf="!removePrebootScreen" [class.prebootShow.app-component]="!isAppLoaded" class="pre-load app-component prebootStep">
-  <div class="pre-loadMessaging">
-    <h1 class="pre-loadh1">
-      Loaded!
-    </h1>
-
-    <p class="pre-load">
-      SKELETA APPLICATION SYSTEM - <span class="appName" style="font-style:italic">Skeleta</span><span class="appName">App</span> &copy; <a href="https://github.com/davidnemeth">David Nemeth</a>
-    </p>
-
-  </div>
-</div>
-
-
-<clr-main-container [@fadeInOut]>
-
+<clr-main-container [@fadeInOut] class="main-container">
   <clr-header *ngIf="isUserLoggedIn">
     <div class="branding">
       <a routerLink="" class="nav-link">
@@ -21,12 +6,10 @@
       </a>
     </div>
     <div class="header-nav" [clr-nav-level]="2">
-      <a routerLink="" [routerLinkActiveOptions]="{ exact: true }" routerLinkActive="active" class="nav-link"><span class="nav-text">Dashboard</span></a>
+      <a routerLink="/dashboard" routerLinkActive="active" class="nav-link"><span class="nav-text">Dashboard</span></a>
+      <a routerLink="/settings" routerLinkActive="active" class="nav-link"><span class="nav-text">Admin</span></a>
     </div>
     <div *ngIf="isUserLoggedIn" class="header-actions">
-      <a class="nav-link nav-text">
-        {{userName | uppercase }}
-      </a>
       <a routerLink="/settings" routerLinkActive="active" class="nav-link nav-icon">
         <clr-icon shape="cog"></clr-icon>
       </a>
@@ -35,7 +18,6 @@
           <clr-icon shape="user" class="is-solid has-badge--success"></clr-icon>
         </button>
         <clr-dropdown-menu *clrIfOpen clrPosition="bottom-right">
-          <label class="dropdown-header">{{userName}}</label>
           <div class="dropdown-divider"></div>
           <a routerLink="" clrDropdownItem>Profile</a>
           <a routerLink="" clrDropdownItem>Admin</a>
@@ -45,11 +27,7 @@
           <a clrDropdownItem href="javascript:;">{{'loginScreen.Logout' | translate}}</a>
         </clr-dropdown-menu>
       </clr-dropdown>
-      <a routerLink="/login" (click)="logout()" class="nav-link nav-text">
-        <clr-icon shape="logout"></clr-icon>
-      </a>
     </div>
   </clr-header>
-
-  <router-outlet></router-outlet>
+    <router-outlet></router-outlet>
 </clr-main-container>
