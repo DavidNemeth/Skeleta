@@ -1,13 +1,16 @@
-import { animate, state, style, transition, trigger } from '@angular/animations';
+import { animate, state, style, transition, trigger, animateChild } from '@angular/animations';
 
 
 
 export const fadeInOut = trigger('fadeInOut', [
-  transition(':enter', [style({ opacity: 0 }), animate('0.4s ease-in', style({ opacity: 1 }))]),
-  transition(':leave', [animate('0.4s 10ms ease-out', style({ opacity: 0 }))])
+  transition(':enter', [style({ opacity: 0 }), animate('0.4s ease-in', style({ opacity: 1 })), animateChild()]),
+  transition(':leave', [animate('0.4s 10ms ease-out', style({ opacity: 0 })), animateChild()])
 ]);
 
-
+export const fadeInOutRoute = trigger('fadeInOutRoute', [
+  transition('* <=> *', [style({ opacity: 0 }), animate('0.4s ease-in', style({ opacity: 1 })), animateChild()]),
+  transition('* <=> *', [animate('0.4s 10ms ease-out', style({ opacity: 0 })), animateChild()])
+]);
 
 export function flyInOut(duration: number = 0.2) {
   return trigger('flyInOut', [

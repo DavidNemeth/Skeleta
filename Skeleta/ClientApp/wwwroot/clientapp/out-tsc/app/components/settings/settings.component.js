@@ -14,31 +14,15 @@ var router_1 = require("@angular/router");
 var animations_1 = require("../../services/animations");
 var account_service_1 = require("../../services/account.service");
 var permission_model_1 = require("../../models/permission.model");
-var angular_1 = require("@clr/angular");
 var SettingsComponent = /** @class */ (function () {
     function SettingsComponent(route, accountService) {
         this.route = route;
         this.accountService = accountService;
-        this.isProfileActivated = true;
-        this.isPreferencesActivated = false;
-        this.isUsersActivated = false;
-        this.isRolesActivated = false;
-        this.profileTab = 'profile';
-        this.preferencesTab = 'preferences';
-        this.usersTab = 'users';
-        this.rolesTab = 'roles';
-        this.managementActive = false;
-        this.cloudActive = false;
-        this.infrastructureActive = false;
-        this.tabsVertical = true;
-        this.flexboxifiedContent = false;
+        this.showContainerClass = true;
     }
     SettingsComponent.prototype.getTabIndex = function () {
-        var tabIndex = this.tabs.tabLinkDirectives.toArray().findIndex(function (x) { return x.active; });
-        alert('tabIndex = ' + tabIndex);
     };
     SettingsComponent.prototype.ngOnInit = function () {
-        this.additionalTabHeads = [];
     };
     SettingsComponent.prototype.arrPush = function (arr) {
         arr.push(arr[arr.length - 1]);
@@ -63,19 +47,15 @@ var SettingsComponent = /** @class */ (function () {
         configurable: true
     });
     __decorate([
-        core_1.Input(),
-        __metadata("design:type", String)
-    ], SettingsComponent.prototype, "class", void 0);
-    __decorate([
-        core_1.ViewChild(angular_1.ClrTabs),
-        __metadata("design:type", angular_1.ClrTabs)
-    ], SettingsComponent.prototype, "tabs", void 0);
+        core_1.HostBinding('class.content-container'),
+        __metadata("design:type", Object)
+    ], SettingsComponent.prototype, "showContainerClass", void 0);
     SettingsComponent = __decorate([
         core_1.Component({
             selector: 'app-settings',
             templateUrl: './settings.component.html',
             styleUrls: ['./settings.component.css'],
-            animations: [animations_1.fadeInOut]
+            animations: [animations_1.fadeInOut, animations_1.fadeInOutRoute]
         }),
         __metadata("design:paramtypes", [router_1.ActivatedRoute, account_service_1.AccountService])
     ], SettingsComponent);

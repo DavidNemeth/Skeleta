@@ -4,22 +4,34 @@
 @import '../src/app/assets/styles/themes/light.css';
 /*@import '../src/app/assets/styles/themes/dark.css';*/
 
+
 /*Side-Nav Changes*/
-.sidenav .sidenav-content > .nav-link.active {
+/*.sidenav .sidenav-content > .nav-link.active {
   box-shadow: inset 3px 0 0 #004a70;
   border-radius: 0 0.125rem 0.125rem 0;
 }
 
-.sidenav .sidenav-content > .nav-link.hover {
+.sidenav .sidenav-content > .nav-link:hover {
   box-shadow: inset 3px 0 0 #004a70;
   border-radius: 0 0.125rem 0.125rem 0;
+}
+
+.sidenav .nav-group .nav-list .nav-link.active {
+  box-shadow: inset 3px 0 0 #004a70;
+  border-radius: 0 0.125rem 0.125rem 0;
+}
+
+.sidenav .nav-group .nav-list .nav-link:hover {
+  box-shadow: inset 3px 0 0 #004a70;
+  border-radius: 0 0.125rem 0.125rem 0;
+}*/
+
+.sidenav .nav-group label, .slider-nav .nav-group label {
+  font-weight: 700;
+  color: #000;
 }
 
 /*DataGrid Changes*/
-.datagrid .datagrid-column, .datagrid .datagrid-cell {
-  line-height: 0.6rem !important;
-}
-
 .datagrid .datagrid-column, .datagrid .datagrid-cell {
   line-height: 0.6rem !important;
 }
@@ -45,4 +57,3 @@ g[class$='creditgroup'] {
 g[class^='raphael-group-'][class$='-creditgroup'] {
   display: none !important;
 }
-

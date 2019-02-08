@@ -6,8 +6,8 @@
       </a>
     </div>
     <div class="header-nav" [clr-nav-level]="2">
-      <a routerLink="/dashboard" routerLinkActive="active" class="nav-link"><span class="nav-text">Dashboard</span></a>
-      <a routerLink="/settings" routerLinkActive="active" class="nav-link"><span class="nav-text">Admin</span></a>
+      <a routerLink="/dashboard" routerLinkActive="active" class="nav-link"><span class="nav-text">{{'pageHeader.Dashboard' | translate}}</span></a>
+      <a routerLink="/admin" routerLinkActive="active" class="nav-link"><span class="nav-text">{{'pageHeader.Admin' | translate}}</span></a>
     </div>
     <div *ngIf="isUserLoggedIn" class="header-actions">
       <a routerLink="/settings" routerLinkActive="active" class="nav-link nav-icon">

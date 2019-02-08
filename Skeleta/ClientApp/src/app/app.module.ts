@@ -42,11 +42,16 @@ import { ThemesComponent } from './components/themes/themes.component';
 import { MachinechartComponent } from './components/charts/machinechart/machinechart.component';
 import { ShiftschartComponent } from './components/charts/shiftschart/shiftschart.component';
 import { SettingsComponent } from './components/settings/settings.component';
-import { UserManagementComponent } from './components/controls/user-management/user-management.component';
 import { SearchBoxComponent } from './components/controls/search-box/search-box.component';
-import { UserInfoComponent } from './components/controls/user-info/user-info.component';
+import { UserInfoComponent } from './components/settings/user-info/user-info.component';
 import { IfTabActive } from './directives/if-tab-active.directive';
 import { SmartDashboardComponent } from './components/dashboard/smart-dashboard/smart-dashboard.component';
+import { SmartSettingsComponent } from './components/settings/smart-settings/smart-settings.component';
+import { AdminComponent } from './components/admin/admin.component';
+import { UserManagementComponent } from './components/admin/user-management/user-management.component';
+import { RoleManagementComponent } from './components/admin/role-management/role-management.component';
+import { SmartAdminComponent } from './components/admin/smart-admin/smart-admin.component';
+import { UserPreferencesComponent } from './components/settings/user-preferences/user-preferences.component';
 
 @NgModule({
   declarations: [
@@ -64,7 +69,12 @@ import { SmartDashboardComponent } from './components/dashboard/smart-dashboard/
     SearchBoxComponent,
     UserInfoComponent,
     IfTabActive,
-    SmartDashboardComponent
+    SmartDashboardComponent,
+    SmartSettingsComponent,
+    AdminComponent,
+    RoleManagementComponent,
+    SmartAdminComponent,
+    UserPreferencesComponent
   ],
   imports: [
     BrowserModule,

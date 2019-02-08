@@ -32,8 +32,6 @@ export class UserManagementComponent implements OnInit, AfterViewInit {
     private accountService: AccountService) { }
 
   ngOnInit() {
-    const gT = (key: string) => this.translationService.getTranslation(key);    
-
     this.loadData();
   }
 

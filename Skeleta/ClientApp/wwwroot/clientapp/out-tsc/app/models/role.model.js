@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Role = /** @class */ (function () {
-    function Role(name, description, permissions) {
+    function Role(name, description, permissions, roles) {
         this.name = name;
         this.description = description;
         this.permissions = permissions;

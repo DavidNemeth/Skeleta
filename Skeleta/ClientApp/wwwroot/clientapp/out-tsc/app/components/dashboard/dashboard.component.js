@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
+var animations_1 = require("../../services/animations");
 var DashboardComponent = /** @class */ (function () {
     function DashboardComponent() {
         this.showContainerClass = true;
@@ -24,7 +25,8 @@ var DashboardComponent = /** @class */ (function () {
         core_1.Component({
             selector: 'app-dashboard',
             templateUrl: './dashboard.component.html',
-            styleUrls: ['./dashboard.component.css']
+            styleUrls: ['./dashboard.component.css'],
+            animations: [animations_1.fadeInOutRoute, animations_1.fadeInOut]
         }),
         __metadata("design:paramtypes", [])
     ], DashboardComponent);

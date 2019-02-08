@@ -38,15 +38,21 @@ var app_component_1 = require("./components/app.component");
 var home_component_1 = require("./components/home/home.component");
 var login_component_1 = require("./components/login/login.component");
 var dashboard_component_1 = require("./components/dashboard/dashboard.component");
-var fusion_component_1 = require("./components/fusion/fusion.component");
+var fusion_component_1 = require("./components/charts/fusion/fusion.component");
 var themes_component_1 = require("./components/themes/themes.component");
 var machinechart_component_1 = require("./components/charts/machinechart/machinechart.component");
 var shiftschart_component_1 = require("./components/charts/shiftschart/shiftschart.component");
 var settings_component_1 = require("./components/settings/settings.component");
-var user_management_component_1 = require("./components/controls/user-management/user-management.component");
 var search_box_component_1 = require("./components/controls/search-box/search-box.component");
-var user_info_component_1 = require("./components/controls/user-info/user-info.component");
+var user_info_component_1 = require("./components/settings/user-info/user-info.component");
 var if_tab_active_directive_1 = require("./directives/if-tab-active.directive");
+var smart_dashboard_component_1 = require("./components/dashboard/smart-dashboard/smart-dashboard.component");
+var smart_settings_component_1 = require("./components/settings/smart-settings/smart-settings.component");
+var admin_component_1 = require("./components/admin/admin.component");
+var user_management_component_1 = require("./components/admin/user-management/user-management.component");
+var role_management_component_1 = require("./components/admin/role-management/role-management.component");
+var smart_admin_component_1 = require("./components/admin/smart-admin/smart-admin.component");
+var user_preferences_component_1 = require("./components/settings/user-preferences/user-preferences.component");
 var AppModule = /** @class */ (function () {
     function AppModule() {
     }
@@ -66,7 +72,13 @@ var AppModule = /** @class */ (function () {
                 user_management_component_1.UserManagementComponent,
                 search_box_component_1.SearchBoxComponent,
                 user_info_component_1.UserInfoComponent,
-                if_tab_active_directive_1.IfTabActive
+                if_tab_active_directive_1.IfTabActive,
+                smart_dashboard_component_1.SmartDashboardComponent,
+                smart_settings_component_1.SmartSettingsComponent,
+                admin_component_1.AdminComponent,
+                role_management_component_1.RoleManagementComponent,
+                smart_admin_component_1.SmartAdminComponent,
+                user_preferences_component_1.UserPreferencesComponent
             ],
             imports: [
                 platform_browser_1.BrowserModule,

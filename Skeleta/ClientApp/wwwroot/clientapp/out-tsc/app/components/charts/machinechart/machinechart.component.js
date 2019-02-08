@@ -417,7 +417,8 @@ var data = {
 };
 var MachinechartComponent = /** @class */ (function () {
     function MachinechartComponent() {
-        this.height = 300;
+        this.width = "100%";
+        this.height = 400;
         this.type = 'gantt';
         this.dataFormat = 'json';
         this.dataSource = data;

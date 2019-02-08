@@ -1,74 +1,28 @@
-<div [@fadeInOut] class="content-container">
-  <div class="content-area" [ngClass]=" contentAreaFlexboxified ? 'flexboxified' : '' ">
-    <h3>
-      <clr-icon shape="cog" size="26"></clr-icon>      
-        Settings           
-    </h3>
-    <div class="toggle-switch sub-title">
-      <div class="btn-group btn-outline-primary btn-sm">
-        <button class="btn" (click)="arrPush(this.additionalTabHeads)">add</button>
-        <button class="btn" (click)="arrPop(this.additionalTabHeads)">remove</button>
-      </div>      
-    </div>
-    <clr-tabs [ngClass]="{ 'vertical-tabs' : this.tabsVertical, 'scrollable' : this.flexboxifiedContent }">
-      <clr-tab vscIfTabActive [activeClass]="'activeTab'">     
-        <button clrTabLink href="#smartboard" [routerLink]="[]" fragment="users" id="smartboard">Smart Board</button>
-        <clr-tab-content *clrIfActive>
-          <div [@fadeInOut] class="clr-col-sm-12">
-            <app-machinechart></app-machinechart>
-          </div>
-        </clr-tab-content>
-      </clr-tab>
-      <clr-tab vscIfTabActive [activeClass]="'activeTab'">
-        <button clrTabLink href="#profile" [routerLink]="[]" fragment="profile" id="profile">{{'settings.tab.Profile' | translate}}</button>
-        <clr-tab-content [@fadeInOut] *clrIfActive>
-          <app-user-info></app-user-info>
-        </clr-tab-content>
-      </clr-tab>
-      <clr-tab vscIfTabActive [activeClass]="'activeTab'">
-        <button clrTabLink href="#preferences" [routerLink]="[]" fragment="preferences" id="preferences">{{'settings.tab.Preferences' | translate}}</button>
-        <clr-tab-content [@fadeInOut] *clrIfActive>
-          TODO : Preferences Tab
-        </clr-tab-content>
-      </clr-tab>
-      <clr-tab vscIfTabActive [activeClass]="'activeTab'">
-        <button clrTabLink href="#users"  [routerLink]="[]" fragment="users" id="users">{{'settings.tab.Users' | translate}}</button>
-        <clr-tab-content *clrIfActive>
-          <div class="nav-group-content">
 
-            <app-user-management gridTitle="Users"></app-user-management>
 
-          </div>
-        </clr-tab-content>
-      </clr-tab>
-      <clr-tab vscIfTabActive [activeClass]="'activeTab'">
-        <button clrTabLink href="#roles" [routerLink]="[]" fragment="roles" id="roles">{{'settings.tab.Roles' | translate}}</button>
-        <clr-tab-content [@fadeInOut] *clrIfActive>
-          <div class="clr-col-sm-12">
-            TODO : ROLES
-          </div>
-        </clr-tab-content>
-      </clr-tab>
-      <clr-tab vscIfTabActive [activeClass]="'activeTab'" *ngFor="let n of this.additionalTabHeads">
-        <button clrTabLink>vertical tab {{ n }}</button>
-      </clr-tab>
-    </clr-tabs>    
-  </div>
-
-  <!--<nav class="sidenav" [clr-nav-level]="1">
-    <section class="sidenav-content">
-      <a routerLink="/settings" [routerLinkActiveOptions]="{ exact: true }" routerLinkActive="active" class="nav-link nav-title">
-        Settings
-      </a>
-      <section class="nav-group">
-        <label>Charts</label>
-        <ul class="nav-list">
-          <li [hidden]="!canViewUsers">
-            <a id="usersTab" [routerLink]="[]" fragment="users" onclick="activateTab('infrastructureActive')" href="#users" data-toggle="tab"><i aria-hidden="true"></i> {{'settings.tab.Users' | translate}}</a>
-          </li>
-        </ul>
-      </section>
-    </section>
-  </nav>-->
+<div [@fadeInOutRoute]="o.isActivated ? o.activatedRoute : ''" class="content-area">
+  <router-outlet #o="outlet"></router-outlet>
 </div>
-
+<nav [@fadeInOut] class="sidenav" [clr-nav-level]="1">
+  <section class="sidenav-content">
+    <a routerLink="/settings" [routerLinkActiveOptions]="{ exact: true }" routerLinkActive="active" class="nav-link">
+      {{'settings.sidenav.Settings' | translate}}
+    </a>
+    <section class="nav-group collapsible">
+      <input id="userSettings" type="checkbox">
+      <label for="userSettings">{{'settings.sidenav.General' | translate}}</label>
+      <ul class="nav-list">
+        <li>
+          <a [routerLink]="['profile']" routerLinkActive="active" class="nav-link">
+            {{'settings.sidenav.Profile' | translate}}
+          </a>
+        </li>
+        <li>
+          <a [routerLink]="['preferences']" routerLinkActive="active" class="nav-link">
+            {{'settings.sidenav.Preferences' | translate}}
+          </a>
+        </li>
+      </ul>
+    </section>
+  </section>
+</nav>
