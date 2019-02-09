@@ -1,5 +1,5 @@
 <clr-main-container [@fadeInOut] class="main-container">
-  <clr-header *ngIf="isUserLoggedIn">
+  <clr-header [@fadeInOut] *ngIf="isUserLoggedIn">
     <div class="branding">
       <a routerLink="" class="nav-link">
         <img src="../../assets/logos/output-onlinepngtools (2).png" />
@@ -9,22 +9,25 @@
       <a routerLink="/dashboard" routerLinkActive="active" class="nav-link"><span class="nav-text">{{'pageHeader.Dashboard' | translate}}</span></a>
       <a routerLink="/admin" routerLinkActive="active" class="nav-link"><span class="nav-text">{{'pageHeader.Admin' | translate}}</span></a>
     </div>
-    <div *ngIf="isUserLoggedIn" class="header-actions">
-      <a routerLink="/settings" routerLinkActive="active" class="nav-link nav-icon">
-        <clr-icon shape="cog"></clr-icon>
-      </a>
+    <div class="header-actions">      
       <clr-dropdown>
         <button class="nav-icon" clrDropdownTrigger>
           <clr-icon shape="user" class="is-solid has-badge--success"></clr-icon>
         </button>
         <clr-dropdown-menu *clrIfOpen clrPosition="bottom-right">
+          <a [routerLink]="['settings/profile']" clrDropdownItem>
+            <clr-icon shape="user"></clr-icon>
+            {{'settings.sidenav.Profile' | translate}}
+          </a>
+          <a [routerLink]="['settings/preferences']" clrDropdownItem>
+            <clr-icon shape="view-list"></clr-icon>
+            {{'settings.sidenav.Preferences' | translate}}
+          </a>          
           <div class="dropdown-divider"></div>
-          <a routerLink="" clrDropdownItem>Profile</a>
-          <a routerLink="" clrDropdownItem>Admin</a>
-          <a routerLink="" clrDropdownItem>Settings</a>
-          <a routerLink="" clrDropdownItem>Tasks</a>
-          <div class="dropdown-divider"></div>
-          <a clrDropdownItem href="javascript:;">{{'loginScreen.Logout' | translate}}</a>
+          <a clrDropdownItem (click)="logout()" href="javascript:;">
+            <clr-icon shape="lock"></clr-icon>
+            {{'loginScreen.Logout' | translate}}
+          </a>
         </clr-dropdown-menu>
       </clr-dropdown>
     </div>

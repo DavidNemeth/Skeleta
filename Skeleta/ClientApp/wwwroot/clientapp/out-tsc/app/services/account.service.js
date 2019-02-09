@@ -37,18 +37,18 @@ var AccountService = /** @class */ (function () {
     AccountService.prototype.getUsersAndRoles = function (page, pageSize) {
         return rxjs_1.forkJoin(this.accountEndpoint.getUsersEndpoint(page, pageSize), this.accountEndpoint.getRolesEndpoint());
     };
-    //updateUser(user: UserEdit) {
-    //	if (user.id) {
-    //		return this.accountEndpoint.getUpdateUserEndpoint(user, user.id);
-    //	}
-    //	else {
-    //		return this.accountEndpoint.getUserByUserNameEndpoint<User>(user.userName).pipe<User>(
-    //			mergeMap(foundUser => {
-    //				user.id = foundUser.id;
-    //				return this.accountEndpoint.getUpdateUserEndpoint(user, user.id);
-    //			}));
-    //	}
-    //}
+    AccountService.prototype.updateUser = function (user) {
+        var _this = this;
+        if (user.id) {
+            return this.accountEndpoint.getUpdateUserEndpoint(user, user.id);
+        }
+        else {
+            return this.accountEndpoint.getUserByUserNameEndpoint(user.userName).pipe(operators_1.mergeMap(function (foundUser) {
+                user.id = foundUser.id;
+                return _this.accountEndpoint.getUpdateUserEndpoint(user, user.id);
+            }));
+        }
+    };
     AccountService.prototype.newUser = function (user) {
         return this.accountEndpoint.getNewUserEndpoint(user);
     };

@@ -57,3 +57,12 @@ g[class$='creditgroup'] {
 g[class^='raphael-group-'][class$='-creditgroup'] {
   display: none !important;
 }
+
+/*custom classes*/
+.formwrapper {
+  padding-left: 36px;
+  padding-top: 6px;
+  padding-bottom: 96px;
+  max-width: 900px;
+  width: 100%;
+}

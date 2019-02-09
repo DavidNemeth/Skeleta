@@ -15,6 +15,7 @@ var auth_service_1 = require("../../services/auth.service");
 var configuration_service_1 = require("../../services/configuration.service");
 var utilities_1 = require("../../services/utilities");
 var user_login_model_1 = require("../../models/user-login.model");
+var animations_1 = require("../../services/animations");
 var LoginComponent = /** @class */ (function () {
     function LoginComponent(alertService, authService, configurations) {
         this.alertService = alertService;
@@ -99,7 +100,8 @@ var LoginComponent = /** @class */ (function () {
         core_1.Component({
             selector: 'app-login',
             templateUrl: './login.component.html',
-            styleUrls: ['./login.component.css']
+            styleUrls: ['./login.component.css'],
+            animations: [animations_1.fadeInOut]
         }),
         __metadata("design:paramtypes", [alert_service_1.AlertService, auth_service_1.AuthService, configuration_service_1.ConfigurationService])
     ], LoginComponent);

@@ -210,7 +210,6 @@ namespace Skeleta
 				c.DocumentTitle = "Swagger UI - Skeleta Application";
 				c.SwaggerEndpoint("/swagger/v1/swagger.json", "Skeleta API V1");
 			});
-
 			app.UseMvc(routes =>
 			{
 				routes.MapRoute(

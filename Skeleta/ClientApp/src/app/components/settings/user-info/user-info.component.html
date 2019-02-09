@@ -1,3 +1,39 @@
-<p>
-  user-info works!
-</p>
+
+<div class="formwrapper">
+  <form clrForm *ngIf="user | async; else loading" [formGroup]="userForm" (ngSubmit)="save()">
+    <clr-input-container>
+      <label>{{'users.editor.JobTitle' | translate}}</label>
+      <input clrInput type="text" formControlName="jobTitle" name="jobTitle" />
+      <clr-control-error>Error message that appears after focus is lost and control is invalid</clr-control-error>
+    </clr-input-container>
+    <clr-input-container>
+      <label>{{'users.editor.UserName' | translate}}</label>
+      <input clrInput type="text" formControlName="userName" name="userName" />
+    </clr-input-container>
+    <clr-input-container>
+      <label>{{'users.editor.FullName' | translate}}</label>
+      <input clrInput type="text" formControlName="fullName" name="fullName" />
+    </clr-input-container>
+    <clr-input-container>
+      <label>{{'users.editor.Email' | translate}}</label>
+      <input clrInput type="text" formControlName="email" name="email" />
+    </clr-input-container>
+    <clr-input-container>
+      <label>{{'users.editor.PhoneNumber' | translate}}</label>
+      <input clrInput type="text" formControlName="phoneNumber" name="phoneNumber" />
+    </clr-input-container>
+    <clr-input-container>
+      <label>{{'users.editor.Roles' | translate}}</label>
+      <input clrInput class="label-info" type="text" formControlName="roles" name="roles" />
+    </clr-input-container>
+    <button style="margin: 1.25rem 0rem 0.25rem 0;" class="btn btn-primary" type="submit">Save</button>
+    <button style="margin: 1.25rem 0rem 0.25rem 0;" class="btn btn-link" (click)="resetForm()" type="button">Reset</button>
+  </form>
+
+  <ng-template #loading>
+    Loading Profile...
+  </ng-template>
+
+  <span class="label label-info" *ngFor="let role of allRoles">{{role.name}}</span>
+
+</div>

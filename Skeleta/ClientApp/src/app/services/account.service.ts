@@ -1,4 +1,4 @@
-﻿import { Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Router, NavigationExtras } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subject, forkJoin } from 'rxjs';
@@ -38,7 +38,7 @@ export class AccountService {
 
 
 	getUser(userId?: string) {
-		return this.accountEndpoint.getUserEndpoint<User>(userId);
+      return this.accountEndpoint.getUserEndpoint<User>(userId);
 	}
 
 	getUserAndRoles(userId?: string) {
@@ -61,18 +61,18 @@ export class AccountService {
 	}
 
 
-	//updateUser(user: UserEdit) {
-	//	if (user.id) {
-	//		return this.accountEndpoint.getUpdateUserEndpoint(user, user.id);
-	//	}
-	//	else {
-	//		return this.accountEndpoint.getUserByUserNameEndpoint<User>(user.userName).pipe<User>(
-	//			mergeMap(foundUser => {
-	//				user.id = foundUser.id;
-	//				return this.accountEndpoint.getUpdateUserEndpoint(user, user.id);
-	//			}));
-	//	}
-	//}
+	updateUser(user: UserEdit) {
+		if (user.id) {
+			return this.accountEndpoint.getUpdateUserEndpoint(user, user.id);
+		}
+		else {
+			return this.accountEndpoint.getUserByUserNameEndpoint<User>(user.userName).pipe<User>(
+				mergeMap(foundUser => {
+					user.id = foundUser.id;
+					return this.accountEndpoint.getUpdateUserEndpoint(user, user.id);
+				}));
+		}
+	}
 
 
 	newUser(user: UserEdit) {
