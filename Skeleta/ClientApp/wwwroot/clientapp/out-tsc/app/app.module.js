@@ -14,6 +14,8 @@ var http_1 = require("@angular/common/http");
 var core_2 = require("@ngx-translate/core");
 var ngx_toasta_1 = require("ngx-toasta");
 var angular_1 = require("@clr/angular");
+var ng_select_1 = require("@ng-select/ng-select");
+var equal_validator_directive_1 = require("./directives/equal-validator.directive");
 var angular_fusioncharts_1 = require("angular-fusioncharts");
 var core_3 = require("fusioncharts/core");
 var column2d_1 = require("fusioncharts/viz/column2d");
@@ -78,13 +80,15 @@ var AppModule = /** @class */ (function () {
                 admin_component_1.AdminComponent,
                 role_management_component_1.RoleManagementComponent,
                 smart_admin_component_1.SmartAdminComponent,
-                user_preferences_component_1.UserPreferencesComponent
+                user_preferences_component_1.UserPreferencesComponent,
+                equal_validator_directive_1.EqualValidator
             ],
             imports: [
                 platform_browser_1.BrowserModule,
                 animations_1.BrowserAnimationsModule,
                 http_1.HttpClientModule,
                 forms_1.FormsModule,
+                ng_select_1.NgSelectModule,
                 forms_1.ReactiveFormsModule,
                 app_routing_module_1.AppRoutingModule,
                 core_2.TranslateModule.forRoot({

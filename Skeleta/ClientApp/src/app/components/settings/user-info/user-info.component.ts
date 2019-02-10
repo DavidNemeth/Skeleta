@@ -64,7 +64,9 @@ export class UserInfoComponent implements OnInit {
       'roles': [{ value: this.userInfo.roles, disabled: !this.canAssignRoles }, Validators.required]
     });
 
-    this.accountService.getRoles().subscribe(roles => this.allRoles = roles);
+    if (this.canViewAllRoles){
+       this.accountService.getRoles().subscribe(roles => this.allRoles = roles);
+      }
 
   }
 
