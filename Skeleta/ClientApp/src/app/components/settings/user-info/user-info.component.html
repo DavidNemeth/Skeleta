@@ -1,39 +1,128 @@
 
-<div class="formwrapper">
-  <form clrForm *ngIf="user | async; else loading" [formGroup]="userForm" (ngSubmit)="save()">
-    <clr-input-container>
-      <label>{{'users.editor.JobTitle' | translate}}</label>
-      <input clrInput type="text" formControlName="jobTitle" name="jobTitle" />
-      <clr-control-error>Error message that appears after focus is lost and control is invalid</clr-control-error>
-    </clr-input-container>
-    <clr-input-container>
-      <label>{{'users.editor.UserName' | translate}}</label>
-      <input clrInput type="text" formControlName="userName" name="userName" />
-    </clr-input-container>
-    <clr-input-container>
-      <label>{{'users.editor.FullName' | translate}}</label>
-      <input clrInput type="text" formControlName="fullName" name="fullName" />
-    </clr-input-container>
-    <clr-input-container>
-      <label>{{'users.editor.Email' | translate}}</label>
-      <input clrInput type="text" formControlName="email" name="email" />
-    </clr-input-container>
-    <clr-input-container>
-      <label>{{'users.editor.PhoneNumber' | translate}}</label>
-      <input clrInput type="text" formControlName="phoneNumber" name="phoneNumber" />
-    </clr-input-container>
-    <clr-input-container>
-      <label>{{'users.editor.Roles' | translate}}</label>
-      <input clrInput class="label-info" type="text" formControlName="roles" name="roles" />
-    </clr-input-container>
-    <button style="margin: 1.25rem 0rem 0.25rem 0;" class="btn btn-primary" type="submit">Save</button>
-    <button style="margin: 1.25rem 0rem 0.25rem 0;" class="btn btn-link" (click)="resetForm()" type="button">Reset</button>
-  </form>
 
-  <ng-template #loading>
-    Loading Profile...
-  </ng-template>
 
-  <span class="label label-info" *ngFor="let role of allRoles">{{role.name}}</span>
 
+
+
+
+
+
+
+
+
+
+
+
+<div class="clr-row">
+  <div class="clr-col-2">
+
+  </div>
+  <div class="clr-col-8">
+    <div class="card">
+      <div class="card-img">
+        <img src="../../../../assets/images/teszt.jpg" />
+      </div>
+      <div class="card-block">
+        <h4 class="card-title">{{userInfo.fullName}} ({{userInfo.userName}})</h4>
+        <p class="card-text">
+          {{userInfo.email}} ({{userInfo.phoneNumber}})
+        </p>
+      </div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item"><span class="label label-info" *ngFor="let role of userInfo.roles">{{role}}</span></li>
+      </ul>
+      <div class="card-footer">
+        <button class="btn btn-link" type="button" (click)="editUser()">Edit</button>
+      </div>
+    </div>
+  </div>
+  <div class="clr-col-2">
+
+  </div>
 </div>
+
+
+
+
+
+<!--edit TODO: child component reuse-->
+<clr-modal [(clrModalOpen)]="isEditMode" [clrModalSize]="'lg'">
+  <div class="modal-header">
+    <button aria-label="Close" class="close" (click)="cancel()" type="button">
+      <clr-icon aria-hidden="true" shape="close"></clr-icon>
+    </button>
+    <h3 class="modal-title">Edit Profile</h3>
+  </div>
+  <div class="modal-body">
+    <!--*ngIf="user | async; let user; else loading"-->
+    <form clrForm [formGroup]="userForm" (ngSubmit)="save()">      
+
+      <clr-input-container>
+        <label>{{'users.editor.JobTitle' | translate}}</label>
+        <input clrInput type="text" formControlName="jobTitle" name="jobTitle" />
+        <clr-control-error>Error message that appears after focus is lost and control is invalid</clr-control-error>
+      </clr-input-container>
+
+      <clr-input-container>
+        <label>{{'users.editor.FullName' | translate}}</label>
+        <input clrInput type="text" formControlName="fullName" name="fullName" />
+      </clr-input-container>
+
+      <clr-input-container>
+        <label>{{'users.editor.Email' | translate}}</label>
+        <input clrInput type="email" formControlName="email" name="email" />
+      </clr-input-container>
+
+      <clr-input-container>
+        <label>{{'users.editor.PhoneNumber' | translate}}</label>
+        <input clrInput type="text" formControlName="phoneNumber" name="phoneNumber" />
+      </clr-input-container>
+
+
+      <div *ngIf="isChangePassword">
+        <clr-input-container>
+          <label>{{'users.editor.Password' | translate}}</label>
+          <input clrInput type="password" formControlName="currentPassword" name="currentPassword" placeholder="Enter current password" />
+        </clr-input-container>
+
+        <clr-input-container>
+          <label>{{'users.editor.NewPassword' | translate}}</label>
+          <input clrInput type="password" formControlName="newPassword" name="newPassword" placeholder="Enter new password" />
+        </clr-input-container>
+
+        <clr-input-container>
+          <label>{{'users.editor.ConfirmPassword' | translate}}</label>
+          <input clrInput type="password" formControlName="confirmPassword" name="confirmPassword" placeholder="Confirm new password" />
+        </clr-input-container>
+      </div>
+
+      <button *ngIf="!isChangePassword" class="btn btn-link" type="button" (click)="changePassword()">{{'users.editor.ChangePassword' | translate}}</button>
+
+      <clr-select-container>
+        <label>{{'users.editor.Roles' | translate}}</label>
+        <!--<ng-select clrInput formControlName="roles" name="roles"
+                   [items]="allRoles"
+                   [addTag]="true"
+                   bindLabel="name"
+                   bindValue="name"
+                   [multiple]="true"
+                   [hideSelected]="true">
+        </ng-select>-->
+        <select multiple clrSelect formControlName="roles" name="roles">
+          <option *ngFor="let role of allRoles" [value]="role.name">{{role.name}}</option>
+        </select>
+      </clr-select-container>
+      <div class="modal-footer">
+        <button [clrLoading]="submitBtnState" type="submit" [disabled]="!userForm.valid" class="btn btn-success">Save</button>
+      </div>
+    </form>
+    <!--<ng-template  #loading>
+      <span class="spinner spinner-inline">
+        Loading...
+      </span>
+      <span>
+        Loading Profile...
+      </span>
+    </ng-template>-->
+  </div>
+</clr-modal>

@@ -1,5 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
-
+/*@import "~@ng-select/ng-select/themes/material.theme.css";*/
 @import '../node_modules/@clr/icons/clr-icons.min.css';
 @import '../src/app/assets/styles/themes/light.css';
 /*@import '../src/app/assets/styles/themes/dark.css';*/
@@ -60,9 +60,26 @@ g[class^='raphael-group-'][class$='-creditgroup'] {
 
 /*custom classes*/
 .formwrapper {
-  padding-left: 36px;
-  padding-top: 6px;
-  padding-bottom: 96px;
-  max-width: 900px;
-  width: 100%;
+  max-width: 600px;
 }
+
+
+.ng-value  {
+  background: #e1f1f6;
+  color: #004a70;
+  border: 1px solid #49afd9;
+  font-size: 0.458333rem;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  line-height: 0.458333rem;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 0.5rem 1px;
+  border-radius: 0.5rem;
+  height: 0.875rem;
+  margin: 0 0.25rem 0 0;
+  white-space: nowrap;
+  color: #565656;
+}
+

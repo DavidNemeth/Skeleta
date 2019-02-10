@@ -8,6 +8,9 @@ import { HttpClientModule } from '@angular/common/http';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { ToastaModule } from 'ngx-toasta';
 import { ClarityModule } from "@clr/angular";
+import { NgSelectModule } from '@ng-select/ng-select';
+
+import { EqualValidator } from './directives/equal-validator.directive';
 
 import { FusionChartsModule } from 'angular-fusioncharts';
 import FusionCharts from 'fusioncharts/core';
@@ -74,13 +77,15 @@ import { UserPreferencesComponent } from './components/settings/user-preferences
     AdminComponent,
     RoleManagementComponent,
     SmartAdminComponent,
-    UserPreferencesComponent
+    UserPreferencesComponent,
+    EqualValidator
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
     FormsModule,
+    NgSelectModule,
     ReactiveFormsModule,
     AppRoutingModule,
     TranslateModule.forRoot({
