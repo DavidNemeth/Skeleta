@@ -1,0 +1,66 @@
+<clr-modal [(clrModalOpen)]="isEditMode" [clrModalSize]="'lg'">
+  <div class="modal-header">
+    <button aria-label="Close" class="close" (click)="cancel()" type="button">
+      <clr-icon aria-hidden="true" shape="close"></clr-icon>
+    </button>
+    <h3 class="modal-title">Edit Profile</h3>
+  </div>
+  <div class="modal-body">
+    <!--*ngIf="user | async; let user; else loading"-->
+    <form clrForm [formGroup]="userForm" (ngSubmit)="save()">
+
+      <clr-input-container>
+        <label>{{'users.editor.JobTitle' | translate}}</label>
+        <input clrInput type="text" formControlName="jobTitle" name="jobTitle" />
+        <clr-control-error>Error message that appears after focus is lost and control is invalid</clr-control-error>
+      </clr-input-container>
+
+      <clr-input-container>
+        <label>{{'users.editor.FullName' | translate}}</label>
+        <input clrInput type="text" formControlName="fullName" name="fullName" />
+      </clr-input-container>
+
+      <clr-input-container>
+        <label>{{'users.editor.Email' | translate}}</label>
+        <input clrInput type="email" formControlName="email" name="email" />
+      </clr-input-container>
+
+      <clr-input-container>
+        <label>{{'users.editor.PhoneNumber' | translate}}</label>
+        <input clrInput type="text" formControlName="phoneNumber" name="phoneNumber" />
+      </clr-input-container>
+
+
+      <div *ngIf="isChangePassword">
+        <clr-input-container>
+          <label>{{'users.editor.Password' | translate}}</label>
+          <input clrInput type="password" formControlName="currentPassword" name="currentPassword" placeholder="Enter current password" />
+        </clr-input-container>
+
+        <clr-input-container>
+          <label>{{'users.editor.NewPassword' | translate}}</label>
+          <input clrInput type="password" formControlName="newPassword" name="newPassword" placeholder="Enter new password" />
+        </clr-input-container>
+
+        <clr-input-container>
+          <label>{{'users.editor.ConfirmPassword' | translate}}</label>
+          <input clrInput type="password" formControlName="confirmPassword" name="confirmPassword" placeholder="Confirm new password" />
+        </clr-input-container>
+      </div>
+
+      <button *ngIf="!isChangePassword" class="btn btn-link" type="button" (click)="changePassword()">{{'users.editor.ChangePassword' | translate}}</button>
+
+      <clr-select-container>
+        <label>{{'users.editor.Roles' | translate}}</label>
+       
+        <select multiple clrSelect formControlName="roles" name="roles">
+          <option *ngFor="let role of allRoles" [value]="role.name">{{role.name}}</option>
+        </select>
+      </clr-select-container>
+      <div class="modal-footer">
+        <button [clrLoading]="submitBtnState" type="submit" [disabled]="!userForm.valid" class="btn btn-success">Save</button>
+      </div>
+    </form>
+  
+  </div>
+</clr-modal>

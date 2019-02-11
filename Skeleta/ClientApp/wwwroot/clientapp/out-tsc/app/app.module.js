@@ -55,6 +55,7 @@ var user_management_component_1 = require("./components/admin/user-management/us
 var role_management_component_1 = require("./components/admin/role-management/role-management.component");
 var smart_admin_component_1 = require("./components/admin/smart-admin/smart-admin.component");
 var user_preferences_component_1 = require("./components/settings/user-preferences/user-preferences.component");
+var user_edit_component_1 = require("./components/controls/user-edit/user-edit.component");
 var AppModule = /** @class */ (function () {
     function AppModule() {
     }
@@ -81,7 +82,8 @@ var AppModule = /** @class */ (function () {
                 role_management_component_1.RoleManagementComponent,
                 smart_admin_component_1.SmartAdminComponent,
                 user_preferences_component_1.UserPreferencesComponent,
-                equal_validator_directive_1.EqualValidator
+                equal_validator_directive_1.EqualValidator,
+                user_edit_component_1.UserEditComponent
             ],
             imports: [
                 platform_browser_1.BrowserModule,

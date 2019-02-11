@@ -1,59 +1,40 @@
-import { Component, OnInit, AfterViewInit, Input } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { Observable } from 'rxjs';
 import { User } from '../../../models/user.model';
+import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { AccountService } from '../../../services/account.service';
-import { MessageSeverity, AlertService } from '../../../services/alert.service';
-import { Utilities } from '../../../services/utilities';
-import { Role } from '../../../models/role.model';
-import { Permission } from '../../../models/permission.model';
-import { FormGroup, FormControl, Validators, FormBuilder } from "@angular/forms";
-import { Observable, of } from 'rxjs';
-import { tap } from 'rxjs/operators';
-import { UserEdit } from '../../../models/user-edit.model';
 import { ClrLoadingState } from '@clr/angular';
-import { EqualValidator } from '../../../directives/equal-validator.directive';
+import { UserEdit } from '../../../models/user-edit.model';
+import { Permission } from '../../../models/permission.model';
 
 @Component({
-  selector: 'app-user-info',
-  templateUrl: './user-info.component.html',
-  styleUrls: ['./user-info.component.css']
+  selector: 'app-user-edit',
+  templateUrl: './user-edit.component.html',
+  styleUrls: ['./user-edit.component.css']
 })
-export class UserInfoComponent implements OnInit {
+export class UserEditComponent implements OnInit {
   submitBtnState: ClrLoadingState = ClrLoadingState.DEFAULT;
 
-  private isEditMode = false;
   private isNewUser = false;
-  private isSaving = false;
-  private isChangePassword = false;
-  private editingUserName: string;
-  private uniqueId: string = Utilities.uniqueId();
+  private isEditingSelf = false;
 
   user: Observable<User>;
-  private allRoles: Role[] = [];
-  selectedRoles: Role[];
-  private userEdit: UserEdit;
-  userForm: FormGroup;
-  public formResetToggle = true;
 
+  userForm: FormGroup;
   public changesSavedCallback: () => void;
   public changesFailedCallback: () => void;
   public changesCancelledCallback: () => void;
-
   userInfo: User = new User();
-
-  @Input()
-  isViewOnly: boolean;
+  userEdit: UserEdit;
+  isEditMode: boolean;
+  isChangePassword: boolean;
 
   @Input()
   isGeneralEditor = false;
 
-
-  constructor(private formBuilder: FormBuilder, private alertService: AlertService, private accountService: AccountService) {
-  }
+  constructor(private formBuilder: FormBuilder, private accountService: AccountService) { }
 
   ngOnInit() {
-
-    this.userInfo = this.accountService.currentUser;
-
     this.userForm = this.formBuilder.group({
       'jobTitle': [this.userInfo.jobTitle],
       'fullName': [this.userInfo.fullName, Validators.required],
@@ -62,17 +43,9 @@ export class UserInfoComponent implements OnInit {
       'roles': [{ value: this.userInfo.roles, disabled: !this.canAssignRoles }, Validators.required]
     });
 
-    if (this.canViewAllRoles){
-       this.accountService.getRoles().subscribe(roles => this.allRoles = roles);
-      }
-
   }
 
-  editUser() {
-    this.isEditMode = true;
-    this.user = this.accountService.getUser().pipe(
-      tap(user => this.userForm.patchValue(user)));   
-  }
+
 
   save() {
     this.submitBtnState = ClrLoadingState.LOADING;
@@ -90,7 +63,13 @@ export class UserInfoComponent implements OnInit {
       this.submitBtnState = ClrLoadingState.ERROR;
   }
 
+  private saveFailedHelper(error: any): void {
+    throw new Error("Method not implemented.");
+  }
 
+  private saveSuccessHelper(): void {
+    throw new Error("Method not implemented.");
+  }
 
   cancel() {
     this.isEditMode = false;
@@ -102,28 +81,11 @@ export class UserInfoComponent implements OnInit {
     this.userForm.patchValue(this.userInfo);
   }
 
-  changePassword() {
+  private changePassword() {
     this.userForm.addControl('currentPassword', new FormControl('', [Validators.required, Validators.minLength(6)]));
     this.userForm.addControl('newPassword', new FormControl('', [Validators.required, Validators.minLength(6)]));
     this.userForm.addControl('confirmPassword', new FormControl('', [Validators.required, Validators.minLength(6)]));
     this.isChangePassword = true;
-  }
-
-  private saveFailedHelper(error: any): void {
-    this.submitBtnState = ClrLoadingState.ERROR;
-  }
-
-  private saveSuccessHelper(): void {
-    this.submitBtnState = ClrLoadingState.SUCCESS;
-    this.isEditMode = false;
-    this.isChangePassword = false;
-    Object.assign(this.userInfo, this.userEdit);
-    this.accountService.refreshLoggedInUser().subscribe();
-  }
-
-
-  private getRoleByName(name: string) {
-    return this.allRoles.find((r) => r.name == name);
   }
 
   get canViewAllRoles() {

@@ -29,7 +29,6 @@ var UserInfoComponent = /** @class */ (function () {
         this.isNewUser = false;
         this.isSaving = false;
         this.isChangePassword = false;
-        this.isEditingSelf = false;
         this.uniqueId = utilities_1.Utilities.uniqueId();
         this.allRoles = [];
         this.formResetToggle = true;
@@ -46,7 +45,9 @@ var UserInfoComponent = /** @class */ (function () {
             'phoneNumber': [this.userInfo.phoneNumber, forms_1.Validators.required],
             'roles': [{ value: this.userInfo.roles, disabled: !this.canAssignRoles }, forms_1.Validators.required]
         });
-        this.accountService.getRoles().subscribe(function (roles) { return _this.allRoles = roles; });
+        if (this.canViewAllRoles) {
+            this.accountService.getRoles().subscribe(function (roles) { return _this.allRoles = roles; });
+        }
     };
     UserInfoComponent.prototype.editUser = function () {
         var _this = this;
