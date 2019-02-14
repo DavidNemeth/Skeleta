@@ -24,48 +24,29 @@ var UserManagementComponent = /** @class */ (function () {
         this.columns = [];
         this.users = [];
         this.usersCache = [];
-        this.rowSelected = [];
+        this.selected = [];
         this.allRoles = [];
     }
     UserManagementComponent.prototype.ngOnInit = function () {
         this.loadData();
     };
     UserManagementComponent.prototype.ngAfterViewInit = function () {
-        //this.userEditor.changesSavedCallback = () => {
-        //  this.addNewUserToList();
-        //};
-        //this.userEditor.changesCancelledCallback = () => {
-        //  this.editedUser = null;
-        //  this.sourceUser = null;
-        //};
     };
-    //TODO
-    UserManagementComponent.prototype.addNewUserToList = function () {
-        //if (this.sourceUser) {
-        //  Object.assign(this.sourceUser, this.editedUser);
-        //  let sourceIndex = this.rowsCache.indexOf(this.sourceUser, 0);
-        //  if (sourceIndex > -1)
-        //    Utilities.moveArrayItem(this.rowsCache, sourceIndex, 0);
-        //  sourceIndex = this.rows.indexOf(this.sourceUser, 0);
-        //  if (sourceIndex > -1)
-        //    Utilities.moveArrayItem(this.rows, sourceIndex, 0);
-        //  this.editedUser = null;
-        //  this.sourceUser = null;
-        //}
-        //else {
-        //  const user = new User();
-        //  Object.assign(user, this.editedUser);
-        //  this.editedUser = null;
-        //  let maxIndex = 0;
-        //  for (const u of this.rowsCache) {
-        //    if ((<any>u).index > maxIndex)
-        //      maxIndex = (<any>u).index;
-        //  }
-        //  (<any>user).index = maxIndex + 1;
-        //  this.rowsCache.splice(0, 0, user);
-        //  this.rows.splice(0, 0, user);
-        //  this.rows = [...this.rows];
-        //}
+    UserManagementComponent.prototype.onAdd = function () {
+        this.action = "Create";
+        this.openModal = !this.openModal;
+    };
+    UserManagementComponent.prototype.onEdit = function () {
+        for (var _i = 0, _a = this.selected; _i < _a.length; _i++) {
+            var user = _a[_i];
+            this.userId = user.id;
+        }
+        this.action = "Update";
+        this.openModal = !this.openModal;
+    };
+    UserManagementComponent.prototype.onExportAll = function () {
+    };
+    UserManagementComponent.prototype.onExportSelected = function () {
     };
     UserManagementComponent.prototype.loadData = function () {
         var _this = this;
@@ -98,39 +79,6 @@ var UserManagementComponent = /** @class */ (function () {
     UserManagementComponent.prototype.onSearchChanged = function (value) {
         this.users = this.usersCache
             .filter(function (r) { return utilities_1.Utilities.searchArray(value, false, r.id, r.userName, r.fullName, r.email, r.phoneNumber, r.jobTitle, r.roles); });
-    };
-    //TODO
-    UserManagementComponent.prototype.newUser = function () {
-        //this.editingUserName = null;
-        //this.sourceUser = null;
-        //this.editedUser = this.userEditor.newUser(this.allRoles);
-        //this.editorModal.show();
-    };
-    UserManagementComponent.prototype.editUser = function (row) {
-        //this.editingUserName = { name: row.userName };
-        //this.sourceUser = row;
-        //this.editedUser = this.userEditor.editUser(row, this.allRoles);
-        //this.editorModal.show();
-    };
-    UserManagementComponent.prototype.deleteUser = function (row) {
-        var _this = this;
-        this.alertService.showDialog('Are you sure you want to delete \"' + row.userName + '\"?', alert_service_1.DialogType.confirm, function () { return _this.deleteUserHelper(row); });
-    };
-    UserManagementComponent.prototype.deleteUserHelper = function (row) {
-        var _this = this;
-        this.alertService.startLoadingMessage('Deleting...');
-        this.loadingIndicator = true;
-        this.accountService.deleteUser(row)
-            .subscribe(function (results) {
-            _this.alertService.stopLoadingMessage();
-            _this.loadingIndicator = false;
-            _this.usersCache = _this.usersCache.filter(function (item) { return item !== row; });
-            _this.users = _this.users.filter(function (item) { return item !== row; });
-        }, function (error) {
-            _this.alertService.stopLoadingMessage();
-            _this.loadingIndicator = false;
-            _this.alertService.showStickyMessage('Delete Error', "An error occured whilst deleting the user.\r\nError: \"" + utilities_1.Utilities.getHttpResponseMessage(error) + "\"", alert_service_1.MessageSeverity.error, error);
-        });
     };
     Object.defineProperty(UserManagementComponent.prototype, "canAssignRoles", {
         get: function () {

@@ -1,16 +1,71 @@
+<app-user-edit (shouldUpdateData)="loadData()" [action]="action" [userId]="userid" [(openModal)]="openModal"></app-user-edit>
+
 <div class="card">
   <div class="card-header">
     User Management
   </div>
   <div class="card-block">
     <app-search-box (searchChange)="onSearchChanged($event)" placeholder="{{'users.management.Search' | translate}}"></app-search-box>
-    <clr-datagrid [(clrDgSelected)]="rowSelected" [clrDgRowSelection]="true">
-      <clr-dg-column [clrDgField]="'jobTitle'">{{'users.management.Title' | translate}}</clr-dg-column>
-      <clr-dg-column [clrDgField]="'userName'">{{'users.management.UserName' | translate}}</clr-dg-column>
-      <clr-dg-column [clrDgField]="'fullName'">{{'users.management.FullName' | translate}}</clr-dg-column>
-      <clr-dg-column [clrDgField]="'email'">{{'users.management.Email' | translate}}</clr-dg-column>
-      <clr-dg-column [clrDgField]="'roles'">{{'users.management.Roles' | translate}}</clr-dg-column>
-      <clr-dg-column [clrDgField]="'phoneNumber'">{{'users.management.PhoneNumber' | translate}}</clr-dg-column>
+
+    <clr-datagrid [(clrDgSelected)]="selected">
+
+      <clr-dg-action-bar>
+        <div class="btn-group">
+          <button type="button" class="btn btn-sm btn-secondary" (click)="onAdd()">
+            <clr-icon shape="plus"></clr-icon> Add
+            New User
+          </button>
+          <button type="button" class="btn btn-sm btn-secondary" (click)="onDelete()"><clr-icon shape="close"></clr-icon> Delete</button>
+          <button type="button" class="btn btn-sm btn-secondary" (click)="onEdit()" *ngIf="selected.length == 1"><clr-icon shape="pencil"></clr-icon> Edit</button>
+        </div>
+        <div class="btn-group">
+          <clr-dropdown>
+            <button type="button" class="btn btn-sm btn-secondary" clrDropdownTrigger>
+              Export
+              <clr-icon shape="caret down"></clr-icon>
+            </button>
+            <clr-dropdown-menu clrPosition="bottom-left" *clrIfOpen>
+              <button type="button" (click)="onExportAll()" clrDropdownItem>Export All</button>
+              <button type="button" (click)="onExportSelected()" [disabled]="selected.length === 0" clrDropdownItem>Export Selected Items</button>
+            </clr-dropdown-menu>
+          </clr-dropdown>
+        </div>
+      </clr-dg-action-bar>
+
+
+
+      <clr-dg-column [clrDgField]="'jobTitle'">
+        <ng-container *clrDgHideableColumn="{hidden: false}">
+          {{'users.management.Title' | translate}}
+        </ng-container>
+      </clr-dg-column>
+      <clr-dg-column [clrDgField]="'userName'">
+        <ng-container *clrDgHideableColumn="{hidden: false}">
+          {{'users.management.UserName' | translate}}
+        </ng-container>
+      </clr-dg-column>
+      <clr-dg-column [clrDgField]="'fullName'">
+        <ng-container *clrDgHideableColumn="{hidden: false}">
+          {{'users.management.FullName' | translate}}
+        </ng-container>
+      </clr-dg-column>
+      <clr-dg-column [clrDgField]="'email'">
+        <ng-container *clrDgHideableColumn="{hidden: false}">
+          {{'users.management.Email' | translate}}
+        </ng-container>
+      </clr-dg-column>
+      <clr-dg-column [clrDgField]="'roles'">
+        <ng-container *clrDgHideableColumn="{hidden: false}">
+          {{'users.management.Roles' | translate}}
+        </ng-container>
+      </clr-dg-column>
+      <clr-dg-column [clrDgField]="'phoneNumber'">
+        <ng-container *clrDgHideableColumn="{hidden: false}">
+          {{'users.management.PhoneNumber' | translate}}
+        </ng-container>
+      </clr-dg-column>
+
+      <clr-dg-placeholder>Loading Users!</clr-dg-placeholder>
 
       <clr-dg-row *clrDgItems="let user of users" [clrDgItem]="user">
         <clr-dg-cell>{{user.jobTitle}}</clr-dg-cell>
@@ -22,6 +77,9 @@
       </clr-dg-row>
 
       <clr-dg-footer>
+        <clr-dg-column-toggle>
+        </clr-dg-column-toggle>
+
         <clr-dg-pagination #pagination [clrDgPageSize]="10">
           <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">{{'users.management.UsersPerPage' | translate}}</clr-dg-page-size>
           {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}

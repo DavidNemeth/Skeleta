@@ -31,11 +31,19 @@
 		<!--Include email templates in the publish output-->
 		<Content Include="Helpers\Templates\*.template" CopyToPublishDirectory="PreserveNewest" />
 	</ItemGroup>
+	
+	<ItemGroup>
+	  <None Remove="ClientApp\src\app\models\enum.ts" />
+	</ItemGroup>
 
 	<ItemGroup>
 	  <Folder Include="ClientApp\src\app\components\controls\" />
 	  <Folder Include="ClientApp\src\styles\components\" />
 	  <Folder Include="wwwroot\clientapp\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <TypeScriptCompile Include="ClientApp\src\app\models\enum.ts" />
 	</ItemGroup>
 
 	<Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

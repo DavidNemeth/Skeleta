@@ -8,6 +8,8 @@ import { User } from '../../../models/user.model';
 import { Role } from '../../../models/role.model';
 import { Permission } from '../../../models/permission.model';
 import { UserEdit } from '../../../models/user-edit.model';
+import { forEach } from '@angular/router/src/utils/collection';
+import { UserEditComponent } from '../../controls/user-edit/user-edit.component';
 
 
 @Component({
@@ -23,10 +25,14 @@ export class UserManagementComponent implements OnInit, AfterViewInit {
   sourceUser: UserEdit;
   editingUserName: { name: string };
   loadingIndicator: boolean;
-  rowSelected: string[] = [];
+  selected: User[] = [];
 
   allRoles: Role[] = [];
 
+  userId: string;
+  openModal: boolean;
+  action: string;
+  @ViewChild(UserEditComponent) userEdit;
 
   constructor(private alertService: AlertService, private translationService: AppTranslationService,
     private accountService: AccountService) { }
@@ -36,51 +42,29 @@ export class UserManagementComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-
-    //this.userEditor.changesSavedCallback = () => {
-    //  this.addNewUserToList();
-    //};
-
-    //this.userEditor.changesCancelledCallback = () => {
-    //  this.editedUser = null;
-    //  this.sourceUser = null;
-    //};
+       
+  }
+   
+  onAdd() {
+    this.userEdit.loadUser();
+    this.action = "Create"
+    this.openModal = !this.openModal;
+  }
+  onEdit() {
+    for (let user of this.selected){
+      this.userId = user.id;
+    }
+    this.userEdit.loadUser(this.userId);
+    this.action = "Update"
+    this.openModal = !this.openModal;
   }
 
-  //TODO
-  addNewUserToList() {
-    //if (this.sourceUser) {
-    //  Object.assign(this.sourceUser, this.editedUser);
-
-    //  let sourceIndex = this.rowsCache.indexOf(this.sourceUser, 0);
-    //  if (sourceIndex > -1)
-    //    Utilities.moveArrayItem(this.rowsCache, sourceIndex, 0);
-
-    //  sourceIndex = this.rows.indexOf(this.sourceUser, 0);
-    //  if (sourceIndex > -1)
-    //    Utilities.moveArrayItem(this.rows, sourceIndex, 0);
-
-    //  this.editedUser = null;
-    //  this.sourceUser = null;
-    //}
-    //else {
-    //  const user = new User();
-    //  Object.assign(user, this.editedUser);
-    //  this.editedUser = null;
-
-    //  let maxIndex = 0;
-    //  for (const u of this.rowsCache) {
-    //    if ((<any>u).index > maxIndex)
-    //      maxIndex = (<any>u).index;
-    //  }
-
-    //  (<any>user).index = maxIndex + 1;
-
-    //  this.rowsCache.splice(0, 0, user);
-    //  this.rows.splice(0, 0, user);
-    //  this.rows = [...this.rows];
-    //}
+  onExportAll() {
   }
+
+  onExportSelected() {
+  }
+
 
   loadData() {
     this.alertService.startLoadingMessage();
@@ -123,49 +107,6 @@ export class UserManagementComponent implements OnInit, AfterViewInit {
   onSearchChanged(value: string) {
     this.users = this.usersCache
       .filter(r => Utilities.searchArray(value, false, r.id, r.userName, r.fullName, r.email, r.phoneNumber, r.jobTitle, r.roles));
-  }
-
-  //TODO
-  newUser() {
-    //this.editingUserName = null;
-    //this.sourceUser = null;
-    //this.editedUser = this.userEditor.newUser(this.allRoles);
-    //this.editorModal.show();
-  }
-
-  editUser(row: UserEdit) {
-    //this.editingUserName = { name: row.userName };
-    //this.sourceUser = row;
-    //this.editedUser = this.userEditor.editUser(row, this.allRoles);
-    //this.editorModal.show();
-  }
-
-  deleteUser(row: UserEdit) {
-    this.alertService.showDialog('Are you sure you want to delete \"' + row.userName + '\"?', DialogType.confirm,
-      () => this.deleteUserHelper(row));
-  }
-
-  deleteUserHelper(row: UserEdit) {
-
-    this.alertService.startLoadingMessage('Deleting...');
-    this.loadingIndicator = true;
-
-    this.accountService.deleteUser(row)
-      .subscribe(results => {
-        this.alertService.stopLoadingMessage();
-        this.loadingIndicator = false;
-
-        this.usersCache = this.usersCache.filter(item => item !== row);
-        this.users = this.users.filter(item => item !== row);
-      },
-        error => {
-          this.alertService.stopLoadingMessage();
-          this.loadingIndicator = false;
-
-          this.alertService.showStickyMessage('Delete Error',
-            `An error occured whilst deleting the user.\r\nError: "${Utilities.getHttpResponseMessage(error)}"`,
-            MessageSeverity.error, error);
-        });
   }
 
   get canAssignRoles() {
