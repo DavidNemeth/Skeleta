@@ -20,14 +20,12 @@ export class UserInfoComponent implements OnInit {
 
   userInfo: User = new User();
   private allRoles: Role[] = [];
+  private userid: string;
 
   openModal = false;
-  isCreateUser = false;
-  isEditingSelf = true;
-  isViewOnly = false;
-  userid: string;
-  action: string;
+  Action: string;
   @ViewChild(UserEditComponent) userEdit;
+
   constructor(private formBuilder: FormBuilder, private alertService: AlertService, private accountService: AccountService) {
   }
 
@@ -49,9 +47,9 @@ export class UserInfoComponent implements OnInit {
     return this.accountService.userHasPermission(Permission.viewRolesPermission);
   }
 
-  editUser() { 
-    this.action = "Update";
-    this.userEdit.loadUser(this.userid);
+  editUser() {
     this.openModal = !this.openModal;
+    this.Action = "Update";
+    this.userEdit.loadUser(this.userid);
   }
 }

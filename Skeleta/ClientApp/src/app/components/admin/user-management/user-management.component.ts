@@ -31,7 +31,7 @@ export class UserManagementComponent implements OnInit, AfterViewInit {
 
   userId: string;
   openModal: boolean;
-  action: string;
+  Action: string;
   @ViewChild(UserEditComponent) userEdit;
 
   constructor(private alertService: AlertService, private translationService: AppTranslationService,
@@ -46,17 +46,15 @@ export class UserManagementComponent implements OnInit, AfterViewInit {
   }
    
   onAdd() {
-    this.userEdit.loadUser();
-    this.action = "Create"
-    this.openModal = !this.openModal;
+    this.userEdit.newUser(this.allRoles);
   }
   onEdit() {
+    this.Action = "Update";
+    this.openModal = !this.openModal;
     for (let user of this.selected){
       this.userId = user.id;
     }
     this.userEdit.loadUser(this.userId);
-    this.action = "Update"
-    this.openModal = !this.openModal;
   }
 
   onExportAll() {

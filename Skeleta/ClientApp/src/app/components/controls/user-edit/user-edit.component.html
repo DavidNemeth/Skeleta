@@ -1,7 +1,7 @@
 <clr-modal *ngIf="obsUser | async; else loading" [(clrModalOpen)]="openModal" (clrModalOpenChange)="openChange($event)" [clrModalSize]="'lg'">
   <div class="modal-header">
-    <button aria-label="Close" class="close"  type="button">
-      <clr-icon aria-hidden="true"  shape="close"></clr-icon>
+    <button aria-label="Close" class="close" type="button">
+      <clr-icon aria-hidden="true" shape="close"></clr-icon>
     </button>
     <h3 class="modal-title">Edit Profile</h3>
   </div>
@@ -52,19 +52,19 @@
           <label>{{'users.editor.ConfirmPassword' | translate}}</label>
           <input clrInput type="password" formControlName="confirmPassword" name="confirmPassword" placeholder="Confirm new password" />
         </clr-input-container>
-        </div>
-        <button *ngIf="!isChangePassword" class="btn btn-link" type="button" (click)="changePassword()">{{'users.editor.ChangePassword' | translate}}</button>
+      </div>
+      <button *ngIf="!isConfirmPassword" class="btn btn-link" type="button" (click)="changePassword()">{{'users.editor.ChangePassword' | translate}}</button>
 
-        <clr-select-container>
-          <label>{{'users.editor.Roles' | translate}}</label>
+      <clr-select-container>
+        <label>{{'users.editor.Roles' | translate}}</label>
 
-          <select multiple clrSelect formControlName="roles" name="roles">
-            <option *ngFor="let role of allRoles" [value]="role.name">{{role.name}}</option>
-          </select>
-        </clr-select-container>
-        <div class="modal-footer">
-          <button [clrLoading]="submitBtnState" type="submit" [disabled]="!userForm.valid" class="btn btn-success">Save</button>
-        </div>
+        <select multiple clrSelect formControlName="roles" name="roles">
+          <option *ngFor="let role of allRoles" [value]="role.name">{{role.name}}</option>
+        </select>
+      </clr-select-container>
+      <div class="modal-footer">
+        <button [clrLoading]="submitBtnState" type="submit" [disabled]="!userForm.valid" class="btn btn-success">Save</button>
+      </div>
     </form>
 
   </div>

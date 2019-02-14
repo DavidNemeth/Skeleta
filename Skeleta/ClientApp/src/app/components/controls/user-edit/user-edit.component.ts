@@ -17,7 +17,7 @@ import { CrudAction } from '../../../models/enum';
 })
 export class UserEditComponent implements OnInit {
   submitBtnState: ClrLoadingState = ClrLoadingState.DEFAULT;
-
+  private userId: string;
   private isCurrentPassowrd = false;
   private isConfirmPassword = false;
   initialUser: User = new User();
@@ -33,8 +33,6 @@ export class UserEditComponent implements OnInit {
   public changesCancelledCallback: () => void;
 
 
-  @Input() isViewOnly: boolean;
-  @Input() userId: string;
   @Input() action: CrudAction;
   @Input() openModal: boolean;
   @Output() openModalChange = new EventEmitter<boolean>();
@@ -43,6 +41,7 @@ export class UserEditComponent implements OnInit {
   constructor(private formBuilder: FormBuilder, private accountService: AccountService) { }
 
   ngOnInit() {
+    console.log("init user-edit");
     this.userForm = this.formBuilder.group({
       'userName': [{ value: '', disabled: this.action == "Update" }, Validators.required],
       'jobTitle': [''],
@@ -53,52 +52,52 @@ export class UserEditComponent implements OnInit {
     });
     if (this.canViewAllRoles) {
       this.accountService.getRoles().subscribe(
-        roles => this.allRoles = roles,
-        error => this.allRoles = []
+        roles => this.allRoles = roles
       );
     }
-    if (this.action != "Create") {
-      this.loadUser(this.userId); 
-      this.accountService.getUser(this.userId).subscribe(
-        user => this.initialUser = user);
-    }
-    else
-      this.addPassword;
   }
 
   loadUser(guid?: string) {
-    this.userForm.reset();
+    console.log(this.action);
     if (this.action == "Create") {
-      this.userForm.reset();
-      this.addPassword;
+      this.addPassword();
+      console.log("in create");
     }
     else {
+      console.log("in edit");
       this.obsUser = this.accountService.getUser(guid).pipe(
         tap(user => this.userForm.patchValue(user)));
-      console.log("changed");
+      this.accountService.getUser(guid).subscribe(
+        user => this.initialUser = user
+      );
+      console.log(this.initialUser);
+
+      this.userId = guid;
     }
   }
 
   private save() {
+    console.log(this.action);
     this.submitBtnState = ClrLoadingState.LOADING;
     switch (this.action) {
 
       case "Create":
         this.createUser();
+        break;
       case "Update":
         this.updateUser();
+        break;
       default:
-        this.updateUser();
     }
 
   }
 
   private createUser() {
+    console.log("In CreateUser");
     if (this.userForm.valid) {
       this.userEdit = new UserEdit();
       Object.assign(this.userEdit, this.userForm.value);
       this.userEdit.isEnabled = true;
-
       this.accountService.newUser(this.userEdit).subscribe(response => this.saveSuccessHelper(), error => this.saveFailedHelper(error));
     }
     else
@@ -106,11 +105,12 @@ export class UserEditComponent implements OnInit {
   }
 
   private updateUser() {
+    console.log("in UpdateUser");
     if (this.userForm.valid) {
       this.userEdit = new UserEdit();
       Object.assign(this.userEdit, this.userForm.value);
       this.userEdit.isEnabled = true;
-      this.userEdit.id = this.initialUser.id;
+      this.userEdit.id = this.userId;
       this.userEdit.userName = this.initialUser.userName;
 
       this.accountService.updateUser(this.userEdit).subscribe(response => this.saveSuccessHelper(), error => this.saveFailedHelper(error));
@@ -124,6 +124,7 @@ export class UserEditComponent implements OnInit {
 
 
   private saveSuccessHelper(): void {
+    this.userForm.reset();
     this.submitBtnState = ClrLoadingState.SUCCESS;
     this.isCurrentPassowrd = false;
     this.isConfirmPassword = false;
@@ -132,13 +133,11 @@ export class UserEditComponent implements OnInit {
     this.openModal = false;
     this.openModalChange.emit(false);
     this.shouldUpdateData.emit();
-    this.userForm.reset();
   }
 
   private saveFailedHelper(error: any): void {
     this.submitBtnState = ClrLoadingState.ERROR;
-    if (this.changesFailedCallback)
-      this.changesFailedCallback();
+    console.log(error);
   }
 
   private deletePasswordFromUser(user: UserEdit | User) {
@@ -171,6 +170,7 @@ export class UserEditComponent implements OnInit {
     if (value) {
       this.openModal = true;
     } else {
+      this.userForm.reset();
       this.openModal = false;
       this.openModalChange.emit();
     }
@@ -183,4 +183,65 @@ export class UserEditComponent implements OnInit {
   get canAssignRoles() {
     return this.accountService.userHasPermission(Permission.assignRolesPermission);
   }
+
+  resetForm(replace = false) {
+    this.isChangePassword = false;
+
+    if (!replace) {
+      this.form.reset();
+    }
+    else {
+      this.formResetToggle = false;
+
+      setTimeout(() => {
+        this.formResetToggle = true;
+      });
+    }
+  }
+
+
+  newUser(allRoles: Role[]) {
+    this.isGeneralEditor = true;
+    this.isNewUser = true;
+
+    this.allRoles = [...allRoles];
+    this.editingUserName = null;
+    this.user = this.userEdit = new UserEdit();
+    this.userEdit.isEnabled = true;
+    this.edit();
+
+    return this.userEdit;
+  }
+
+  editUser(user: User, allRoles: Role[]) {
+    if (user) {
+      this.isGeneralEditor = true;
+      this.isNewUser = false;
+
+      this.setRoles(user, allRoles);
+      this.editingUserName = user.userName;
+      this.user = new User();
+      this.userEdit = new UserEdit();
+      Object.assign(this.user, user);
+      Object.assign(this.userEdit, user);
+      this.edit();
+
+      return this.userEdit;
+    }
+    else {
+      return this.newUser(allRoles);
+    }
+  }
+
+
+  displayUser(user: User, allRoles?: Role[]) {
+
+    this.user = new User();
+    Object.assign(this.user, user);
+    this.deletePasswordFromUser(this.user);
+    this.setRoles(user, allRoles);
+
+    this.isEditMode = false;
+  }
+
 }
