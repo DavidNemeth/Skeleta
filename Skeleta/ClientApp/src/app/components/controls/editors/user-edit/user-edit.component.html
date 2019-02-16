@@ -1,4 +1,4 @@
-<clr-modal *ngIf="obsUser | async; else loading" [(clrModalOpen)]="openModal" (clrModalOpenChange)="openChange($event)" [clrModalSize]="'lg'">
+<clr-modal [(clrModalOpen)]="openModal" (clrModalOpenChange)="openChange($event)" [clrModalSize]="'lg'">
   <div class="modal-header">
     <button aria-label="Close" class="close" type="button">
       <clr-icon aria-hidden="true" shape="close"></clr-icon>
@@ -6,9 +6,8 @@
     <h3 class="modal-title">Edit Profile</h3>
   </div>
   <div class="modal-body">
-    <!--*ngIf="user | async; let user; else loading"-->
+   
     <form clrForm [formGroup]="userForm" (ngSubmit)="save()">
-
       <clr-input-container>
         <label>{{'users.editor.UserName' | translate}}</label>
         <input clrInput type="text" formControlName="userName" name="userName" />
@@ -35,13 +34,13 @@
         <input clrInput type="text" formControlName="phoneNumber" name="phoneNumber" />
       </clr-input-container>
 
-
       <div *ngIf="isCurrentPassowrd">
         <clr-input-container>
           <label>{{'users.editor.Password' | translate}}</label>
           <input clrInput type="password" formControlName="currentPassword" name="currentPassword" placeholder="Enter current password" />
         </clr-input-container>
       </div>
+
       <div *ngIf="isConfirmPassword">
         <clr-input-container>
           <label>{{'users.editor.NewPassword' | translate}}</label>
@@ -53,23 +52,30 @@
           <input clrInput type="password" formControlName="confirmPassword" name="confirmPassword" placeholder="Confirm new password" />
         </clr-input-container>
       </div>
-      <button *ngIf="!isConfirmPassword" class="btn btn-link" type="button" (click)="changePassword()">{{'users.editor.ChangePassword' | translate}}</button>
+
+      <button *ngIf="canChangePassword" class="btn btn-link" type="button" (click)="addChangePassword()">{{'users.editor.ChangePassword' | translate}}</button>
 
       <clr-select-container>
         <label>{{'users.editor.Roles' | translate}}</label>
-
         <select multiple clrSelect formControlName="roles" name="roles">
           <option *ngFor="let role of allRoles" [value]="role.name">{{role.name}}</option>
         </select>
       </clr-select-container>
       <div class="modal-footer">
         <button [clrLoading]="submitBtnState" type="submit" [disabled]="!userForm.valid" class="btn btn-success">Save</button>
+        <button type="button" (click)="resetForm()" class="btn btn-info">Reset</button>
       </div>
     </form>
-
   </div>
+</clr-modal>
 
-  <ng-template #loading>
-    Loading User...
-  </ng-template>
+<clr-modal [(clrModalOpen)]="deleteOpen">
+  <h3 class="modal-title">Delete user</h3>
+  <div class="modal-body">
+    <p>Are you sure?</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline" (click)="deleteOpen = false">Cancel</button>
+    <button type="button" [clrLoading]="deleteBtnState" class="btn btn-primary" (click)="Delete()">Delete</button>
+  </div>
 </clr-modal>

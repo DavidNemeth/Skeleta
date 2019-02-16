@@ -40,10 +40,10 @@ import { AppComponent } from './components/app.component';
 import { HomeComponent } from './components/home/home.component';
 import { LoginComponent } from './components/login/login.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
-import { FusionComponent } from './components/charts/fusion/fusion.component';
-import { ThemesComponent } from './components/themes/themes.component';
-import { MachinechartComponent } from './components/charts/machinechart/machinechart.component';
-import { ShiftschartComponent } from './components/charts/shiftschart/shiftschart.component';
+import { FusionComponent } from './components/controls/charts/fusion/fusion.component';
+import { ThemesComponent } from './components/controls/themes/themes.component';
+import { MachinechartComponent } from './components/controls/charts/machinechart/machinechart.component';
+import { ShiftschartComponent } from './components/controls/charts/shiftschart/shiftschart.component';
 import { SettingsComponent } from './components/settings/settings.component';
 import { SearchBoxComponent } from './components/controls/search-box/search-box.component';
 import { UserInfoComponent } from './components/settings/user-info/user-info.component';
@@ -55,7 +55,7 @@ import { UserManagementComponent } from './components/admin/user-management/user
 import { RoleManagementComponent } from './components/admin/role-management/role-management.component';
 import { SmartAdminComponent } from './components/admin/smart-admin/smart-admin.component';
 import { UserPreferencesComponent } from './components/settings/user-preferences/user-preferences.component';
-import { UserEditComponent } from './components/controls/user-edit/user-edit.component';
+import { UserEditComponent } from './components/controls/editors/user-edit/user-edit.component';
 
 @NgModule({
   declarations: [

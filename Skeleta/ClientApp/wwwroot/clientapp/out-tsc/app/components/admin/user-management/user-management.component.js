@@ -16,6 +16,7 @@ var account_service_1 = require("../../../services/account.service");
 var utilities_1 = require("../../../services/utilities");
 var role_model_1 = require("../../../models/role.model");
 var permission_model_1 = require("../../../models/permission.model");
+var user_edit_component_1 = require("../../controls/editors/user-edit/user-edit.component");
 var UserManagementComponent = /** @class */ (function () {
     function UserManagementComponent(alertService, translationService, accountService) {
         this.alertService = alertService;
@@ -33,16 +34,15 @@ var UserManagementComponent = /** @class */ (function () {
     UserManagementComponent.prototype.ngAfterViewInit = function () {
     };
     UserManagementComponent.prototype.onAdd = function () {
-        this.action = "Create";
-        this.openModal = !this.openModal;
+        this.userEdit.newUser();
     };
     UserManagementComponent.prototype.onEdit = function () {
-        for (var _i = 0, _a = this.selected; _i < _a.length; _i++) {
-            var user = _a[_i];
-            this.userId = user.id;
+        this.userEdit.editUser(this.selected[0]);
+    };
+    UserManagementComponent.prototype.onDelete = function () {
+        if (this.selected.length > 0) {
+            this.userEdit.deleteUsers(this.selected);
         }
-        this.action = "Update";
-        this.openModal = !this.openModal;
     };
     UserManagementComponent.prototype.onExportAll = function () {
     };
@@ -101,6 +101,10 @@ var UserManagementComponent = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
+    __decorate([
+        core_1.ViewChild(user_edit_component_1.UserEditComponent),
+        __metadata("design:type", Object)
+    ], UserManagementComponent.prototype, "userEdit", void 0);
     UserManagementComponent = __decorate([
         core_1.Component({
             selector: 'app-user-management',

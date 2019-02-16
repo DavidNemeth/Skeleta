@@ -40,10 +40,10 @@ var app_component_1 = require("./components/app.component");
 var home_component_1 = require("./components/home/home.component");
 var login_component_1 = require("./components/login/login.component");
 var dashboard_component_1 = require("./components/dashboard/dashboard.component");
-var fusion_component_1 = require("./components/charts/fusion/fusion.component");
-var themes_component_1 = require("./components/themes/themes.component");
-var machinechart_component_1 = require("./components/charts/machinechart/machinechart.component");
-var shiftschart_component_1 = require("./components/charts/shiftschart/shiftschart.component");
+var fusion_component_1 = require("./components/controls/charts/fusion/fusion.component");
+var themes_component_1 = require("./components/controls/themes/themes.component");
+var machinechart_component_1 = require("./components/controls/charts/machinechart/machinechart.component");
+var shiftschart_component_1 = require("./components/controls/charts/shiftschart/shiftschart.component");
 var settings_component_1 = require("./components/settings/settings.component");
 var search_box_component_1 = require("./components/controls/search-box/search-box.component");
 var user_info_component_1 = require("./components/settings/user-info/user-info.component");
@@ -55,7 +55,7 @@ var user_management_component_1 = require("./components/admin/user-management/us
 var role_management_component_1 = require("./components/admin/role-management/role-management.component");
 var smart_admin_component_1 = require("./components/admin/smart-admin/smart-admin.component");
 var user_preferences_component_1 = require("./components/settings/user-preferences/user-preferences.component");
-var user_edit_component_1 = require("./components/controls/user-edit/user-edit.component");
+var user_edit_component_1 = require("./components/controls/editors/user-edit/user-edit.component");
 var AppModule = /** @class */ (function () {
     function AppModule() {
     }

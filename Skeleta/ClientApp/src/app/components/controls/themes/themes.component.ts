@@ -1,6 +1,6 @@
 import { Component, Inject, PLATFORM_ID } from '@angular/core';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
-import { AppTranslationService } from '../../services/app-translation.service';
+import { AppTranslationService } from '../../../services/app-translation.service';
 
 @Component({
   selector: 'app-themes',

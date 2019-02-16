@@ -1,6 +1,5 @@
-import { Component, OnInit, AfterViewInit, TemplateRef, ViewChild, Input } from '@angular/core';
-
-import { AlertService, DialogType, MessageSeverity } from '../../../services/alert.service';
+import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
+import { AlertService, MessageSeverity } from '../../../services/alert.service';
 import { AppTranslationService } from '../../../services/app-translation.service';
 import { AccountService } from '../../../services/account.service';
 import { Utilities } from '../../../services/utilities';
@@ -8,8 +7,7 @@ import { User } from '../../../models/user.model';
 import { Role } from '../../../models/role.model';
 import { Permission } from '../../../models/permission.model';
 import { UserEdit } from '../../../models/user-edit.model';
-import { forEach } from '@angular/router/src/utils/collection';
-import { UserEditComponent } from '../../controls/user-edit/user-edit.component';
+import { UserEditComponent } from '../../controls/editors/user-edit/user-edit.component';
 
 
 @Component({
@@ -26,12 +24,8 @@ export class UserManagementComponent implements OnInit, AfterViewInit {
   editingUserName: { name: string };
   loadingIndicator: boolean;
   selected: User[] = [];
-
   allRoles: Role[] = [];
 
-  userId: string;
-  openModal: boolean;
-  Action: string;
   @ViewChild(UserEditComponent) userEdit;
 
   constructor(private alertService: AlertService, private translationService: AppTranslationService,
@@ -42,19 +36,21 @@ export class UserManagementComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-       
+
   }
-   
+
   onAdd() {
-    this.userEdit.newUser(this.allRoles);
+    this.userEdit.newUser();
   }
+
   onEdit() {
-    this.Action = "Update";
-    this.openModal = !this.openModal;
-    for (let user of this.selected){
-      this.userId = user.id;
+    this.userEdit.editUser(this.selected[0]);
+  }
+
+  onDelete() {
+    if (this.selected.length > 0) {
+      this.userEdit.deleteUsers(this.selected);
     }
-    this.userEdit.loadUser(this.userId);
   }
 
   onExportAll() {

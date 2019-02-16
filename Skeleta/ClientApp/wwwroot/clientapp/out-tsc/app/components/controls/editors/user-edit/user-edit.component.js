@@ -10,25 +10,26 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
-var user_model_1 = require("../../../models/user.model");
+var user_model_1 = require("../../../../models/user.model");
 var forms_1 = require("@angular/forms");
-var account_service_1 = require("../../../services/account.service");
+var account_service_1 = require("../../../../services/account.service");
 var angular_1 = require("@clr/angular");
-var user_edit_model_1 = require("../../../models/user-edit.model");
-var permission_model_1 = require("../../../models/permission.model");
-var operators_1 = require("rxjs/operators");
+var user_edit_model_1 = require("../../../../models/user-edit.model");
+var permission_model_1 = require("../../../../models/permission.model");
 var UserEditComponent = /** @class */ (function () {
     function UserEditComponent(formBuilder, accountService) {
         this.formBuilder = formBuilder;
         this.accountService = accountService;
         this.submitBtnState = angular_1.ClrLoadingState.DEFAULT;
-        this.canChangePassword = true;
+        this.deleteOpen = false;
+        this.canChangePassword = false;
         this.isNewUser = false;
         this.isCurrentPassowrd = false;
         this.isConfirmPassword = false;
         this.openModal = false;
         this.initialUser = new user_model_1.User();
         this.allRoles = [];
+        this.usersToDelete = [];
         this.shouldUpdateData = new core_1.EventEmitter();
     }
     UserEditComponent.prototype.ngOnInit = function () {
@@ -46,59 +47,81 @@ var UserEditComponent = /** @class */ (function () {
             this.accountService.getRoles().subscribe(function (roles) { return _this.allRoles = roles; });
         }
     };
-    UserEditComponent.prototype.loadUser = function (guid) {
-        var _this = this;
-        console.log(this.action);
-        if (this.action == "Create") {
-            this.addPassword();
-            console.log("in create");
+    UserEditComponent.prototype.openChange = function (value) {
+        if (value) {
         }
         else {
-            console.log("in edit");
-            this.obsUser = this.accountService.getUser(guid).pipe(operators_1.tap(function (user) { return _this.userForm.patchValue(user); }));
-            this.accountService.getUser(guid).subscribe(function (user) { return _this.initialUser = user; });
-            console.log(this.initialUser);
-            this.userId = guid;
+            this.canChangePassword = false;
+            this.isNewUser = false;
+            this.openModal = false;
+            this.deletePasswordFromUser(this.userEdit);
+            this.deletePasswordFromUser(this.initialUser);
+            this.userForm = this.formBuilder.group({
+                'userName': ['', forms_1.Validators.required],
+                'jobTitle': [''],
+                'fullName': ['', forms_1.Validators.required],
+                'email': ['', [forms_1.Validators.required, forms_1.Validators.email]],
+                'phoneNumber': ['', forms_1.Validators.required],
+                'roles': [{ value: [], disabled: !this.canAssignRoles }, forms_1.Validators.required]
+            });
+            this.removeChangePassword();
         }
     };
-    UserEditComponent.prototype.createUser = function () {
+    UserEditComponent.prototype.save = function () {
         var _this = this;
-        console.log("In CreateUser");
-        if (this.userForm.valid) {
-            this.userEdit = new user_edit_model_1.UserEdit();
-            Object.assign(this.userEdit, this.userForm.value);
-            this.userEdit.isEnabled = true;
-            this.accountService.newUser(this.userEdit).subscribe(function (response) { return _this.saveSuccessHelper(); }, function (error) { return _this.saveFailedHelper(error); });
+        this.submitBtnState = angular_1.ClrLoadingState.LOADING;
+        Object.assign(this.userEdit, this.userForm.value);
+        console.log(this.userEdit);
+        if (this.isNewUser) {
+            this.accountService.newUser(this.userEdit).subscribe(function (user) { return _this.saveSuccessHelper(); }, function (error) { return _this.saveFailedHelper(error); });
         }
-        else
-            this.submitBtnState = angular_1.ClrLoadingState.ERROR;
-    };
-    UserEditComponent.prototype.updateUser = function () {
-        var _this = this;
-        console.log("in UpdateUser");
-        if (this.userForm.valid) {
-            this.userEdit = new user_edit_model_1.UserEdit();
-            Object.assign(this.userEdit, this.userForm.value);
-            this.userEdit.isEnabled = true;
-            this.userEdit.userName = this.initialUser.userName;
+        else {
             this.accountService.updateUser(this.userEdit).subscribe(function (response) { return _this.saveSuccessHelper(); }, function (error) { return _this.saveFailedHelper(error); });
         }
-        else
-            this.submitBtnState = angular_1.ClrLoadingState.ERROR;
     };
     UserEditComponent.prototype.saveSuccessHelper = function () {
-        this.userForm.reset();
-        this.submitBtnState = angular_1.ClrLoadingState.SUCCESS;
-        this.isCurrentPassowrd = false;
-        this.isConfirmPassword = false;
-        this.deletePasswordFromUser(this.userEdit);
-        this.refreshLoggedInUser();
-        this.openModal = false;
+        this.accountService.refreshLoggedInUser().subscribe();
         this.shouldUpdateData.emit();
+        this.submitBtnState = angular_1.ClrLoadingState.SUCCESS;
+        this.openModal = false;
     };
     UserEditComponent.prototype.saveFailedHelper = function (error) {
         this.submitBtnState = angular_1.ClrLoadingState.ERROR;
         console.log(error);
+    };
+    UserEditComponent.prototype.addNewPassword = function () {
+        this.userForm.addControl('newPassword', new forms_1.FormControl('', [forms_1.Validators.required, forms_1.Validators.minLength(6)]));
+        this.userForm.addControl('confirmPassword', new forms_1.FormControl('', [forms_1.Validators.required, forms_1.Validators.minLength(6)]));
+        this.isConfirmPassword = true;
+    };
+    UserEditComponent.prototype.addChangePassword = function () {
+        if (this.isCurrentPassowrd == true) {
+            this.userForm.removeControl('currentPassword');
+            this.userForm.removeControl('newPassword');
+            this.userForm.removeControl('confirmPassword');
+            this.isCurrentPassowrd = false;
+            this.isConfirmPassword = false;
+        }
+        else {
+            this.userForm.addControl('currentPassword', new forms_1.FormControl('', [forms_1.Validators.required, forms_1.Validators.minLength(6)]));
+            this.userForm.addControl('newPassword', new forms_1.FormControl('', [forms_1.Validators.required, forms_1.Validators.minLength(6)]));
+            this.userForm.addControl('confirmPassword', new forms_1.FormControl('', [forms_1.Validators.required, forms_1.Validators.minLength(6)]));
+            this.isCurrentPassowrd = true;
+            this.isConfirmPassword = true;
+        }
+    };
+    UserEditComponent.prototype.removeChangePassword = function () {
+        this.userForm.removeControl('currentPassword');
+        this.userForm.removeControl('newPassword');
+        this.userForm.removeControl('confirmPassword');
+        this.isCurrentPassowrd = false;
+        this.isConfirmPassword = false;
+    };
+    UserEditComponent.prototype.resetForm = function () {
+        this.userForm.reset();
+        this.userForm.patchValue(this.initialUser);
+        if (!this.isNewUser)
+            this.removeChangePassword();
     };
     UserEditComponent.prototype.deletePasswordFromUser = function (user) {
         var userEdit = user;
@@ -106,33 +129,58 @@ var UserEditComponent = /** @class */ (function () {
         delete userEdit.newPassword;
         delete userEdit.confirmPassword;
     };
-    UserEditComponent.prototype.refreshLoggedInUser = function () {
-        this.accountService.refreshLoggedInUser().subscribe();
+    UserEditComponent.prototype.newUser = function () {
+        this.userForm.controls['userName'].enable();
+        this.openModal = true;
+        this.canChangePassword = false;
+        this.isNewUser = true;
+        this.initialUser = new user_model_1.User();
+        this.userEdit = new user_edit_model_1.UserEdit();
+        this.userEdit.isEnabled = true;
+        this.addNewPassword();
+        return this.userEdit;
     };
-    UserEditComponent.prototype.addNewPassword = function () {
-        this.userForm.addControl('newPassword', new forms_1.FormControl('', [forms_1.Validators.required, forms_1.Validators.minLength(6)]));
-        this.userForm.addControl('confirmPassword', new forms_1.FormControl('', [forms_1.Validators.required, forms_1.Validators.minLength(6)]));
-        this.isConfirmPassword = true;
-    };
-    UserEditComponent.prototype.removeNewPassword = function () {
-        this.userForm.addControl('newPassword', new forms_1.FormControl('', [forms_1.Validators.required, forms_1.Validators.minLength(6)]));
-        this.userForm.addControl('confirmPassword', new forms_1.FormControl('', [forms_1.Validators.required, forms_1.Validators.minLength(6)]));
-        this.isConfirmPassword = true;
-    };
-    UserEditComponent.prototype.changePassword = function () {
-        this.userForm.addControl('currentPassword', new forms_1.FormControl('', [forms_1.Validators.required, forms_1.Validators.minLength(6)]));
-        this.userForm.addControl('newPassword', new forms_1.FormControl('', [forms_1.Validators.required, forms_1.Validators.minLength(6)]));
-        this.userForm.addControl('confirmPassword', new forms_1.FormControl('', [forms_1.Validators.required, forms_1.Validators.minLength(6)]));
-        this.isCurrentPassowrd = true;
-        this.isConfirmPassword = true;
-    };
-    UserEditComponent.prototype.openChange = function (value) {
-        if (value) {
+    UserEditComponent.prototype.editUser = function (user) {
+        if (user) {
             this.openModal = true;
+            this.canChangePassword = true;
+            this.userForm.controls['userName'].disable();
+            this.isNewUser = false;
+            this.userForm.patchValue(user);
+            this.initialUser = new user_model_1.User();
+            Object.assign(this.initialUser, user);
+            this.userEdit = new user_edit_model_1.UserEdit();
+            Object.assign(this.userEdit, user);
+            return this.userEdit;
         }
         else {
-            this.userForm.reset();
-            this.openModal = false;
+            return this.newUser();
+        }
+    };
+    UserEditComponent.prototype.viewUser = function (user) {
+        Object.assign(this.initialUser, user);
+        this.userForm.patchValue(this.initialUser);
+        this.canChangePassword = false;
+        this.userForm.controls['userName'].disable();
+        this.userForm.controls['jobTitle'].disable();
+        this.userForm.controls['fullName'].disable();
+        this.userForm.controls['email'].disable();
+        this.userForm.controls['phoneNumber'].disable();
+        this.userForm.controls['roles'].disable();
+    };
+    UserEditComponent.prototype.deleteUsers = function (users) {
+        this.deleteOpen = true;
+        this.usersToDelete = users;
+    };
+    UserEditComponent.prototype.Delete = function () {
+        this.bulkDelete();
+        this.deleteOpen = false;
+        this.shouldUpdateData.emit();
+    };
+    UserEditComponent.prototype.bulkDelete = function () {
+        for (var _i = 0, _a = this.usersToDelete; _i < _a.length; _i++) {
+            var user = _a[_i];
+            this.accountService.deleteUser(user).subscribe();
         }
     };
     Object.defineProperty(UserEditComponent.prototype, "canViewAllRoles", {
@@ -149,52 +197,6 @@ var UserEditComponent = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
-    UserEditComponent.prototype.resetForm = function () {
-        this.userForm.reset();
-    };
-    UserEditComponent.prototype.save = function () {
-        var _this = this;
-        this.submitBtnState = angular_1.ClrLoadingState.LOADING;
-        if (this.isNewUser) {
-            this.accountService.newUser(this.userEdit).subscribe(function (user) { return _this.saveSuccessHelper(); }, function (error) { return _this.saveFailedHelper(error); });
-        }
-        else {
-            this.accountService.updateUser(this.userEdit).subscribe(function (response) { return _this.saveSuccessHelper(); }, function (error) { return _this.saveFailedHelper(error); });
-        }
-    };
-    UserEditComponent.prototype.newUser = function () {
-        this.openModal = true;
-        this.isNewUser = true;
-        this.userEdit = new user_edit_model_1.UserEdit();
-        this.userEdit.isEnabled = true;
-        return this.userEdit;
-    };
-    UserEditComponent.prototype.editUser = function (user) {
-        this.openModal = true;
-        this.canChangePassword = true;
-        if (user) {
-            this.userForm.controls['userName'].disable();
-            this.isNewUser = false;
-            this.userForm.patchValue(user);
-            this.userEdit = new user_edit_model_1.UserEdit();
-            Object.assign(this.userEdit, user);
-            return this.userEdit;
-        }
-        else {
-            return this.newUser();
-        }
-    };
-    UserEditComponent.prototype.viewUser = function (user) {
-        this.userForm.patchValue(user);
-        this.canChangePassword = false;
-        this.userForm.patchValue(user);
-        this.userForm.controls['userName'].disable();
-        this.userForm.controls['jobTitle'].disable();
-        this.userForm.controls['fullName'].disable();
-        this.userForm.controls['email'].disable();
-        this.userForm.controls['phoneNumber'].disable();
-        this.userForm.controls['roles'].disable();
-    };
     __decorate([
         core_1.Output(),
         __metadata("design:type", Object)

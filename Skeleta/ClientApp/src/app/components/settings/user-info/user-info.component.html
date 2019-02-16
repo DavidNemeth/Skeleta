@@ -1,4 +1,4 @@
-<app-user-edit (shouldUpdateData)="loadData()" [action]="Action" [(openModal)]="openModal"></app-user-edit>
+<app-user-edit (shouldUpdateData)="loadData()"></app-user-edit>
 
 <div class="clr-row">
   <div class="clr-col-2">
@@ -10,16 +10,16 @@
         <img src="../../../../assets/images/teszt.jpg" />
       </div>
       <div class="card-block">
-        <h4 class="card-title">{{userInfo.fullName}} ({{userInfo.userName}})</h4>
+        <h4 class="card-title">{{user.fullName}} ({{user.userName}})</h4>
         <p class="card-text">
-          {{userInfo.email}} ({{userInfo.phoneNumber}})
+          {{user.email}} ({{user.phoneNumber}})
         </p>
       </div>
       <ul class="list-group list-group-flush">
-        <li class="list-group-item"><span class="label label-info" *ngFor="let role of userInfo.roles">{{role}}</span></li>
+        <li class="list-group-item"><span class="label label-info" *ngFor="let role of user.roles">{{role}}</span></li>
       </ul>
       <div class="card-footer">
-        <button class="btn btn-link" type="button" (click)="editUser()">Edit</button>
+        <button class="btn btn-link" type="button" (click)="onEdit()">Edit</button>
       </div>
     </div>
   </div>

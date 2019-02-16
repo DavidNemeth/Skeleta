@@ -37,7 +37,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="ClientApp\src\app\components\controls\" />
+	  <Folder Include="ClientApp\src\app\components\controls\editors\" />
 	  <Folder Include="ClientApp\src\styles\components\" />
 	  <Folder Include="wwwroot\clientapp\" />
 	</ItemGroup>
