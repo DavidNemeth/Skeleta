@@ -50,6 +50,8 @@ var UserManagementComponent = /** @class */ (function () {
     };
     UserManagementComponent.prototype.loadData = function () {
         var _this = this;
+        this.users = [];
+        this.usersCache = [];
         this.alertService.startLoadingMessage();
         this.loadingIndicator = true;
         if (this.canViewRoles) {

@@ -30,6 +30,8 @@ var ConfigurationService = /** @class */ (function () {
         this._showDashboardNotifications = null;
         this._showDashboardTodo = null;
         this._showDashboardBanner = null;
+        this._showUserManagement = null;
+        this._showRoleManagement = null;
         this.loadLocalChanges();
     }
     ConfigurationService_1 = ConfigurationService;
@@ -100,14 +102,35 @@ var ConfigurationService = /** @class */ (function () {
         configurable: true
     });
     Object.defineProperty(ConfigurationService.prototype, "showDashboardTodo", {
-        get: function () {
-            if (this._showDashboardTodo != null)
-                return this._showDashboardTodo;
-            return ConfigurationService_1.defaultShowDashboardTodo;
-        },
         set: function (value) {
             this._showDashboardTodo = value;
             this.saveToLocalStore(value, db_Keys_1.DBkeys.SHOW_DASHBOARD_TODO);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ConfigurationService.prototype, "showUserManagement", {
+        get: function () {
+            if (this._showUserManagement != null)
+                return this._showUserManagement;
+            return ConfigurationService_1.defaultShowUserManagement;
+        },
+        set: function (value) {
+            this._showUserManagement = value;
+            this.saveToLocalStore(value, db_Keys_1.DBkeys.SHOW_USER_MANAGEMENT);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ConfigurationService.prototype, "showRoleManagement", {
+        get: function () {
+            if (this._showRoleManagement != null)
+                return this._showRoleManagement;
+            return ConfigurationService_1.defaultShowRoleManagement;
+        },
+        set: function (value) {
+            this._showRoleManagement = value;
+            this.saveToLocalStore(value, db_Keys_1.DBkeys.SHOW_ROLE_MANAGEMENT);
         },
         enumerable: true,
         configurable: true
@@ -145,6 +168,10 @@ var ConfigurationService = /** @class */ (function () {
             this._showDashboardTodo = this.localStorage.getDataObject(db_Keys_1.DBkeys.SHOW_DASHBOARD_TODO);
         if (this.localStorage.exists(db_Keys_1.DBkeys.SHOW_DASHBOARD_BANNER))
             this._showDashboardBanner = this.localStorage.getDataObject(db_Keys_1.DBkeys.SHOW_DASHBOARD_BANNER);
+        if (this.localStorage.exists(db_Keys_1.DBkeys.SHOW_USER_MANAGEMENT))
+            this._showUserManagement = this.localStorage.getDataObject(db_Keys_1.DBkeys.SHOW_USER_MANAGEMENT);
+        if (this.localStorage.exists(db_Keys_1.DBkeys.SHOW_ROLE_MANAGEMENT))
+            this._showRoleManagement = this.localStorage.getDataObject(db_Keys_1.DBkeys.SHOW_ROLE_MANAGEMENT);
     };
     ConfigurationService.prototype.saveToLocalStore = function (data, key) {
         var _this = this;
@@ -169,6 +196,10 @@ var ConfigurationService = /** @class */ (function () {
             this.showDashboardTodo = importValue.showDashboardTodo;
         if (importValue.showDashboardBanner != null)
             this.showDashboardBanner = importValue.showDashboardBanner;
+        if (importValue.showRoleManagement != null)
+            this.showUserManagement = importValue.showUserManagement;
+        if (importValue.showUserManagement != null)
+            this.showRoleManagement = importValue.showRoleManagement;
     };
     ConfigurationService.prototype.export = function (changesOnly) {
         if (changesOnly === void 0) { changesOnly = true; }
@@ -179,7 +210,9 @@ var ConfigurationService = /** @class */ (function () {
             showDashboardStatistics: changesOnly ? this._showDashboardStatistics : this.showDashboardStatistics,
             showDashboardNotifications: changesOnly ? this._showDashboardNotifications : this.showDashboardNotifications,
             showDashboardTodo: changesOnly ? this._showDashboardTodo : this.showDashboardTodo,
-            showDashboardBanner: changesOnly ? this._showDashboardBanner : this.showDashboardBanner
+            showDashboardBanner: changesOnly ? this._showDashboardBanner : this.showDashboardBanner,
+            showUserManagement: changesOnly ? this._showUserManagement : this.showUserManagement,
+            showRoleManagement: changesOnly ? this._showRoleManagement : this.showRoleManagement
         };
         return JSON.stringify(exportValue);
     };
@@ -191,6 +224,8 @@ var ConfigurationService = /** @class */ (function () {
         this._showDashboardNotifications = null;
         this._showDashboardTodo = null;
         this._showDashboardBanner = null;
+        this._showUserManagement = null;
+        this._showRoleManagement = null;
         this.localStorage.deleteData(db_Keys_1.DBkeys.LANGUAGE);
         this.localStorage.deleteData(db_Keys_1.DBkeys.HOME_URL);
         this.localStorage.deleteData(db_Keys_1.DBkeys.THEME);
@@ -198,6 +233,8 @@ var ConfigurationService = /** @class */ (function () {
         this.localStorage.deleteData(db_Keys_1.DBkeys.SHOW_DASHBOARD_NOTIFICATIONS);
         this.localStorage.deleteData(db_Keys_1.DBkeys.SHOW_DASHBOARD_TODO);
         this.localStorage.deleteData(db_Keys_1.DBkeys.SHOW_DASHBOARD_BANNER);
+        this.localStorage.deleteData(db_Keys_1.DBkeys.SHOW_USER_MANAGEMENT);
+        this.localStorage.deleteData(db_Keys_1.DBkeys.SHOW_ROLE_MANAGEMENT);
         this.resetLanguage();
     };
     ConfigurationService.prototype.resetLanguage = function () {
@@ -219,6 +256,8 @@ var ConfigurationService = /** @class */ (function () {
     ConfigurationService.defaultShowDashboardNotifications = true;
     ConfigurationService.defaultShowDashboardTodo = false;
     ConfigurationService.defaultShowDashboardBanner = true;
+    ConfigurationService.defaultShowUserManagement = true;
+    ConfigurationService.defaultShowRoleManagement = true;
     ConfigurationService = ConfigurationService_1 = __decorate([
         core_1.Injectable(),
         __metadata("design:paramtypes", [local_store_manager_service_1.LocalStoreManager, app_translation_service_1.AppTranslationService])

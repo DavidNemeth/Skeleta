@@ -10,8 +10,6 @@ import { ToastaModule } from 'ngx-toasta';
 import { ClarityModule } from "@clr/angular";
 import { NgSelectModule } from '@ng-select/ng-select';
 
-import { EqualValidator } from './directives/equal-validator.directive';
-
 import { FusionChartsModule } from 'angular-fusioncharts';
 import FusionCharts from 'fusioncharts/core';
 import Column2d from 'fusioncharts/viz/column2d';
@@ -80,7 +78,6 @@ import { RoleEditComponent } from './components/controls/editors/role-edit/role-
     RoleManagementComponent,
     SmartAdminComponent,
     UserPreferencesComponent,
-    EqualValidator,
     UserEditComponent,
     RoleEditComponent
   ],

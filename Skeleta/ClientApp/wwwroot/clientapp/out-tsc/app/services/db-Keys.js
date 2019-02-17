@@ -24,6 +24,8 @@ var DBkeys = /** @class */ (function () {
     DBkeys.SHOW_DASHBOARD_NOTIFICATIONS = 'show_dashboard_notifications';
     DBkeys.SHOW_DASHBOARD_TODO = 'show_dashboard_todo';
     DBkeys.SHOW_DASHBOARD_BANNER = 'show_dashboard_banner';
+    DBkeys.SHOW_USER_MANAGEMENT = 'show_user_management';
+    DBkeys.SHOW_ROLE_MANAGEMENT = 'show_role_management';
     DBkeys = __decorate([
         core_1.Injectable()
     ], DBkeys);

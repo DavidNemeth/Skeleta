@@ -145,6 +145,7 @@ var UserEditComponent = /** @class */ (function () {
             this.userForm.controls['userName'].disable();
             this.isNewUser = false;
             this.userForm.patchValue(user);
+            console.log(user);
             this.initialUser = new user_model_1.User();
             Object.assign(this.initialUser, user);
             this.userEdit = new user_edit_model_1.UserEdit();
@@ -180,7 +181,6 @@ var UserEditComponent = /** @class */ (function () {
             this.accountService.deleteUser(user).subscribe(function (result) {
                 current++;
                 if (current === userCount) {
-                    console.log("obs call" + userCount + " " + current);
                     _this.shouldUpdateData.emit();
                     _this.deleteOpen = false;
                     _this.deleteBtnState = angular_1.ClrLoadingState.SUCCESS;

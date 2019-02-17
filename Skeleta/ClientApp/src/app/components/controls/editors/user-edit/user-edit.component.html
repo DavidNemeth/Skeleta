@@ -10,46 +10,46 @@
     <form clrForm [formGroup]="userForm" (ngSubmit)="save()">
       <clr-input-container>
         <label>{{'users.editor.UserName' | translate}}</label>
-        <input clrInput type="text" formControlName="userName" name="userName" />
+        <input clrInput type="text" formControlName="userName"/>
       </clr-input-container>
 
       <clr-input-container>
         <label>{{'users.editor.JobTitle' | translate}}</label>
-        <input clrInput type="text" formControlName="jobTitle" name="jobTitle" />
+        <input clrInput type="text" formControlName="jobTitle"/>
         <clr-control-error>Error message that appears after focus is lost and control is invalid</clr-control-error>
       </clr-input-container>
 
       <clr-input-container>
         <label>{{'users.editor.FullName' | translate}}</label>
-        <input clrInput type="text" formControlName="fullName" name="fullName" />
+        <input clrInput type="text" formControlName="fullName"/>
       </clr-input-container>
 
       <clr-input-container>
         <label>{{'users.editor.Email' | translate}}</label>
-        <input clrInput type="email" formControlName="email" name="email" />
+        <input clrInput type="email" formControlName="email"/>
       </clr-input-container>
 
       <clr-input-container>
         <label>{{'users.editor.PhoneNumber' | translate}}</label>
-        <input clrInput type="text" formControlName="phoneNumber" name="phoneNumber" />
+        <input clrInput type="text" formControlName="phoneNumber"/>
       </clr-input-container>
 
       <div *ngIf="isCurrentPassowrd">
         <clr-input-container>
           <label>{{'users.editor.Password' | translate}}</label>
-          <input clrInput type="password" formControlName="currentPassword" name="currentPassword" placeholder="Enter current password" />
+          <input clrInput type="password" formControlName="currentPassword" placeholder="Enter current password" />
         </clr-input-container>
       </div>
 
       <div *ngIf="isConfirmPassword">
         <clr-input-container>
           <label>{{'users.editor.NewPassword' | translate}}</label>
-          <input clrInput type="password" formControlName="newPassword" name="newPassword" placeholder="Enter new password" />
+          <input clrInput type="password" formControlName="newPassword" placeholder="Enter new password" />
         </clr-input-container>
 
         <clr-input-container>
           <label>{{'users.editor.ConfirmPassword' | translate}}</label>
-          <input clrInput type="password" formControlName="confirmPassword" name="confirmPassword" placeholder="Confirm new password" />
+          <input clrInput type="password" formControlName="confirmPassword" placeholder="Confirm new password" />
         </clr-input-container>
       </div>
 
@@ -57,7 +57,7 @@
 
       <clr-select-container>
         <label>{{'users.editor.Roles' | translate}}</label>
-        <select multiple clrSelect formControlName="roles" name="roles">
+        <select multiple clrSelect formControlName="roles">
           <option *ngFor="let role of allRoles" [value]="role.name">{{role.name}}</option>
         </select>
       </clr-select-container>

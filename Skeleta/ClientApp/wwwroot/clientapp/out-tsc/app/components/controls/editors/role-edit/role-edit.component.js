@@ -27,27 +27,31 @@ var RoleEditComponent = /** @class */ (function () {
         this.roleEdit = new role_model_1.Role();
         this.rolesToDelete = [];
         this.allPermissions = [];
+        this.initialPremissions = [];
         this.shouldUpdateData = new core_1.EventEmitter();
     }
     RoleEditComponent.prototype.ngOnInit = function () {
         var _this = this;
+        this.accountService.getPermissions().subscribe(function (premissions) { return _this.allPermissions = premissions; });
+        var permissions = [];
         this.roleForm = this.formBuilder.group({
             'name': ['', forms_1.Validators.required],
             'description': [''],
-            'permissions': [[]]
+            'permissions': []
         });
-        this.accountService.getPermissions().subscribe(function (premissions) { return _this.allPermissions = premissions; });
     };
     RoleEditComponent.prototype.openChange = function (value) {
         if (value) {
         }
         else {
+            var permissions = [];
             this.isNewRole = false;
             this.openModal = false;
+            this.initialPremissions = [];
             this.roleForm = this.formBuilder.group({
                 'name': ['', forms_1.Validators.required],
                 'description': [''],
-                'permissions': [[]]
+                'permissions': []
             });
         }
     };
@@ -72,20 +76,28 @@ var RoleEditComponent = /** @class */ (function () {
     };
     RoleEditComponent.prototype.saveFailedHelper = function (error) {
         this.submitBtnState = angular_1.ClrLoadingState.ERROR;
+        console.log(error);
     };
     RoleEditComponent.prototype.newRole = function () {
         this.openModal = true;
         this.isNewRole = true;
         this.roleEdit = new role_model_1.Role();
+        this.initialPremissions = [];
         return this.roleEdit;
     };
     RoleEditComponent.prototype.editRole = function (role) {
         if (role_model_1.Role) {
+            var premissions = [];
+            for (var _i = 0, _a = role.permissions; _i < _a.length; _i++) {
+                var premission = _a[_i];
+                premissions.push(premission);
+            }
             this.openModal = true;
             this.isNewRole = false;
             this.roleForm.patchValue(role);
             this.roleEdit = new role_model_1.Role();
             Object.assign(this.roleEdit, role);
+            Object.assign(this.initialPremissions, role.permissions);
             return this.roleEdit;
         }
         else {

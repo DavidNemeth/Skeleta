@@ -11,12 +11,12 @@
 
         <clr-input-container>
           <label>{{'roles.editor.Name' | translate}}</label>
-          <input clrInput type="text" formControlName="name" name="name" />
+          <input clrInput type="text" formControlName="name"/>
         </clr-input-container>
 
         <clr-input-container>
           <label>{{'roles.editor.Description' | translate}}</label>
-          <input clrInput type="text" formControlName="description" name="description" />
+          <input clrInput type="text" formControlName="description"/>
           <clr-control-error>Error message that appears after focus is lost and control is invalid</clr-control-error>
         </clr-input-container>
 
@@ -26,7 +26,7 @@
             <option disabled *ngFor="let permission of initialPremissions">{{permission.name}}</option>
           </select>
           <label>New Permissions</label>
-          <select multiple clrSelect formControlName="permissions" name="permissions">
+          <select multiple clrSelect formControlName="permissions">
             <option *ngFor="let permission of allPermissions" [value]="permission">{{permission.name}}</option>
           </select>
         </clr-select-container>

@@ -51,6 +51,8 @@ var RoleManagementComponent = /** @class */ (function () {
     };
     RoleManagementComponent.prototype.loadData = function () {
         var _this = this;
+        this.roles = [];
+        this.rolesCache = [];
         this.alertService.startLoadingMessage();
         this.loadingIndicator = true;
         this.accountService.getRolesAndPermissions()
