@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Role } from '../../../models/role.model';
 import { Permission } from '../../../models/permission.model';
 import { AlertService, MessageSeverity } from '../../../services/alert.service';
 import { AppTranslationService } from '../../../services/app-translation.service';
 import { AccountService } from '../../../services/account.service';
 import { Utilities } from '../../../services/utilities';
+import { RoleEditComponent } from '../../controls/editors/role-edit/role-edit.component';
 
 @Component({
   selector: 'app-role-management',
@@ -20,6 +21,9 @@ export class RoleManagementComponent implements OnInit {
   sourceRole: Role;
   editingRoleName: { name: string };
   loadingIndicator: boolean;
+  selected: Role[] = [];
+
+  @ViewChild(RoleEditComponent) roleEdit;
 
   constructor(private alertService: AlertService, private translationService: AppTranslationService,
     private accountService: AccountService) {
@@ -29,7 +33,35 @@ export class RoleManagementComponent implements OnInit {
     this.loadData();
   }
 
+  onAdd() {
+    if (this.canManageRoles) {
+      this.roleEdit.newRole();
+    }
+  }
+
+  onEdit() {
+    if (this.canManageRoles) {
+      this.roleEdit.editRole(this.selected[0]);
+    }
+  }
+
+  onDelete() {
+    if (this.selected.length > 0 && this.canManageRoles) {
+      this.roleEdit.deleteRoles(this.selected);
+    }
+  }
+
+  onExportAll() {
+
+  }
+
+  onExportSelected() {
+
+  }
+
   loadData() {
+    this.roles = [];
+    this.rolesCache = [];
     this.alertService.startLoadingMessage();
     this.loadingIndicator = true;
 

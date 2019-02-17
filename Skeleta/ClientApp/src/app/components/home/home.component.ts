@@ -1,5 +1,6 @@
 import { Component, OnInit, HostBinding } from '@angular/core';
 import { fadeInOut } from '../../services/animations';
+import { ConfigurationService } from '../../services/configuration.service';
 
 @Component({
   selector: 'app-home',
@@ -8,7 +9,7 @@ import { fadeInOut } from '../../services/animations';
   animations: [fadeInOut]
 })
 export class HomeComponent implements OnInit {
-  constructor() { }
+  constructor(public configurations: ConfigurationService) { }
 
   ngOnInit() {
   }

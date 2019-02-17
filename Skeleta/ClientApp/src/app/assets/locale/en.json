@@ -139,7 +139,8 @@
       "EditRole": "Edit Role \"{{name}}\"",
       "Name": "Name",
       "Description": "Description",
-      "Users": "Users"
+      "Users": "Users",
+      "RolesPerPage": "Roles Per Page"
     },
     "editor": {
       "Name": "Name",

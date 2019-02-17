@@ -15,6 +15,7 @@ var alert_service_1 = require("../../../services/alert.service");
 var app_translation_service_1 = require("../../../services/app-translation.service");
 var account_service_1 = require("../../../services/account.service");
 var utilities_1 = require("../../../services/utilities");
+var role_edit_component_1 = require("../../controls/editors/role-edit/role-edit.component");
 var RoleManagementComponent = /** @class */ (function () {
     function RoleManagementComponent(alertService, translationService, accountService) {
         this.alertService = alertService;
@@ -24,9 +25,29 @@ var RoleManagementComponent = /** @class */ (function () {
         this.roles = [];
         this.rolesCache = [];
         this.allPermissions = [];
+        this.selected = [];
     }
     RoleManagementComponent.prototype.ngOnInit = function () {
         this.loadData();
+    };
+    RoleManagementComponent.prototype.onAdd = function () {
+        if (this.canManageRoles) {
+            this.roleEdit.newRole();
+        }
+    };
+    RoleManagementComponent.prototype.onEdit = function () {
+        if (this.canManageRoles) {
+            this.roleEdit.editRole(this.selected[0]);
+        }
+    };
+    RoleManagementComponent.prototype.onDelete = function () {
+        if (this.selected.length > 0 && this.canManageRoles) {
+            this.roleEdit.deleteRoles(this.selected);
+        }
+    };
+    RoleManagementComponent.prototype.onExportAll = function () {
+    };
+    RoleManagementComponent.prototype.onExportSelected = function () {
     };
     RoleManagementComponent.prototype.loadData = function () {
         var _this = this;
@@ -60,6 +81,10 @@ var RoleManagementComponent = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
+    __decorate([
+        core_1.ViewChild(role_edit_component_1.RoleEditComponent),
+        __metadata("design:type", Object)
+    ], RoleManagementComponent.prototype, "roleEdit", void 0);
     RoleManagementComponent = __decorate([
         core_1.Component({
             selector: 'app-role-management',

@@ -34,11 +34,10 @@ namespace DAL
 		{
 			await _context.Database.MigrateAsync().ConfigureAwait(false);
 
-			for (int i = 0; i < 500; i++)
-			{
-				await CreateUserAsync("user"+i.ToString(), "Jelszo1", "Inbuilt Standard User", "user@skeleta.com", "+1 (123) 000-0001", new string[] { "administrator" });
-
-			}
+			//for (int i = 0; i < 500; i++)
+			//{
+			//	await EnsureRoleAsync("testroles" + i.ToString(), "Test Role description" + i.ToString(), ApplicationPermissions.GetAllPermissionValues());
+			//}
 			if (!await _context.Users.AnyAsync())
 			{
 				_logger.LogInformation("Generating inbuilt accounts");

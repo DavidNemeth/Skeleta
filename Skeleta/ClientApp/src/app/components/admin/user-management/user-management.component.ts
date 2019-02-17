@@ -54,13 +54,17 @@ export class UserManagementComponent implements OnInit, AfterViewInit {
   }
 
   onExportAll() {
+
   }
 
   onExportSelected() {
+
   }
 
 
   loadData() {
+    this.users = [];
+    this.usersCache = [];
     this.alertService.startLoadingMessage();
     this.loadingIndicator = true;
 

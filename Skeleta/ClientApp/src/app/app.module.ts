@@ -56,6 +56,7 @@ import { RoleManagementComponent } from './components/admin/role-management/role
 import { SmartAdminComponent } from './components/admin/smart-admin/smart-admin.component';
 import { UserPreferencesComponent } from './components/settings/user-preferences/user-preferences.component';
 import { UserEditComponent } from './components/controls/editors/user-edit/user-edit.component';
+import { RoleEditComponent } from './components/controls/editors/role-edit/role-edit.component';
 
 @NgModule({
   declarations: [
@@ -80,7 +81,8 @@ import { UserEditComponent } from './components/controls/editors/user-edit/user-
     SmartAdminComponent,
     UserPreferencesComponent,
     EqualValidator,
-    UserEditComponent
+    UserEditComponent,
+    RoleEditComponent
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,51 @@
+<clr-modal [(clrModalOpen)]="openModal" (clrModalOpenChange)="openChange($event)" [clrModalSize]="'lg'">
+  <div class="modal-header">
+    <button aria-label="Close" class="close" type="button">
+      <clr-icon aria-hidden="true" shape="close"></clr-icon>
+    </button>
+    <h3 class="modal-title">Role Info</h3>
+  </div>
+  <div class="modal-body">
+
+    <form clrForm [formGroup]="roleForm" (ngSubmit)="save()">
+
+        <clr-input-container>
+          <label>{{'roles.editor.Name' | translate}}</label>
+          <input clrInput type="text" formControlName="name" name="name" />
+        </clr-input-container>
+
+        <clr-input-container>
+          <label>{{'roles.editor.Description' | translate}}</label>
+          <input clrInput type="text" formControlName="description" name="description" />
+          <clr-control-error>Error message that appears after focus is lost and control is invalid</clr-control-error>
+        </clr-input-container>
+
+        <clr-select-container>
+          <label>Current Permissions</label>
+          <select multiple clrSelect>
+            <option disabled *ngFor="let permission of initialPremissions">{{permission.name}}</option>
+          </select>
+          <label>New Permissions</label>
+          <select multiple clrSelect formControlName="permissions" name="permissions">
+            <option *ngFor="let permission of allPermissions" [value]="permission">{{permission.name}}</option>
+          </select>
+        </clr-select-container>
+
+      <div class="modal-footer">
+        <button [clrLoading]="submitBtnState" type="submit" [disabled]="!roleForm.valid" class="btn btn-success">Save</button>
+      </div>
+
+    </form>
+  </div>
+</clr-modal>
+
+<clr-modal [(clrModalOpen)]="deleteOpen">
+  <h3 class="modal-title">Delete Role</h3>
+  <div class="modal-body">
+    <p>Are you sure?</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline" (click)="deleteOpen = false">Cancel</button>
+    <button type="button" [clrLoading]="deleteBtnState" class="btn btn-primary" (click)="Delete()">Delete</button>
+  </div>
+</clr-modal>

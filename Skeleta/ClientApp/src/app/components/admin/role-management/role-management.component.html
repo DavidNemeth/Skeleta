@@ -1,23 +1,53 @@
+<app-role-edit (shouldUpdateData)="loadData()"></app-role-edit>
+
 <div class="card">
   <div class="card-header">
     Role Management
   </div>
   <div class="card-block">
     <app-search-box (searchChange)="onSearchChanged($event)" placeholder="{{'roles.management.Search' | translate}}"></app-search-box>
-    <clr-datagrid [(clrDgSelected)]="rowSelected" [clrDgRowSelection]="true">
+
+    <clr-datagrid class="datagrid-compact" [(clrDgSelected)]="selected" [clrDgRowSelection]="true">
+      <clr-dg-action-bar>
+        <div class="btn-group">
+          <button type="button" class="btn btn-sm btn-secondary" (click)="onAdd()">
+            <clr-icon shape="plus"></clr-icon> Add
+            New
+          </button>
+          <button type="button" class="btn btn-sm btn-secondary" (click)="onDelete()"><clr-icon shape="close"></clr-icon> Delete</button>
+          <button type="button" class="btn btn-sm btn-secondary" (click)="onEdit()" *ngIf="selected.length == 1"><clr-icon shape="pencil"></clr-icon> Edit</button>
+        </div>
+        <div class="btn-group">
+          <clr-dropdown>
+            <button type="button" class="btn btn-sm btn-secondary" clrDropdownTrigger>
+              Export
+              <clr-icon shape="caret down"></clr-icon>
+            </button>
+            <clr-dropdown-menu clrPosition="bottom-left" *clrIfOpen>
+              <button type="button" (click)="onExportAll()" clrDropdownItem>Export All</button>
+              <button type="button" (click)="onExportSelected()" [disabled]="selected.length === 0" clrDropdownItem>Export Selected Items</button>
+            </clr-dropdown-menu>
+          </clr-dropdown>
+        </div>
+      </clr-dg-action-bar>
+
       <clr-dg-column [clrDgField]="'name'">{{'roles.management.Name' | translate}}</clr-dg-column>
       <clr-dg-column [clrDgField]="'description'">{{'roles.management.Description' | translate}}</clr-dg-column>
       <clr-dg-column [clrDgField]="'usersCount'">{{'users.management.Users' | translate}}</clr-dg-column>
 
-      <clr-dg-row *clrDgItems="let role of roles" [clrDgItem]="user">
+      <clr-dg-placeholder>Loading Roles!</clr-dg-placeholder>
+
+      <clr-dg-row *clrDgItems="let role of roles" [clrDgItem]="role">
         <clr-dg-cell>{{role.name}}</clr-dg-cell>
         <clr-dg-cell>{{role.description}}</clr-dg-cell>
         <clr-dg-cell>{{role.usersCount}}</clr-dg-cell>
       </clr-dg-row>
 
       <clr-dg-footer>
-        <clr-dg-pagination #pagination [clrDgPageSize]="10">
-          <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">{{'roles.management.UsersPerPage' | translate}}</clr-dg-page-size>
+        <clr-dg-column-toggle>
+        </clr-dg-column-toggle>
+        <clr-dg-pagination #pagination [clrDgPageSize]="50">
+          <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100,1000]">{{'roles.management.RolesPerPage' | translate}}</clr-dg-page-size>
           {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
           {{pagination.totalItems}} {{'roles.management.Users' | translate}}
         </clr-dg-pagination>

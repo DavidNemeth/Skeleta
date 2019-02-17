@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { Observable } from 'rxjs';
 import { User } from '../../../../models/user.model';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
@@ -7,7 +7,6 @@ import { ClrLoadingState } from '@clr/angular';
 import { UserEdit } from '../../../../models/user-edit.model';
 import { Permission } from '../../../../models/permission.model';
 import { Role } from '../../../../models/role.model';
-import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-user-edit',
@@ -26,23 +25,16 @@ export class UserEditComponent implements OnInit {
   private openModal = false;
 
   initialUser: User = new User();
-  obsUser: Observable<User>;
-  obsRoles: Observable<Role[]>;
   userEdit: UserEdit;
   private allRoles: Role[] = [];
   private usersToDelete: User[] = [];
   userForm: FormGroup;
-
-  public changesSavedCallback: () => void;
-  public changesFailedCallback: () => void;
-  public changesCancelledCallback: () => void;
 
   @Output() shouldUpdateData = new EventEmitter<boolean>();
 
   constructor(private formBuilder: FormBuilder, private accountService: AccountService) { }
 
   ngOnInit() {
-    console.log("init user-edit");
     this.userForm = this.formBuilder.group({
       'userName': ['', Validators.required],
       'jobTitle': [''],
@@ -83,7 +75,6 @@ export class UserEditComponent implements OnInit {
     this.submitBtnState = ClrLoadingState.LOADING;
 
     Object.assign(this.userEdit, this.userForm.value);
-    console.log(this.userEdit);
 
     if (this.isNewUser) {
       this.accountService.newUser(this.userEdit).subscribe(user => this.saveSuccessHelper(), error => this.saveFailedHelper(error));
@@ -103,7 +94,6 @@ export class UserEditComponent implements OnInit {
 
   private saveFailedHelper(error: any): void {
     this.submitBtnState = ClrLoadingState.ERROR;
-    console.log(error);
   }
 
   private addNewPassword() {
@@ -174,7 +164,7 @@ export class UserEditComponent implements OnInit {
       this.userForm.controls['userName'].disable();
       this.isNewUser = false;
       this.userForm.patchValue(user);
-
+      console.log(user);
       this.initialUser = new User();
       Object.assign(this.initialUser, user);
 
@@ -217,7 +207,6 @@ export class UserEditComponent implements OnInit {
         result => {
           current++;
           if (current === userCount) {
-            console.log("obs call" + userCount + " " + current);
             this.shouldUpdateData.emit();
             this.deleteOpen = false;
             this.deleteBtnState = ClrLoadingState.SUCCESS;

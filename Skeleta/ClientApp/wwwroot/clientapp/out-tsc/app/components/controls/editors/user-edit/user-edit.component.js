@@ -21,6 +21,7 @@ var UserEditComponent = /** @class */ (function () {
         this.formBuilder = formBuilder;
         this.accountService = accountService;
         this.submitBtnState = angular_1.ClrLoadingState.DEFAULT;
+        this.deleteBtnState = angular_1.ClrLoadingState.DEFAULT;
         this.deleteOpen = false;
         this.canChangePassword = false;
         this.isNewUser = false;
@@ -34,7 +35,6 @@ var UserEditComponent = /** @class */ (function () {
     }
     UserEditComponent.prototype.ngOnInit = function () {
         var _this = this;
-        console.log("init user-edit");
         this.userForm = this.formBuilder.group({
             'userName': ['', forms_1.Validators.required],
             'jobTitle': [''],
@@ -71,7 +71,6 @@ var UserEditComponent = /** @class */ (function () {
         var _this = this;
         this.submitBtnState = angular_1.ClrLoadingState.LOADING;
         Object.assign(this.userEdit, this.userForm.value);
-        console.log(this.userEdit);
         if (this.isNewUser) {
             this.accountService.newUser(this.userEdit).subscribe(function (user) { return _this.saveSuccessHelper(); }, function (error) { return _this.saveFailedHelper(error); });
         }
@@ -87,7 +86,6 @@ var UserEditComponent = /** @class */ (function () {
     };
     UserEditComponent.prototype.saveFailedHelper = function (error) {
         this.submitBtnState = angular_1.ClrLoadingState.ERROR;
-        console.log(error);
     };
     UserEditComponent.prototype.addNewPassword = function () {
         this.userForm.addControl('newPassword', new forms_1.FormControl('', [forms_1.Validators.required, forms_1.Validators.minLength(6)]));
@@ -173,14 +171,21 @@ var UserEditComponent = /** @class */ (function () {
         this.usersToDelete = users;
     };
     UserEditComponent.prototype.Delete = function () {
-        this.bulkDelete();
-        this.deleteOpen = false;
-        this.shouldUpdateData.emit();
-    };
-    UserEditComponent.prototype.bulkDelete = function () {
+        var _this = this;
+        this.deleteBtnState = angular_1.ClrLoadingState.LOADING;
+        var userCount = this.usersToDelete.length;
+        var current = 0;
         for (var _i = 0, _a = this.usersToDelete; _i < _a.length; _i++) {
             var user = _a[_i];
-            this.accountService.deleteUser(user).subscribe();
+            this.accountService.deleteUser(user).subscribe(function (result) {
+                current++;
+                if (current === userCount) {
+                    console.log("obs call" + userCount + " " + current);
+                    _this.shouldUpdateData.emit();
+                    _this.deleteOpen = false;
+                    _this.deleteBtnState = angular_1.ClrLoadingState.SUCCESS;
+                }
+            });
         }
     };
     Object.defineProperty(UserEditComponent.prototype, "canViewAllRoles", {
