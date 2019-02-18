@@ -7,6 +7,7 @@ import { UserEdit } from '../../../../models/user-edit.model';
 import { Permission } from '../../../../models/permission.model';
 import { Role } from '../../../../models/role.model';
 import { MustMatch } from '../../../../helpers/must-match.validator';
+import { forkJoin, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-user-edit',
@@ -30,7 +31,8 @@ export class UserEditComponent implements OnInit {
   private usersToDelete: User[] = [];
   userForm: FormGroup;
 
-  @Output() shouldUpdateData = new EventEmitter<boolean>();
+  @Output() updateData = new EventEmitter<User>();
+  @Output() deleteData = new EventEmitter<User[]>();
 
   constructor(private formBuilder: FormBuilder, private accountService: AccountService) { }
 
@@ -44,7 +46,7 @@ export class UserEditComponent implements OnInit {
       roles: [{ value: [], disabled: !this.canAssignRoles }, Validators.required],
       currentPassword: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(6)]],
       newPassword: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(6)]],
-      confirmPassword: [{ value: '', disabled: true  }, [Validators.required, Validators.minLength(6)]]
+      confirmPassword: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(6)]]
     }, {
         validator: MustMatch('newPassword', 'confirmPassword')
       });
@@ -72,8 +74,8 @@ export class UserEditComponent implements OnInit {
         phoneNumber: ['', Validators.required],
         roles: [{ value: [], disabled: !this.canAssignRoles }, Validators.required],
         currentPassword: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(6)]],
-        newPassword: [{ value: '', disabled: true  }, [Validators.required, Validators.minLength(6)]],
-        confirmPassword: [{ value: '', disabled: true  }, [Validators.required, Validators.minLength(6)]]
+        newPassword: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(6)]],
+        confirmPassword: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(6)]]
       }, {
           validator: MustMatch('newPassword', 'confirmPassword')
         });
@@ -98,7 +100,8 @@ export class UserEditComponent implements OnInit {
 
   private saveSuccessHelper(): void {
     this.accountService.refreshLoggedInUser().subscribe();
-    this.shouldUpdateData.emit();
+    Object.assign(this.initialUser, this.userEdit);
+    this.updateData.emit(this.initialUser);
 
     this.submitBtnState = ClrLoadingState.SUCCESS;
     this.openModal = false;
@@ -176,6 +179,7 @@ export class UserEditComponent implements OnInit {
       this.userForm.controls['userName'].disable();
       this.isNewUser = false;
       this.userForm.patchValue(user);
+
       this.initialUser = new User();
       Object.assign(this.initialUser, user);
 
@@ -210,21 +214,18 @@ export class UserEditComponent implements OnInit {
 
   private Delete() {
     this.deleteBtnState = ClrLoadingState.LOADING;
-    var userCount = this.usersToDelete.length;
-    var current = 0;
 
+    let observables: Observable<any>[] = [];
     for (let user of this.usersToDelete) {
-      this.accountService.deleteUser(<UserEdit>user).subscribe(
-        result => {
-          current++;
-          if (current === userCount) {
-            this.shouldUpdateData.emit();
-            this.deleteOpen = false;
-            this.deleteBtnState = ClrLoadingState.SUCCESS;
-          }
-        }
-      );
+      observables.push(this.accountService.deleteUser(<UserEdit>user));
     }
+
+    forkJoin(observables)
+      .subscribe(dataArray => {
+        this.deleteData.emit(this.usersToDelete);
+        this.deleteOpen = false;
+        this.deleteBtnState = ClrLoadingState.SUCCESS;
+      });
   }
 
   get canViewAllRoles() {

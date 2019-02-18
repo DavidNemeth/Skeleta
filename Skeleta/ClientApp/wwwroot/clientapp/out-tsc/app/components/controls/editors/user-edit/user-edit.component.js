@@ -16,6 +16,7 @@ var account_service_1 = require("../../../../services/account.service");
 var angular_1 = require("@clr/angular");
 var user_edit_model_1 = require("../../../../models/user-edit.model");
 var permission_model_1 = require("../../../../models/permission.model");
+var must_match_validator_1 = require("../../../../helpers/must-match.validator");
 var UserEditComponent = /** @class */ (function () {
     function UserEditComponent(formBuilder, accountService) {
         this.formBuilder = formBuilder;
@@ -31,17 +32,22 @@ var UserEditComponent = /** @class */ (function () {
         this.initialUser = new user_model_1.User();
         this.allRoles = [];
         this.usersToDelete = [];
-        this.shouldUpdateData = new core_1.EventEmitter();
+        this.updateData = new core_1.EventEmitter();
     }
     UserEditComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.userForm = this.formBuilder.group({
-            'userName': ['', forms_1.Validators.required],
-            'jobTitle': [''],
-            'fullName': ['', forms_1.Validators.required],
-            'email': ['', [forms_1.Validators.required, forms_1.Validators.email]],
-            'phoneNumber': ['', forms_1.Validators.required],
-            'roles': [{ value: [], disabled: !this.canAssignRoles }, forms_1.Validators.required]
+            userName: ['', forms_1.Validators.required],
+            jobTitle: [''],
+            fullName: ['', forms_1.Validators.required],
+            email: ['', [forms_1.Validators.required, forms_1.Validators.email]],
+            phoneNumber: ['', forms_1.Validators.required],
+            roles: [{ value: [], disabled: !this.canAssignRoles }, forms_1.Validators.required],
+            currentPassword: [{ value: '', disabled: true }, [forms_1.Validators.required, forms_1.Validators.minLength(6)]],
+            newPassword: [{ value: '', disabled: true }, [forms_1.Validators.required, forms_1.Validators.minLength(6)]],
+            confirmPassword: [{ value: '', disabled: true }, [forms_1.Validators.required, forms_1.Validators.minLength(6)]]
+        }, {
+            validator: must_match_validator_1.MustMatch('newPassword', 'confirmPassword')
         });
         if (this.canViewAllRoles) {
             this.accountService.getRoles().subscribe(function (roles) { return _this.allRoles = roles; });
@@ -57,18 +63,25 @@ var UserEditComponent = /** @class */ (function () {
             this.deletePasswordFromUser(this.userEdit);
             this.deletePasswordFromUser(this.initialUser);
             this.userForm = this.formBuilder.group({
-                'userName': ['', forms_1.Validators.required],
-                'jobTitle': [''],
-                'fullName': ['', forms_1.Validators.required],
-                'email': ['', [forms_1.Validators.required, forms_1.Validators.email]],
-                'phoneNumber': ['', forms_1.Validators.required],
-                'roles': [{ value: [], disabled: !this.canAssignRoles }, forms_1.Validators.required]
+                userName: ['', forms_1.Validators.required],
+                jobTitle: [''],
+                fullName: ['', forms_1.Validators.required],
+                email: ['', [forms_1.Validators.required, forms_1.Validators.email]],
+                phoneNumber: ['', forms_1.Validators.required],
+                roles: [{ value: [], disabled: !this.canAssignRoles }, forms_1.Validators.required],
+                currentPassword: [{ value: '', disabled: true }, [forms_1.Validators.required, forms_1.Validators.minLength(6)]],
+                newPassword: [{ value: '', disabled: true }, [forms_1.Validators.required, forms_1.Validators.minLength(6)]],
+                confirmPassword: [{ value: '', disabled: true }, [forms_1.Validators.required, forms_1.Validators.minLength(6)]]
+            }, {
+                validator: must_match_validator_1.MustMatch('newPassword', 'confirmPassword')
             });
             this.removeChangePassword();
         }
     };
     UserEditComponent.prototype.save = function () {
         var _this = this;
+        for (var i in this.userForm.controls)
+            this.userForm.controls[i].markAsTouched();
         this.submitBtnState = angular_1.ClrLoadingState.LOADING;
         Object.assign(this.userEdit, this.userForm.value);
         if (this.isNewUser) {
@@ -86,32 +99,33 @@ var UserEditComponent = /** @class */ (function () {
     };
     UserEditComponent.prototype.saveFailedHelper = function (error) {
         this.submitBtnState = angular_1.ClrLoadingState.ERROR;
+        console.log(error);
     };
     UserEditComponent.prototype.addNewPassword = function () {
-        this.userForm.addControl('newPassword', new forms_1.FormControl('', [forms_1.Validators.required, forms_1.Validators.minLength(6)]));
-        this.userForm.addControl('confirmPassword', new forms_1.FormControl('', [forms_1.Validators.required, forms_1.Validators.minLength(6)]));
+        this.userForm.controls['newPassword'].enable();
+        this.userForm.controls['confirmPassword'].enable();
         this.isConfirmPassword = true;
     };
     UserEditComponent.prototype.addChangePassword = function () {
         if (this.isCurrentPassowrd == true) {
-            this.userForm.removeControl('currentPassword');
-            this.userForm.removeControl('newPassword');
-            this.userForm.removeControl('confirmPassword');
+            this.userForm.controls['currentPassword'].disable();
+            this.userForm.controls['newPassword'].disable();
+            this.userForm.controls['confirmPassword'].disable();
             this.isCurrentPassowrd = false;
             this.isConfirmPassword = false;
         }
         else {
-            this.userForm.addControl('currentPassword', new forms_1.FormControl('', [forms_1.Validators.required, forms_1.Validators.minLength(6)]));
-            this.userForm.addControl('newPassword', new forms_1.FormControl('', [forms_1.Validators.required, forms_1.Validators.minLength(6)]));
-            this.userForm.addControl('confirmPassword', new forms_1.FormControl('', [forms_1.Validators.required, forms_1.Validators.minLength(6)]));
+            this.userForm.controls['currentPassword'].enable();
+            this.userForm.controls['newPassword'].enable();
+            this.userForm.controls['confirmPassword'].enable();
             this.isCurrentPassowrd = true;
             this.isConfirmPassword = true;
         }
     };
     UserEditComponent.prototype.removeChangePassword = function () {
-        this.userForm.removeControl('currentPassword');
-        this.userForm.removeControl('newPassword');
-        this.userForm.removeControl('confirmPassword');
+        this.userForm.controls['currentPassword'].disable();
+        this.userForm.controls['newPassword'].disable();
+        this.userForm.controls['confirmPassword'].disable();
         this.isCurrentPassowrd = false;
         this.isConfirmPassword = false;
     };
@@ -145,7 +159,6 @@ var UserEditComponent = /** @class */ (function () {
             this.userForm.controls['userName'].disable();
             this.isNewUser = false;
             this.userForm.patchValue(user);
-            console.log(user);
             this.initialUser = new user_model_1.User();
             Object.assign(this.initialUser, user);
             this.userEdit = new user_edit_model_1.UserEdit();
@@ -205,7 +218,7 @@ var UserEditComponent = /** @class */ (function () {
     __decorate([
         core_1.Output(),
         __metadata("design:type", Object)
-    ], UserEditComponent.prototype, "shouldUpdateData", void 0);
+    ], UserEditComponent.prototype, "updateData", void 0);
     UserEditComponent = __decorate([
         core_1.Component({
             selector: 'app-user-edit',

@@ -4,6 +4,10 @@
     "Notifications": "Értesitések",
     "New": "Új"
   },
+  "toasts": {
+    "saved": "Mentés Sikeres",
+    "error": "Hiba"
+  },
   "loginScreen": {
     "Logout": "Kijelentkezés",
     "Login": "Bejelentkezés",

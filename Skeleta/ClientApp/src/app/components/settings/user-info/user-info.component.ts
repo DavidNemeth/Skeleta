@@ -14,6 +14,7 @@ import { UserEditComponent } from '../../controls/editors/user-edit/user-edit.co
 })
 export class UserInfoComponent implements OnInit {
 
+  sourceUser: User;
   user: User = new User();
   private allRoles: Role[] = [];
 
@@ -29,10 +30,11 @@ export class UserInfoComponent implements OnInit {
     }
   }
 
-  loadData() {
-    this.accountService.getUser().subscribe(
-      user => this.user = user
-    );
+  updateUser(returnUserEdit: User) {
+    if (this.sourceUser && returnUserEdit) {
+      this.user = returnUserEdit;
+      this.sourceUser == null;  
+    }           
   }
 
   get canViewAllRoles() {
@@ -40,6 +42,7 @@ export class UserInfoComponent implements OnInit {
   }
 
   onEdit() {
+    this.sourceUser = this.user;
     this.userEdit.editUser(this.user);
   }
 }

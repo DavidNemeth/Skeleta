@@ -4,6 +4,7 @@ import { AccountService } from '../../../../services/account.service';
 import { Permission } from '../../../../models/permission.model';
 import { FormBuilder, FormGroup, Validators, FormControl, FormArray } from '@angular/forms';
 import { ClrLoadingState } from '@clr/angular';
+import { forkJoin, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-role-edit',
@@ -21,9 +22,11 @@ export class RoleEditComponent implements OnInit {
   private rolesToDelete: Role[] = [];
   private allPermissions: Permission[] = [];
   private initialPremissions: Permission[] = [];
+  initialRole: Role = new Role();
   roleForm: FormGroup;
 
-  @Output() shouldUpdateData = new EventEmitter<boolean>();
+  @Output() updateData = new EventEmitter<Role>();
+  @Output() deleteData = new EventEmitter<Role[]>();
 
   constructor(private formBuilder: FormBuilder, private accountService: AccountService) { }
   ngOnInit() {
@@ -35,7 +38,7 @@ export class RoleEditComponent implements OnInit {
       'name': ['', Validators.required],
       'description': [''],
       'permissions': []
-    });   
+    });
   }
 
   private openChange(value: boolean) {
@@ -60,7 +63,7 @@ export class RoleEditComponent implements OnInit {
     Object.assign(this.roleEdit, this.roleForm.value);
     if (this.isNewRole) {
       this.accountService.newRole(this.roleEdit)
-        .subscribe(role => this.saveSuccessHelper(role), error => this.saveFailedHelper(error));
+        .subscribe(role => this.saveSuccessHelper(), error => this.saveFailedHelper(error));
     }
     else {
       this.accountService.updateRole(this.roleEdit)
@@ -68,8 +71,9 @@ export class RoleEditComponent implements OnInit {
     }
   }
 
-  private saveSuccessHelper(role?: Role) {
-    this.shouldUpdateData.emit();
+  private saveSuccessHelper() {
+    Object.assign(this.initialRole, this.roleEdit);
+    this.updateData.emit(this.initialRole);
     this.roleEdit = new Role();
     this.submitBtnState = ClrLoadingState.SUCCESS;
     this.openModal = false;
@@ -85,24 +89,28 @@ export class RoleEditComponent implements OnInit {
     this.isNewRole = true;
     this.roleEdit = new Role();
     this.initialPremissions = [];
-    return this.roleEdit;
+    this.initialRole = new Role();
   }
 
   editRole(role: Role) {
     if (Role) {
 
       var premissions = [];
-      for(let premission of role.permissions){
+      for (let premission of role.permissions) {
         premissions.push(premission);
       }
-
       this.openModal = true;
       this.isNewRole = false;
       this.roleForm.patchValue(role);
+
       this.roleEdit = new Role();
       Object.assign(this.roleEdit, role);
-      Object.assign(this.initialPremissions, role.permissions);      
-      return this.roleEdit;
+
+      this.initialRole = new Role();
+      Object.assign(this.initialRole, role);
+
+      this.initialPremissions = [];
+      Object.assign(this.initialPremissions, role.permissions);
     }
     else {
       return this.newRole();
@@ -116,24 +124,21 @@ export class RoleEditComponent implements OnInit {
 
   private Delete() {
     this.deleteBtnState = ClrLoadingState.LOADING;
-    var roleCount = this.rolesToDelete.length;
-    var current = 0;
 
+    let observables: Observable<any>[] = [];
     for (let role of this.rolesToDelete) {
-      this.accountService.deleteRole(role).subscribe(
-        result => {
-          current++;
-          if (current === roleCount) {
-            this.shouldUpdateData.emit();
-            this.deleteOpen = false;
-            this.deleteBtnState = ClrLoadingState.SUCCESS;
-          }
-        }
-      );
+      observables.push(this.accountService.deleteRole(role));
     }
+
+    forkJoin(observables)
+      .subscribe(dataArray => {
+        this.deleteData.emit(this.rolesToDelete);
+        this.deleteOpen = false;
+        this.deleteBtnState = ClrLoadingState.SUCCESS;
+      });
   }
+
   get canManageRoles() {
     return this.accountService.userHasPermission(Permission.manageRolesPermission);
   }
-
 }

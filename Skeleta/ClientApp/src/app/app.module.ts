@@ -88,7 +88,7 @@ import { RoleEditComponent } from './components/controls/editors/role-edit/role-
     FormsModule,
     NgSelectModule,
     ReactiveFormsModule,
-    AppRoutingModule,
+    AppRoutingModule,    
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

@@ -4,6 +4,10 @@
     "Notifications": "Notifications",
     "New": "New"
   },
+  "toasts": {
+    "saved": "Saved",
+    "error": "Error"
+  },
   "loginScreen": {
     "Logout": "Logout",
     "Login": "Login",

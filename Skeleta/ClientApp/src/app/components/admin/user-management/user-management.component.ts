@@ -19,12 +19,12 @@ export class UserManagementComponent implements OnInit, AfterViewInit {
   columns: any[] = [];
   users: User[] = [];
   usersCache: User[] = [];
-  editedUser: UserEdit;
-  sourceUser: UserEdit;
+  sourceUser: User;
   editingUserName: { name: string };
   loadingIndicator: boolean;
   selected: User[] = [];
   allRoles: Role[] = [];
+  gT = (key: string) => this.translationService.getTranslation(key);
 
   @ViewChild(UserEditComponent) userEdit;
 
@@ -40,10 +40,12 @@ export class UserManagementComponent implements OnInit, AfterViewInit {
   }
 
   onAdd() {
+    this.sourceUser = null;
     this.userEdit.newUser();
   }
 
   onEdit() {
+    this.sourceUser = this.selected[0];
     this.userEdit.editUser(this.selected[0]);
   }
 
@@ -61,6 +63,29 @@ export class UserManagementComponent implements OnInit, AfterViewInit {
 
   }
 
+  updateList(returnUserEdit: User) {
+    if (this.sourceUser) {
+      let index = this.users.indexOf(this.sourceUser);
+      let cacheIndex = this.usersCache.indexOf(this.sourceUser);
+      this.users[index] = returnUserEdit;
+      this.usersCache[cacheIndex] = returnUserEdit;
+      this.sourceUser == null;
+      this.alertService.showMessage(this.gT('toasts.saved'), `${returnUserEdit.userName} Updated!`, MessageSeverity.success);
+    }
+    else {
+      this.users.unshift(returnUserEdit);
+      this.usersCache.unshift(returnUserEdit);
+      this.alertService.showMessage(this.gT('toasts.saved'), `${returnUserEdit.userName} Added!`, MessageSeverity.success);
+    }
+  }
+
+  deleteList(userToDelete: User[]) {
+    for (let user of userToDelete) {
+      this.users = this.users.filter(obj => obj !== user);
+      this.usersCache = this.usersCache.filter(obj => obj !== user);
+    }
+    this.alertService.showMessage(this.gT('toasts.saved'), `${userToDelete.length} Users Deleted!`, MessageSeverity.success);
+  }
 
   loadData() {
     this.users = [];

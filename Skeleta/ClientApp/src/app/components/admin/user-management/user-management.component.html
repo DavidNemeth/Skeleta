@@ -1,4 +1,4 @@
-<app-user-edit (shouldUpdateData)="loadData()"></app-user-edit>
+<app-user-edit (updateData)="updateList($event)" (deleteData)="deleteList($event)"></app-user-edit>
 
 <div class="card">
   <div class="card-header">
@@ -30,7 +30,6 @@
           </clr-dropdown>
         </div>
       </clr-dg-action-bar>
-
       <clr-dg-column [clrDgField]="'jobTitle'">
         <ng-container *clrDgHideableColumn="{hidden: false}">
           {{'users.management.Title' | translate}}

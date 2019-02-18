@@ -2,6 +2,7 @@
 /*@import "~@ng-select/ng-select/themes/material.theme.css";*/
 @import '../node_modules/@clr/icons/clr-icons.min.css';
 @import '../src/app/assets/styles/themes/light.css';
+@import '~ngx-toasta/styles/style-default.css';
 /*@import '../src/app/assets/styles/themes/dark.css';*/
 
 
@@ -83,3 +84,22 @@ g[class^='raphael-group-'][class$='-creditgroup'] {
   color: #565656;
 }
 
+#toasta.toasta-position-top-right {
+  top: 70px;
+  right: 20px;
+}
+
+#toasta .toast.toasta-theme-bootstrap {
+  font-size: 1em;
+}
+
+  #toasta .toast.toasta-theme-bootstrap .toast-text .toast-title {
+    font-size: 1.04em;
+  }
+
+#toasta .toast-text .toast-msg {
+  max-width: 1000px;
+  max-height: 800px;
+  display: inline-block;
+  overflow: auto;
+}

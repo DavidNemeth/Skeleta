@@ -17,10 +17,7 @@ export class RoleManagementComponent implements OnInit {
   roles: Role[] = [];
   rolesCache: Role[] = [];
   allPermissions: Permission[] = [];
-  editedRole: Role;
   sourceRole: Role;
-  editingRoleName: { name: string };
-  loadingIndicator: boolean;
   selected: Role[] = [];
 
   @ViewChild(RoleEditComponent) roleEdit;
@@ -31,22 +28,21 @@ export class RoleManagementComponent implements OnInit {
 
   ngOnInit() {
     this.loadData();
+    const gT = (key: string) => this.translationService.getTranslation(key);
   }
 
   onAdd() {
-    if (this.canManageRoles) {
-      this.roleEdit.newRole();
-    }
+    this.sourceRole = null;
+    this.roleEdit.newRole();
   }
 
   onEdit() {
-    if (this.canManageRoles) {
-      this.roleEdit.editRole(this.selected[0]);
-    }
+    this.sourceRole = this.selected[0];
+    this.roleEdit.editRole(this.selected[0]);
   }
 
   onDelete() {
-    if (this.selected.length > 0 && this.canManageRoles) {
+    if (this.selected.length > 0) {
       this.roleEdit.deleteRoles(this.selected);
     }
   }
@@ -59,17 +55,35 @@ export class RoleManagementComponent implements OnInit {
 
   }
 
+  updateList(returnRole: Role) {
+    if (this.sourceRole) {
+      let index = this.roles.indexOf(this.sourceRole);
+      let cacheIndex = this.rolesCache.indexOf(this.sourceRole);
+      this.roles[index] = returnRole;
+      this.rolesCache[cacheIndex] = returnRole;
+      this.sourceRole == null;
+    }
+    else {
+      this.roles.unshift(returnRole);
+      this.rolesCache.unshift(returnRole);
+    }
+  }
+
+  deleteList(rolestoDelete: Role[]) {
+    for (let role of rolestoDelete) {
+      this.roles = this.roles.filter(obj => obj !== role);
+      this.rolesCache = this.rolesCache.filter(obj => obj !== role);
+    }
+  }
+
   loadData() {
     this.roles = [];
     this.rolesCache = [];
     this.alertService.startLoadingMessage();
-    this.loadingIndicator = true;
 
     this.accountService.getRolesAndPermissions()
       .subscribe(results => {
         this.alertService.stopLoadingMessage();
-        this.loadingIndicator = false;
-
         const roles = results[0];
         const permissions = results[1];
 
@@ -85,8 +99,6 @@ export class RoleManagementComponent implements OnInit {
       },
         error => {
           this.alertService.stopLoadingMessage();
-          this.loadingIndicator = false;
-
           this.alertService.showStickyMessage('Load Error',
             `Unable to retrieve roles from the server.\r\nErrors: "${Utilities.getHttpResponseMessage(error)}"`,
             MessageSeverity.error, error);
