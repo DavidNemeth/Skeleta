@@ -173,7 +173,7 @@ export class UserEditComponent implements OnInit {
   }
 
   editUser(user: User) {
-    if (user) {
+    if (user) {   
       this.openModal = true;
       this.canChangePassword = true;
       this.userForm.controls['userName'].disable();

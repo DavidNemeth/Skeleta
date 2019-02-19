@@ -7,7 +7,7 @@
   </div>
   <div class="modal-body">
    
-    <form clrForm [formGroup]="userForm" (ngSubmit)="save()">
+    <form autocomplete="off" clrForm [formGroup]="userForm" (ngSubmit)="save()">
       <clr-input-container>
         <label>{{'users.editor.UserName' | translate}}</label>
         <input clrInput type="text" formControlName="userName"/>
@@ -37,19 +37,22 @@
       <div *ngIf="isCurrentPassowrd">
         <clr-input-container>
           <label>{{'users.editor.Password' | translate}}</label>
-          <input clrInput type="password" formControlName="currentPassword" placeholder="Enter current password" />
+          <input clrInput type="password" formControlName="currentPassword"  />        
         </clr-input-container>
       </div>
 
       <div *ngIf="isConfirmPassword">
         <clr-input-container>
           <label>{{'users.editor.NewPassword' | translate}}</label>
-          <input clrInput type="password" formControlName="newPassword" placeholder="Enter new password" />
+          <input clrInput type="password" formControlName="newPassword"  />
+          <clr-control-helper>6+ Character Password</clr-control-helper>
+          <clr-control-error *clrIfError="'minlength'">Password must be 6+ Characters</clr-control-error>
         </clr-input-container>
 
         <clr-input-container>
           <label>{{'users.editor.ConfirmPassword' | translate}}</label>
-          <input clrInput type="password" formControlName="confirmPassword" placeholder="Confirm new password" />
+          <input clrInput type="password" formControlName="confirmPassword"  />
+          <clr-control-error *clrIfError="MustMatch">Password must match</clr-control-error>
         </clr-input-container>
       </div>
 
