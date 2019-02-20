@@ -6,64 +6,70 @@
     <h3 class="modal-title">Edit Profile</h3>
   </div>
   <div class="modal-body">
-   
+
     <form autocomplete="off" clrForm [formGroup]="userForm" (ngSubmit)="save()">
-      <clr-input-container>
-        <label>{{'users.editor.UserName' | translate}}</label>
-        <input clrInput type="text" formControlName="userName"/>
-      </clr-input-container>
+      <div class="clr-row">
+        <div class="clr-col-sm-12 clr-col-md-6">
+          <clr-input-container>
+            <label class="clr-col-12 clr-col-md-5">{{'users.editor.UserName' | translate}}</label>
+            <input class="clr-col-12 clr-col-md-7" clrInput type="text" formControlName="userName" />
+          </clr-input-container>
 
-      <clr-input-container>
-        <label>{{'users.editor.JobTitle' | translate}}</label>
-        <input clrInput type="text" formControlName="jobTitle"/>
-        <clr-control-error>Error message that appears after focus is lost and control is invalid</clr-control-error>
-      </clr-input-container>
+          <clr-input-container>
+            <label class="clr-col-12 clr-col-md-5">{{'users.editor.JobTitle' | translate}}</label>
+            <input class="clr-col-12 clr-col-md-7" clrInput type="text" formControlName="jobTitle" />
+            <clr-control-error>Error message that appears after focus is lost and control is invalid</clr-control-error>
+          </clr-input-container>
 
-      <clr-input-container>
-        <label>{{'users.editor.FullName' | translate}}</label>
-        <input clrInput type="text" formControlName="fullName"/>
-      </clr-input-container>
+          <clr-input-container>
+            <label class="clr-col-12 clr-col-md-5">{{'users.editor.FullName' | translate}}</label>
+            <input class="clr-col-12 clr-col-md-7" clrInput type="text" formControlName="fullName" />
+          </clr-input-container>
 
-      <clr-input-container>
-        <label>{{'users.editor.Email' | translate}}</label>
-        <input clrInput type="email" formControlName="email"/>
-      </clr-input-container>
+          <clr-input-container>
+            <label class="clr-col-12 clr-col-md-5">{{'users.editor.Email' | translate}}</label>
+            <input class="clr-col-12 clr-col-md-7" clrInput type="email" formControlName="email" />
+          </clr-input-container>
 
-      <clr-input-container>
-        <label>{{'users.editor.PhoneNumber' | translate}}</label>
-        <input clrInput type="text" formControlName="phoneNumber"/>
-      </clr-input-container>
+          <clr-input-container>
+            <label class="clr-col-12 clr-col-md-5">{{'users.editor.PhoneNumber' | translate}}</label>
+            <input class="clr-col-12 clr-col-md-7" clrInput type="text" formControlName="phoneNumber" />
+          </clr-input-container>
 
-      <div *ngIf="isCurrentPassowrd">
-        <clr-input-container>
-          <label>{{'users.editor.Password' | translate}}</label>
-          <input clrInput type="password" formControlName="currentPassword"  />        
-        </clr-input-container>
+          <clr-select-container>
+            <label class="clr-col-12 clr-col-md-5">{{'users.editor.Roles' | translate}}</label>
+            <select class="clr-col-12 clr-col-md-7" multiple clrSelect formControlName="roles">
+              <option *ngFor="let role of allRoles" [value]="role.name">{{role.name}}</option>
+            </select>
+          </clr-select-container>
+        </div>
+
+        <div class="clr-col-sm-12 clr-col-md-6">
+          <button *ngIf="canChangePassword" class="btn btn-link" type="button" (click)="addChangePassword()">{{'users.editor.ChangePassword' | translate}}</button>
+
+          <div *ngIf="isCurrentPassowrd">
+            <clr-input-container>
+              <label class="clr-col-12 clr-col-md-5">{{'users.editor.Password' | translate}}</label>
+              <input class="clr-col-12 clr-col-md-7" clrInput type="password" formControlName="currentPassword" />
+            </clr-input-container>
+          </div>
+
+          <div *ngIf="isConfirmPassword">
+            <clr-input-container>
+              <label class="clr-col-12 clr-col-md-5">{{'users.editor.NewPassword' | translate}}</label>
+              <input class="clr-col-12 clr-col-md-7" clrInput type="password" formControlName="newPassword" />
+              <clr-control-helper>6+ Character Password</clr-control-helper>
+              <clr-control-error *clrIfError="'minlength'">Password must be 6+ Characters</clr-control-error>
+            </clr-input-container>
+
+            <clr-input-container>
+              <label class="clr-col-12 clr-col-md-5">{{'users.editor.ConfirmPassword' | translate}}</label>
+              <input class="clr-col-12 clr-col-md-7" clrInput type="password" formControlName="confirmPassword" />
+              <clr-control-error *clrIfError="MustMatch">Password must match</clr-control-error>
+            </clr-input-container>
+          </div>
+        </div>
       </div>
-
-      <div *ngIf="isConfirmPassword">
-        <clr-input-container>
-          <label>{{'users.editor.NewPassword' | translate}}</label>
-          <input clrInput type="password" formControlName="newPassword"  />
-          <clr-control-helper>6+ Character Password</clr-control-helper>
-          <clr-control-error *clrIfError="'minlength'">Password must be 6+ Characters</clr-control-error>
-        </clr-input-container>
-
-        <clr-input-container>
-          <label>{{'users.editor.ConfirmPassword' | translate}}</label>
-          <input clrInput type="password" formControlName="confirmPassword"  />
-          <clr-control-error *clrIfError="MustMatch">Password must match</clr-control-error>
-        </clr-input-container>
-      </div>
-
-      <button *ngIf="canChangePassword" class="btn btn-link" type="button" (click)="addChangePassword()">{{'users.editor.ChangePassword' | translate}}</button>
-
-      <clr-select-container>
-        <label>{{'users.editor.Roles' | translate}}</label>
-        <select multiple clrSelect formControlName="roles">
-          <option *ngFor="let role of allRoles" [value]="role.name">{{role.name}}</option>
-        </select>
-      </clr-select-container>
       <div class="modal-footer">
         <button [clrLoading]="submitBtnState" type="submit" [disabled]="!userForm.valid" class="btn btn-success">Save</button>
         <button type="button" (click)="resetForm()" class="btn btn-info">Reset</button>
