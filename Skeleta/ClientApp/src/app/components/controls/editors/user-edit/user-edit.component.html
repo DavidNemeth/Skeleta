@@ -71,8 +71,8 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button [clrLoading]="submitBtnState" type="submit" [disabled]="!userForm.valid" class="btn btn-success">Save</button>
         <button type="button" (click)="resetForm()" class="btn btn-info">Reset</button>
+        <button [clrLoading]="submitBtnState" type="submit" [disabled]="!userForm.valid" class="btn btn-primary">{{actionTitle}}</button>
       </div>
     </form>
   </div>
@@ -85,6 +85,6 @@
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-outline" (click)="deleteOpen = false">Cancel</button>
-    <button type="button" [clrLoading]="deleteBtnState" class="btn btn-primary" (click)="Delete()">Delete</button>
+    <button type="button" [clrLoading]="deleteBtnState" class="btn btn-danger" (click)="Delete()">Delete</button>
   </div>
 </clr-modal>

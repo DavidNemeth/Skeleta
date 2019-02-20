@@ -18,6 +18,7 @@ export class UserEditComponent implements OnInit {
   submitBtnState: ClrLoadingState = ClrLoadingState.DEFAULT;
   deleteBtnState: ClrLoadingState = ClrLoadingState.DEFAULT;
 
+  private actionTitle = "";
   private deleteOpen = false;
   private canChangePassword = false;
   private isNewUser = false;
@@ -163,7 +164,7 @@ export class UserEditComponent implements OnInit {
     this.openModal = true;
     this.canChangePassword = false;
     this.isNewUser = true;
-
+    this.actionTitle = "Add";
     this.initialUser = new User();
     this.userEdit = new UserEdit();
     this.userEdit.isEnabled = true;
@@ -178,6 +179,8 @@ export class UserEditComponent implements OnInit {
       this.canChangePassword = true;
       this.userForm.controls['userName'].disable();
       this.isNewUser = false;
+      this.actionTitle = "Edit";
+
       this.userForm.patchValue(user);
 
       this.initialUser = new User();
