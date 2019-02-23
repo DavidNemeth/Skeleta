@@ -1,4 +1,5 @@
 ﻿using DAL.Models.Interfaces;
+using DAL.Models.TaskModel;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -44,6 +45,10 @@ namespace DAL.Models
 		/// </summary>
 		public virtual ICollection<IdentityUserClaim<string>> Claims { get; set; }
 
-		
+		/// <summary>
+		/// Navigation property for the Tasks this user possesses.
+		/// </summary>
+		/// 
+		public ICollection<TaskItem> Tasks { get; set; }
 	}
 }

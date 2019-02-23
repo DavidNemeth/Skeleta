@@ -17,38 +17,34 @@ var angular_1 = require("@clr/angular");
 var user_edit_model_1 = require("../../../../models/user-edit.model");
 var permission_model_1 = require("../../../../models/permission.model");
 var must_match_validator_1 = require("../../../../helpers/must-match.validator");
+var rxjs_1 = require("rxjs");
+var alert_service_1 = require("../../../../services/alert.service");
+var app_translation_service_1 = require("../../../../services/app-translation.service");
 var UserEditComponent = /** @class */ (function () {
-    function UserEditComponent(formBuilder, accountService) {
+    function UserEditComponent(translationService, alertService, formBuilder, accountService) {
+        var _this = this;
+        this.translationService = translationService;
+        this.alertService = alertService;
         this.formBuilder = formBuilder;
         this.accountService = accountService;
         this.submitBtnState = angular_1.ClrLoadingState.DEFAULT;
         this.deleteBtnState = angular_1.ClrLoadingState.DEFAULT;
+        this.gT = function (key) { return _this.translationService.getTranslation(key); };
+        this.actionTitle = "";
         this.deleteOpen = false;
         this.canChangePassword = false;
         this.isNewUser = false;
         this.isCurrentPassowrd = false;
         this.isConfirmPassword = false;
-        this.openModal = false;
         this.initialUser = new user_model_1.User();
         this.allRoles = [];
         this.usersToDelete = [];
         this.updateData = new core_1.EventEmitter();
+        this.deleteData = new core_1.EventEmitter();
     }
     UserEditComponent.prototype.ngOnInit = function () {
         var _this = this;
-        this.userForm = this.formBuilder.group({
-            userName: ['', forms_1.Validators.required],
-            jobTitle: [''],
-            fullName: ['', forms_1.Validators.required],
-            email: ['', [forms_1.Validators.required, forms_1.Validators.email]],
-            phoneNumber: ['', forms_1.Validators.required],
-            roles: [{ value: [], disabled: !this.canAssignRoles }, forms_1.Validators.required],
-            currentPassword: [{ value: '', disabled: true }, [forms_1.Validators.required, forms_1.Validators.minLength(6)]],
-            newPassword: [{ value: '', disabled: true }, [forms_1.Validators.required, forms_1.Validators.minLength(6)]],
-            confirmPassword: [{ value: '', disabled: true }, [forms_1.Validators.required, forms_1.Validators.minLength(6)]]
-        }, {
-            validator: must_match_validator_1.MustMatch('newPassword', 'confirmPassword')
-        });
+        this.loadForm();
         if (this.canViewAllRoles) {
             this.accountService.getRoles().subscribe(function (roles) { return _this.allRoles = roles; });
         }
@@ -62,21 +58,26 @@ var UserEditComponent = /** @class */ (function () {
             this.openModal = false;
             this.deletePasswordFromUser(this.userEdit);
             this.deletePasswordFromUser(this.initialUser);
-            this.userForm = this.formBuilder.group({
-                userName: ['', forms_1.Validators.required],
-                jobTitle: [''],
-                fullName: ['', forms_1.Validators.required],
-                email: ['', [forms_1.Validators.required, forms_1.Validators.email]],
-                phoneNumber: ['', forms_1.Validators.required],
-                roles: [{ value: [], disabled: !this.canAssignRoles }, forms_1.Validators.required],
-                currentPassword: [{ value: '', disabled: true }, [forms_1.Validators.required, forms_1.Validators.minLength(6)]],
-                newPassword: [{ value: '', disabled: true }, [forms_1.Validators.required, forms_1.Validators.minLength(6)]],
-                confirmPassword: [{ value: '', disabled: true }, [forms_1.Validators.required, forms_1.Validators.minLength(6)]]
-            }, {
-                validator: must_match_validator_1.MustMatch('newPassword', 'confirmPassword')
-            });
+            this.loadForm();
+            this.alertService.resetStickyMessage();
+            //this.userForm.reset();
             this.removeChangePassword();
         }
+    };
+    UserEditComponent.prototype.loadForm = function () {
+        this.userForm = this.formBuilder.group({
+            userName: ['', forms_1.Validators.required],
+            jobTitle: [''],
+            fullName: ['', forms_1.Validators.required],
+            email: ['', [forms_1.Validators.required, forms_1.Validators.email]],
+            phoneNumber: ['', forms_1.Validators.required],
+            roles: [{ value: [], disabled: !this.canAssignRoles }, forms_1.Validators.required],
+            currentPassword: [{ value: '', disabled: true }, [forms_1.Validators.required, forms_1.Validators.minLength(6)]],
+            newPassword: [{ value: '', disabled: true }, [forms_1.Validators.required, forms_1.Validators.minLength(6)]],
+            confirmPassword: [{ value: '', disabled: true }, [forms_1.Validators.required, forms_1.Validators.minLength(6)]]
+        }, {
+            validator: must_match_validator_1.MustMatch('newPassword', 'confirmPassword')
+        });
     };
     UserEditComponent.prototype.save = function () {
         var _this = this;
@@ -93,13 +94,24 @@ var UserEditComponent = /** @class */ (function () {
     };
     UserEditComponent.prototype.saveSuccessHelper = function () {
         this.accountService.refreshLoggedInUser().subscribe();
-        this.shouldUpdateData.emit();
+        Object.assign(this.initialUser, this.userEdit);
+        this.updateData.emit(this.initialUser);
+        if (this.isNewUser)
+            this.alertService.showMessage(this.gT('toasts.saved'), "User " + this.userEdit.userName + " added!", alert_service_1.MessageSeverity.success);
+        else
+            this.alertService.showMessage(this.gT('toasts.saved'), "User " + this.userEdit.userName + " changes saved!", alert_service_1.MessageSeverity.success);
         this.submitBtnState = angular_1.ClrLoadingState.SUCCESS;
         this.openModal = false;
     };
     UserEditComponent.prototype.saveFailedHelper = function (error) {
         this.submitBtnState = angular_1.ClrLoadingState.ERROR;
-        console.log(error);
+        this.alertService.stopLoadingMessage();
+        this.alertService.showStickyMessage(error, null, alert_service_1.MessageSeverity.error);
+        console.log(error.error);
+        this.clrForm.markAsDirty();
+        if (error.error.Email) {
+            this.emailError = error.error.Email[0];
+        }
     };
     UserEditComponent.prototype.addNewPassword = function () {
         this.userForm.controls['newPassword'].enable();
@@ -131,6 +143,7 @@ var UserEditComponent = /** @class */ (function () {
     };
     UserEditComponent.prototype.resetForm = function () {
         this.userForm.reset();
+        this.alertService.resetStickyMessage();
         this.userForm.patchValue(this.initialUser);
         if (!this.isNewUser)
             this.removeChangePassword();
@@ -146,6 +159,7 @@ var UserEditComponent = /** @class */ (function () {
         this.openModal = true;
         this.canChangePassword = false;
         this.isNewUser = true;
+        this.actionTitle = "Add";
         this.initialUser = new user_model_1.User();
         this.userEdit = new user_edit_model_1.UserEdit();
         this.userEdit.isEnabled = true;
@@ -158,6 +172,7 @@ var UserEditComponent = /** @class */ (function () {
             this.canChangePassword = true;
             this.userForm.controls['userName'].disable();
             this.isNewUser = false;
+            this.actionTitle = "Edit";
             this.userForm.patchValue(user);
             this.initialUser = new user_model_1.User();
             Object.assign(this.initialUser, user);
@@ -187,19 +202,18 @@ var UserEditComponent = /** @class */ (function () {
     UserEditComponent.prototype.Delete = function () {
         var _this = this;
         this.deleteBtnState = angular_1.ClrLoadingState.LOADING;
-        var userCount = this.usersToDelete.length;
-        var current = 0;
+        var observables = [];
         for (var _i = 0, _a = this.usersToDelete; _i < _a.length; _i++) {
             var user = _a[_i];
-            this.accountService.deleteUser(user).subscribe(function (result) {
-                current++;
-                if (current === userCount) {
-                    _this.shouldUpdateData.emit();
-                    _this.deleteOpen = false;
-                    _this.deleteBtnState = angular_1.ClrLoadingState.SUCCESS;
-                }
-            });
+            observables.push(this.accountService.deleteUser(user));
         }
+        rxjs_1.forkJoin(observables)
+            .subscribe(function (dataArray) {
+            _this.deleteData.emit(_this.usersToDelete);
+            _this.deleteOpen = false;
+            _this.alertService.showMessage(_this.gT('toasts.saved'), _this.usersToDelete.length + " record Deleted!", alert_service_1.MessageSeverity.success);
+            _this.deleteBtnState = angular_1.ClrLoadingState.SUCCESS;
+        });
     };
     Object.defineProperty(UserEditComponent.prototype, "canViewAllRoles", {
         get: function () {
@@ -216,16 +230,26 @@ var UserEditComponent = /** @class */ (function () {
         configurable: true
     });
     __decorate([
+        core_1.ViewChild(angular_1.ClrForm),
+        __metadata("design:type", Object)
+    ], UserEditComponent.prototype, "clrForm", void 0);
+    __decorate([
         core_1.Output(),
         __metadata("design:type", Object)
     ], UserEditComponent.prototype, "updateData", void 0);
+    __decorate([
+        core_1.Output(),
+        __metadata("design:type", Object)
+    ], UserEditComponent.prototype, "deleteData", void 0);
     UserEditComponent = __decorate([
         core_1.Component({
             selector: 'app-user-edit',
             templateUrl: './user-edit.component.html',
             styleUrls: ['./user-edit.component.css']
         }),
-        __metadata("design:paramtypes", [forms_1.FormBuilder, account_service_1.AccountService])
+        __metadata("design:paramtypes", [app_translation_service_1.AppTranslationService,
+            alert_service_1.AlertService, forms_1.FormBuilder,
+            account_service_1.AccountService])
     ], UserEditComponent);
     return UserEditComponent;
 }());

@@ -19,6 +19,7 @@ var permission_model_1 = require("../../../models/permission.model");
 var user_edit_component_1 = require("../../controls/editors/user-edit/user-edit.component");
 var UserManagementComponent = /** @class */ (function () {
     function UserManagementComponent(alertService, translationService, accountService) {
+        var _this = this;
         this.alertService = alertService;
         this.translationService = translationService;
         this.accountService = accountService;
@@ -27,6 +28,7 @@ var UserManagementComponent = /** @class */ (function () {
         this.usersCache = [];
         this.selected = [];
         this.allRoles = [];
+        this.gT = function (key) { return _this.translationService.getTranslation(key); };
     }
     UserManagementComponent.prototype.ngOnInit = function () {
         this.loadData();
@@ -34,19 +36,52 @@ var UserManagementComponent = /** @class */ (function () {
     UserManagementComponent.prototype.ngAfterViewInit = function () {
     };
     UserManagementComponent.prototype.onAdd = function () {
+        this.sourceUser = null;
         this.userEdit.newUser();
     };
-    UserManagementComponent.prototype.onEdit = function () {
-        this.userEdit.editUser(this.selected[0]);
+    UserManagementComponent.prototype.onEdit = function (user) {
+        this.sourceUser = user;
+        this.userEdit.editUser(user);
     };
-    UserManagementComponent.prototype.onDelete = function () {
-        if (this.selected.length > 0) {
-            this.userEdit.deleteUsers(this.selected);
+    UserManagementComponent.prototype.onDelete = function (user) {
+        if (user) {
+            var users = [];
+            users.push(user);
+            this.userEdit.deleteUsers(users);
+        }
+        else {
+            if (this.selected.length > 0) {
+                this.userEdit.deleteUsers(this.selected);
+            }
         }
     };
     UserManagementComponent.prototype.onExportAll = function () {
     };
     UserManagementComponent.prototype.onExportSelected = function () {
+    };
+    UserManagementComponent.prototype.updateList = function (returnUserEdit) {
+        if (this.sourceUser) {
+            var index = this.users.indexOf(this.sourceUser);
+            var cacheIndex = this.usersCache.indexOf(this.sourceUser);
+            this.users[index] = returnUserEdit;
+            this.usersCache[cacheIndex] = returnUserEdit;
+            this.sourceUser == null;
+        }
+        else {
+            this.users.unshift(returnUserEdit);
+            this.usersCache.unshift(returnUserEdit);
+        }
+    };
+    UserManagementComponent.prototype.deleteList = function (userToDelete) {
+        var _loop_1 = function (user) {
+            this_1.users = this_1.users.filter(function (obj) { return obj !== user; });
+            this_1.usersCache = this_1.usersCache.filter(function (obj) { return obj !== user; });
+        };
+        var this_1 = this;
+        for (var _i = 0, userToDelete_1 = userToDelete; _i < userToDelete_1.length; _i++) {
+            var user = userToDelete_1[_i];
+            _loop_1(user);
+        }
     };
     UserManagementComponent.prototype.loadData = function () {
         var _this = this;

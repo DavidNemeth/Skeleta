@@ -28,20 +28,20 @@ var RoleManagementComponent = /** @class */ (function () {
         this.selected = [];
     }
     RoleManagementComponent.prototype.ngOnInit = function () {
+        var _this = this;
         this.loadData();
+        var gT = function (key) { return _this.translationService.getTranslation(key); };
     };
     RoleManagementComponent.prototype.onAdd = function () {
-        if (this.canManageRoles) {
-            this.roleEdit.newRole();
-        }
+        this.sourceRole = null;
+        this.roleEdit.newRole();
     };
     RoleManagementComponent.prototype.onEdit = function () {
-        if (this.canManageRoles) {
-            this.roleEdit.editRole(this.selected[0]);
-        }
+        this.sourceRole = this.selected[0];
+        this.roleEdit.editRole(this.selected[0]);
     };
     RoleManagementComponent.prototype.onDelete = function () {
-        if (this.selected.length > 0 && this.canManageRoles) {
+        if (this.selected.length > 0) {
             this.roleEdit.deleteRoles(this.selected);
         }
     };
@@ -49,16 +49,38 @@ var RoleManagementComponent = /** @class */ (function () {
     };
     RoleManagementComponent.prototype.onExportSelected = function () {
     };
+    RoleManagementComponent.prototype.updateList = function (returnRole) {
+        if (this.sourceRole) {
+            var index = this.roles.indexOf(this.sourceRole);
+            var cacheIndex = this.rolesCache.indexOf(this.sourceRole);
+            this.roles[index] = returnRole;
+            this.rolesCache[cacheIndex] = returnRole;
+            this.sourceRole == null;
+        }
+        else {
+            this.roles.unshift(returnRole);
+            this.rolesCache.unshift(returnRole);
+        }
+    };
+    RoleManagementComponent.prototype.deleteList = function (rolestoDelete) {
+        var _loop_1 = function (role) {
+            this_1.roles = this_1.roles.filter(function (obj) { return obj !== role; });
+            this_1.rolesCache = this_1.rolesCache.filter(function (obj) { return obj !== role; });
+        };
+        var this_1 = this;
+        for (var _i = 0, rolestoDelete_1 = rolestoDelete; _i < rolestoDelete_1.length; _i++) {
+            var role = rolestoDelete_1[_i];
+            _loop_1(role);
+        }
+    };
     RoleManagementComponent.prototype.loadData = function () {
         var _this = this;
         this.roles = [];
         this.rolesCache = [];
         this.alertService.startLoadingMessage();
-        this.loadingIndicator = true;
         this.accountService.getRolesAndPermissions()
             .subscribe(function (results) {
             _this.alertService.stopLoadingMessage();
-            _this.loadingIndicator = false;
             var roles = results[0];
             var permissions = results[1];
             roles.forEach(function (role, index) {
@@ -69,7 +91,6 @@ var RoleManagementComponent = /** @class */ (function () {
             _this.allPermissions = permissions;
         }, function (error) {
             _this.alertService.stopLoadingMessage();
-            _this.loadingIndicator = false;
             _this.alertService.showStickyMessage('Load Error', "Unable to retrieve roles from the server.\r\nErrors: \"" + utilities_1.Utilities.getHttpResponseMessage(error) + "\"", alert_service_1.MessageSeverity.error, error);
         });
     };

@@ -15,6 +15,7 @@ var account_service_1 = require("../../../../services/account.service");
 var permission_model_1 = require("../../../../models/permission.model");
 var forms_1 = require("@angular/forms");
 var angular_1 = require("@clr/angular");
+var rxjs_1 = require("rxjs");
 var RoleEditComponent = /** @class */ (function () {
     function RoleEditComponent(formBuilder, accountService) {
         this.formBuilder = formBuilder;
@@ -28,7 +29,9 @@ var RoleEditComponent = /** @class */ (function () {
         this.rolesToDelete = [];
         this.allPermissions = [];
         this.initialPremissions = [];
-        this.shouldUpdateData = new core_1.EventEmitter();
+        this.initialRole = new role_model_1.Role();
+        this.updateData = new core_1.EventEmitter();
+        this.deleteData = new core_1.EventEmitter();
     }
     RoleEditComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -61,15 +64,16 @@ var RoleEditComponent = /** @class */ (function () {
         Object.assign(this.roleEdit, this.roleForm.value);
         if (this.isNewRole) {
             this.accountService.newRole(this.roleEdit)
-                .subscribe(function (role) { return _this.saveSuccessHelper(role); }, function (error) { return _this.saveFailedHelper(error); });
+                .subscribe(function (role) { return _this.saveSuccessHelper(); }, function (error) { return _this.saveFailedHelper(error); });
         }
         else {
             this.accountService.updateRole(this.roleEdit)
                 .subscribe(function (response) { return _this.saveSuccessHelper(); }, function (error) { return _this.saveFailedHelper(error); });
         }
     };
-    RoleEditComponent.prototype.saveSuccessHelper = function (role) {
-        this.shouldUpdateData.emit();
+    RoleEditComponent.prototype.saveSuccessHelper = function () {
+        Object.assign(this.initialRole, this.roleEdit);
+        this.updateData.emit(this.initialRole);
         this.roleEdit = new role_model_1.Role();
         this.submitBtnState = angular_1.ClrLoadingState.SUCCESS;
         this.openModal = false;
@@ -83,7 +87,7 @@ var RoleEditComponent = /** @class */ (function () {
         this.isNewRole = true;
         this.roleEdit = new role_model_1.Role();
         this.initialPremissions = [];
-        return this.roleEdit;
+        this.initialRole = new role_model_1.Role();
     };
     RoleEditComponent.prototype.editRole = function (role) {
         if (role_model_1.Role) {
@@ -97,8 +101,10 @@ var RoleEditComponent = /** @class */ (function () {
             this.roleForm.patchValue(role);
             this.roleEdit = new role_model_1.Role();
             Object.assign(this.roleEdit, role);
+            this.initialRole = new role_model_1.Role();
+            Object.assign(this.initialRole, role);
+            this.initialPremissions = [];
             Object.assign(this.initialPremissions, role.permissions);
-            return this.roleEdit;
         }
         else {
             return this.newRole();
@@ -111,19 +117,17 @@ var RoleEditComponent = /** @class */ (function () {
     RoleEditComponent.prototype.Delete = function () {
         var _this = this;
         this.deleteBtnState = angular_1.ClrLoadingState.LOADING;
-        var roleCount = this.rolesToDelete.length;
-        var current = 0;
+        var observables = [];
         for (var _i = 0, _a = this.rolesToDelete; _i < _a.length; _i++) {
             var role = _a[_i];
-            this.accountService.deleteRole(role).subscribe(function (result) {
-                current++;
-                if (current === roleCount) {
-                    _this.shouldUpdateData.emit();
-                    _this.deleteOpen = false;
-                    _this.deleteBtnState = angular_1.ClrLoadingState.SUCCESS;
-                }
-            });
+            observables.push(this.accountService.deleteRole(role));
         }
+        rxjs_1.forkJoin(observables)
+            .subscribe(function (dataArray) {
+            _this.deleteData.emit(_this.rolesToDelete);
+            _this.deleteOpen = false;
+            _this.deleteBtnState = angular_1.ClrLoadingState.SUCCESS;
+        });
     };
     Object.defineProperty(RoleEditComponent.prototype, "canManageRoles", {
         get: function () {
@@ -135,7 +139,11 @@ var RoleEditComponent = /** @class */ (function () {
     __decorate([
         core_1.Output(),
         __metadata("design:type", Object)
-    ], RoleEditComponent.prototype, "shouldUpdateData", void 0);
+    ], RoleEditComponent.prototype, "updateData", void 0);
+    __decorate([
+        core_1.Output(),
+        __metadata("design:type", Object)
+    ], RoleEditComponent.prototype, "deleteData", void 0);
     RoleEditComponent = __decorate([
         core_1.Component({
             selector: 'app-role-edit',

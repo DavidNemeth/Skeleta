@@ -1,25 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace DAL.Repositories.Interfaces
 {
 	public interface IRepository<TEntity> where TEntity : class
 	{
+		//Create
 		void Add(TEntity entity);
 		void AddRange(IEnumerable<TEntity> entities);
 
+		//Read
+		Task<TEntity> GetAsync(int id);
+		Task<IEnumerable<TEntity>> GetAllAsync();
+
+		//Update
 		void Update(TEntity entity);
 		void UpdateRange(IEnumerable<TEntity> entities);
 
+		//Delete
 		void Remove(TEntity entity);
 		void RemoveRange(IEnumerable<TEntity> entities);
 
-		int Count();
+		//search
+		Task<IEnumerable<TEntity>> FindAllAsync(Expression<Func<TEntity, bool>> predicate);
+		Task<TEntity> GetSingleOrDefaultAsync(Expression<Func<TEntity, bool>> predicate);
+		Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> predicate);
 
-		IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate);
-		TEntity GetSingleOrDefault(Expression<Func<TEntity, bool>> predicate);
-		TEntity Get(int id);
-		IEnumerable<TEntity> GetAll();
+		Task<int> CountAsync();
 	}
 }

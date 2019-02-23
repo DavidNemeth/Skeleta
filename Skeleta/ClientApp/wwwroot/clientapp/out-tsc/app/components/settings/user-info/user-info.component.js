@@ -31,9 +31,11 @@ var UserInfoComponent = /** @class */ (function () {
             this.accountService.getRoles().subscribe(function (roles) { return _this.allRoles = roles; });
         }
     };
-    UserInfoComponent.prototype.loadData = function () {
-        var _this = this;
-        this.accountService.getUser().subscribe(function (user) { return _this.user = user; });
+    UserInfoComponent.prototype.updateUser = function (returnUserEdit) {
+        if (this.sourceUser && returnUserEdit) {
+            this.user = returnUserEdit;
+            this.sourceUser == null;
+        }
     };
     Object.defineProperty(UserInfoComponent.prototype, "canViewAllRoles", {
         get: function () {
@@ -43,6 +45,7 @@ var UserInfoComponent = /** @class */ (function () {
         configurable: true
     });
     UserInfoComponent.prototype.onEdit = function () {
+        this.sourceUser = this.user;
         this.userEdit.editUser(this.user);
     };
     __decorate([

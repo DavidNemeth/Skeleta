@@ -40,7 +40,7 @@ var AppComponent = /** @class */ (function () {
         this.dataLoadingConsecutiveFailurs = 0;
         storageManager.initialiseStorageSyncListener();
         translationService.addLanguages(['en', 'hu']);
-        this.toastaConfig.theme = 'material';
+        this.toastaConfig.theme = 'default';
         this.toastaConfig.position = 'top-right';
         this.toastaConfig.limit = 100;
         this.toastaConfig.showClose = true;

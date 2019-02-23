@@ -33,6 +33,11 @@
 	</ItemGroup>
 	
 	<ItemGroup>
+	  <Compile Remove="Migrations\20190223194410_tasks_fluentApi.cs" />
+	  <Compile Remove="Migrations\20190223194410_tasks_fluentApi.Designer.cs" />
+	</ItemGroup>
+	
+	<ItemGroup>
 	  <None Remove="ClientApp\src\app\models\enum.ts" />
 	</ItemGroup>
 

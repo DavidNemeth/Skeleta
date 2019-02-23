@@ -12,4 +12,22 @@ namespace DAL.Core
 		Female,
 		Male
 	}
+
+	public enum Priority
+	{
+		Critical,
+		High,
+		Medium,
+		Low
+	}
+
+	public enum Status
+	{
+		New,
+		Rejected,
+		Active,
+		Resolved,
+		Completed,
+		Closed
+	}
 }

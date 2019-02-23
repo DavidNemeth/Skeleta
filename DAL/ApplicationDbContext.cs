@@ -1,5 +1,6 @@
 ﻿using DAL.Models;
 using DAL.Models.Interfaces;
+using DAL.Models.TaskModel;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -12,6 +13,7 @@ namespace DAL
 	public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string>
 	{
 		public string CurrentUserId { get; set; }
+		public DbSet<TaskItem> Tasks { get; set; }
 
 
 
@@ -29,7 +31,6 @@ namespace DAL
 
 			builder.Entity<ApplicationRole>().HasMany(r => r.Claims).WithOne().HasForeignKey(c => c.RoleId).IsRequired().OnDelete(DeleteBehavior.Cascade);
 			builder.Entity<ApplicationRole>().HasMany(r => r.Users).WithOne().HasForeignKey(r => r.RoleId).IsRequired().OnDelete(DeleteBehavior.Cascade);
-
 
 		}
 
