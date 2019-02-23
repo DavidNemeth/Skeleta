@@ -1,13 +1,15 @@
-import { Component, OnInit, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { User } from '../../../../models/user.model';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { AccountService } from '../../../../services/account.service';
-import { ClrLoadingState } from '@clr/angular';
+import { ClrLoadingState, ClrForm } from '@clr/angular';
 import { UserEdit } from '../../../../models/user-edit.model';
 import { Permission } from '../../../../models/permission.model';
 import { Role } from '../../../../models/role.model';
 import { MustMatch } from '../../../../helpers/must-match.validator';
 import { forkJoin, Observable } from 'rxjs';
+import { AlertService, MessageSeverity } from '../../../../services/alert.service';
+import { AppTranslationService } from '../../../../services/app-translation.service';
 
 @Component({
   selector: 'app-user-edit',
@@ -17,6 +19,7 @@ import { forkJoin, Observable } from 'rxjs';
 export class UserEditComponent implements OnInit {
   submitBtnState: ClrLoadingState = ClrLoadingState.DEFAULT;
   deleteBtnState: ClrLoadingState = ClrLoadingState.DEFAULT;
+  gT = (key: string) => this.translationService.getTranslation(key);
 
   private actionTitle = "";
   private deleteOpen = false;
@@ -24,7 +27,9 @@ export class UserEditComponent implements OnInit {
   private isNewUser = false;
   private isCurrentPassowrd = false;
   private isConfirmPassword = false;
-  private openModal = false;
+  private openModal;
+  private emailError: string;
+  private userError: string;
 
   initialUser: User = new User();
   userEdit: UserEdit;
@@ -32,25 +37,16 @@ export class UserEditComponent implements OnInit {
   private usersToDelete: User[] = [];
   userForm: FormGroup;
 
+  @ViewChild(ClrForm) clrForm;
   @Output() updateData = new EventEmitter<User>();
   @Output() deleteData = new EventEmitter<User[]>();
 
-  constructor(private formBuilder: FormBuilder, private accountService: AccountService) { }
+  constructor(private translationService: AppTranslationService,
+    private alertService: AlertService, private formBuilder: FormBuilder,
+    private accountService: AccountService) { }
 
   ngOnInit() {
-    this.userForm = this.formBuilder.group({
-      userName: ['', Validators.required],
-      jobTitle: [''],
-      fullName: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      phoneNumber: ['', Validators.required],
-      roles: [{ value: [], disabled: !this.canAssignRoles }, Validators.required],
-      currentPassword: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(6)]],
-      newPassword: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(6)]],
-      confirmPassword: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(6)]]
-    }, {
-        validator: MustMatch('newPassword', 'confirmPassword')
-      });
+    this.loadForm();
     if (this.canViewAllRoles) {
       this.accountService.getRoles().subscribe(
         roles => this.allRoles = roles
@@ -67,22 +63,28 @@ export class UserEditComponent implements OnInit {
       this.openModal = false;
       this.deletePasswordFromUser(this.userEdit);
       this.deletePasswordFromUser(this.initialUser);
-      this.userForm = this.formBuilder.group({
-        userName: ['', Validators.required],
-        jobTitle: [''],
-        fullName: ['', Validators.required],
-        email: ['', [Validators.required, Validators.email]],
-        phoneNumber: ['', Validators.required],
-        roles: [{ value: [], disabled: !this.canAssignRoles }, Validators.required],
-        currentPassword: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(6)]],
-        newPassword: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(6)]],
-        confirmPassword: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(6)]]
-      }, {
-          validator: MustMatch('newPassword', 'confirmPassword')
-        });
+      this.loadForm();
+      this.alertService.resetStickyMessage();
+      //this.userForm.reset();
       this.removeChangePassword();
     }
   }
+
+  private loadForm() {
+        this.userForm = this.formBuilder.group({
+            userName: ['', Validators.required],
+            jobTitle: [''],
+            fullName: ['', Validators.required],
+            email: ['', [Validators.required, Validators.email]],
+            phoneNumber: ['', Validators.required],
+            roles: [{ value: [], disabled: !this.canAssignRoles }, Validators.required],
+            currentPassword: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(6)]],
+            newPassword: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(6)]],
+            confirmPassword: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(6)]]
+        }, {
+                validator: MustMatch('newPassword', 'confirmPassword')
+            });
+    }
 
   private save() {
     for (let i in this.userForm.controls)
@@ -104,13 +106,25 @@ export class UserEditComponent implements OnInit {
     Object.assign(this.initialUser, this.userEdit);
     this.updateData.emit(this.initialUser);
 
+    if (this.isNewUser)
+      this.alertService.showMessage(this.gT('toasts.saved'), `User ${this.userEdit.userName} added!`, MessageSeverity.success);
+    else
+      this.alertService.showMessage(this.gT('toasts.saved'), `User ${this.userEdit.userName} changes saved!`, MessageSeverity.success);
+
     this.submitBtnState = ClrLoadingState.SUCCESS;
     this.openModal = false;
   }
 
   private saveFailedHelper(error: any): void {
     this.submitBtnState = ClrLoadingState.ERROR;
-    console.log(error);
+    this.alertService.stopLoadingMessage();
+    this.alertService.showStickyMessage(error, null, MessageSeverity.error);
+    console.log(error.error);
+    this.clrForm.markAsDirty();
+    
+    if (error.error.Email) {
+      this.emailError = error.error.Email[0];
+    }
   }
 
   private addNewPassword() {
@@ -146,6 +160,7 @@ export class UserEditComponent implements OnInit {
 
   private resetForm() {
     this.userForm.reset();
+    this.alertService.resetStickyMessage();
     this.userForm.patchValue(this.initialUser);
     if (!this.isNewUser)
       this.removeChangePassword();
@@ -174,7 +189,7 @@ export class UserEditComponent implements OnInit {
   }
 
   editUser(user: User) {
-    if (user) {   
+    if (user) {
       this.openModal = true;
       this.canChangePassword = true;
       this.userForm.controls['userName'].disable();
@@ -209,7 +224,7 @@ export class UserEditComponent implements OnInit {
     this.userForm.controls['phoneNumber'].disable();
     this.userForm.controls['roles'].disable();
   }
-
+  
   deleteUsers(users: User[]) {
     this.deleteOpen = true;
     this.usersToDelete = users;
@@ -227,6 +242,7 @@ export class UserEditComponent implements OnInit {
       .subscribe(dataArray => {
         this.deleteData.emit(this.usersToDelete);
         this.deleteOpen = false;
+        this.alertService.showMessage(this.gT('toasts.saved'), `${this.usersToDelete.length} record Deleted!`, MessageSeverity.success);
         this.deleteBtnState = ClrLoadingState.SUCCESS;
       });
   }

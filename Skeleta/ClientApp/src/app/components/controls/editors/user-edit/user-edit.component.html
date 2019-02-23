@@ -8,11 +8,12 @@
   <div class="modal-body">
 
     <form autocomplete="off" clrForm [formGroup]="userForm" (ngSubmit)="save()">
-      <div class="clr-row">
-        <div class="clr-col-sm-12 clr-col-md-6">
+      <div class="clr-row">   
+        <div class="clr-col-sm-12 clr-col-md-6">        
           <clr-input-container>
             <label class="clr-col-12 clr-col-md-5">{{'users.editor.UserName' | translate}}</label>
             <input class="clr-col-12 clr-col-md-7" clrInput type="text" formControlName="userName" />
+            <clr-control-error>{{userError}}</clr-control-error>
           </clr-input-container>
 
           <clr-input-container>
@@ -29,6 +30,7 @@
           <clr-input-container>
             <label class="clr-col-12 clr-col-md-5">{{'users.editor.Email' | translate}}</label>
             <input class="clr-col-12 clr-col-md-7" clrInput type="email" formControlName="email" />
+            <clr-control-error>{{emailError}}</clr-control-error>
           </clr-input-container>
 
           <clr-input-container>
@@ -72,7 +74,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" (click)="resetForm()" class="btn btn-info">Reset</button>
-        <button [clrLoading]="submitBtnState" type="submit" [disabled]="!userForm.valid" class="btn btn-primary">{{actionTitle}}</button>
+        <button [clrLoading]="submitBtnState" type="submit"  class="btn btn-primary">{{actionTitle}}</button>
       </div>
     </form>
   </div>

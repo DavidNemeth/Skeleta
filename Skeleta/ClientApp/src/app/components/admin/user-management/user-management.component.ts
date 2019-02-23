@@ -44,14 +44,21 @@ export class UserManagementComponent implements OnInit, AfterViewInit {
     this.userEdit.newUser();
   }
 
-  onEdit() {
-    this.sourceUser = this.selected[0];
-    this.userEdit.editUser(this.selected[0]);
+  onEdit(user: User) {
+    this.sourceUser = user;
+    this.userEdit.editUser(user);
   }
 
-  onDelete() {
+  onDelete(user?: User) {
+    if (user) {
+      let users: User[] = [];
+      users.push(user);
+      this.userEdit.deleteUsers(users);
+    }
+    else {   
     if (this.selected.length > 0) {
       this.userEdit.deleteUsers(this.selected);
+      }
     }
   }
 
@@ -70,12 +77,10 @@ export class UserManagementComponent implements OnInit, AfterViewInit {
       this.users[index] = returnUserEdit;
       this.usersCache[cacheIndex] = returnUserEdit;
       this.sourceUser == null;
-      this.alertService.showMessage(this.gT('toasts.saved'), `${returnUserEdit.userName} Updated!`, MessageSeverity.success);
     }
     else {
       this.users.unshift(returnUserEdit);
       this.usersCache.unshift(returnUserEdit);
-      this.alertService.showMessage(this.gT('toasts.saved'), `${returnUserEdit.userName} Added!`, MessageSeverity.success);
     }
   }
 
@@ -84,7 +89,6 @@ export class UserManagementComponent implements OnInit, AfterViewInit {
       this.users = this.users.filter(obj => obj !== user);
       this.usersCache = this.usersCache.filter(obj => obj !== user);
     }
-    this.alertService.showMessage(this.gT('toasts.saved'), `${userToDelete.length} Users Deleted!`, MessageSeverity.success);
   }
 
   loadData() {
