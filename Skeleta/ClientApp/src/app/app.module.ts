@@ -33,6 +33,8 @@ import { NotificationEndpoint } from './services/notification-endpoint.service';
 import { NotificationService } from './services/notification.service';
 import { AccountEndpoint } from './services/account-endpoint.service';
 import { AccountService } from './services/account.service';
+import { TaskService } from './services/tasks/taskService';
+import { TaskEndpoint } from './services/tasks/task-endpoint.service';
 
 import { AppComponent } from './components/app.component';
 import { HomeComponent } from './components/home/home.component';
@@ -55,6 +57,8 @@ import { SmartAdminComponent } from './components/admin/smart-admin/smart-admin.
 import { UserPreferencesComponent } from './components/settings/user-preferences/user-preferences.component';
 import { UserEditComponent } from './components/controls/editors/user-edit/user-edit.component';
 import { RoleEditComponent } from './components/controls/editors/role-edit/role-edit.component';
+import { TaskManagementComponent } from './components/admin/task-management/task-management.component';
+import { TaskEditComponent } from './components/controls/editors/task-edit/task-edit.component';
 
 @NgModule({
   declarations: [
@@ -79,7 +83,9 @@ import { RoleEditComponent } from './components/controls/editors/role-edit/role-
     SmartAdminComponent,
     UserPreferencesComponent,
     UserEditComponent,
-    RoleEditComponent
+    RoleEditComponent,
+    TaskManagementComponent,
+    TaskEditComponent
   ],
   imports: [
     BrowserModule,
@@ -111,7 +117,9 @@ import { RoleEditComponent } from './components/controls/editors/role-edit/role-
     AlertService,
     AccountService,
     ConfigurationService,  
-    EndpointFactory
+    EndpointFactory,
+    TaskService,
+    TaskEndpoint
   ],
   exports: [
     IfTabActive

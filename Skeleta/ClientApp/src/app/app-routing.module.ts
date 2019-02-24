@@ -18,6 +18,7 @@ import { UserInfoComponent } from './components/settings/user-info/user-info.com
 import { UserPreferencesComponent } from './components/settings/user-preferences/user-preferences.component';
 import { SmartAdminComponent } from './components/admin/smart-admin/smart-admin.component';
 import { AdminComponent } from './components/admin/admin.component';
+import { TaskManagementComponent } from './components/admin/task-management/task-management.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent, canActivate: [AuthGuard], data: { title: 'Home' } },
@@ -44,7 +45,8 @@ const routes: Routes = [
     path: 'admin', component: AdminComponent, canActivate: [AuthGuard], data: { title: 'Settings' }, children: [
       { path: '', component: SmartAdminComponent, data: { title: 'Smart Panel' } },
       { path: 'users', component: UserManagementComponent, data: { title: 'Users' } },
-      { path: 'roles', component: RoleManagementComponent, data: { title: 'Roles' } }
+      { path: 'roles', component: RoleManagementComponent, data: { title: 'Roles' } },
+      { path: 'tasks', component: TaskManagementComponent, data: { title: 'Tasks' } }
     ]
   }
 

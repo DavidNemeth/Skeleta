@@ -65,7 +65,6 @@ export class UserEditComponent implements OnInit {
       this.deletePasswordFromUser(this.initialUser);
       this.loadForm();
       this.alertService.resetStickyMessage();
-      //this.userForm.reset();
       this.removeChangePassword();
     }
   }

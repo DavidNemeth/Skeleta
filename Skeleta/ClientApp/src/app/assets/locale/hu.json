@@ -37,7 +37,7 @@
   },
   "dashboard": {
     "sidenav": {
-      "Charts": "Diagrammok"      
+      "Charts": "Diagrammok"
     }
   },
   "admin": {
@@ -86,6 +86,24 @@
     "DashboardBannerHint": "Show demo information banner widget on the dashboard",
     "ResetDefault": "Reset default",
     "SetDefault": "Set as default"
+  },
+  "tasks": {
+    "management": {
+      "Search": "Keresés...",
+      "NewTask": "Új feladat",
+      "Edit": "Módositás",
+      "Delete": "Törlés",
+      "EditTask": "Feladat Módositása \"{{name}}\"",
+      "Title": "Feladat neve",
+      "Description": "Feladat leirása",
+      "Comment": "Komment",
+      "Priority": "Prioritás",
+      "Status": "Státusz",
+      "AssignedTo": "Felelős",
+      "AssignedBy": "Elrendelte",
+      "TasksPerPage": "Feladat / oldal",
+      "Tasks": "Feladatok"
+    }
   },
   "users": {
     "management": {

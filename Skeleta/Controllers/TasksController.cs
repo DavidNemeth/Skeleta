@@ -15,13 +15,11 @@ namespace Skeleta.Controllers
 	{
 		private IUnitOfWork _unitOfWork;
 		readonly ILogger _logger;
-		readonly IEmailSender _emailer;
 
-		public TasksController(IUnitOfWork unitOfWork, ILogger<TasksController> logger, IEmailSender emailer)
+		public TasksController(IUnitOfWork unitOfWork, ILogger<TasksController> logger)
 		{
 			_unitOfWork = unitOfWork;
 			_logger = logger;
-			_emailer = emailer;
 		}
 
 		// GET: api/values
@@ -54,7 +52,7 @@ namespace Skeleta.Controllers
 		}
 
 		// GET: api/values
-		[HttpGet("Completed")]
+		[HttpGet("completed")]
 		//[Authorize(Authorization.Policies.ViewAllTasksPolicy)]
 		[ProducesResponseType(200, Type = typeof(IEnumerable<TaskViewModel>))]
 		public async Task<IActionResult> GetCompleted()

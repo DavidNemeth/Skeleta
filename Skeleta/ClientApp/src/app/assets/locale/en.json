@@ -86,6 +86,24 @@
     "ResetDefault": "Reset default",
     "SetDefault": "Set as default"
   },
+  "tasks": {
+    "management": {
+      "Search": "Search for user...",
+      "NewTask": "New Task",
+      "Edit": "Edit",
+      "Delete": "Delete",
+      "EditTask": "Edit Tasks \"{{name}}\"",
+      "Title": "Title",
+      "Description": "Description",
+      "Comment": "Comment",
+      "Priority": "Priority",
+      "Status": "Status",
+      "AssignedTo": "Assigned to",
+      "AssignedBy": "Assigned by",
+      "TasksPerPage": "Tasks Per Page",
+      "Tasks": "Tasks"
+    }
+  },
   "users": {
     "management": {
       "Search": "Search for user...",

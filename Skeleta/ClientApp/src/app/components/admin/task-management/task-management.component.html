@@ -1,0 +1,86 @@
+<div class="card">
+  <div class="card-header">
+    Task Management
+  </div>
+  <div class="card-block">
+    <app-search-box (searchChange)="onSearchChanged($event)" placeholder="{{'tasks.management.Search' | translate}}"></app-search-box>
+
+    <clr-datagrid class="datagrid-compact" [(clrDgSelected)]="selected" [clrDgRowSelection]="true">
+      <clr-dg-action-bar>
+        <div class="btn-group">
+          <button type="button" class="btn btn-sm btn-secondary" (click)="onAdd()">
+            <clr-icon shape="plus"></clr-icon>{{'tasks.management.NewTask' | translate}}
+          </button>
+          <button type="button" class="btn btn-sm btn-secondary" (click)="onDelete()"><clr-icon shape="close"></clr-icon>{{'tasks.management.Delete' | translate}}</button>
+        </div>
+        <div class="btn-group">
+          <clr-dropdown>
+            <button type="button" class="btn btn-sm btn-secondary" clrDropdownTrigger>
+              Export
+              <clr-icon shape="caret down"></clr-icon>
+            </button>
+            <clr-dropdown-menu clrPosition="bottom-left" *clrIfOpen>
+              <button type="button" (click)="onExportAll()" clrDropdownItem>Export All</button>
+              <button type="button" (click)="onExportSelected()" [disabled]="selected.length === 0" clrDropdownItem>Export Selected Items</button>
+            </clr-dropdown-menu>
+          </clr-dropdown>
+        </div>
+      </clr-dg-action-bar>
+      <clr-dg-column [clrDgField]="'title'">
+        <ng-container *clrDgHideableColumn="{hidden: false}">
+          {{'tasks.management.Title' | translate}}
+        </ng-container>
+      </clr-dg-column>
+      <clr-dg-column [clrDgField]="'description'">
+        <ng-container *clrDgHideableColumn="{hidden: false}">
+          {{'tasks.management.Description' | translate}}
+        </ng-container>
+      </clr-dg-column>
+      <clr-dg-column [clrDgField]="'priority'">
+        <ng-container *clrDgHideableColumn="{hidden: false}">
+          {{'tasks.management.Priority' | translate}}
+        </ng-container>
+      </clr-dg-column>
+      <clr-dg-column [clrDgField]="'status'">
+        <ng-container *clrDgHideableColumn="{hidden: false}">
+          {{'tasks.management.Status' | translate}}
+        </ng-container>
+      </clr-dg-column>
+      <clr-dg-column [clrDgField]="'assignedTo'">
+        <ng-container *clrDgHideableColumn="{hidden: false}">
+          {{'tasks.management.AssignedTo' | translate}}
+        </ng-container>
+      </clr-dg-column>
+      <clr-dg-column [clrDgField]="'assignedBy'">
+        <ng-container *clrDgHideableColumn="{hidden: false}">
+          {{'tasks.management.AssignedBy' | translate}}
+        </ng-container>
+      </clr-dg-column>
+
+      <clr-dg-placeholder>Loading Tasks!</clr-dg-placeholder>
+
+      <clr-dg-row *clrDgItems="let task of tasks" [clrDgItem]="task">
+        <clr-dg-action-overflow>
+          <button class="action-item" (click)="onEdit(task)">Edit</button>
+          <button class="action-item" (click)="onDelete(task)">Delete</button>
+        </clr-dg-action-overflow>
+        <clr-dg-cell>{{task.title}}</clr-dg-cell>
+        <clr-dg-cell>{{task.description}}</clr-dg-cell>
+        <clr-dg-cell>{{task.priority}}</clr-dg-cell>
+        <clr-dg-cell>{{task.status}}</clr-dg-cell>
+        <clr-dg-cell>{{task.assignedTo.fullName}}</clr-dg-cell>
+        <clr-dg-cell>{{task.assignedBy}}</clr-dg-cell>
+      </clr-dg-row>
+
+      <clr-dg-footer>
+        <clr-dg-column-toggle>
+        </clr-dg-column-toggle>
+        <clr-dg-pagination #pagination [clrDgPageSize]="50">
+          <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100,1000]">{{'tasks.management.TasksPerPage' | translate}}</clr-dg-page-size>
+          {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+          {{pagination.totalItems}} {{'tasks.management.Tasks' | translate}}
+        </clr-dg-pagination>
+      </clr-dg-footer>
+    </clr-datagrid>
+  </div>
+</div>
