@@ -74,7 +74,31 @@ var TaskManagementComponent = /** @class */ (function () {
     };
     TaskManagementComponent.prototype.onSearchChanged = function (value) {
         this.tasks = this.tasksCache
-            .filter(function (r) { return utilities_1.Utilities.searchArray(value, false, r.id, r.title, r.description, r.priority, r.status, r.assignedTo.fullName); });
+            .filter(function (r) { return utilities_1.Utilities.searchArray(value, false, r.id, r.title, r.description, r.priority, r.status, r.assignedTo); });
+    };
+    TaskManagementComponent.prototype.updateList = function (returnTask) {
+        if (this.sourceTask) {
+            var index = this.tasks.indexOf(this.sourceTask);
+            var cacheIndex = this.tasksCache.indexOf(this.sourceTask);
+            this.tasks[index] = returnTask;
+            this.tasksCache[cacheIndex] = returnTask;
+            this.sourceTask == null;
+        }
+        else {
+            this.tasks.unshift(returnTask);
+            this.tasksCache.unshift(returnTask);
+        }
+    };
+    TaskManagementComponent.prototype.deleteList = function (tasksToDelete) {
+        var _loop_1 = function (task) {
+            this_1.tasks = this_1.tasks.filter(function (obj) { return obj !== task; });
+            this_1.tasksCache = this_1.tasksCache.filter(function (obj) { return obj !== task; });
+        };
+        var this_1 = this;
+        for (var _i = 0, tasksToDelete_1 = tasksToDelete; _i < tasksToDelete_1.length; _i++) {
+            var task = tasksToDelete_1[_i];
+            _loop_1(task);
+        }
     };
     __decorate([
         core_1.ViewChild(task_edit_component_1.TaskEditComponent),

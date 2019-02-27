@@ -89,7 +89,7 @@ export class TaskEndpoint extends EndpointFactory {
   }
 
   getDeleteRangeEndpoint<T>(taskIds?: number[]): Observable<T> {
-    const endpointUrl = `${this.baseUrl}/${taskIds}`;
+    const endpointUrl = `${this.baseUrl}/range/${taskIds}`;
 
     return this.http.delete<T>(endpointUrl, this.getRequestHeaders()).pipe<T>(
       catchError(error => {

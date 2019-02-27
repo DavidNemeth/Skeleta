@@ -23,6 +23,7 @@ var gantt_1 = require("fusioncharts/gantt");
 var fusioncharts_theme_fusion_1 = require("fusioncharts/themes/es/fusioncharts.theme.fusion");
 angular_fusioncharts_1.FusionChartsModule.fcRoot(core_3.default, column2d_1.default, stackedcolumn3dline_1.default, fusioncharts_theme_fusion_1.default, gantt_1.default);
 var group_by_pipe_1 = require("./pipes/group-by.pipe");
+var keys_pipe_1 = require("./pipes/keys.pipe");
 var app_routing_module_1 = require("./app-routing.module");
 var app_error_handler_1 = require("./app-error.handler");
 var app_title_service_1 = require("./services/app-title.service");
@@ -70,6 +71,7 @@ var AppModule = /** @class */ (function () {
                 home_component_1.HomeComponent,
                 login_component_1.LoginComponent,
                 group_by_pipe_1.GroupByPipe,
+                keys_pipe_1.KeysPipe,
                 dashboard_component_1.DashboardComponent,
                 fusion_component_1.FusionComponent,
                 themes_component_1.ThemesComponent,

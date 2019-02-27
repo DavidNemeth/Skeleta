@@ -86,6 +86,27 @@ export class TaskManagementComponent implements OnInit {
 
   onSearchChanged(value: string) {
     this.tasks = this.tasksCache
-      .filter(r => Utilities.searchArray(value, false, r.id, r.title, r.description, r.priority, r.status, r.assignedTo.fullName));
+      .filter(r => Utilities.searchArray(value, false, r.id, r.title, r.description, r.priority, r.status, r.assignedTo));
+  }
+
+  updateList(returnTask: Task) {
+    if (this.sourceTask) {
+      let index = this.tasks.indexOf(this.sourceTask);
+      let cacheIndex = this.tasksCache.indexOf(this.sourceTask);
+      this.tasks[index] = returnTask;
+      this.tasksCache[cacheIndex] = returnTask;
+      this.sourceTask == null;
+    }
+    else {
+      this.tasks.unshift(returnTask);
+      this.tasksCache.unshift(returnTask);
+    }
+  }
+
+  deleteList(tasksToDelete: Task[]) {
+    for (let task of tasksToDelete) {
+      this.tasks = this.tasks.filter(obj => obj !== task);
+      this.tasksCache = this.tasksCache.filter(obj => obj !== task);
+    }
   }
 }

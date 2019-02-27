@@ -12,8 +12,8 @@ using Skeleta.ViewModels.UserViewModels;
 
 namespace Skeleta.ViewModels
 {
-    public class AutoMapperProfile : Profile
-    {
+	public class AutoMapperProfile : Profile
+	{
 		public AutoMapperProfile()
 		{
 			CreateMap<ApplicationUser, UserViewModel>()
@@ -46,7 +46,10 @@ namespace Skeleta.ViewModels
 				.ConvertUsing(s => Mapper.Map<PermissionViewModel>(ApplicationPermissions.GetPermissionByValue(s.ClaimValue)));
 
 			CreateMap<TaskItem, TaskViewModel>()
-				.ReverseMap();
+				 .ForMember(d => d.AssignedTo, opt => opt.MapFrom(s => s.AssignedTo.UserName));
+
+			CreateMap<TaskViewModel, TaskItem>()
+				.ForMember(d => d.AssignedTo, map => map.Ignore());
 		}
 	}
 }

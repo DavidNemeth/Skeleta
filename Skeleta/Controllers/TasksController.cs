@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DAL;
+using DAL.Core.Interfaces;
 using DAL.Models.TaskModel;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -13,11 +14,13 @@ namespace Skeleta.Controllers
 	[Route("api/[controller]")]
 	public class TasksController : Controller
 	{
+		private readonly IAccountManager _accountManager;
 		private IUnitOfWork _unitOfWork;
 		readonly ILogger _logger;
 
-		public TasksController(IUnitOfWork unitOfWork, ILogger<TasksController> logger)
+		public TasksController(IUnitOfWork unitOfWork, ILogger<TasksController> logger, IAccountManager accountManager)
 		{
+			_accountManager = accountManager;
 			_unitOfWork = unitOfWork;
 			_logger = logger;
 		}
@@ -75,16 +78,20 @@ namespace Skeleta.Controllers
 		// POST api/values
 		[HttpPost()]
 		[ProducesResponseType(201, Type = typeof(TaskViewModel))]
-		public async Task<IActionResult> CreateTask([FromBody] TaskViewModel task)
+		public async Task<IActionResult> CreateTask([FromBody] TaskViewModel taskVm)
 		{
 			if (ModelState.IsValid)
 			{
-				if (task == null)
-					return BadRequest($"{nameof(task)} cannot be null");
+				if (taskVm == null)
+					return BadRequest($"{nameof(taskVm)} cannot be null");
 
-				_unitOfWork.Tasks.Add(Mapper.Map<TaskItem>(task));
+				var assignedTo = await _accountManager.GetUserByUserNameAsync(taskVm.AssignedTo);
+				var item = Mapper.Map<TaskItem>(taskVm);
+				item.AssignedTo = assignedTo;
+
+				_unitOfWork.Tasks.Add(item);
 				await _unitOfWork.SaveChangesAsync();
-				return CreatedAtAction("GetTask", new { id = task.Id }, task);
+				return CreatedAtAction("GetTask", new { id = taskVm.Id }, taskVm);
 			}
 
 			return BadRequest(ModelState);
@@ -105,15 +112,17 @@ namespace Skeleta.Controllers
 				if (taskVm == null)
 					return BadRequest($"{nameof(taskVm)} cannot be null");
 
+				var assignedTo = await _accountManager.GetUserByUserNameAsync(taskVm.AssignedTo);
 				TaskItem appTask = await _unitOfWork.Tasks.GetAsync(id);
 
 				if (appTask == null)
 					return NotFound(id);
 
 				Mapper.Map<TaskViewModel, TaskItem>(taskVm, appTask);
+				appTask.AssignedTo = assignedTo;
 
 				_unitOfWork.Tasks.Update(appTask);
-
+				await _unitOfWork.SaveChangesAsync();
 				return NoContent();
 			}
 
@@ -139,12 +148,12 @@ namespace Skeleta.Controllers
 				return NotFound(id);
 
 			_unitOfWork.Tasks.Remove(task);
-
+			await _unitOfWork.SaveChangesAsync();
 			return Ok(taskVM);
 		}
 
-		// DELETE RANGE api/values/5
-		[HttpDelete("{ids}")]
+		// DELETE RANGE api/values/range/5
+		[HttpDelete("range/{ids}")]
 		[ProducesResponseType(200, Type = typeof(TaskViewModel))]
 		[ProducesResponseType(400)]
 		[ProducesResponseType(404)]
@@ -170,6 +179,7 @@ namespace Skeleta.Controllers
 			}
 
 			_unitOfWork.Tasks.RemoveRange(tasks);
+			await _unitOfWork.SaveChangesAsync();
 			return Ok(tasksVM);
 		}
 	}

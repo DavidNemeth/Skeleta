@@ -16,36 +16,44 @@ var alert_service_1 = require("../../../../services/alert.service");
 var forms_1 = require("@angular/forms");
 var taskService_1 = require("../../../../services/tasks/taskService");
 var task_model_1 = require("../../../../services/tasks/task.model");
+var enum_1 = require("../../../../models/enum");
+var account_service_1 = require("../../../../services/account.service");
 var TaskEditComponent = /** @class */ (function () {
-    function TaskEditComponent(translationService, alertService, formBuilder, taskService) {
+    function TaskEditComponent(translationService, alertService, formBuilder, taskService, accountService) {
         var _this = this;
         this.translationService = translationService;
         this.alertService = alertService;
         this.formBuilder = formBuilder;
         this.taskService = taskService;
+        this.accountService = accountService;
         this.submitBtnState = angular_1.ClrLoadingState.DEFAULT;
         this.deleteBtnState = angular_1.ClrLoadingState.DEFAULT;
         this.gT = function (key) { return _this.translationService.getTranslation(key); };
         this.actionTitle = "";
         this.deleteOpen = false;
         this.isNewTask = false;
+        this.allStatus = Object.keys(enum_1.Status).slice();
+        this.allPriority = Object.keys(enum_1.Priority).slice();
         this.initialTask = new task_model_1.Task();
         this.tasksToDelete = [];
+        this.users = [];
         this.updateData = new core_1.EventEmitter();
         this.deleteData = new core_1.EventEmitter();
     }
     TaskEditComponent.prototype.ngOnInit = function () {
+        var _this = this;
         this.loadForm();
+        this.accountService.getUsers().subscribe(function (users) { return _this.users = users; });
     };
     TaskEditComponent.prototype.loadForm = function () {
         this.taskForm = this.formBuilder.group({
             title: ['', forms_1.Validators.required],
             description: [''],
             comment: [''],
-            priority: ['', [forms_1.Validators.required]],
+            priority: ['', forms_1.Validators.required],
             status: ['', forms_1.Validators.required],
-            assignedTo: [''],
-            assignedBy: [''],
+            assignedTo: ['', forms_1.Validators.required],
+            assignedBy: ['', forms_1.Validators.required],
         });
     };
     TaskEditComponent.prototype.openChange = function (value) {
@@ -63,9 +71,10 @@ var TaskEditComponent = /** @class */ (function () {
         for (var i in this.taskForm.controls)
             this.taskForm.controls[i].markAsTouched();
         this.submitBtnState = angular_1.ClrLoadingState.LOADING;
+        console.log(this.taskForm.value);
         Object.assign(this.taskEdit, this.taskForm.value);
         if (this.isNewTask) {
-            this.taskService.NewTask(this.taskEdit).subscribe(function (user) { return _this.saveSuccessHelper(); }, function (error) { return _this.saveFailedHelper(error); });
+            this.taskService.NewTask(this.taskEdit).subscribe(function (task) { return _this.saveSuccessHelper(); }, function (error) { return _this.saveFailedHelper(error); });
         }
         else {
             this.taskService.UpdateTask(this.taskEdit).subscribe(function (response) { return _this.saveSuccessHelper(); }, function (error) { return _this.saveFailedHelper(error); });
@@ -94,6 +103,8 @@ var TaskEditComponent = /** @class */ (function () {
         this.taskForm.patchValue(this.initialTask);
     };
     TaskEditComponent.prototype.Create = function () {
+        console.log(this.allStatus);
+        console.log(this.allPriority);
         this.openModal = true;
         this.isNewTask = true;
         this.actionTitle = "Add";
@@ -133,17 +144,20 @@ var TaskEditComponent = /** @class */ (function () {
     TaskEditComponent.prototype.Delete = function () {
         var _this = this;
         this.deleteBtnState = angular_1.ClrLoadingState.LOADING;
-        if (this.tasksToDelete) {
+        if (this.tasksToDelete != null) {
             this.taskService.DeleteRangeTasks(this.tasksToDelete).subscribe(function (response) {
+                console.log("in multi delete" + _this.tasksToDelete);
                 _this.deleteData.emit(_this.tasksToDelete);
                 _this.deleteOpen = false;
                 _this.alertService.showMessage(_this.gT('toasts.saved'), _this.tasksToDelete.length + " record Deleted!", alert_service_1.MessageSeverity.success);
                 _this.deleteBtnState = angular_1.ClrLoadingState.SUCCESS;
             });
         }
-        if (this.taskToDelete) {
+        if (this.taskToDelete != null) {
             this.taskService.DeleteTask(this.taskToDelete).subscribe(function (response) {
+                _this.tasksToDelete = [];
                 _this.tasksToDelete.push(_this.taskToDelete);
+                console.log("in single delete" + _this.tasksToDelete);
                 _this.deleteData.emit(_this.tasksToDelete);
                 _this.deleteOpen = false;
                 _this.alertService.showMessage(_this.gT('toasts.saved'), _this.tasksToDelete.length + " record Deleted!", alert_service_1.MessageSeverity.success);
@@ -171,7 +185,7 @@ var TaskEditComponent = /** @class */ (function () {
         }),
         __metadata("design:paramtypes", [app_translation_service_1.AppTranslationService,
             alert_service_1.AlertService, forms_1.FormBuilder,
-            taskService_1.TaskService])
+            taskService_1.TaskService, account_service_1.AccountService])
     ], TaskEditComponent);
     return TaskEditComponent;
 }());

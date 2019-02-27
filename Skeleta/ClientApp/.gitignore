@@ -5,7 +5,6 @@
 /dist-server
 /tmp
 /out-tsc
-/wwwroot
 # dependencies
 /node_modules
 

@@ -106,14 +106,14 @@ var TaskEndpoint = /** @class */ (function (_super) {
     };
     TaskEndpoint.prototype.getDeleteEndpoint = function (taskId) {
         var _this = this;
-        var endpointUrl = this.baseUrl + "/" + taskId;
+        var endpointUrl = "" + this.baseUrl + taskId;
         return this.http.delete(endpointUrl, this.getRequestHeaders()).pipe(operators_1.catchError(function (error) {
             return _this.handleError(error, function () { return _this.getDeleteEndpoint(taskId); });
         }));
     };
     TaskEndpoint.prototype.getDeleteRangeEndpoint = function (taskIds) {
         var _this = this;
-        var endpointUrl = this.baseUrl + "/" + taskIds;
+        var endpointUrl = "" + this.baseUrl + taskIds;
         return this.http.delete(endpointUrl, this.getRequestHeaders()).pipe(operators_1.catchError(function (error) {
             return _this.handleError(error, function () { return _this.getDeleteRangeEndpoint(taskIds); });
         }));

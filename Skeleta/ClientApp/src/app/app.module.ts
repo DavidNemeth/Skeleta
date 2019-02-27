@@ -20,6 +20,7 @@ import FusionTheme from 'fusioncharts/themes/es/fusioncharts.theme.fusion';
 FusionChartsModule.fcRoot(FusionCharts, Column2d, stackedcolumn3dline, FusionTheme, gantt);
 
 import { GroupByPipe } from './pipes/group-by.pipe';
+import { KeysPipe } from './pipes/keys.pipe';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppErrorHandler } from './app-error.handler';
@@ -66,6 +67,7 @@ import { TaskEditComponent } from './components/controls/editors/task-edit/task-
     HomeComponent,
     LoginComponent,
     GroupByPipe,
+    KeysPipe,
     DashboardComponent,
     FusionComponent,
     ThemesComponent,

@@ -12,17 +12,17 @@ export enum Gender {
 }
 
 export enum Priority {
-  Critical,
-  High,
-  Medium,
-  Low
+  Critical = "Critical",
+  High = "High",
+  Medium = "Medium",
+  Low = "Low"
 }
 
 export enum Status {
-  New,
-  Rejected,
-  Active,
-  Resolved,
-  Completed,
-  Closed
+  New = "New",
+  //Rejected = "Rejected",
+  Active = "Active",
+  Resolved = "Resolved",
+  Completed = "Completed"
+  //Closed = "Closed"
 }

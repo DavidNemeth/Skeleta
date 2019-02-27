@@ -41,7 +41,7 @@ export class TaskService {
   }
 
   DeleteRangeTasks(tasks: Task[]) {
-    var ids: number[];
+    var ids: number[] = [];
     for (let task of tasks) {
       ids.push(task.id);
     }

@@ -7,7 +7,7 @@
   </div>
   <div class="modal-body">
 
-    <form autocomplete="off" clrForm [formGroup]="userForm" (ngSubmit)="save()">
+    <form autocomplete="off" clrForm [formGroup]="taskForm" (ngSubmit)="save()">
       <div class="clr-row">
         <div class="clr-col-sm-12 clr-col-md-6">
           <clr-input-container>
@@ -25,29 +25,33 @@
             <input class="clr-col-12 clr-col-md-7" clrInput type="text" formControlName="comment" />
           </clr-input-container>
 
-          <clr-input-container>
+          <clr-select-container>
             <label class="clr-col-12 clr-col-md-5">{{'tasks.editor.Priority' | translate}}</label>
-            <select class="clr-col-12 clr-col-md-7" clrSelect formControlName="roles">
-              <option *ngFor="let priority of allPriotiy" [value]="priority">{{priority}}</option>
+            <select class="clr-col-12 clr-col-md-7" clrSelect formControlName="priority">
+              <option *ngFor="let priority of allPriority" [value]="priority">{{priority}}</option>
             </select>
-          </clr-input-container>
+          </clr-select-container>
 
-          <clr-input-container>
+          <clr-select-container>
             <label class="clr-col-12 clr-col-md-5">{{'tasks.editor.Status' | translate}}</label>
-            <select class="clr-col-12 clr-col-md-7" clrSelect formControlName="roles">
+            <select class="clr-col-12 clr-col-md-7" clrSelect formControlName="status">
               <option *ngFor="let status of allStatus" [value]="status">{{status}}</option>
             </select>
-          </clr-input-container>
+          </clr-select-container>
 
           <clr-select-container>
             <label class="clr-col-12 clr-col-md-5">{{'tasks.editor.AssignedTo' | translate}}</label>
-            <input class="clr-col-12 clr-col-md-7" clrInput type="text" formControlName="assignedTo" />         
+            <select class="clr-col-12 clr-col-md-7" clrSelect formControlName="assignedTo">
+              <option *ngFor="let user of users" [value]="user.userName">{{user.userName}}</option>
+            </select>
           </clr-select-container>
 
-          <clr-input-container>
-            <label class="clr-col-12 clr-col-md-5">{{'tasks.editor.Elrendelte' | translate}}</label>
-            <input class="clr-col-12 clr-col-md-7" clrInput type="text" formControlName="assignedBy" />
-          </clr-input-container>
+          <clr-select-container>
+            <label class="clr-col-12 clr-col-md-5">{{'tasks.editor.AssignedBy' | translate}}</label>
+            <select class="clr-col-12 clr-col-md-7" clrSelect formControlName="assignedBy">
+              <option *ngFor="let user of users" [value]="user.userName">{{user.userName}}</option>
+            </select>
+          </clr-select-container>
         </div>
 
       </div>
@@ -60,7 +64,7 @@
 </clr-modal>
 
 <clr-modal [(clrModalOpen)]="deleteOpen">
-  <h3 class="modal-title">Delete user</h3>
+  <h3 class="modal-title">Delete task</h3>
   <div class="modal-body">
     <p>Are you sure?</p>
   </div>
@@ -69,3 +73,4 @@
     <button type="button" [clrLoading]="deleteBtnState" class="btn btn-danger" (click)="Delete()">Delete</button>
   </div>
 </clr-modal>
+<div *ngFor="let status of allPriority">{{status}}</div>

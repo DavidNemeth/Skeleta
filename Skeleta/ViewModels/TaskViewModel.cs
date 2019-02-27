@@ -22,7 +22,7 @@ namespace Skeleta.ViewModels
 
 		public string Status { get; set; }
 
-		public UserViewModel AssignedTo { get; set; }
+		public string AssignedTo { get; set; }
 
 		public string AssignedBy { get; set; }
 	}

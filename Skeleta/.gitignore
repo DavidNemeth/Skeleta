@@ -13,7 +13,6 @@
 /ClientApp/dist-server
 /ClientApp/tmp
 /ClientApp/out-tsc
-/ClientApp/wwwroot
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

@@ -5,14 +5,17 @@ import { AlertService, MessageSeverity } from '../../../../services/alert.servic
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TaskService } from '../../../../services/tasks/taskService';
 import { Task } from '../../../../services/tasks/task.model';
-import { Status } from '../../../../models/enum';
+import { Status, Priority } from '../../../../models/enum';
 import { Observable, forkJoin } from 'rxjs';
+import { AccountService } from '../../../../services/account.service';
+import { User } from '../../../../models/user.model';
 
 @Component({
   selector: 'app-task-edit',
   templateUrl: './task-edit.component.html',
   styleUrls: ['./task-edit.component.css']
 })
+
 export class TaskEditComponent implements OnInit {
   submitBtnState: ClrLoadingState = ClrLoadingState.DEFAULT;
   deleteBtnState: ClrLoadingState = ClrLoadingState.DEFAULT;
@@ -22,12 +25,15 @@ export class TaskEditComponent implements OnInit {
   private deleteOpen = false;
   private isNewTask = false;
   private openModal;
+  private allStatus = [...Object.keys(Status)];
+  private allPriority = [...Object.keys(Priority)];
 
   initialTask: Task = new Task();
   taskEdit: Task;
   private tasksToDelete: Task[] = [];
   private taskToDelete: Task;
   taskForm: FormGroup;
+  users: User[] = [];
 
   @ViewChild(ClrForm) clrForm;
   @Output() updateData = new EventEmitter<Task>();
@@ -35,10 +41,14 @@ export class TaskEditComponent implements OnInit {
 
   constructor(private translationService: AppTranslationService,
     private alertService: AlertService, private formBuilder: FormBuilder,
-    private taskService: TaskService) { }
+    private taskService: TaskService, private accountService: AccountService) { }
 
   ngOnInit() {
     this.loadForm();
+    this.accountService.getUsers().subscribe(
+      users => this.users = users
+    );
+    
   }
 
   private loadForm() {
@@ -46,10 +56,10 @@ export class TaskEditComponent implements OnInit {
       title: ['', Validators.required],
       description: [''],
       comment: [''],
-      priority: ['', [Validators.required]],
+      priority: ['', Validators.required],
       status: ['', Validators.required],
-      assignedTo: [''],
-      assignedBy: [''],
+      assignedTo: ['', Validators.required],
+      assignedBy: ['', Validators.required],
     });
   }
 
@@ -68,11 +78,10 @@ export class TaskEditComponent implements OnInit {
     for (let i in this.taskForm.controls)
       this.taskForm.controls[i].markAsTouched();
     this.submitBtnState = ClrLoadingState.LOADING;
-
+    console.log(this.taskForm.value);
     Object.assign(this.taskEdit, this.taskForm.value);
-
     if (this.isNewTask) {
-      this.taskService.NewTask(this.taskEdit).subscribe(user => this.saveSuccessHelper(), error => this.saveFailedHelper(error));
+      this.taskService.NewTask(this.taskEdit).subscribe(task => this.saveSuccessHelper(), error => this.saveFailedHelper(error));
     }
     else {
       this.taskService.UpdateTask(this.taskEdit).subscribe(response => this.saveSuccessHelper(), error => this.saveFailedHelper(error));
@@ -107,6 +116,8 @@ export class TaskEditComponent implements OnInit {
   }
 
   Create() {
+    console.log(this.allStatus);
+    console.log(this.allPriority);
     this.openModal = true;
     this.isNewTask = true;
     this.actionTitle = "Add";
@@ -155,9 +166,11 @@ export class TaskEditComponent implements OnInit {
   private Delete() {
     this.deleteBtnState = ClrLoadingState.LOADING;
 
-    if (this.tasksToDelete) {
+    if (this.tasksToDelete != null) {
       this.taskService.DeleteRangeTasks(this.tasksToDelete).subscribe(
         response => {
+          console.log("in multi delete" + this.tasksToDelete);
+
           this.deleteData.emit(this.tasksToDelete);
           this.deleteOpen = false;
           this.alertService.showMessage(this.gT('toasts.saved'), `${this.tasksToDelete.length} record Deleted!`, MessageSeverity.success);
@@ -165,10 +178,13 @@ export class TaskEditComponent implements OnInit {
         });
     }
 
-    if (this.taskToDelete) {
+    if (this.taskToDelete != null) {
       this.taskService.DeleteTask(this.taskToDelete).subscribe(
         response => {
+          this.tasksToDelete = [];
           this.tasksToDelete.push(this.taskToDelete);
+          console.log("in single delete" + this.tasksToDelete);
+          
           this.deleteData.emit(this.tasksToDelete);
           this.deleteOpen = false;
           this.alertService.showMessage(this.gT('toasts.saved'), `${this.tasksToDelete.length} record Deleted!`, MessageSeverity.success);

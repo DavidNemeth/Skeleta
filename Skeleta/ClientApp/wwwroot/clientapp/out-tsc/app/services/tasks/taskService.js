@@ -43,7 +43,7 @@ var TaskService = /** @class */ (function () {
         return this.taskEndpoint.getDeleteEndpoint(task.id);
     };
     TaskService.prototype.DeleteRangeTasks = function (tasks) {
-        var ids;
+        var ids = [];
         for (var _i = 0, tasks_1 = tasks; _i < tasks_1.length; _i++) {
             var task = tasks_1[_i];
             ids.push(task.id);
