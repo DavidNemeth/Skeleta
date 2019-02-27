@@ -60,7 +60,6 @@ var UserEditComponent = /** @class */ (function () {
             this.deletePasswordFromUser(this.initialUser);
             this.loadForm();
             this.alertService.resetStickyMessage();
-            //this.userForm.reset();
             this.removeChangePassword();
         }
     };

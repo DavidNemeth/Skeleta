@@ -1,8 +1,9 @@
 import { User } from "../../models/user.model";
+import { Priority, Status } from "../../models/enum";
 
 export class Task {
 
-  constructor(title?: string, description?: string, comment?: string, priority?: string, status?: string, assignedTo?: User, assignedBy?: string) {
+  constructor(title?: string, description?: string, comment?: string, priority?: Priority, status?: Status, assignedTo?: User, assignedBy?: string) {
 
     this.title = title;
     this.description = description;
@@ -17,8 +18,8 @@ export class Task {
   public title: string;
   public description: string;
   public comment: string;
-  public priority: string;
-  public status: string;
+  public priority: Priority;
+  public status: Status;
 
   public assignedTo: User;
   public assignedBy: string;

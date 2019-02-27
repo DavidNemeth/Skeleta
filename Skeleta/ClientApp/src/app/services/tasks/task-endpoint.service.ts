@@ -70,4 +70,17 @@ export class TaskEndpoint extends EndpointFactory {
       }));
   }
 
+  getUpdateTaskEndpoint<T>(taskObject: any): Observable<T> {
+    return this.http.put<T>(this._tasksUrl, JSON.stringify(taskObject), this.getRequestHeaders()).pipe<T>(
+      catchError(error => {
+        return this.handleError(error, () => this.getUpdateTaskEndpoint(taskObject));
+      }));
+  }
+
+  getDeleteTaskEndpoint<T>(taskObject: any): Observable<T> {
+    return this.http.put<T>(this._tasksUrl, JSON.stringify(taskObject), this.getRequestHeaders()).pipe<T>(
+      catchError(error => {
+        return this.handleError(error, () => this.getDeleteTaskEndpoint(taskObject));
+      }));
+  }
 }

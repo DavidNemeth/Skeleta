@@ -1,3 +1,71 @@
-<p>
-  task-edit works!
-</p>
+<clr-modal [(clrModalOpen)]="openModal" (clrModalOpenChange)="openChange($event)" [clrModalSize]="'lg'">
+  <div class="modal-header">
+    <button aria-label="Close" class="close" type="button">
+      <clr-icon aria-hidden="true" shape="close"></clr-icon>
+    </button>
+    <h3 class="modal-title">Edit Task</h3>
+  </div>
+  <div class="modal-body">
+
+    <form autocomplete="off" clrForm [formGroup]="userForm" (ngSubmit)="save()">
+      <div class="clr-row">
+        <div class="clr-col-sm-12 clr-col-md-6">
+          <clr-input-container>
+            <label class="clr-col-12 clr-col-md-5">{{'tasks.editor.Title' | translate}}</label>
+            <input class="clr-col-12 clr-col-md-7" clrInput type="text" formControlName="title" />
+          </clr-input-container>
+
+          <clr-input-container>
+            <label class="clr-col-12 clr-col-md-5">{{'tasks.editor.Description' | translate}}</label>
+            <input class="clr-col-12 clr-col-md-7" clrInput type="text" formControlName="description" />
+          </clr-input-container>
+
+          <clr-input-container>
+            <label class="clr-col-12 clr-col-md-5">{{'tasks.editor.Comment' | translate}}</label>
+            <input class="clr-col-12 clr-col-md-7" clrInput type="text" formControlName="comment" />
+          </clr-input-container>
+
+          <clr-input-container>
+            <label class="clr-col-12 clr-col-md-5">{{'tasks.editor.Priority' | translate}}</label>
+            <select class="clr-col-12 clr-col-md-7" clrSelect formControlName="roles">
+              <option *ngFor="let priority of allPriotiy" [value]="priority">{{priority}}</option>
+            </select>
+          </clr-input-container>
+
+          <clr-input-container>
+            <label class="clr-col-12 clr-col-md-5">{{'tasks.editor.Status' | translate}}</label>
+            <select class="clr-col-12 clr-col-md-7" clrSelect formControlName="roles">
+              <option *ngFor="let status of allStatus" [value]="status">{{status}}</option>
+            </select>
+          </clr-input-container>
+
+          <clr-select-container>
+            <label class="clr-col-12 clr-col-md-5">{{'tasks.editor.AssignedTo' | translate}}</label>
+            <input class="clr-col-12 clr-col-md-7" clrInput type="text" formControlName="assignedTo" />         
+          </clr-select-container>
+
+          <clr-input-container>
+            <label class="clr-col-12 clr-col-md-5">{{'tasks.editor.Elrendelte' | translate}}</label>
+            <input class="clr-col-12 clr-col-md-7" clrInput type="text" formControlName="assignedBy" />
+          </clr-input-container>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" (click)="resetForm()" class="btn btn-info">Reset</button>
+        <button [clrLoading]="submitBtnState" type="submit" class="btn btn-primary">{{actionTitle}}</button>
+      </div>
+    </form>
+  </div>
+</clr-modal>
+
+<clr-modal [(clrModalOpen)]="deleteOpen">
+  <h3 class="modal-title">Delete user</h3>
+  <div class="modal-body">
+    <p>Are you sure?</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline" (click)="deleteOpen = false">Cancel</button>
+    <button type="button" [clrLoading]="deleteBtnState" class="btn btn-danger" (click)="Delete()">Delete</button>
+  </div>
+</clr-modal>

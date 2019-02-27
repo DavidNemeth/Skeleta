@@ -102,6 +102,22 @@
       "AssignedBy": "Assigned by",
       "TasksPerPage": "Tasks Per Page",
       "Tasks": "Tasks"
+    },
+    "editor": {
+      "Search": "Keresés...",
+      "NewTask": "Új feladat",
+      "Edit": "Módositás",
+      "Delete": "Törlés",
+      "EditTask": "Feladat Módositása \"{{name}}\"",
+      "Title": "Feladat neve",
+      "Description": "Feladat leirása",
+      "Comment": "Komment",
+      "Priority": "Prioritás",
+      "Status": "Státusz",
+      "AssignedTo": "Felelős",
+      "AssignedBy": "Elrendelte",
+      "TasksPerPage": "Feladat / oldal",
+      "Tasks": "Feladatok"
     }
   },
   "users": {

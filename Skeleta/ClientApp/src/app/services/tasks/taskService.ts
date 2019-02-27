@@ -32,6 +32,14 @@ export class TaskService {
     return this.taskEndpoint.getCreateTaskEndpoint<Task>(task);
   }
 
+  updateTask(task: Task) {
+    return this.taskEndpoint.getUpdateTaskEndpoint<Task>(task);
+  }
+
+  deleteTask(task: Task) {
+    return this.taskEndpoint.getDeleteTaskEndpoint<Task>(task);
+  }
+
   get permissions(): PermissionValues[] {
     return this.authService.userPermissions;
   }

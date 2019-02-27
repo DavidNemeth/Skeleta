@@ -35,6 +35,8 @@ var notification_endpoint_service_1 = require("./services/notification-endpoint.
 var notification_service_1 = require("./services/notification.service");
 var account_endpoint_service_1 = require("./services/account-endpoint.service");
 var account_service_1 = require("./services/account.service");
+var taskService_1 = require("./services/tasks/taskService");
+var task_endpoint_service_1 = require("./services/tasks/task-endpoint.service");
 var app_component_1 = require("./components/app.component");
 var home_component_1 = require("./components/home/home.component");
 var login_component_1 = require("./components/login/login.component");
@@ -56,6 +58,8 @@ var smart_admin_component_1 = require("./components/admin/smart-admin/smart-admi
 var user_preferences_component_1 = require("./components/settings/user-preferences/user-preferences.component");
 var user_edit_component_1 = require("./components/controls/editors/user-edit/user-edit.component");
 var role_edit_component_1 = require("./components/controls/editors/role-edit/role-edit.component");
+var task_management_component_1 = require("./components/admin/task-management/task-management.component");
+var task_edit_component_1 = require("./components/controls/editors/task-edit/task-edit.component");
 var AppModule = /** @class */ (function () {
     function AppModule() {
     }
@@ -83,7 +87,9 @@ var AppModule = /** @class */ (function () {
                 smart_admin_component_1.SmartAdminComponent,
                 user_preferences_component_1.UserPreferencesComponent,
                 user_edit_component_1.UserEditComponent,
-                role_edit_component_1.RoleEditComponent
+                role_edit_component_1.RoleEditComponent,
+                task_management_component_1.TaskManagementComponent,
+                task_edit_component_1.TaskEditComponent
             ],
             imports: [
                 platform_browser_1.BrowserModule,
@@ -115,7 +121,9 @@ var AppModule = /** @class */ (function () {
                 alert_service_1.AlertService,
                 account_service_1.AccountService,
                 configuration_service_1.ConfigurationService,
-                endpoint_factory_service_1.EndpointFactory
+                endpoint_factory_service_1.EndpointFactory,
+                taskService_1.TaskService,
+                task_endpoint_service_1.TaskEndpoint
             ],
             exports: [
                 if_tab_active_directive_1.IfTabActive
