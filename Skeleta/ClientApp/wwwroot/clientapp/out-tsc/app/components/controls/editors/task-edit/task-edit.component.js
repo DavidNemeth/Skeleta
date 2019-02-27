@@ -50,10 +50,10 @@ var TaskEditComponent = /** @class */ (function () {
             title: ['', forms_1.Validators.required],
             description: [''],
             comment: [''],
-            priority: ['', forms_1.Validators.required],
-            status: ['', forms_1.Validators.required],
-            assignedTo: ['', forms_1.Validators.required],
-            assignedBy: ['', forms_1.Validators.required],
+            priority: ['High', forms_1.Validators.required],
+            status: ['New', forms_1.Validators.required],
+            assignedTo: ['admin', forms_1.Validators.required],
+            assignedBy: ['admin', forms_1.Validators.required],
         });
     };
     TaskEditComponent.prototype.openChange = function (value) {
@@ -71,8 +71,8 @@ var TaskEditComponent = /** @class */ (function () {
         for (var i in this.taskForm.controls)
             this.taskForm.controls[i].markAsTouched();
         this.submitBtnState = angular_1.ClrLoadingState.LOADING;
-        console.log(this.taskForm.value);
         Object.assign(this.taskEdit, this.taskForm.value);
+        console.log(this.taskEdit);
         if (this.isNewTask) {
             this.taskService.NewTask(this.taskEdit).subscribe(function (task) { return _this.saveSuccessHelper(); }, function (error) { return _this.saveFailedHelper(error); });
         }
@@ -98,7 +98,7 @@ var TaskEditComponent = /** @class */ (function () {
         this.clrForm.markAsDirty();
     };
     TaskEditComponent.prototype.resetForm = function () {
-        this.taskForm.reset();
+        this.loadForm();
         this.alertService.resetStickyMessage();
         this.taskForm.patchValue(this.initialTask);
     };

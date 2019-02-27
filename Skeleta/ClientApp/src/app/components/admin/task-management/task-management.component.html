@@ -34,11 +34,6 @@
           {{'tasks.management.Title' | translate}}
         </ng-container>
       </clr-dg-column>
-      <clr-dg-column [clrDgField]="'description'">
-        <ng-container *clrDgHideableColumn="{hidden: false}">
-          {{'tasks.management.Description' | translate}}
-        </ng-container>
-      </clr-dg-column>
       <clr-dg-column [clrDgField]="'priority'">
         <ng-container *clrDgHideableColumn="{hidden: false}">
           {{'tasks.management.Priority' | translate}}
@@ -54,25 +49,20 @@
           {{'tasks.management.AssignedTo' | translate}}
         </ng-container>
       </clr-dg-column>
-      <clr-dg-column [clrDgField]="'assignedBy'">
-        <ng-container *clrDgHideableColumn="{hidden: false}">
-          {{'tasks.management.AssignedBy' | translate}}
-        </ng-container>
-      </clr-dg-column>
 
       <clr-dg-placeholder>Loading Tasks!</clr-dg-placeholder>
 
       <clr-dg-row *clrDgItems="let task of tasks" [clrDgItem]="task">
+
+        <clr-dg-cell>{{task.title}}</clr-dg-cell>
+        <clr-dg-cell>{{task.priority}}</clr-dg-cell>
+        <clr-dg-cell>{{task.status}}</clr-dg-cell>
+        <clr-dg-cell>{{task.assignedTo}}</clr-dg-cell>
+        <clr-dg-row-detail *clrIfExpanded>{{task.description}}</clr-dg-row-detail>
         <clr-dg-action-overflow>
           <button class="action-item" (click)="onEdit(task)">Edit</button>
           <button class="action-item" (click)="onDelete(task)">Delete</button>
         </clr-dg-action-overflow>
-        <clr-dg-cell>{{task.title}}</clr-dg-cell>
-        <clr-dg-cell>{{task.description}}</clr-dg-cell>
-        <clr-dg-cell>{{task.priority}}</clr-dg-cell>
-        <clr-dg-cell>{{task.status}}</clr-dg-cell>
-        <clr-dg-cell>{{task.assignedTo}}</clr-dg-cell>
-        <clr-dg-cell>{{task.assignedBy}}</clr-dg-cell>
       </clr-dg-row>
 
       <clr-dg-footer>

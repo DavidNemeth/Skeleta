@@ -85,13 +85,15 @@ namespace Skeleta.Controllers
 				if (taskVm == null)
 					return BadRequest($"{nameof(taskVm)} cannot be null");
 
-				var assignedTo = await _accountManager.GetUserByUserNameAsync(taskVm.AssignedTo);
-				var item = Mapper.Map<TaskItem>(taskVm);
-				item.AssignedTo = assignedTo;
-
-				_unitOfWork.Tasks.Add(item);
-				await _unitOfWork.SaveChangesAsync();
-				return CreatedAtAction("GetTask", new { id = taskVm.Id }, taskVm);
+				if (taskVm.AssignedTo != null)
+				{
+					var assignedTo = await _accountManager.GetUserByUserNameAsync(taskVm.AssignedTo);
+					var item = Mapper.Map<TaskItem>(taskVm);
+					item.AssignedTo = assignedTo;
+					_unitOfWork.Tasks.Add(item);
+					await _unitOfWork.SaveChangesAsync();
+				}
+				return NoContent();
 			}
 
 			return BadRequest(ModelState);
@@ -112,17 +114,21 @@ namespace Skeleta.Controllers
 				if (taskVm == null)
 					return BadRequest($"{nameof(taskVm)} cannot be null");
 
-				var assignedTo = await _accountManager.GetUserByUserNameAsync(taskVm.AssignedTo);
-				TaskItem appTask = await _unitOfWork.Tasks.GetAsync(id);
+				if (taskVm.AssignedTo != null)
+				{
+					var assignedTo = await _accountManager.GetUserByUserNameAsync(taskVm.AssignedTo);
+					TaskItem appTask = await _unitOfWork.Tasks.GetAsync(id);
 
-				if (appTask == null)
-					return NotFound(id);
+					if (appTask == null)
+						return NotFound(id);
 
-				Mapper.Map<TaskViewModel, TaskItem>(taskVm, appTask);
-				appTask.AssignedTo = assignedTo;
+					Mapper.Map<TaskViewModel, TaskItem>(taskVm, appTask);
+					appTask.AssignedTo = assignedTo;
 
-				_unitOfWork.Tasks.Update(appTask);
-				await _unitOfWork.SaveChangesAsync();
+					_unitOfWork.Tasks.Update(appTask);
+					await _unitOfWork.SaveChangesAsync();
+				}
+				
 				return NoContent();
 			}
 

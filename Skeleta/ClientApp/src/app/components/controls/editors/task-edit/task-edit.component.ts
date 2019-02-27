@@ -56,10 +56,10 @@ export class TaskEditComponent implements OnInit {
       title: ['', Validators.required],
       description: [''],
       comment: [''],
-      priority: ['', Validators.required],
-      status: ['', Validators.required],
-      assignedTo: ['', Validators.required],
-      assignedBy: ['', Validators.required],
+      priority: ['High', Validators.required],
+      status: ['New', Validators.required],
+      assignedTo: ['admin', Validators.required],
+      assignedBy: ['admin', Validators.required],
     });
   }
 
@@ -78,7 +78,6 @@ export class TaskEditComponent implements OnInit {
     for (let i in this.taskForm.controls)
       this.taskForm.controls[i].markAsTouched();
     this.submitBtnState = ClrLoadingState.LOADING;
-    console.log(this.taskForm.value);
     Object.assign(this.taskEdit, this.taskForm.value);
     if (this.isNewTask) {
       this.taskService.NewTask(this.taskEdit).subscribe(task => this.saveSuccessHelper(), error => this.saveFailedHelper(error));
@@ -89,6 +88,7 @@ export class TaskEditComponent implements OnInit {
   }
 
   private saveSuccessHelper(): void {
+    console.log("saved")
     Object.assign(this.initialTask, this.taskEdit);
     this.updateData.emit(this.initialTask);
 
@@ -105,19 +105,18 @@ export class TaskEditComponent implements OnInit {
     this.submitBtnState = ClrLoadingState.ERROR;
     this.alertService.stopLoadingMessage();
     this.alertService.showStickyMessage(error, null, MessageSeverity.error);
-    console.log(error.error);
     this.clrForm.markAsDirty();
   }
 
   private resetForm() {
-    this.taskForm.reset();
+    this.loadForm();
     this.alertService.resetStickyMessage();
-    this.taskForm.patchValue(this.initialTask);
+    if (!this.isNewTask) {
+      this.taskForm.patchValue(this.initialTask);
+    }
   }
 
   Create() {
-    console.log(this.allStatus);
-    console.log(this.allPriority);
     this.openModal = true;
     this.isNewTask = true;
     this.actionTitle = "Add";
@@ -147,6 +146,8 @@ export class TaskEditComponent implements OnInit {
   }
 
   View(task: Task) {
+    this.resetForm();
+    this.alertService.resetStickyMessage();
     Object.assign(this.initialTask, task);
     this.taskForm.patchValue(this.initialTask);
   }
@@ -169,8 +170,6 @@ export class TaskEditComponent implements OnInit {
     if (this.tasksToDelete != null) {
       this.taskService.DeleteRangeTasks(this.tasksToDelete).subscribe(
         response => {
-          console.log("in multi delete" + this.tasksToDelete);
-
           this.deleteData.emit(this.tasksToDelete);
           this.deleteOpen = false;
           this.alertService.showMessage(this.gT('toasts.saved'), `${this.tasksToDelete.length} record Deleted!`, MessageSeverity.success);
@@ -183,7 +182,6 @@ export class TaskEditComponent implements OnInit {
         response => {
           this.tasksToDelete = [];
           this.tasksToDelete.push(this.taskToDelete);
-          console.log("in single delete" + this.tasksToDelete);
           
           this.deleteData.emit(this.tasksToDelete);
           this.deleteOpen = false;
