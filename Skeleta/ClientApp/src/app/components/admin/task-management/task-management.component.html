@@ -7,6 +7,7 @@
   <div class="card-block">
     <app-search-box (searchChange)="onSearchChanged($event)" placeholder="{{'tasks.management.Search' | translate}}"></app-search-box>
 
+
     <clr-datagrid class="datagrid-compact" [(clrDgSelected)]="selected" [clrDgRowSelection]="true">
       <clr-dg-action-bar>
         <div class="btn-group">
