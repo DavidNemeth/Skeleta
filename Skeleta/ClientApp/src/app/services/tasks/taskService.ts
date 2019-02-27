@@ -12,32 +12,40 @@ export class TaskService {
   constructor(private router: Router, private http: HttpClient,
     private taskEndpoint: TaskEndpoint, private authService: AuthService) { }
 
-  getAllTask() {
-    return this.taskEndpoint.getAllTasksEndpoint<Task[]>();
+  GetAllTask() {
+    return this.taskEndpoint.getAllEndpoint<Task[]>();
   }
 
-  getPendingTasks() {
-    return this.taskEndpoint.getPendingTasksEndpoint<Task[]>();
+  GetPendingTask() {
+    return this.taskEndpoint.getPendingEndpoint<Task[]>();
   }
 
-  getClosedTasks() {
-    return this.taskEndpoint.getClosedTasksEndpoint<Task[]>();
+  gGetClosedTask() {
+    return this.taskEndpoint.getClosedEndpoint<Task[]>();
   }
 
-  getCompletedTasks() {
-    return this.taskEndpoint.getCompletedTasksEndpoint<Task[]>();
+  GetCompletedTask() {
+    return this.taskEndpoint.getCompletedEndpoint<Task[]>();
   }  
 
-  newTask(task: Task) {
-    return this.taskEndpoint.getCreateTaskEndpoint<Task>(task);
+  NewTask(task: Task) {
+    return this.taskEndpoint.getCreateEndpoint<Task>(task);
   }
 
-  updateTask(task: Task) {
-    return this.taskEndpoint.getUpdateTaskEndpoint<Task>(task);
+  UpdateTask(task: Task) {    
+      return this.taskEndpoint.getUpdateEndpoint(task, task.id);   
   }
 
-  deleteTask(task: Task) {
-    return this.taskEndpoint.getDeleteTaskEndpoint<Task>(task);
+  DeleteTask(task: Task) {
+    return this.taskEndpoint.getDeleteEndpoint<Task>(task.id);
+  }
+
+  DeleteRangeTasks(tasks: Task[]) {
+    var ids: number[];
+    for (let task of tasks) {
+      ids.push(task.id);
+    }
+    return this.taskEndpoint.getDeleteRangeEndpoint<Task>(ids);
   }
 
   get permissions(): PermissionValues[] {

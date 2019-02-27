@@ -9,17 +9,17 @@ import { ConfigurationService } from '../configuration.service';
 @Injectable()
 export class TaskEndpoint extends EndpointFactory {
 
-  private readonly _tasksUrl: string = '/api/Tasks/';
-  private readonly _allTasksUrl: string = '/api/Tasks/all';
-  private readonly _pendingTasksUrl: string = '/api/Tasks/pending';
-  private readonly _closedTasksUrl: string = '/api/Tasks/closed';
-  private readonly _completedTasksUrl: string = '/api/Tasks/completed';
+  private readonly _base: string = '/api/Tasks/';
+  private readonly _all: string = '/api/Tasks/all';
+  private readonly _pending: string = '/api/Tasks/pending';
+  private readonly _closed: string = '/api/Tasks/closed';
+  private readonly _completed: string = '/api/Tasks/completed';
 
-  get tasksUrl() { return this.configurations.baseUrl + this._tasksUrl; }
-  get allTasksUrl() { return this.configurations.baseUrl + this._allTasksUrl; }
-  get pendingTasksUrl() { return this.configurations.baseUrl + this._pendingTasksUrl; }
-  get closedTasksUrl() { return this.configurations.baseUrl + this._closedTasksUrl; }
-  get completedTasksUrl() { return this.configurations.baseUrl + this._completedTasksUrl; }
+  get baseUrl() { return this.configurations.baseUrl + this._base; }
+  get allUrl() { return this.configurations.baseUrl + this._all; }
+  get pendingUrl() { return this.configurations.baseUrl + this._pending; }
+  get closedUrl() { return this.configurations.baseUrl + this._closed; }
+  get completedUrl() { return this.configurations.baseUrl + this._completed; }
 
 
 
@@ -27,60 +27,73 @@ export class TaskEndpoint extends EndpointFactory {
     super(http, configurations, injector);
   }
 
-  getAllTasksEndpoint<T>(): Observable<T> {
-    const endpointUrl = this.allTasksUrl;
+  getAllEndpoint<T>(): Observable<T> {
+    const endpointUrl = this.allUrl;
 
     return this.http.get<T>(endpointUrl, this.getRequestHeaders()).pipe<T>(
       catchError(error => {
-        return this.handleError(error, () => this.getAllTasksEndpoint());
+        return this.handleError(error, () => this.getAllEndpoint());
       }));
   }
 
-  getPendingTasksEndpoint<T>(): Observable<T> {
-    const endpointUrl = this.pendingTasksUrl;
+  getPendingEndpoint<T>(): Observable<T> {
+    const endpointUrl = this.pendingUrl;
 
     return this.http.get<T>(endpointUrl, this.getRequestHeaders()).pipe<T>(
       catchError(error => {
-        return this.handleError(error, () => this.getPendingTasksEndpoint());
+        return this.handleError(error, () => this.getPendingEndpoint());
       }));
   }
 
-  getClosedTasksEndpoint<T>(): Observable<T> {
-    const endpointUrl = this.closedTasksUrl;
+  getClosedEndpoint<T>(): Observable<T> {
+    const endpointUrl = this.closedUrl;
 
     return this.http.get<T>(endpointUrl, this.getRequestHeaders()).pipe<T>(
       catchError(error => {
-        return this.handleError(error, () => this.getClosedTasksEndpoint());
+        return this.handleError(error, () => this.getClosedEndpoint());
       }));
   }
 
-  getCompletedTasksEndpoint<T>(): Observable<T> {
-    const endpointUrl = this.completedTasksUrl;
+  getCompletedEndpoint<T>(): Observable<T> {
+    const endpointUrl = this.completedUrl;
 
     return this.http.get<T>(endpointUrl, this.getRequestHeaders()).pipe<T>(
       catchError(error => {
-        return this.handleError(error, () => this.getCompletedTasksEndpoint());
+        return this.handleError(error, () => this.getCompletedEndpoint());
       }));
   }
 
-  getCreateTaskEndpoint<T>(taskObject: any): Observable<T> {
-    return this.http.post<T>(this._tasksUrl, JSON.stringify(taskObject), this.getRequestHeaders()).pipe<T>(
+  getCreateEndpoint<T>(taskObject: any): Observable<T> {
+    return this.http.post<T>(this.baseUrl, JSON.stringify(taskObject), this.getRequestHeaders()).pipe<T>(
       catchError(error => {
-        return this.handleError(error, () => this.getCreateTaskEndpoint(taskObject));
+        return this.handleError(error, () => this.getCreateEndpoint(taskObject));
       }));
   }
 
-  getUpdateTaskEndpoint<T>(taskObject: any): Observable<T> {
-    return this.http.put<T>(this._tasksUrl, JSON.stringify(taskObject), this.getRequestHeaders()).pipe<T>(
+  getUpdateEndpoint<T>(taskObject: any, taskId?: number): Observable<T> {
+    const endpointUrl = `${this.baseUrl}/${taskId}`;
+
+    return this.http.put<T>(endpointUrl, JSON.stringify(taskObject), this.getRequestHeaders()).pipe<T>(
       catchError(error => {
-        return this.handleError(error, () => this.getUpdateTaskEndpoint(taskObject));
+        return this.handleError(error, () => this.getUpdateEndpoint(taskObject));
       }));
   }
 
-  getDeleteTaskEndpoint<T>(taskObject: any): Observable<T> {
-    return this.http.put<T>(this._tasksUrl, JSON.stringify(taskObject), this.getRequestHeaders()).pipe<T>(
+  getDeleteEndpoint<T>(taskId?: number): Observable<T> {
+    const endpointUrl = `${this.baseUrl}/${taskId}`;
+
+    return this.http.delete<T>(endpointUrl, this.getRequestHeaders()).pipe<T>(
       catchError(error => {
-        return this.handleError(error, () => this.getDeleteTaskEndpoint(taskObject));
+        return this.handleError(error, () => this.getDeleteEndpoint(taskId));
+      }));
+  }
+
+  getDeleteRangeEndpoint<T>(taskIds?: number[]): Observable<T> {
+    const endpointUrl = `${this.baseUrl}/${taskIds}`;
+
+    return this.http.delete<T>(endpointUrl, this.getRequestHeaders()).pipe<T>(
+      catchError(error => {
+        return this.handleError(error, () => this.getDeleteRangeEndpoint(taskIds));
       }));
   }
 }

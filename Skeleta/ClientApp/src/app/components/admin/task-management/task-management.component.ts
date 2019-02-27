@@ -31,23 +31,21 @@ export class TaskManagementComponent implements OnInit {
 
   onAdd() {
     this.sourceTask = null;
-    this.taskEdit.newTask();
+    this.taskEdit.Create();
   }
 
   onEdit(task: Task) {
     this.sourceTask = task;
-    this.taskEdit.editTask(task);
+    this.taskEdit.Edit(task);
   }
 
   onDelete(task?: Task) {
-    if (task) {
-      let tasks: Task[] = [];
-      tasks.push(task);
-      this.taskEdit.deleteTasks(tasks);
+    if (task) {      
+      this.taskEdit.DeleteSingle(task);
     }
     else {
       if (this.selected.length > 0) {
-        this.taskEdit.deleteTasks(this.selected);
+        this.taskEdit.DeleteRange(this.selected);
       }
     }
   }
@@ -66,7 +64,7 @@ export class TaskManagementComponent implements OnInit {
     this.alertService.startLoadingMessage();
     this.loadingIndicator = true;
 
-    this.taskService.getAllTask()
+    this.taskService.GetAllTask()
       .subscribe(results => this.onDataLoadSuccessful(results), error => this.onDataLoadFailed(error));
   }
 

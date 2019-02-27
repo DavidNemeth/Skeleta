@@ -26,6 +26,7 @@ export class TaskEditComponent implements OnInit {
   initialTask: Task = new Task();
   taskEdit: Task;
   private tasksToDelete: Task[] = [];
+  private taskToDelete: Task;
   taskForm: FormGroup;
 
   @ViewChild(ClrForm) clrForm;
@@ -71,10 +72,10 @@ export class TaskEditComponent implements OnInit {
     Object.assign(this.taskEdit, this.taskForm.value);
 
     if (this.isNewTask) {
-      this.taskService.newTask(this.taskEdit).subscribe(user => this.saveSuccessHelper(), error => this.saveFailedHelper(error));
+      this.taskService.NewTask(this.taskEdit).subscribe(user => this.saveSuccessHelper(), error => this.saveFailedHelper(error));
     }
     else {
-      this.taskService.updateTask(this.taskEdit).subscribe(response => this.saveSuccessHelper(), error => this.saveFailedHelper(error));
+      this.taskService.UpdateTask(this.taskEdit).subscribe(response => this.saveSuccessHelper(), error => this.saveFailedHelper(error));
     }
   }
 
@@ -105,7 +106,7 @@ export class TaskEditComponent implements OnInit {
     this.taskForm.patchValue(this.initialTask);
   }
 
-  newUser() {
+  Create() {
     this.openModal = true;
     this.isNewTask = true;
     this.actionTitle = "Add";
@@ -113,7 +114,7 @@ export class TaskEditComponent implements OnInit {
     this.taskEdit = new Task();
   }
 
-  editUser(task: Task) {
+  Edit(task: Task) {
     if (task) {
       this.openModal = true;
       this.isNewTask = false;
@@ -130,34 +131,49 @@ export class TaskEditComponent implements OnInit {
       return this.taskEdit;
     }
     else {
-      return this.newUser();
+      return this.Create();
     }
   }
 
-  viewUser(task: Task) {
+  View(task: Task) {
     Object.assign(this.initialTask, task);
     this.taskForm.patchValue(this.initialTask);
   }
 
-  deleteUsers(tasks: Task[]) {
+  DeleteRange(tasks: Task[]) {
     this.deleteOpen = true;
     this.tasksToDelete = tasks;
+    this.taskToDelete = null;
+  }
+
+  DeleteSingle(task: Task) {
+    this.deleteOpen = true;
+    this.taskToDelete = task;
+    this.tasksToDelete = null;
   }
 
   private Delete() {
     this.deleteBtnState = ClrLoadingState.LOADING;
 
-    let observables: Observable<any>[] = [];
-    for (let task of this.tasksToDelete) {
-      observables.push(this.taskService.deleteTask(task));
+    if (this.tasksToDelete) {
+      this.taskService.DeleteRangeTasks(this.tasksToDelete).subscribe(
+        response => {
+          this.deleteData.emit(this.tasksToDelete);
+          this.deleteOpen = false;
+          this.alertService.showMessage(this.gT('toasts.saved'), `${this.tasksToDelete.length} record Deleted!`, MessageSeverity.success);
+          this.deleteBtnState = ClrLoadingState.SUCCESS;
+        });
     }
 
-    forkJoin(observables)
-      .subscribe(dataArray => {
-        this.deleteData.emit(this.tasksToDelete);
-        this.deleteOpen = false;
-        this.alertService.showMessage(this.gT('toasts.saved'), `${this.tasksToDelete.length} record Deleted!`, MessageSeverity.success);
-        this.deleteBtnState = ClrLoadingState.SUCCESS;
-      });
+    if (this.taskToDelete) {
+      this.taskService.DeleteTask(this.taskToDelete).subscribe(
+        response => {
+          this.tasksToDelete.push(this.taskToDelete);
+          this.deleteData.emit(this.tasksToDelete);
+          this.deleteOpen = false;
+          this.alertService.showMessage(this.gT('toasts.saved'), `${this.tasksToDelete.length} record Deleted!`, MessageSeverity.success);
+          this.deleteBtnState = ClrLoadingState.SUCCESS;
+        });
+    }
   }
 }

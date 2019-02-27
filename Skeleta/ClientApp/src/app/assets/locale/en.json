@@ -125,7 +125,7 @@
       "Search": "Search for user...",
       "NewUser": "New User",
       "Edit": "Edit",
-      "Delete": "Delete",
+      "Delete": "Delete Selected",
       "EditUser": "Edit User \"{{name}}\"",
       "Title": "Title",
       "UserName": "User Name",
