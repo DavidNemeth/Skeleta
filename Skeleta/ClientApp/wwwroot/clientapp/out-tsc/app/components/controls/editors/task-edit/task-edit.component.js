@@ -42,8 +42,9 @@ var TaskEditComponent = /** @class */ (function () {
     }
     TaskEditComponent.prototype.ngOnInit = function () {
         var _this = this;
-        this.loadForm();
         this.accountService.getUsers().subscribe(function (users) { return _this.users = users; });
+        this.currentUser = this.accountService.currentUser;
+        this.loadForm();
     };
     TaskEditComponent.prototype.loadForm = function () {
         this.taskForm = this.formBuilder.group({
@@ -52,8 +53,8 @@ var TaskEditComponent = /** @class */ (function () {
             comment: [''],
             priority: ['High', forms_1.Validators.required],
             status: ['New', forms_1.Validators.required],
-            assignedTo: ['admin', forms_1.Validators.required],
-            assignedBy: ['admin', forms_1.Validators.required],
+            assignedTo: [this.currentUser.fullName, forms_1.Validators.required],
+            assignedBy: [this.currentUser.fullName, forms_1.Validators.required],
         });
     };
     TaskEditComponent.prototype.openChange = function (value) {
@@ -72,7 +73,6 @@ var TaskEditComponent = /** @class */ (function () {
             this.taskForm.controls[i].markAsTouched();
         this.submitBtnState = angular_1.ClrLoadingState.LOADING;
         Object.assign(this.taskEdit, this.taskForm.value);
-        console.log(this.taskEdit);
         if (this.isNewTask) {
             this.taskService.NewTask(this.taskEdit).subscribe(function (task) { return _this.saveSuccessHelper(); }, function (error) { return _this.saveFailedHelper(error); });
         }
@@ -81,6 +81,7 @@ var TaskEditComponent = /** @class */ (function () {
         }
     };
     TaskEditComponent.prototype.saveSuccessHelper = function () {
+        console.log("saved");
         Object.assign(this.initialTask, this.taskEdit);
         this.updateData.emit(this.initialTask);
         if (this.isNewTask)
@@ -94,17 +95,16 @@ var TaskEditComponent = /** @class */ (function () {
         this.submitBtnState = angular_1.ClrLoadingState.ERROR;
         this.alertService.stopLoadingMessage();
         this.alertService.showStickyMessage(error, null, alert_service_1.MessageSeverity.error);
-        console.log(error.error);
         this.clrForm.markAsDirty();
     };
     TaskEditComponent.prototype.resetForm = function () {
         this.loadForm();
         this.alertService.resetStickyMessage();
-        this.taskForm.patchValue(this.initialTask);
+        if (!this.isNewTask) {
+            this.taskForm.patchValue(this.initialTask);
+        }
     };
     TaskEditComponent.prototype.Create = function () {
-        console.log(this.allStatus);
-        console.log(this.allPriority);
         this.openModal = true;
         this.isNewTask = true;
         this.actionTitle = "Add";
@@ -128,6 +128,8 @@ var TaskEditComponent = /** @class */ (function () {
         }
     };
     TaskEditComponent.prototype.View = function (task) {
+        this.resetForm();
+        this.alertService.resetStickyMessage();
         Object.assign(this.initialTask, task);
         this.taskForm.patchValue(this.initialTask);
     };
@@ -146,7 +148,6 @@ var TaskEditComponent = /** @class */ (function () {
         this.deleteBtnState = angular_1.ClrLoadingState.LOADING;
         if (this.tasksToDelete != null) {
             this.taskService.DeleteRangeTasks(this.tasksToDelete).subscribe(function (response) {
-                console.log("in multi delete" + _this.tasksToDelete);
                 _this.deleteData.emit(_this.tasksToDelete);
                 _this.deleteOpen = false;
                 _this.alertService.showMessage(_this.gT('toasts.saved'), _this.tasksToDelete.length + " record Deleted!", alert_service_1.MessageSeverity.success);
@@ -157,7 +158,6 @@ var TaskEditComponent = /** @class */ (function () {
             this.taskService.DeleteTask(this.taskToDelete).subscribe(function (response) {
                 _this.tasksToDelete = [];
                 _this.tasksToDelete.push(_this.taskToDelete);
-                console.log("in single delete" + _this.tasksToDelete);
                 _this.deleteData.emit(_this.tasksToDelete);
                 _this.deleteOpen = false;
                 _this.alertService.showMessage(_this.gT('toasts.saved'), _this.tasksToDelete.length + " record Deleted!", alert_service_1.MessageSeverity.success);

@@ -15,6 +15,7 @@
             <clr-icon shape="plus"></clr-icon>{{'tasks.management.NewTask' | translate}}
           </button>
           <button type="button" class="btn btn-sm btn-secondary" (click)="onDelete()"><clr-icon shape="close"></clr-icon>{{'tasks.management.Delete' | translate}}</button>
+          <button type="button" class="btn btn-sm btn-secondary" (click)="onEdit(selected[0])" *ngIf="selected.length == 1"><clr-icon shape="pencil"></clr-icon> Edit</button>
         </div>
         <div class="btn-group">
           <clr-dropdown>
@@ -57,18 +58,18 @@
         <clr-dg-cell>{{task.title}}</clr-dg-cell>
         <clr-dg-cell>{{task.priority}}</clr-dg-cell>
         <clr-dg-cell>{{task.status}}</clr-dg-cell>
-        <clr-dg-cell>{{task.assignedTo}}</clr-dg-cell>
+        <clr-dg-cell><clr-icon shape="user"></clr-icon>{{task.assignedTo}}</clr-dg-cell>
         <clr-dg-row-detail *clrIfExpanded>{{task.description}}</clr-dg-row-detail>
-        <clr-dg-action-overflow>
+        <!--<clr-dg-action-overflow>
           <button class="action-item" (click)="onEdit(task)">Edit</button>
           <button class="action-item" (click)="onDelete(task)">Delete</button>
-        </clr-dg-action-overflow>
+        </clr-dg-action-overflow>-->
       </clr-dg-row>
 
       <clr-dg-footer>
         <clr-dg-column-toggle>
         </clr-dg-column-toggle>
-        <clr-dg-pagination #pagination [clrDgPageSize]="50">
+        <clr-dg-pagination #pagination [clrDgPageSize]="20">
           <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100,1000]">{{'tasks.management.TasksPerPage' | translate}}</clr-dg-page-size>
           {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
           {{pagination.totalItems}} {{'tasks.management.Tasks' | translate}}

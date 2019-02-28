@@ -42,14 +42,14 @@
           <clr-select-container>
             <label class="clr-col-12 clr-col-md-5">{{'tasks.editor.AssignedTo' | translate}}</label>
             <select class="clr-col-12 clr-col-md-7" clrSelect formControlName="assignedTo">
-              <option *ngFor="let user of users" [value]="user.userName">{{user.userName}}</option>
+              <option *ngFor="let user of users" [value]="user.id">{{user.fullName}}</option>
             </select>
           </clr-select-container>
 
           <clr-select-container>
             <label class="clr-col-12 clr-col-md-5">{{'tasks.editor.AssignedBy' | translate}}</label>
             <select class="clr-col-12 clr-col-md-7" clrSelect formControlName="assignedBy">
-              <option *ngFor="let user of users" [value]="user.userName">{{user.userName}}</option>
+              <option *ngFor="let user of users" [value]="user.fullName">{{user.fullName}}</option>
             </select>
           </clr-select-container>
         </div>

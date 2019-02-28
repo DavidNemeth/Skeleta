@@ -87,7 +87,13 @@ namespace Skeleta.Controllers
 
 				if (taskVm.AssignedTo != null)
 				{
-					var assignedTo = await _accountManager.GetUserByUserNameAsync(taskVm.AssignedTo);
+					var assignedTo = await _accountManager.GetUserByIdAsync(taskVm.AssignedTo);
+
+					if (assignedTo == null)
+					{
+						return NotFound(assignedTo);
+					}
+
 					var item = Mapper.Map<TaskItem>(taskVm);
 					item.AssignedTo = assignedTo;
 					_unitOfWork.Tasks.Add(item);
@@ -116,7 +122,13 @@ namespace Skeleta.Controllers
 
 				if (taskVm.AssignedTo != null)
 				{
-					var assignedTo = await _accountManager.GetUserByUserNameAsync(taskVm.AssignedTo);
+					var assignedTo = await _accountManager.GetUserByIdAsync(taskVm.AssignedTo);
+
+					if (assignedTo == null)
+					{
+						return NotFound(assignedTo);
+					}
+
 					TaskItem appTask = await _unitOfWork.Tasks.GetAsync(id);
 
 					if (appTask == null)
