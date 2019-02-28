@@ -18,6 +18,7 @@ var taskService_1 = require("../../../../services/tasks/taskService");
 var task_model_1 = require("../../../../services/tasks/task.model");
 var enum_1 = require("../../../../models/enum");
 var account_service_1 = require("../../../../services/account.service");
+var user_model_1 = require("../../../../models/user.model");
 var TaskEditComponent = /** @class */ (function () {
     function TaskEditComponent(translationService, alertService, formBuilder, taskService, accountService) {
         var _this = this;
@@ -53,8 +54,7 @@ var TaskEditComponent = /** @class */ (function () {
             comment: [''],
             priority: ['High', forms_1.Validators.required],
             status: ['New', forms_1.Validators.required],
-            assignedTo: [this.currentUser.fullName, forms_1.Validators.required],
-            assignedBy: [this.currentUser.fullName, forms_1.Validators.required],
+            assignedTo: [this.currentUser.id, forms_1.Validators.required]
         });
     };
     TaskEditComponent.prototype.openChange = function (value) {
@@ -73,6 +73,7 @@ var TaskEditComponent = /** @class */ (function () {
             this.taskForm.controls[i].markAsTouched();
         this.submitBtnState = angular_1.ClrLoadingState.LOADING;
         Object.assign(this.taskEdit, this.taskForm.value);
+        this.taskEdit.assignedTo = this.users.find(function (u) { return u.id == _this.taskForm.controls['assignedTo'].value; });
         if (this.isNewTask) {
             this.taskService.NewTask(this.taskEdit).subscribe(function (task) { return _this.saveSuccessHelper(); }, function (error) { return _this.saveFailedHelper(error); });
         }
@@ -81,8 +82,9 @@ var TaskEditComponent = /** @class */ (function () {
         }
     };
     TaskEditComponent.prototype.saveSuccessHelper = function () {
-        console.log("saved");
+        var _this = this;
         Object.assign(this.initialTask, this.taskEdit);
+        this.initialTask.assignedTo = this.users.find(function (u) { return u.id == _this.taskEdit.assignedTo.id; });
         this.updateData.emit(this.initialTask);
         if (this.isNewTask)
             this.alertService.showMessage(this.gT('toasts.saved'), "Task added!", alert_service_1.MessageSeverity.success);
@@ -102,6 +104,7 @@ var TaskEditComponent = /** @class */ (function () {
         this.alertService.resetStickyMessage();
         if (!this.isNewTask) {
             this.taskForm.patchValue(this.initialTask);
+            this.taskForm.controls['assignedTo'].setValue(this.assignedTo.id);
         }
     };
     TaskEditComponent.prototype.Create = function () {
@@ -110,18 +113,20 @@ var TaskEditComponent = /** @class */ (function () {
         this.actionTitle = "Add";
         this.initialTask = new task_model_1.Task();
         this.taskEdit = new task_model_1.Task();
+        this.assignedTo = new user_model_1.User();
     };
     TaskEditComponent.prototype.Edit = function (task) {
         if (task) {
             this.openModal = true;
             this.isNewTask = false;
             this.actionTitle = "Edit";
-            this.taskForm.patchValue(task);
+            this.assignedTo = this.users.find(function (u) { return u.fullName == task.assignedTo.fullName; });
             this.initialTask = new task_model_1.Task();
             Object.assign(this.initialTask, task);
             this.taskEdit = new task_model_1.Task;
             Object.assign(this.taskEdit, task);
-            return this.taskEdit;
+            this.taskForm.patchValue(this.taskEdit);
+            this.taskForm.controls['assignedTo'].setValue(this.assignedTo.id);
         }
         else {
             return this.Create();

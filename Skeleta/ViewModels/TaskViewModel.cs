@@ -27,9 +27,8 @@ namespace Skeleta.ViewModels
 		public string Status { get; set; }
 
 		[Required(ErrorMessage = "AssignedTo is required")]
-		public string AssignedTo { get; set; }
-
-		[Required(ErrorMessage = "AssignedBy is required")]
+		public AssignUserViewModel AssignedTo { get; set; }
+		
 		public string AssignedBy { get; set; }
 	}
 }

@@ -53,15 +53,14 @@ export class TaskEditComponent implements OnInit {
     this.loadForm();
   }
 
-  private loadForm() {
+  private loadForm() {    
     this.taskForm = this.formBuilder.group({
       title: ['', Validators.required],
       description: [''],
       comment: [''],
       priority: ['High', Validators.required],
       status: ['New', Validators.required],
-      assignedTo: [this.currentUser.id, Validators.required],
-      assignedBy: [this.currentUser.fullName, Validators.required],
+      assignedTo: [this.currentUser.id, Validators.required]
     });
   }
 
@@ -76,26 +75,23 @@ export class TaskEditComponent implements OnInit {
     }
   }
 
-  private save() {
-    for (let i in this.taskForm.controls)
-      this.taskForm.controls[i].markAsTouched();
-    this.submitBtnState = ClrLoadingState.LOADING;
+  private save() {  
+      this.submitBtnState = ClrLoadingState.LOADING;
+      Object.assign(this.taskEdit, this.taskForm.value);
+      this.taskEdit.assignedTo = this.users.find(u => u.id == this.taskForm.controls['assignedTo'].value);
 
-    
-    Object.assign(this.taskEdit, this.taskForm.value);
-    this.taskEdit.assignedTo = this.taskForm.controls['assignedTo'].value;
- 
-    if (this.isNewTask) {
-      this.taskService.NewTask(this.taskEdit).subscribe(task => this.saveSuccessHelper(), error => this.saveFailedHelper(error));
-    }
-    else {
-      this.taskService.UpdateTask(this.taskEdit).subscribe(response => this.saveSuccessHelper(), error => this.saveFailedHelper(error));
-    }
+      if (this.isNewTask) {
+        this.taskService.NewTask(this.taskEdit).subscribe(task => this.saveSuccessHelper(), error => this.saveFailedHelper(error));
+      }
+      else {
+        this.taskService.UpdateTask(this.taskEdit).subscribe(response => this.saveSuccessHelper(), error => this.saveFailedHelper(error));
+      }
+
   }
 
   private saveSuccessHelper(): void {
     Object.assign(this.initialTask, this.taskEdit);
-    this.initialTask.assignedTo = this.users.find(u => u.id == this.taskEdit.assignedTo).fullName;
+    this.initialTask.assignedTo = this.users.find(u => u.id == this.taskEdit.assignedTo.id);
     this.updateData.emit(this.initialTask);
 
     if (this.isNewTask)
@@ -137,7 +133,7 @@ export class TaskEditComponent implements OnInit {
       this.openModal = true;
       this.isNewTask = false;
       this.actionTitle = "Edit";
-      this.assignedTo = this.users.find(u => u.fullName == task.assignedTo);
+      this.assignedTo = this.users.find(u => u.fullName == task.assignedTo.fullName);
 
       this.initialTask = new Task();
       Object.assign(this.initialTask, task);

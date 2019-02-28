@@ -8,7 +8,7 @@
     <app-search-box (searchChange)="onSearchChanged($event)" placeholder="{{'tasks.management.Search' | translate}}"></app-search-box>
 
 
-    <clr-datagrid class="datagrid-compact" [(clrDgSelected)]="selected" [clrDgRowSelection]="true">
+    <clr-datagrid  style="height: 500px" class="datagrid-compact" [(clrDgSelected)]="selected" [clrDgRowSelection]="true">
       <clr-dg-action-bar>
         <div class="btn-group">
           <button type="button" class="btn btn-sm btn-secondary" (click)="onAdd()">
@@ -56,9 +56,24 @@
       <clr-dg-row *clrDgItems="let task of tasks" [clrDgItem]="task">
 
         <clr-dg-cell>{{task.title}}</clr-dg-cell>
-        <clr-dg-cell>{{task.priority}}</clr-dg-cell>
+        <clr-dg-cell>
+          {{task.priority}}
+          <clr-icon *ngIf="task.priority == 'Critical'" shape="exclamation-triangle" class="is-error"></clr-icon>
+        </clr-dg-cell>
         <clr-dg-cell>{{task.status}}</clr-dg-cell>
-        <clr-dg-cell><clr-icon shape="user"></clr-icon>{{task.assignedTo}}</clr-dg-cell>
+
+        <clr-dg-cell>
+          {{task.assignedTo.fullName}}
+          <clr-signpost>
+            <clr-signpost-content [clrPosition]="'left-middle'" *clrIfOpen>
+              {{task.assignedTo.fullName}}
+              <br />
+              Phone: {{task.assignedTo.phoneNumber}}
+              <br />
+              Email: {{task.assignedTo.email}}
+            </clr-signpost-content>
+          </clr-signpost>
+        </clr-dg-cell>
         <clr-dg-row-detail *clrIfExpanded>{{task.description}}</clr-dg-row-detail>
         <!--<clr-dg-action-overflow>
           <button class="action-item" (click)="onEdit(task)">Edit</button>
@@ -70,7 +85,7 @@
         <clr-dg-column-toggle>
         </clr-dg-column-toggle>
         <clr-dg-pagination #pagination [clrDgPageSize]="20">
-          <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100,1000]">{{'tasks.management.TasksPerPage' | translate}}</clr-dg-page-size>
+          <!--<clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100,1000]">{{'tasks.management.TasksPerPage' | translate}}</clr-dg-page-size>-->
           {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
           {{pagination.totalItems}} {{'tasks.management.Tasks' | translate}}
         </clr-dg-pagination>

@@ -184,9 +184,10 @@ var UserEditComponent = /** @class */ (function () {
         }
     };
     UserEditComponent.prototype.viewUser = function (user) {
+        this.openModal = true;
+        this.canChangePassword = false;
         Object.assign(this.initialUser, user);
         this.userForm.patchValue(this.initialUser);
-        this.canChangePassword = false;
         this.userForm.controls['userName'].disable();
         this.userForm.controls['jobTitle'].disable();
         this.userForm.controls['fullName'].disable();

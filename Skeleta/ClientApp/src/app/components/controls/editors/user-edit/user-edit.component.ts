@@ -211,10 +211,11 @@ export class UserEditComponent implements OnInit {
   }
 
   viewUser(user: User) {
-    Object.assign(this.initialUser, user);
-
-    this.userForm.patchValue(this.initialUser);
+    this.openModal = true;
     this.canChangePassword = false;
+    Object.assign(this.initialUser, user);    
+    this.userForm.patchValue(this.initialUser);
+   
 
     this.userForm.controls['userName'].disable();
     this.userForm.controls['jobTitle'].disable();

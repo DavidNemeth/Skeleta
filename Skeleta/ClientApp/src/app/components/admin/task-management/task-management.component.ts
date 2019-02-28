@@ -86,7 +86,7 @@ export class TaskManagementComponent implements OnInit {
 
   onSearchChanged(value: string) {
     this.tasks = this.tasksCache
-      .filter(r => Utilities.searchArray(value, false, r.id, r.title, r.description, r.priority, r.status, r.assignedTo));
+      .filter(r => Utilities.searchArray(value, false, r.id, r.title, r.description, r.priority, r.status, r.assignedTo.fullName));
   }
 
   updateList(returnTask: Task) {

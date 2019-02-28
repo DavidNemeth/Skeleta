@@ -87,7 +87,7 @@ namespace Skeleta.Controllers
 
 				if (taskVm.AssignedTo != null)
 				{
-					var assignedTo = await _accountManager.GetUserByIdAsync(taskVm.AssignedTo);
+					var assignedTo = await _accountManager.GetUserByIdAsync(taskVm.AssignedTo.Id);
 
 					if (assignedTo == null)
 					{
@@ -122,7 +122,7 @@ namespace Skeleta.Controllers
 
 				if (taskVm.AssignedTo != null)
 				{
-					var assignedTo = await _accountManager.GetUserByIdAsync(taskVm.AssignedTo);
+					var assignedTo = await _accountManager.GetUserByIdAsync(taskVm.AssignedTo.Id);
 
 					if (assignedTo == null)
 					{

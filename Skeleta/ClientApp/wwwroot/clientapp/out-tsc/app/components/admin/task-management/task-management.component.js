@@ -74,7 +74,7 @@ var TaskManagementComponent = /** @class */ (function () {
     };
     TaskManagementComponent.prototype.onSearchChanged = function (value) {
         this.tasks = this.tasksCache
-            .filter(function (r) { return utilities_1.Utilities.searchArray(value, false, r.id, r.title, r.description, r.priority, r.status, r.assignedTo); });
+            .filter(function (r) { return utilities_1.Utilities.searchArray(value, false, r.id, r.title, r.description, r.priority, r.status, r.assignedTo.fullName); });
     };
     TaskManagementComponent.prototype.updateList = function (returnTask) {
         if (this.sourceTask) {
