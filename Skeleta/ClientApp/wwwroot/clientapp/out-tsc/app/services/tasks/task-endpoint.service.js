@@ -36,6 +36,7 @@ var TaskEndpoint = /** @class */ (function (_super) {
         _this._pending = '/api/Tasks/pending';
         _this._closed = '/api/Tasks/closed';
         _this._completed = '/api/Tasks/completed';
+        _this._resolved = '/api/Tasks/resolved';
         return _this;
     }
     Object.defineProperty(TaskEndpoint.prototype, "baseUrl", {
@@ -60,6 +61,11 @@ var TaskEndpoint = /** @class */ (function (_super) {
     });
     Object.defineProperty(TaskEndpoint.prototype, "completedUrl", {
         get: function () { return this.configurations.baseUrl + this._completed; },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(TaskEndpoint.prototype, "resolvedUrl", {
+        get: function () { return this.configurations.baseUrl + this._resolved; },
         enumerable: true,
         configurable: true
     });
@@ -89,6 +95,13 @@ var TaskEndpoint = /** @class */ (function (_super) {
         var endpointUrl = this.completedUrl;
         return this.http.get(endpointUrl, this.getRequestHeaders()).pipe(operators_1.catchError(function (error) {
             return _this.handleError(error, function () { return _this.getCompletedEndpoint(); });
+        }));
+    };
+    TaskEndpoint.prototype.getResolvedEndpoint = function () {
+        var _this = this;
+        var endpointUrl = this.resolvedUrl;
+        return this.http.get(endpointUrl, this.getRequestHeaders()).pipe(operators_1.catchError(function (error) {
+            return _this.handleError(error, function () { return _this.getResolvedEndpoint(); });
         }));
     };
     TaskEndpoint.prototype.getCreateEndpoint = function (taskObject) {

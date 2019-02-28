@@ -20,13 +20,17 @@ export class TaskService {
     return this.taskEndpoint.getPendingEndpoint<Task[]>();
   }
 
-  gGetClosedTask() {
+  GetClosedTask() {
     return this.taskEndpoint.getClosedEndpoint<Task[]>();
   }
 
   GetCompletedTask() {
     return this.taskEndpoint.getCompletedEndpoint<Task[]>();
   }  
+
+  GetResolvedTask() {
+    return this.taskEndpoint.getResolvedEndpoint<Task[]>();
+  }
 
   NewTask(task: Task) {
     return this.taskEndpoint.getCreateEndpoint<Task>(task);

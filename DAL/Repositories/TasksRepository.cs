@@ -19,7 +19,7 @@ namespace DAL.Repositories
 			.ToListAsync();
 
 		public async Task<IEnumerable<TaskItem>> GetAllPendingTask() => await _appContext.Tasks
-			.Where(t => t.Status != Status.Closed && t.Status != Status.Completed)
+			.Where(t => t.Status == Status.New || t.Status == Status.Active)
 			.Include(c => c.AssignedTo)
 			.OrderBy(c => c.Priority)
 			.ToListAsync();
@@ -35,7 +35,12 @@ namespace DAL.Repositories
 			.Include(c => c.AssignedTo)
 			.OrderBy(c => c.Priority)
 			.ToListAsync();
-		
+
+		public async Task<IEnumerable<TaskItem>> GetAllResolvedTask() => await _appContext.Tasks
+			.Where(t => t.Status == Status.Resolved)
+			.Include(c => c.AssignedTo)
+			.OrderBy(c => c.Priority)
+			.ToListAsync();
 
 		private ApplicationDbContext _appContext => (ApplicationDbContext)_context;
 	}

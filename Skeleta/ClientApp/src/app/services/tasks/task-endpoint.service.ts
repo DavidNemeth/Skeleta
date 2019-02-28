@@ -14,12 +14,14 @@ export class TaskEndpoint extends EndpointFactory {
   private readonly _pending: string = '/api/Tasks/pending';
   private readonly _closed: string = '/api/Tasks/closed';
   private readonly _completed: string = '/api/Tasks/completed';
+  private readonly _resolved: string = '/api/Tasks/resolved';
 
   get baseUrl() { return this.configurations.baseUrl + this._base; }
   get allUrl() { return this.configurations.baseUrl + this._all; }
   get pendingUrl() { return this.configurations.baseUrl + this._pending; }
   get closedUrl() { return this.configurations.baseUrl + this._closed; }
   get completedUrl() { return this.configurations.baseUrl + this._completed; }
+  get resolvedUrl() { return this.configurations.baseUrl + this._resolved; }
 
 
 
@@ -60,6 +62,15 @@ export class TaskEndpoint extends EndpointFactory {
     return this.http.get<T>(endpointUrl, this.getRequestHeaders()).pipe<T>(
       catchError(error => {
         return this.handleError(error, () => this.getCompletedEndpoint());
+      }));
+  }
+
+  getResolvedEndpoint<T>(): Observable<T> {
+    const endpointUrl = this.resolvedUrl;
+
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders()).pipe<T>(
+      catchError(error => {
+        return this.handleError(error, () => this.getResolvedEndpoint());
       }));
   }
 

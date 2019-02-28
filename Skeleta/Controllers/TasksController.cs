@@ -64,6 +64,16 @@ namespace Skeleta.Controllers
 			return Ok(Mapper.Map<IEnumerable<TaskViewModel>>(completedTasks));
 		}
 
+		// GET: api/values
+		[HttpGet("resolved")]
+		//[Authorize(Authorization.Policies.ViewAllTasksPolicy)]
+		[ProducesResponseType(200, Type = typeof(IEnumerable<TaskViewModel>))]
+		public async Task<IActionResult> GetResolved()
+		{
+			var resolvedTasks = await _unitOfWork.Tasks.GetAllResolvedTask();
+			return Ok(Mapper.Map<IEnumerable<TaskViewModel>>(resolvedTasks));
+		}
+
 		// GET api/values/5
 		[HttpGet("{id}")]
 		[ProducesResponseType(200, Type = typeof(TaskViewModel))]

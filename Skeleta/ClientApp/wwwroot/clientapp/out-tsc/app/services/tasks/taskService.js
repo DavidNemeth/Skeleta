@@ -27,11 +27,14 @@ var TaskService = /** @class */ (function () {
     TaskService.prototype.GetPendingTask = function () {
         return this.taskEndpoint.getPendingEndpoint();
     };
-    TaskService.prototype.gGetClosedTask = function () {
+    TaskService.prototype.GetClosedTask = function () {
         return this.taskEndpoint.getClosedEndpoint();
     };
     TaskService.prototype.GetCompletedTask = function () {
         return this.taskEndpoint.getCompletedEndpoint();
+    };
+    TaskService.prototype.GetResolvedTask = function () {
+        return this.taskEndpoint.getResolvedEndpoint();
     };
     TaskService.prototype.NewTask = function (task) {
         return this.taskEndpoint.getCreateEndpoint(task);

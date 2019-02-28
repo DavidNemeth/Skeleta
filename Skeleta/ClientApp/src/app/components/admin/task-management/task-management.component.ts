@@ -20,12 +20,18 @@ export class TaskManagementComponent implements OnInit {
   selected: Task[] = [];
   gT = (key: string) => this.translationService.getTranslation(key);
 
+  CompletedActive;
+  ResolvedActive;
+  PendingActive;
+  nameFilterValue: string;
+
   @ViewChild(TaskEditComponent) taskEdit;
 
   constructor(private alertService: AlertService, private translationService: AppTranslationService,
     private taskService: TaskService) { }
 
   ngOnInit() {
+    this.PendingActive = true;
     this.loadData();
   }
 
@@ -58,17 +64,40 @@ export class TaskManagementComponent implements OnInit {
 
   }
 
-  loadData() {
+  loadResolved() {
     this.tasks = [];
     this.tasksCache = [];
     this.alertService.startLoadingMessage();
     this.loadingIndicator = true;
 
-    this.taskService.GetAllTask()
+    this.taskService.GetResolvedTask()
+      .subscribe(results => this.onDataLoadSuccessful(results), error => this.onDataLoadFailed(error));
+  }
+
+  loadCompleted() {
+    this.tasks = [];
+    this.tasksCache = [];
+    this.alertService.startLoadingMessage();
+    this.loadingIndicator = true;
+
+    this.taskService.GetCompletedTask()
+      .subscribe(results => this.onDataLoadSuccessful(results), error => this.onDataLoadFailed(error));
+  }
+
+  loadPending() {
+    this.tasks = [];
+    this.tasksCache = [];
+    this.alertService.startLoadingMessage();
+    this.loadingIndicator = true;
+
+    this.taskService.GetPendingTask()
       .subscribe(results => this.onDataLoadSuccessful(results), error => this.onDataLoadFailed(error));
   }
 
   onDataLoadSuccessful(tasks: Task[]) {
+    for (let item of tasks) {
+      item.assignedToName = item.assignedTo.fullName;
+    }
     this.alertService.stopLoadingMessage();
     this.loadingIndicator = false;
     this.tasksCache = tasks;
@@ -86,27 +115,26 @@ export class TaskManagementComponent implements OnInit {
 
   onSearchChanged(value: string) {
     this.tasks = this.tasksCache
-      .filter(r => Utilities.searchArray(value, false, r.id, r.title, r.description, r.priority, r.status, r.assignedTo.fullName));
+      .filter(r => Utilities.searchArray(value, false, r.id, r.title, r.description, r.priority, r.status, r.assignedToName));
   }
 
   updateList(returnTask: Task) {
-    if (this.sourceTask) {
-      let index = this.tasks.indexOf(this.sourceTask);
-      let cacheIndex = this.tasksCache.indexOf(this.sourceTask);
-      this.tasks[index] = returnTask;
-      this.tasksCache[cacheIndex] = returnTask;
-      this.sourceTask == null;
-    }
-    else {
-      this.tasks.unshift(returnTask);
-      this.tasksCache.unshift(returnTask);
-    }
+    this.loadData();
   }
 
   deleteList(tasksToDelete: Task[]) {
-    for (let task of tasksToDelete) {
-      this.tasks = this.tasks.filter(obj => obj !== task);
-      this.tasksCache = this.tasksCache.filter(obj => obj !== task);
+    this.loadData();
+  }
+
+  private loadData() {
+    if (this.PendingActive) {
+      this.loadPending();
     }
+    if (this.CompletedActive) {
+      this.loadCompleted();
+    }
+    if (this.ResolvedActive) {
+      this.loadResolved();
+    }    
   }
 }

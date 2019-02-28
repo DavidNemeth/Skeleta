@@ -28,6 +28,7 @@ var TaskManagementComponent = /** @class */ (function () {
         this.gT = function (key) { return _this.translationService.getTranslation(key); };
     }
     TaskManagementComponent.prototype.ngOnInit = function () {
+        this.PendingActive = true;
         this.loadData();
     };
     TaskManagementComponent.prototype.onAdd = function () {
@@ -52,13 +53,31 @@ var TaskManagementComponent = /** @class */ (function () {
     };
     TaskManagementComponent.prototype.onExportSelected = function () {
     };
-    TaskManagementComponent.prototype.loadData = function () {
+    TaskManagementComponent.prototype.loadResolved = function () {
         var _this = this;
         this.tasks = [];
         this.tasksCache = [];
         this.alertService.startLoadingMessage();
         this.loadingIndicator = true;
-        this.taskService.GetAllTask()
+        this.taskService.GetResolvedTask()
+            .subscribe(function (results) { return _this.onDataLoadSuccessful(results); }, function (error) { return _this.onDataLoadFailed(error); });
+    };
+    TaskManagementComponent.prototype.loadCompleted = function () {
+        var _this = this;
+        this.tasks = [];
+        this.tasksCache = [];
+        this.alertService.startLoadingMessage();
+        this.loadingIndicator = true;
+        this.taskService.GetCompletedTask()
+            .subscribe(function (results) { return _this.onDataLoadSuccessful(results); }, function (error) { return _this.onDataLoadFailed(error); });
+    };
+    TaskManagementComponent.prototype.loadPending = function () {
+        var _this = this;
+        this.tasks = [];
+        this.tasksCache = [];
+        this.alertService.startLoadingMessage();
+        this.loadingIndicator = true;
+        this.taskService.GetPendingTask()
             .subscribe(function (results) { return _this.onDataLoadSuccessful(results); }, function (error) { return _this.onDataLoadFailed(error); });
     };
     TaskManagementComponent.prototype.onDataLoadSuccessful = function (tasks) {
@@ -77,27 +96,20 @@ var TaskManagementComponent = /** @class */ (function () {
             .filter(function (r) { return utilities_1.Utilities.searchArray(value, false, r.id, r.title, r.description, r.priority, r.status, r.assignedTo.fullName); });
     };
     TaskManagementComponent.prototype.updateList = function (returnTask) {
-        if (this.sourceTask) {
-            var index = this.tasks.indexOf(this.sourceTask);
-            var cacheIndex = this.tasksCache.indexOf(this.sourceTask);
-            this.tasks[index] = returnTask;
-            this.tasksCache[cacheIndex] = returnTask;
-            this.sourceTask == null;
-        }
-        else {
-            this.tasks.unshift(returnTask);
-            this.tasksCache.unshift(returnTask);
-        }
+        this.loadData();
     };
     TaskManagementComponent.prototype.deleteList = function (tasksToDelete) {
-        var _loop_1 = function (task) {
-            this_1.tasks = this_1.tasks.filter(function (obj) { return obj !== task; });
-            this_1.tasksCache = this_1.tasksCache.filter(function (obj) { return obj !== task; });
-        };
-        var this_1 = this;
-        for (var _i = 0, tasksToDelete_1 = tasksToDelete; _i < tasksToDelete_1.length; _i++) {
-            var task = tasksToDelete_1[_i];
-            _loop_1(task);
+        this.loadData();
+    };
+    TaskManagementComponent.prototype.loadData = function () {
+        if (this.PendingActive) {
+            this.loadPending();
+        }
+        if (this.CompletedActive) {
+            this.loadCompleted();
+        }
+        if (this.ResolvedActive) {
+            this.loadResolved();
         }
     };
     __decorate([

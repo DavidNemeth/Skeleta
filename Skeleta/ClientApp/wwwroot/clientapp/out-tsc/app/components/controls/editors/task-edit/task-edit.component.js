@@ -69,8 +69,6 @@ var TaskEditComponent = /** @class */ (function () {
     };
     TaskEditComponent.prototype.save = function () {
         var _this = this;
-        for (var i in this.taskForm.controls)
-            this.taskForm.controls[i].markAsTouched();
         this.submitBtnState = angular_1.ClrLoadingState.LOADING;
         Object.assign(this.taskEdit, this.taskForm.value);
         this.taskEdit.assignedTo = this.users.find(function (u) { return u.id == _this.taskForm.controls['assignedTo'].value; });

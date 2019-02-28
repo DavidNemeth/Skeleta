@@ -10,5 +10,6 @@ namespace DAL.Repositories.Interfaces
 		Task<IEnumerable<TaskItem>> GetAllPendingTask();
 		Task<IEnumerable<TaskItem>> GetAllCompletedTask();
 		Task<IEnumerable<TaskItem>> GetAllClosedTask();
+		Task<IEnumerable<TaskItem>> GetAllResolvedTask();
 	}
 }
