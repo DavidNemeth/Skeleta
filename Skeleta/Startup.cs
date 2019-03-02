@@ -135,10 +135,9 @@ namespace Skeleta
 				options.AddPolicy(Authorization.Policies.ManageAllRolesPolicy, policy => policy.RequireClaim(CustomClaimTypes.Permission, AppPermissions.ManageRoles));
 
 				options.AddPolicy(Authorization.Policies.ViewAllTasksPolicy, policy => policy.RequireClaim(CustomClaimTypes.Permission, AppPermissions.ViewTasks));
-				options.AddPolicy(Authorization.Policies.ViewAllTasksPolicy, policy => policy.Requirements.Add(new TasksAuthoriaztionRequirement()));
+				options.AddPolicy(Authorization.Policies.ManageAllTasksPolicy, policy => policy.RequireClaim(CustomClaimTypes.Permission, AppPermissions.ManageTasks));
 
 				options.AddPolicy(Authorization.Policies.AssignAllowedRolesPolicy, policy => policy.Requirements.Add(new AssignRolesAuthorizationRequirement()));
-
 			});
 
 			Mapper.Initialize(cfg =>
@@ -161,8 +160,11 @@ namespace Skeleta
 			services.AddSingleton<IAuthorizationHandler, ManageUserAuthorizationHandler>();
 			services.AddSingleton<IAuthorizationHandler, ViewRoleAuthorizationHandler>();
 			services.AddSingleton<IAuthorizationHandler, AssignRolesAuthorizationHandler>();
+
 			services.AddSingleton<IAuthorizationHandler, ViewTaskAuthorizationHandler>();
-			
+			services.AddSingleton<IAuthorizationHandler, ManageTaskAuthorizationHandler>();
+
+
 			// DB Creation and Seeding
 			services.AddTransient<IDatabaseInitializer, DatabaseInitializer>();
 		}

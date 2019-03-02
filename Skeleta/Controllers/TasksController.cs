@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using OpenIddict.Validation;
+using Skeleta.Authorization;
 using Skeleta.ViewModels;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -20,17 +21,18 @@ namespace Skeleta.Controllers
 		private readonly IAccountManager _accountManager;
 		private IUnitOfWork _unitOfWork;
 		readonly ILogger _logger;
+		private readonly IAuthorizationService _authorizationService;
 
-		public TasksController(IUnitOfWork unitOfWork, ILogger<TasksController> logger, IAccountManager accountManager)
+		public TasksController(IUnitOfWork unitOfWork, ILogger<TasksController> logger, IAccountManager accountManager, IAuthorizationService authorizationService)
 		{
 			_accountManager = accountManager;
 			_unitOfWork = unitOfWork;
 			_logger = logger;
+			_authorizationService = authorizationService;
 		}
 
 		// GET: api/values
 		[HttpGet("all")]
-		//[Authorize(Authorization.Policies.ViewAllTasksPolicy)]
 		[ProducesResponseType(200, Type = typeof(IEnumerable<TaskViewModel>))]
 		public async Task<IActionResult> GetAll()
 		{
@@ -39,17 +41,19 @@ namespace Skeleta.Controllers
 
 		// GET: api/values
 		[HttpGet("pending")]
-		//[Authorize(Authorization.Policies.ViewAllTasksPolicy)]
+		[Authorize(Authorization.Policies.ViewAllTasksPolicy)]
 		[ProducesResponseType(200, Type = typeof(IEnumerable<TaskViewModel>))]
 		public async Task<IActionResult> GetPending()
 		{
+			if (!(await _authorizationService.AuthorizeAsync(this.User, "", TaskManagementOperations.Read)).Succeeded)
+				return new ChallengeResult();
+
 			var pendingTasks = await _unitOfWork.Tasks.GetAllPendingTask();
 			return Ok(Mapper.Map<IEnumerable<TaskViewModel>>(pendingTasks));
 		}
 
 		// GET: api/values
 		[HttpGet("closed")]
-		//[Authorize(Authorization.Policies.ViewAllTasksPolicy)]
 		[ProducesResponseType(200, Type = typeof(IEnumerable<TaskViewModel>))]
 		public async Task<IActionResult> GetClosed()
 		{
@@ -58,8 +62,7 @@ namespace Skeleta.Controllers
 		}
 
 		// GET: api/values
-		[HttpGet("completed")]
-		[Authorize(Authorization.Policies.ViewAllTasksPolicy)]
+		[HttpGet("completed")]		
 		[ProducesResponseType(200, Type = typeof(IEnumerable<TaskViewModel>))]
 		public async Task<IActionResult> GetCompleted()
 		{
@@ -68,8 +71,7 @@ namespace Skeleta.Controllers
 		}
 
 		// GET: api/values
-		[HttpGet("resolved")]
-		//[Authorize(Authorization.Policies.ViewAllTasksPolicy)]
+		[HttpGet("resolved")]	
 		[ProducesResponseType(200, Type = typeof(IEnumerable<TaskViewModel>))]
 		public async Task<IActionResult> GetResolved()
 		{

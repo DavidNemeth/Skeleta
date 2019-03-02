@@ -28,6 +28,8 @@ namespace Skeleta.Authorization
 
 		/// <summary>Policy to allow viewing all task records.</summary>
 		public const string ViewAllTasksPolicy = "View All Tasks";
+		public const string ManageAllTasksPolicy = "Manage All Tasks";
+
 	}
 
 	/// <summary>
@@ -44,5 +46,18 @@ namespace Skeleta.Authorization
 		public static UserAccountAuthorizationRequirement Read = new UserAccountAuthorizationRequirement(ReadOperationName);
 		public static UserAccountAuthorizationRequirement Update = new UserAccountAuthorizationRequirement(UpdateOperationName);
 		public static UserAccountAuthorizationRequirement Delete = new UserAccountAuthorizationRequirement(DeleteOperationName);
+	}
+
+	public static class TaskManagementOperations
+	{
+		public const string CreateOperationName = "Create";
+		public const string ReadOperationName = "Read";
+		public const string UpdateOperationName = "Update";
+		public const string DeleteOperationName = "Delete";
+
+		public static TasksAuthoriaztionRequirement Create = new TasksAuthoriaztionRequirement(CreateOperationName);
+		public static TasksAuthoriaztionRequirement Read = new TasksAuthoriaztionRequirement(ReadOperationName);
+		public static TasksAuthoriaztionRequirement Update = new TasksAuthoriaztionRequirement(UpdateOperationName);
+		public static TasksAuthoriaztionRequirement Delete = new TasksAuthoriaztionRequirement(DeleteOperationName);
 	}
 }
