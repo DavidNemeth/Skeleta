@@ -35,6 +35,8 @@
 	<ItemGroup>
 	  <Compile Remove="Migrations\20190223194410_tasks_fluentApi.cs" />
 	  <Compile Remove="Migrations\20190223194410_tasks_fluentApi.Designer.cs" />
+	  <Compile Remove="Migrations\20190302120713_tasksRoles.cs" />
+	  <Compile Remove="Migrations\20190302120713_tasksRoles.Designer.cs" />
 	</ItemGroup>
 	
 	<ItemGroup>

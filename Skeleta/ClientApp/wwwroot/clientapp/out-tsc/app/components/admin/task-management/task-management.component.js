@@ -81,6 +81,10 @@ var TaskManagementComponent = /** @class */ (function () {
             .subscribe(function (results) { return _this.onDataLoadSuccessful(results); }, function (error) { return _this.onDataLoadFailed(error); });
     };
     TaskManagementComponent.prototype.onDataLoadSuccessful = function (tasks) {
+        for (var _i = 0, tasks_1 = tasks; _i < tasks_1.length; _i++) {
+            var item = tasks_1[_i];
+            item.assignedToName = item.assignedTo.fullName;
+        }
         this.alertService.stopLoadingMessage();
         this.loadingIndicator = false;
         this.tasksCache = tasks;
@@ -93,7 +97,7 @@ var TaskManagementComponent = /** @class */ (function () {
     };
     TaskManagementComponent.prototype.onSearchChanged = function (value) {
         this.tasks = this.tasksCache
-            .filter(function (r) { return utilities_1.Utilities.searchArray(value, false, r.id, r.title, r.description, r.priority, r.status, r.assignedTo.fullName); });
+            .filter(function (r) { return utilities_1.Utilities.searchArray(value, false, r.id, r.title, r.description, r.priority, r.status, r.assignedToName); });
     };
     TaskManagementComponent.prototype.updateList = function (returnTask) {
         this.loadData();

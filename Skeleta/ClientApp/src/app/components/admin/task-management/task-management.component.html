@@ -113,8 +113,6 @@
             Resolved Tasks
           </div>
           <div class="card-block">
-            <app-search-box (searchChange)="onSearchChanged($event)" placeholder="{{'tasks.management.Search' | translate}}"></app-search-box>
-
             <clr-datagrid style="height: 500px" class="datagrid-compact" [(clrDgSelected)]="selected" [clrDgRowSelection]="true">
               <clr-dg-action-bar>
                 <div class="btn-group">
@@ -135,6 +133,9 @@
                       <button type="button" (click)="onExportSelected()" [disabled]="selected.length === 0" clrDropdownItem>Export Selected Items</button>
                     </clr-dropdown-menu>
                   </clr-dropdown>
+                </div>
+                <div class="btn-group">
+                  <app-search-box (searchChange)="onSearchChanged($event)" placeholder="{{'tasks.management.Search' | translate}}"></app-search-box>
                 </div>
               </clr-dg-action-bar>
               <clr-dg-column [clrDgField]="'title'">

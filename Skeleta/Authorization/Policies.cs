@@ -25,6 +25,9 @@ namespace Skeleta.Authorization
 
 		/// <summary>Policy to allow assigning roles the user has access to (Requires new and current roles as parameter).</summary>
 		public const string AssignAllowedRolesPolicy = "Assign Allowed Roles";
+
+		/// <summary>Policy to allow viewing all task records.</summary>
+		public const string ViewAllTasksPolicy = "View All Tasks";
 	}
 
 	/// <summary>

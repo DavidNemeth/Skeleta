@@ -2,15 +2,18 @@
 using DAL;
 using DAL.Core.Interfaces;
 using DAL.Models.TaskModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using OpenIddict.Validation;
 using Skeleta.ViewModels;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Skeleta.Controllers
 {
+	[Authorize(AuthenticationSchemes = OpenIddictValidationDefaults.AuthenticationScheme)]
 	[Route("api/[controller]")]
 	public class TasksController : Controller
 	{
@@ -56,7 +59,7 @@ namespace Skeleta.Controllers
 
 		// GET: api/values
 		[HttpGet("completed")]
-		//[Authorize(Authorization.Policies.ViewAllTasksPolicy)]
+		[Authorize(Authorization.Policies.ViewAllTasksPolicy)]
 		[ProducesResponseType(200, Type = typeof(IEnumerable<TaskViewModel>))]
 		public async Task<IActionResult> GetCompleted()
 		{
