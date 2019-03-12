@@ -36,11 +36,15 @@ namespace DAL.Repositories
 			.OrderBy(c => c.Priority)
 			.ToListAsync();
 
-		public async Task<IEnumerable<TaskItem>> GetAllResolvedTask() => await _appContext.Tasks
-			.Where(t => t.Status == Status.Resolved)
-			.Include(c => c.AssignedTo)
+		public async Task<IEnumerable<TaskItem>> GetAllResolvedTask()
+		{
+			return await _appContext.Tasks
+			.Where(t => t.Status == Status.Resolved).Include(c => c.AssignedTo)
 			.OrderBy(c => c.Priority)
 			.ToListAsync();
+
+		}
+		
 
 		private ApplicationDbContext _appContext => (ApplicationDbContext)_context;
 	}

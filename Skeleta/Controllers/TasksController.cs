@@ -3,11 +3,11 @@ using DAL;
 using DAL.Core.Interfaces;
 using DAL.Models.TaskModel;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using OpenIddict.Validation;
 using Skeleta.Authorization;
+using Skeleta.Services;
 using Skeleta.ViewModels;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -18,17 +18,19 @@ namespace Skeleta.Controllers
 	[Route("api/[controller]")]
 	public class TasksController : Controller
 	{
-		private readonly IAccountManager _accountManager;
-		private IUnitOfWork _unitOfWork;
-		readonly ILogger _logger;
-		private readonly IAuthorizationService _authorizationService;
+		private readonly IAccountManager accountManager;
+		private ITaskService taskService;
+		private ApplicationDbContext context;
+		readonly ILogger logger;
+		private readonly IAuthorizationService authorizationService;
 
-		public TasksController(IUnitOfWork unitOfWork, ILogger<TasksController> logger, IAccountManager accountManager, IAuthorizationService authorizationService)
+		public TasksController(ApplicationDbContext context, ITaskService taskService, ILogger<TasksController> logger, IAccountManager accountManager, IAuthorizationService authorizationService)
 		{
-			_accountManager = accountManager;
-			_unitOfWork = unitOfWork;
-			_logger = logger;
-			_authorizationService = authorizationService;
+			this.accountManager = accountManager;
+			this.taskService = taskService;
+			this.context = context;
+			this.logger = logger;
+			this.authorizationService = authorizationService;
 		}
 
 		// GET: api/values
@@ -36,7 +38,7 @@ namespace Skeleta.Controllers
 		[ProducesResponseType(200, Type = typeof(IEnumerable<TaskViewModel>))]
 		public async Task<IActionResult> GetAll()
 		{
-			return Ok(Mapper.Map<IEnumerable<TaskViewModel>>(await _unitOfWork.Tasks.GetAllTask()));
+			return Ok(await taskService.GetAllTask());
 		}
 
 		// GET: api/values
@@ -45,11 +47,11 @@ namespace Skeleta.Controllers
 		[ProducesResponseType(200, Type = typeof(IEnumerable<TaskViewModel>))]
 		public async Task<IActionResult> GetPending()
 		{
-			if (!(await _authorizationService.AuthorizeAsync(this.User, "", TaskManagementOperations.Read)).Succeeded)
+			if (!(await authorizationService.AuthorizeAsync(this.User, "", TaskManagementOperations.Read)).Succeeded)
 				return new ChallengeResult();
 
-			var pendingTasks = await _unitOfWork.Tasks.GetAllPendingTask();
-			return Ok(Mapper.Map<IEnumerable<TaskViewModel>>(pendingTasks));
+			var pendingTasks = await taskService.GetAllPendingTask();
+			return Ok(pendingTasks);
 		}
 
 		// GET: api/values
@@ -57,8 +59,8 @@ namespace Skeleta.Controllers
 		[ProducesResponseType(200, Type = typeof(IEnumerable<TaskViewModel>))]
 		public async Task<IActionResult> GetClosed()
 		{
-			var closedTasks = await _unitOfWork.Tasks.GetAllClosedTask();
-			return Ok(Mapper.Map<IEnumerable<TaskViewModel>>(closedTasks));
+			var closedTasks = await taskService.GetAllClosedTask();
+			return Ok(closedTasks);
 		}
 
 		// GET: api/values
@@ -66,8 +68,8 @@ namespace Skeleta.Controllers
 		[ProducesResponseType(200, Type = typeof(IEnumerable<TaskViewModel>))]
 		public async Task<IActionResult> GetCompleted()
 		{
-			var completedTasks = await _unitOfWork.Tasks.GetAllCompletedTask();
-			return Ok(Mapper.Map<IEnumerable<TaskViewModel>>(completedTasks));
+			var completedTasks = await taskService.GetAllCompletedTask();
+			return Ok(completedTasks);
 		}
 
 		// GET: api/values
@@ -75,8 +77,8 @@ namespace Skeleta.Controllers
 		[ProducesResponseType(200, Type = typeof(IEnumerable<TaskViewModel>))]
 		public async Task<IActionResult> GetResolved()
 		{
-			var resolvedTasks = await _unitOfWork.Tasks.GetAllResolvedTask();
-			return Ok(Mapper.Map<IEnumerable<TaskViewModel>>(resolvedTasks));
+			var resolvedTasks = await taskService.GetAllResolvedTask();
+			return Ok(resolvedTasks);
 		}
 
 		// GET api/values/5
@@ -84,8 +86,8 @@ namespace Skeleta.Controllers
 		[ProducesResponseType(200, Type = typeof(TaskViewModel))]
 		public async Task<IActionResult> Get(int id)
 		{
-			var task = await _unitOfWork.Tasks.GetAsync(id);
-			return Ok(Mapper.Map<TaskViewModel>(task));
+			var task = await taskService.GetById(id);
+			return Ok(task);
 		}
 
 
@@ -102,7 +104,7 @@ namespace Skeleta.Controllers
 
 				if (taskVm.AssignedTo != null)
 				{
-					var assignedTo = await _accountManager.GetUserByIdAsync(taskVm.AssignedTo.Id);
+					var assignedTo = await accountManager.GetUserByIdAsync(taskVm.AssignedTo.Id);
 
 					if (assignedTo == null)
 					{
@@ -111,8 +113,8 @@ namespace Skeleta.Controllers
 
 					var item = Mapper.Map<TaskItem>(taskVm);
 					item.AssignedTo = assignedTo;
-					_unitOfWork.Tasks.Add(item);
-					await _unitOfWork.SaveChangesAsync();
+					context.Tasks.Add(item);
+					await context.SaveChangesAsync();
 				}
 				return NoContent();
 			}
@@ -137,23 +139,20 @@ namespace Skeleta.Controllers
 
 				if (taskVm.AssignedTo != null)
 				{
-					var assignedTo = await _accountManager.GetUserByIdAsync(taskVm.AssignedTo.Id);
-
+					var assignedTo = await accountManager.GetUserByIdAsync(taskVm.AssignedTo.Id);
 					if (assignedTo == null)
-					{
 						return NotFound(assignedTo);
-					}
 
-					TaskItem appTask = await _unitOfWork.Tasks.GetAsync(id);
+					TaskItem appTask = Mapper.Map<TaskItem>(await taskService.GetById(id));
 
 					if (appTask == null)
 						return NotFound(id);
 
-					Mapper.Map<TaskViewModel, TaskItem>(taskVm, appTask);
+					Mapper.Map(taskVm, appTask);
 					appTask.AssignedTo = assignedTo;
 
-					_unitOfWork.Tasks.Update(appTask);
-					await _unitOfWork.SaveChangesAsync();
+					context.Tasks.Update(appTask);
+					await context.SaveChangesAsync();
 				}
 				
 				return NoContent();
@@ -172,7 +171,7 @@ namespace Skeleta.Controllers
 		public async Task<IActionResult> Delete(int id)
 		{
 			TaskViewModel taskVM = null;
-			TaskItem task = await _unitOfWork.Tasks.GetAsync(id);
+			TaskItem task = Mapper.Map<TaskItem>(await taskService.GetById(id));
 
 			if (task != null)
 				taskVM = Mapper.Map<TaskViewModel>(task);
@@ -180,8 +179,8 @@ namespace Skeleta.Controllers
 			if (taskVM == null)
 				return NotFound(id);
 
-			_unitOfWork.Tasks.Remove(task);
-			await _unitOfWork.SaveChangesAsync();
+			context.Tasks.Remove(task);
+			await context.SaveChangesAsync();
 			return Ok(taskVM);
 		}
 
@@ -198,7 +197,7 @@ namespace Skeleta.Controllers
 			foreach (var id in ids)
 			{
 				TaskViewModel taskVM = null;
-				TaskItem task = await _unitOfWork.Tasks.GetAsync(id);
+				TaskItem task = Mapper.Map<TaskItem>(await taskService.GetById(id));
 
 				if (task != null)
 				{
@@ -211,8 +210,8 @@ namespace Skeleta.Controllers
 				}
 			}
 
-			_unitOfWork.Tasks.RemoveRange(tasks);
-			await _unitOfWork.SaveChangesAsync();
+			context.Tasks.RemoveRange(tasks);
+			await context.SaveChangesAsync();
 			return Ok(tasksVM);
 		}
 	}
