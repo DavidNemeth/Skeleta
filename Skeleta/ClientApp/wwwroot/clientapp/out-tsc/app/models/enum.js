@@ -27,6 +27,6 @@ var Status;
     Status["Active"] = "Active";
     Status["Resolved"] = "Resolved";
     Status["Completed"] = "Completed";
-    //Closed = "Closed"
+    Status["Closed"] = "Closed";
 })(Status = exports.Status || (exports.Status = {}));
 //# sourceMappingURL=enum.js.map

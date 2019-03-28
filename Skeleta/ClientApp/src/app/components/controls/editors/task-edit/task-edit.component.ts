@@ -45,7 +45,7 @@ export class TaskEditComponent implements OnInit {
     private alertService: AlertService, private formBuilder: FormBuilder,
     private taskService: TaskService, private accountService: AccountService) { }
 
-  ngOnInit() {    
+  ngOnInit() {
     this.accountService.getUsers().subscribe(
       users => this.users = users
     );
@@ -53,7 +53,7 @@ export class TaskEditComponent implements OnInit {
     this.loadForm();
   }
 
-  private loadForm() {    
+  private loadForm() {
     this.taskForm = this.formBuilder.group({
       title: ['', Validators.required],
       description: [''],
@@ -75,17 +75,17 @@ export class TaskEditComponent implements OnInit {
     }
   }
 
-  private save() {  
-      this.submitBtnState = ClrLoadingState.LOADING;
-      Object.assign(this.taskEdit, this.taskForm.value);
-      this.taskEdit.assignedTo = this.users.find(u => u.id == this.taskForm.controls['assignedTo'].value);
+  private save() {
+    this.submitBtnState = ClrLoadingState.LOADING;
+    Object.assign(this.taskEdit, this.taskForm.value);
+    this.taskEdit.assignedTo = this.users.find(u => u.id == this.taskForm.controls['assignedTo'].value);
 
-      if (this.isNewTask) {
-        this.taskService.NewTask(this.taskEdit).subscribe(task => this.saveSuccessHelper(), error => this.saveFailedHelper(error));
-      }
-      else {
-        this.taskService.UpdateTask(this.taskEdit).subscribe(response => this.saveSuccessHelper(), error => this.saveFailedHelper(error));
-      }
+    if (this.isNewTask) {
+      this.taskService.NewTask(this.taskEdit).subscribe(task => this.saveSuccessHelper(), error => this.saveFailedHelper(error));
+    }
+    else {
+      this.taskService.UpdateTask(this.taskEdit).subscribe(response => this.saveSuccessHelper(), error => this.saveFailedHelper(error));
+    }
 
   }
 
@@ -126,6 +126,40 @@ export class TaskEditComponent implements OnInit {
     this.initialTask = new Task();
     this.taskEdit = new Task();
     this.assignedTo = new User();
+  }
+
+  MarkActive(task: Task) {
+    if (task) {
+      task.status = Status.Active;
+      this.taskService.UpdateTask(task).subscribe(response => {
+        this.alertService.showMessage(this.gT('toasts.saved'), `Task set as Active!`, MessageSeverity.success);
+        this.updateData.emit(task);
+      },
+        error => this.alertService.showMessage(error, null, MessageSeverity.error));
+    }
+  }
+
+  MarkResolved(task: Task) {
+    if (task) {
+      task.status = Status.Resolved;
+      this.taskService.UpdateTask(task).subscribe(response =>
+      {
+        this.alertService.showMessage(this.gT('toasts.saved'), `Task set as Resolved!`, MessageSeverity.success);
+        this.updateData.emit(task);
+      },
+        error => this.alertService.showMessage(error, null, MessageSeverity.error));
+    }
+  }
+
+  MarkCompleted(task: Task) {
+    if (task) {
+      task.status = Status.Completed;
+      this.taskService.UpdateTask(task).subscribe(response => {
+        this.alertService.showMessage(this.gT('toasts.saved'), `Task set as Completed!`, MessageSeverity.success);
+        this.updateData.emit(task);
+      },
+        error => this.alertService.showMessage(error, null, MessageSeverity.error));
+    }
   }
 
   Edit(task: Task) {
@@ -186,7 +220,7 @@ export class TaskEditComponent implements OnInit {
         response => {
           this.tasksToDelete = [];
           this.tasksToDelete.push(this.taskToDelete);
-          
+
           this.deleteData.emit(this.tasksToDelete);
           this.deleteOpen = false;
           this.alertService.showMessage(this.gT('toasts.saved'), `${this.tasksToDelete.length} record Deleted!`, MessageSeverity.success);

@@ -64,7 +64,7 @@ namespace Skeleta.Controllers
 		}
 
 		// GET: api/values
-		[HttpGet("completed")]		
+		[HttpGet("completed")]
 		[ProducesResponseType(200, Type = typeof(IEnumerable<TaskViewModel>))]
 		public async Task<IActionResult> GetCompleted()
 		{
@@ -73,7 +73,7 @@ namespace Skeleta.Controllers
 		}
 
 		// GET: api/values
-		[HttpGet("resolved")]	
+		[HttpGet("resolved")]
 		[ProducesResponseType(200, Type = typeof(IEnumerable<TaskViewModel>))]
 		public async Task<IActionResult> GetResolved()
 		{
@@ -95,30 +95,19 @@ namespace Skeleta.Controllers
 		// POST api/values
 		[HttpPost()]
 		[ProducesResponseType(201, Type = typeof(TaskViewModel))]
-		public async Task<IActionResult> CreateTask([FromBody] TaskViewModel taskVm)
+		public async Task<IActionResult> CreateTask([FromBody] TaskViewModel viewmodel)
 		{
 			if (ModelState.IsValid)
 			{
-				if (taskVm == null)
-					return BadRequest($"{nameof(taskVm)} cannot be null");
+				if (viewmodel == null)
+					return BadRequest($"{nameof(viewmodel)} cannot be null");
 
-				if (taskVm.AssignedTo != null)
-				{
-					var assignedTo = await accountManager.GetUserByIdAsync(taskVm.AssignedTo.Id);
+				var item = Mapper.Map<TaskItem>(viewmodel);
+				context.Tasks.Add(item);
+				await context.SaveChangesAsync();
 
-					if (assignedTo == null)
-					{
-						return NotFound(assignedTo);
-					}
-
-					var item = Mapper.Map<TaskItem>(taskVm);
-					item.AssignedTo = assignedTo;
-					context.Tasks.Add(item);
-					await context.SaveChangesAsync();
-				}
 				return NoContent();
 			}
-
 			return BadRequest(ModelState);
 		}
 
@@ -130,31 +119,22 @@ namespace Skeleta.Controllers
 		[ProducesResponseType(400)]
 		[ProducesResponseType(403)]
 		[ProducesResponseType(404)]
-		public async Task<IActionResult> UpdateAsync(int id, [FromBody] TaskViewModel taskVm)
+		public async Task<IActionResult> UpdateAsync(int id, [FromBody] TaskViewModel viewmodel)
 		{
 			if (ModelState.IsValid)
 			{
-				if (taskVm == null)
-					return BadRequest($"{nameof(taskVm)} cannot be null");
+				if (viewmodel == null)
+					return BadRequest($"{nameof(viewmodel)} cannot be null");
 
-				if (taskVm.AssignedTo != null)
-				{
-					var assignedTo = await accountManager.GetUserByIdAsync(taskVm.AssignedTo.Id);
-					if (assignedTo == null)
-						return NotFound(assignedTo);
+				TaskItem appTask = Mapper.Map<TaskItem>(await taskService.GetById(id));
 
-					TaskItem appTask = Mapper.Map<TaskItem>(await taskService.GetById(id));
+				if (appTask == null)
+					return NotFound(id);
 
-					if (appTask == null)
-						return NotFound(id);
+				Mapper.Map(viewmodel, appTask);
+				context.Tasks.Update(appTask);
+				await context.SaveChangesAsync();
 
-					Mapper.Map(taskVm, appTask);
-					appTask.AssignedTo = assignedTo;
-
-					context.Tasks.Update(appTask);
-					await context.SaveChangesAsync();
-				}
-				
 				return NoContent();
 			}
 

@@ -17,6 +17,7 @@ using Microsoft.Extensions.Logging;
 using OpenIddict.Abstractions;
 using Skeleta.Authorization;
 using Skeleta.Helpers;
+using Skeleta.Services;
 using Skeleta.ViewModels;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
@@ -152,6 +153,7 @@ namespace Skeleta
 			services.AddScoped<IEmailSender, EmailSender>();
 
 			// Repositories
+			services.AddScoped<ITaskService, TaskService>();
 			services.AddScoped<IUnitOfWork, HttpUnitOfWork>();
 			services.AddScoped<IAccountManager, AccountManager>();
 

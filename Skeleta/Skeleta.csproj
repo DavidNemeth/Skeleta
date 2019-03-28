@@ -33,6 +33,13 @@
 	</ItemGroup>
 	
 	<ItemGroup>
+	  <Compile Remove="ClientApp\src\app\components\task\**" />
+	  <Content Remove="ClientApp\src\app\components\task\**" />
+	  <EmbeddedResource Remove="ClientApp\src\app\components\task\**" />
+	  <None Remove="ClientApp\src\app\components\task\**" />
+	</ItemGroup>
+	
+	<ItemGroup>
 	  <Compile Remove="Migrations\20190223194410_tasks_fluentApi.cs" />
 	  <Compile Remove="Migrations\20190223194410_tasks_fluentApi.Designer.cs" />
 	  <Compile Remove="Migrations\20190302120713_tasksRoles.cs" />

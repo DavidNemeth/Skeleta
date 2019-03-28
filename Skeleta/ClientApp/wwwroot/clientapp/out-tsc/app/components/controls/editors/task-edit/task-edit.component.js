@@ -113,6 +113,36 @@ var TaskEditComponent = /** @class */ (function () {
         this.taskEdit = new task_model_1.Task();
         this.assignedTo = new user_model_1.User();
     };
+    TaskEditComponent.prototype.MarkActive = function (task) {
+        var _this = this;
+        if (task) {
+            task.status = enum_1.Status.Active;
+            this.taskService.UpdateTask(task).subscribe(function (response) {
+                _this.alertService.showMessage(_this.gT('toasts.saved'), "Task set as Active!", alert_service_1.MessageSeverity.success);
+                _this.updateData.emit(task);
+            }, function (error) { return _this.alertService.showMessage(error, null, alert_service_1.MessageSeverity.error); });
+        }
+    };
+    TaskEditComponent.prototype.MarkResolved = function (task) {
+        var _this = this;
+        if (task) {
+            task.status = enum_1.Status.Resolved;
+            this.taskService.UpdateTask(task).subscribe(function (response) {
+                _this.alertService.showMessage(_this.gT('toasts.saved'), "Task set as Resolved!", alert_service_1.MessageSeverity.success);
+                _this.updateData.emit(task);
+            }, function (error) { return _this.alertService.showMessage(error, null, alert_service_1.MessageSeverity.error); });
+        }
+    };
+    TaskEditComponent.prototype.MarkCompleted = function (task) {
+        var _this = this;
+        if (task) {
+            task.status = enum_1.Status.Completed;
+            this.taskService.UpdateTask(task).subscribe(function (response) {
+                _this.alertService.showMessage(_this.gT('toasts.saved'), "Task set as Completed!", alert_service_1.MessageSeverity.success);
+                _this.updateData.emit(task);
+            }, function (error) { return _this.alertService.showMessage(error, null, alert_service_1.MessageSeverity.error); });
+        }
+    };
     TaskEditComponent.prototype.Edit = function (task) {
         if (task) {
             this.openModal = true;

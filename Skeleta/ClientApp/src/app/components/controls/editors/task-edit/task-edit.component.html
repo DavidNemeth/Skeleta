@@ -1,46 +1,54 @@
-<form autocomplete="off" clrForm [formGroup]="taskForm" (ngSubmit)="save()">
-  <clr-modal [(clrModalOpen)]="openModal" (clrModalOpenChange)="openChange($event)" [clrModalSize]="'lg'">
-    <div class="modal-header">
-      <h3 class="modal-title">Title</h3>
-    </div>
+<form autocomplete="off" clrForm clrLayout="vertical" [formGroup]="taskForm" (ngSubmit)="save()">
+  <clr-modal [(clrModalOpen)]="openModal" (clrModalOpenChange)="openChange($event)" [clrModalSize]="'md'">
+    <h3 class="modal-title">
+      New Task
+    </h3>
     <div class="modal-body">
-      <div class="clr-row">
-        <div class="clr-col-sm-12 clr-col-md-12">
-          <clr-select-container>
-            <label>{{'tasks.editor.AssignedTo' | translate}}</label>
-            <select clrSelect formControlName="assignedTo">
-              <option *ngFor="let user of users" [value]="user.id">{{user.fullName}}</option>
-            </select>
-          </clr-select-container>
-
-          <clr-input-container>
-            <label>{{'tasks.editor.Title' | translate}}</label>
-            <input clrInput type="text" formControlName="title" />
-          </clr-input-container>
-
-          <clr-select-container>
-            <label>{{'tasks.editor.Priority' | translate}}</label>
-            <select clrSelect formControlName="priority">
-              <option *ngFor="let priority of allPriority" [value]="priority">{{priority}}</option>
-            </select>
-          </clr-select-container>
-
-          <clr-select-container>
-            <label>{{'tasks.editor.Status' | translate}}</label>
-            <select clrSelect formControlName="status">
-              <option *ngFor="let status of allStatus" [value]="status">{{status}}</option>
-            </select>
-          </clr-select-container>
-
-          <clr-textarea-container>
-            <label>{{'tasks.editor.Description' | translate}}</label>
-            <textarea clrTextarea style="width:100% !important" formControlName="description"></textarea>
-          </clr-textarea-container>
-
-          <clr-input-container>
-            <label>{{'tasks.editor.Comment' | translate}}</label>
-            <input clrInput type="text" formControlName="comment" />
-          </clr-input-container>
+      <div class="clr-col-md-12">
+        <div class="clr-row">
+          <div class="clr-col-md-4">
+            <clr-select-container>
+              <label>{{'tasks.editor.AssignedTo' | translate}}</label>
+              <select clrSelect formControlName="assignedTo">
+                <option *ngFor="let user of users" [value]="user.id">{{user.fullName}}</option>
+              </select>
+            </clr-select-container>
+          </div>
+          <div class="clr-col-md-2">
+            <clr-select-container>
+              <label>{{'tasks.editor.Priority' | translate}}</label>
+              <select clrSelect formControlName="priority">
+                <option *ngFor="let priority of allPriority" [value]="priority">{{priority}}</option>
+              </select>
+            </clr-select-container>
+          </div>
+          <div class="clr-col-md-3">
+          </div>
+          <div class="clr-col-md-3">
+            <clr-select-container>
+              <label>{{'tasks.editor.Status' | translate}}</label>
+              <select clrSelect formControlName="status">
+                <option *ngFor="let status of allStatus" [value]="status">{{status}}</option>
+              </select>
+            </clr-select-container>
+          </div>
+        </div>
+        <br />
+        <div class="clr-row">
+          <div class="clr-col-md-8">
+            <clr-input-container>
+              <label>{{'tasks.editor.Title' | translate}}</label>
+              <input class="clr-col-md-8" style="width:100%" clrInput type="text" formControlName="title" />
+            </clr-input-container>
+          </div>
+        </div>
+        <div class="clr-row">
+          <div class="clr-col-md-12">
+            <clr-textarea-container>
+              <label>{{'tasks.editor.Description' | translate}}</label>
+              <textarea class="clr-col-md-12" style="width:100%" clrTextarea formControlName="description"></textarea>
+            </clr-textarea-container>
+          </div>
         </div>
       </div>
       <div class="modal-footer">

@@ -1,0 +1,21 @@
+<div [@fadeInOutRoute]="o.isActivated ? o.activatedRoute : ''" class="content-area">
+  <router-outlet #o="outlet"></router-outlet>
+</div>
+<nav [@fadeInOut] class="sidenav" [clr-nav-level]="1">
+  <section class="sidenav-content">
+    <a routerLink="/tasks" [routerLinkActiveOptions]="{ exact: true }" routerLinkActive="active" class="nav-link">
+      TaskPanel
+    </a>
+    <section class="nav-group collapsible">
+      <input id="userSettings" type="checkbox">
+      <label for="userSettings">{{'admin.sidenav.UserSettings' | translate}}</label>
+      <ul class="nav-list">
+        <li>
+          <a [routerLink]="['tasks']" routerLinkActive="active" class="nav-link">
+            Tasks
+          </a>
+        </li>
+      </ul>
+    </section>
+  </section>
+</nav>

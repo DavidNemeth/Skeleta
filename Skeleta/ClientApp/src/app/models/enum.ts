@@ -23,6 +23,6 @@ export enum Status {
   //Rejected = "Rejected",
   Active = "Active",
   Resolved = "Resolved",
-  Completed = "Completed"
-  //Closed = "Closed"
+  Completed = "Completed",
+  Closed = "Closed"
 }

@@ -60,6 +60,7 @@ import { UserEditComponent } from './components/controls/editors/user-edit/user-
 import { RoleEditComponent } from './components/controls/editors/role-edit/role-edit.component';
 import { TaskManagementComponent } from './components/admin/task-management/task-management.component';
 import { TaskEditComponent } from './components/controls/editors/task-edit/task-edit.component';
+import { TasksComponent } from './components/tasks/tasks.component';
 
 @NgModule({
   declarations: [
@@ -87,7 +88,8 @@ import { TaskEditComponent } from './components/controls/editors/task-edit/task-
     UserEditComponent,
     RoleEditComponent,
     TaskManagementComponent,
-    TaskEditComponent
+    TaskEditComponent,
+    TasksComponent
   ],
   imports: [
     BrowserModule,

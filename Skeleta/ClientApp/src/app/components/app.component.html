@@ -2,11 +2,12 @@
   <clr-header [@fadeInOut] *ngIf="isUserLoggedIn">
     <div class="branding">
       <a routerLink="" class="nav-link">
-        <img src="../../assets/logos/output-onlinepngtools (2).png" />
+        <span class="title">Project SimpleTask</span>
       </a>
     </div>
     <div class="header-nav" [clr-nav-level]="2">
       <a routerLink="/dashboard" routerLinkActive="active" class="nav-link"><span class="nav-text">{{'pageHeader.Dashboard' | translate}}</span></a>
+      <a routerLink="/tasks" routerLinkActive="active" class="nav-link"><span class="nav-text">{{'pageHeader.Tasks' | translate}}</span></a>
       <a routerLink="/admin" routerLinkActive="active" class="nav-link"><span class="nav-text">{{'pageHeader.Admin' | translate}}</span></a>
     </div>
     <div class="header-actions">

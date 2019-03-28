@@ -15,9 +15,11 @@ var alert_service_1 = require("../../../services/alert.service");
 var taskService_1 = require("../../../services/tasks/taskService");
 var app_translation_service_1 = require("../../../services/app-translation.service");
 var utilities_1 = require("../../../services/utilities");
+var account_service_1 = require("../../../services/account.service");
 var TaskManagementComponent = /** @class */ (function () {
-    function TaskManagementComponent(alertService, translationService, taskService) {
+    function TaskManagementComponent(accountService, alertService, translationService, taskService) {
         var _this = this;
+        this.accountService = accountService;
         this.alertService = alertService;
         this.translationService = translationService;
         this.taskService = taskService;
@@ -30,10 +32,23 @@ var TaskManagementComponent = /** @class */ (function () {
     TaskManagementComponent.prototype.ngOnInit = function () {
         this.PendingActive = true;
         this.loadData();
+        this.nameFilterValue = this.accountService.currentUser.fullName;
     };
     TaskManagementComponent.prototype.onAdd = function () {
         this.sourceTask = null;
         this.taskEdit.Create();
+    };
+    TaskManagementComponent.prototype.onActive = function (task) {
+        this.sourceTask = task;
+        this.taskEdit.MarkActive(task);
+    };
+    TaskManagementComponent.prototype.onResolved = function (task) {
+        this.sourceTask = task;
+        this.taskEdit.MarkResolved(task);
+    };
+    TaskManagementComponent.prototype.onCompleted = function (task) {
+        this.sourceTask = task;
+        this.taskEdit.MarkCompleted(task);
     };
     TaskManagementComponent.prototype.onEdit = function (task) {
         this.sourceTask = task;
@@ -126,8 +141,8 @@ var TaskManagementComponent = /** @class */ (function () {
             templateUrl: './task-management.component.html',
             styleUrls: ['./task-management.component.css']
         }),
-        __metadata("design:paramtypes", [alert_service_1.AlertService, app_translation_service_1.AppTranslationService,
-            taskService_1.TaskService])
+        __metadata("design:paramtypes", [account_service_1.AccountService, alert_service_1.AlertService,
+            app_translation_service_1.AppTranslationService, taskService_1.TaskService])
     ], TaskManagementComponent);
     return TaskManagementComponent;
 }());

@@ -5,6 +5,7 @@ import { AlertService, MessageSeverity } from '../../../services/alert.service';
 import { TaskService } from '../../../services/tasks/taskService';
 import { AppTranslationService } from '../../../services/app-translation.service';
 import { Utilities } from '../../../services/utilities';
+import { AccountService } from '../../../services/account.service';
 
 @Component({
   selector: 'app-task-management',
@@ -27,17 +28,33 @@ export class TaskManagementComponent implements OnInit {
 
   @ViewChild(TaskEditComponent) taskEdit;
 
-  constructor(private alertService: AlertService, private translationService: AppTranslationService,
-    private taskService: TaskService) { }
+  constructor(private accountService: AccountService, private alertService: AlertService,
+    private translationService: AppTranslationService, private taskService: TaskService) { }
 
   ngOnInit() {
     this.PendingActive = true;
     this.loadData();
+    this.nameFilterValue = this.accountService.currentUser.fullName;
   }
 
   onAdd() {
     this.sourceTask = null;
     this.taskEdit.Create();
+  }
+
+  onActive(task: Task) {
+    this.sourceTask = task;
+    this.taskEdit.MarkActive(task);
+  }
+
+  onResolved(task: Task) {
+    this.sourceTask = task;
+    this.taskEdit.MarkResolved(task);
+  }
+
+  onCompleted(task: Task) {
+    this.sourceTask = task;
+    this.taskEdit.MarkCompleted(task);
   }
 
   onEdit(task: Task) {
@@ -46,7 +63,7 @@ export class TaskManagementComponent implements OnInit {
   }
 
   onDelete(task?: Task) {
-    if (task) {      
+    if (task) {
       this.taskEdit.DeleteSingle(task);
     }
     else {
@@ -135,6 +152,6 @@ export class TaskManagementComponent implements OnInit {
     }
     if (this.ResolvedActive) {
       this.loadResolved();
-    }    
+    }
   }
 }
