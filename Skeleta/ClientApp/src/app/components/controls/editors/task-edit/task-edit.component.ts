@@ -2,13 +2,14 @@ import { Component, OnInit, ViewChild, Output, EventEmitter } from '@angular/cor
 import { ClrLoadingState, ClrForm } from '@clr/angular';
 import { AppTranslationService } from '../../../../services/app-translation.service';
 import { AlertService, MessageSeverity } from '../../../../services/alert.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { TaskService } from '../../../../services/tasks/taskService';
 import { Task } from '../../../../services/tasks/task.model';
 import { Status, Priority } from '../../../../models/enum';
 import { Observable, forkJoin } from 'rxjs';
 import { AccountService } from '../../../../services/account.service';
 import { User } from '../../../../models/user.model';
+import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 @Component({
   selector: 'app-task-edit',
@@ -27,6 +28,7 @@ export class TaskEditComponent implements OnInit {
   private openModal;
   private allStatus = [...Object.keys(Status)];
   private allPriority = [...Object.keys(Priority)];
+  public description = ClassicEditor;
 
   initialTask: Task = new Task();
   taskEdit: Task;
@@ -38,6 +40,9 @@ export class TaskEditComponent implements OnInit {
   assignedTo: User;
 
   @ViewChild(ClrForm) clrForm;
+
+  @Output() popData = new EventEmitter<Task>();
+  @Output() updateStatus = new EventEmitter<Task>();
   @Output() updateData = new EventEmitter<Task>();
   @Output() deleteData = new EventEmitter<Task[]>();
 
@@ -56,7 +61,7 @@ export class TaskEditComponent implements OnInit {
   private loadForm() {
     this.taskForm = this.formBuilder.group({
       title: ['', Validators.required],
-      description: [''],
+      description: new FormControl(this.Edit),
       comment: [''],
       priority: ['High', Validators.required],
       status: ['New', Validators.required],
@@ -130,22 +135,32 @@ export class TaskEditComponent implements OnInit {
 
   MarkActive(task: Task) {
     if (task) {
-      task.status = Status.Active;
-      this.taskService.UpdateTask(task).subscribe(response => {
-        this.alertService.showMessage(this.gT('toasts.saved'), `Task set as Active!`, MessageSeverity.success);
-        this.updateData.emit(task);
-      },
-        error => this.alertService.showMessage(error, null, MessageSeverity.error));
+      if (task.status == Status.New) {
+        task.status = Status.Active;
+        this.taskService.UpdateTask(task).subscribe(response => {
+          this.alertService.showMessage(this.gT('toasts.saved'), `Task set as Active!`, MessageSeverity.success);
+          this.updateStatus.emit(task);
+        },
+          error => this.alertService.showMessage(error, null, MessageSeverity.error));
+      }
+      else {
+        task.status = Status.Active;
+        this.taskService.UpdateTask(task).subscribe(response => {
+          this.alertService.showMessage(this.gT('toasts.saved'), `Task set as Active!`, MessageSeverity.success);
+          this.popData.emit(task);
+        },
+          error => this.alertService.showMessage(error, null, MessageSeverity.error));
+      }
     }
   }
+
 
   MarkResolved(task: Task) {
     if (task) {
       task.status = Status.Resolved;
-      this.taskService.UpdateTask(task).subscribe(response =>
-      {
+      this.taskService.UpdateTask(task).subscribe(response => {
         this.alertService.showMessage(this.gT('toasts.saved'), `Task set as Resolved!`, MessageSeverity.success);
-        this.updateData.emit(task);
+        this.popData.emit(task);
       },
         error => this.alertService.showMessage(error, null, MessageSeverity.error));
     }
@@ -156,7 +171,7 @@ export class TaskEditComponent implements OnInit {
       task.status = Status.Completed;
       this.taskService.UpdateTask(task).subscribe(response => {
         this.alertService.showMessage(this.gT('toasts.saved'), `Task set as Completed!`, MessageSeverity.success);
-        this.updateData.emit(task);
+        this.popData.emit(task);
       },
         error => this.alertService.showMessage(error, null, MessageSeverity.error));
     }

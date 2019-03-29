@@ -1,4 +1,54 @@
-<form autocomplete="off" clrForm clrLayout="vertical" [formGroup]="taskForm" (ngSubmit)="save()">
+<form class="clr-form" autocomplete="off" [formGroup]="taskForm" (ngSubmit)="save()">
+  <clr-modal [(clrModalOpen)]="openModal" (clrModalOpenChange)="openChange($event)" [clrModalSize]="'lg'">
+
+    <div class="clr-form-control modal-title">
+      <div class="clr-control-container clr-control-inline btn-group">
+        <div *ngFor="let priority of allPriority" class="radio btn">
+          <input type="radio" formControlName="priority" [value]="priority" id="{{priority}}">
+          <label for="{{priority}}">{{priority}}</label>
+        </div>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="clr-form-control">
+        <label class="clr-control-label">{{'tasks.editor.AssignedTo' | translate}}</label>
+        <div class="clr-control-container">
+          <div class="clr-select-wrapper">
+            <select class="clr-select" formControlName="assignedTo">
+              <option *ngFor="let user of users" [value]="user.id">{{user.fullName}}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="clr-form-control">
+        <label class="clr-control-label">{{'tasks.editor.Title' | translate}}</label>
+        <div class="clr-control-container">
+          <div class="clr-input-wrapper">
+            <input class="clr-input" type="text" formControlName="title" />
+          </div>
+        </div>
+      </div>
+
+      <div class="clr-form-control">
+        <label for="example" class="clr-control-label">{{'tasks.editor.Description' | translate}}</label>
+        <div class="clr-control-container">
+          <div class="clr-textarea-wrapper">
+            <ckeditor [config]="{ toolbar: [ 'heading', '|', 'bold', 'italic', 'trike', 'bulletedList', 'numberedList', 'blockQuote','insertTable', 'Undo', 'Redo' ] }" [editor]="description" name="myEditor"  formControlName="description"></ckeditor>
+            <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" (click)="resetForm()" class="btn btn-info">Reset</button>
+      <button [clrLoading]="submitBtnState" type="submit" [disabled]="taskForm.invalid" class="btn btn-primary">{{actionTitle}}</button>
+    </div>
+  </clr-modal>
+</form>
+
+<!--<form autocomplete="off" class="clr-form" [formGroup]="taskForm" (ngSubmit)="save()">
   <clr-modal [(clrModalOpen)]="openModal" (clrModalOpenChange)="openChange($event)" [clrModalSize]="'md'">
     <h3 class="modal-title">
       New Task
@@ -44,10 +94,10 @@
         </div>
         <div class="clr-row">
           <div class="clr-col-md-12">
-            <clr-textarea-container>
+            <clr-input-container>
               <label>{{'tasks.editor.Description' | translate}}</label>
-              <textarea class="clr-col-md-12" style="width:100%" clrTextarea formControlName="description"></textarea>
-            </clr-textarea-container>
+              <ckeditor [editor]="Editor" formControlName="description"></ckeditor>
+            </clr-input-container>
           </div>
         </div>
       </div>
@@ -57,7 +107,7 @@
       </div>
     </div>
   </clr-modal>
-</form>
+</form>-->
 <clr-modal [(clrModalOpen)]="deleteOpen">
   <h3 class="modal-title">Delete task</h3>
   <div class="modal-body">

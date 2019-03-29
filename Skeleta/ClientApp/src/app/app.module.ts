@@ -10,6 +10,7 @@ import { ToastaModule } from 'ngx-toasta';
 import { ClarityModule } from "@clr/angular";
 import { NgSelectModule } from '@ng-select/ng-select';
 
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { FusionChartsModule } from 'angular-fusioncharts';
 import FusionCharts from 'fusioncharts/core';
 import Column2d from 'fusioncharts/viz/column2d';
@@ -107,7 +108,8 @@ import { TasksComponent } from './components/tasks/tasks.component';
     }),
     ToastaModule.forRoot(),
     ClarityModule,    
-    FusionChartsModule
+    FusionChartsModule,
+    CKEditorModule
   ],
   providers: [
     { provide: 'BASE_URL', useFactory: getBaseUrl },

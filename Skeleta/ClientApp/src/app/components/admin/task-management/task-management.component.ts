@@ -6,6 +6,7 @@ import { TaskService } from '../../../services/tasks/taskService';
 import { AppTranslationService } from '../../../services/app-translation.service';
 import { Utilities } from '../../../services/utilities';
 import { AccountService } from '../../../services/account.service';
+import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 @Component({
   selector: 'app-task-management',
@@ -20,6 +21,7 @@ export class TaskManagementComponent implements OnInit {
   loadingIndicator: boolean;
   selected: Task[] = [];
   gT = (key: string) => this.translationService.getTranslation(key);
+  public description = ClassicEditor;
 
   CompletedActive;
   ResolvedActive;
@@ -135,6 +137,14 @@ export class TaskManagementComponent implements OnInit {
       .filter(r => Utilities.searchArray(value, false, r.id, r.title, r.description, r.priority, r.status, r.assignedToName));
   }
 
+  popItem(task: Task) {
+    this.removeItem(task);
+  }
+
+  updateStatus(task: Task) {
+    this.updateItem(task);
+  }
+
   updateList(returnTask: Task) {
     this.loadData();
   }
@@ -153,5 +163,18 @@ export class TaskManagementComponent implements OnInit {
     if (this.ResolvedActive) {
       this.loadResolved();
     }
+  }
+
+  private removeItem(task: Task) {
+    const taskIndex = this.tasks.indexOf(task, 0);
+    if (taskIndex > -1) {
+      this.tasks.splice(taskIndex, 1);
+    }
+  }
+
+  private updateItem(task: Task) {
+    let index = this.tasks.indexOf(task);
+
+    this.tasks[index] = task;
   }
 }

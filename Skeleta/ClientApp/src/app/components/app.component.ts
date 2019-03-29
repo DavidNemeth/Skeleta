@@ -51,7 +51,9 @@ export class AppComponent implements OnInit, OnDestroy {
     storageManager.initialiseStorageSyncListener();
 
     translationService.addLanguages(['en', 'hu']);
-
+    translationService.setDefaultLanguage('en');
+    translationService.changeLanguage();
+    
     this.toastaConfig.theme = 'default';
     this.toastaConfig.position = 'top-right';
     this.toastaConfig.limit = 100;

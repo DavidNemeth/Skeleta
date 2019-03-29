@@ -105,20 +105,20 @@
       "Tasks": "Tasks"
     },
     "editor": {
-      "Search": "Keresés...",
-      "NewTask": "Új feladat",
-      "Edit": "Módositás",
-      "Delete": "Törlés",
-      "EditTask": "Feladat Módositása \"{{name}}\"",
-      "Title": "Feladat neve",
-      "Description": "Feladat leirása",
-      "Comment": "Komment",
-      "Priority": "Prioritás",
-      "Status": "Státusz",
-      "AssignedTo": "Felelős",
-      "AssignedBy": "Elrendelte",
-      "TasksPerPage": "Feladat / oldal",
-      "Tasks": "Feladatok"
+      "Search": "Search...",
+      "NewTask": "New Task",
+      "Edit": "Edit",
+      "Delete": "Delete",
+      "EditTask": "Edit Task \"{{name}}\"",
+      "Title": "Title",
+      "Description": "Description",
+      "Comment": "Comment",
+      "Priority": "Priority",
+      "Status": "Status",
+      "AssignedTo": "AssignedTo",
+      "AssignedBy": "AssignedBy",
+      "TasksPerPage": "Task / Page",
+      "Tasks": "Tasks"
     }
   },
   "users": {
