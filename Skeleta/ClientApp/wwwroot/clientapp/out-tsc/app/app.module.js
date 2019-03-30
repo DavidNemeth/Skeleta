@@ -15,7 +15,7 @@ var core_2 = require("@ngx-translate/core");
 var ngx_toasta_1 = require("ngx-toasta");
 var angular_1 = require("@clr/angular");
 var ng_select_1 = require("@ng-select/ng-select");
-var ngx_quill_1 = require("ngx-quill");
+var ckeditor5_angular_1 = require("@ckeditor/ckeditor5-angular");
 var angular_fusioncharts_1 = require("angular-fusioncharts");
 var core_3 = require("fusioncharts/core");
 var column2d_1 = require("fusioncharts/viz/column2d");
@@ -113,7 +113,7 @@ var AppModule = /** @class */ (function () {
                 ngx_toasta_1.ToastaModule.forRoot(),
                 angular_1.ClarityModule,
                 angular_fusioncharts_1.FusionChartsModule,
-                ngx_quill_1.QuillModule
+                ckeditor5_angular_1.CKEditorModule
             ],
             providers: [
                 { provide: 'BASE_URL', useFactory: getBaseUrl },

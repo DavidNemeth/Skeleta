@@ -99,8 +99,8 @@
       "Comment": "Comment",
       "Priority": "Priority",
       "Status": "Status",
-      "AssignedTo": "Assigned to",
-      "AssignedBy": "Assigned by",
+      "Developer": "Developer",
+      "Tester": "Tester",
       "TasksPerPage": "Tasks Per Page",
       "Tasks": "Tasks"
     },
@@ -115,8 +115,8 @@
       "Comment": "Comment",
       "Priority": "Priority",
       "Status": "Status",
-      "AssignedTo": "AssignedTo",
-      "AssignedBy": "AssignedBy",
+      "Developer": "Developer",
+      "Tester": "Tester",
       "TasksPerPage": "Task / Page",
       "Tasks": "Tasks"
     }

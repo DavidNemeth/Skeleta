@@ -100,8 +100,8 @@
       "Comment": "Komment",
       "Priority": "Prioritás",
       "Status": "Státusz",
-      "AssignedTo": "Felelős",
-      "AssignedBy": "Elrendelte",
+      "Developer": "Fejlesztő",
+      "Tester": "Tesztelő",
       "TasksPerPage": "Feladat / oldal",
       "Tasks": "Feladatok"
     },
@@ -116,8 +116,8 @@
       "Comment": "Komment",
       "Priority": "Prioritás",
       "Status": "Státusz",
-      "AssignedTo": "Felelős",
-      "AssignedBy": "Elrendelte",
+      "Developer": "Fejlesztő",
+      "Tester": "Tesztelő",
       "TasksPerPage": "Feladat / oldal",
       "Tasks": "Feladatok"
     }

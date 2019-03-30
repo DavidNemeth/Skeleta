@@ -4,14 +4,16 @@ using DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Skeleta.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190330003615_takitem_tester")]
+    partial class takitem_tester
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -172,8 +174,6 @@ namespace Skeleta.Migrations
 
                     b.Property<int>("TaskItemId");
 
-                    b.Property<string>("TesterId");
-
                     b.Property<string>("Title")
                         .IsRequired();
 
@@ -187,8 +187,6 @@ namespace Skeleta.Migrations
                     b.HasIndex("DeveloperId");
 
                     b.HasIndex("TaskItemId");
-
-                    b.HasIndex("TesterId");
 
                     b.ToTable("BugItems");
                 });
@@ -497,10 +495,6 @@ namespace Skeleta.Migrations
                         .WithMany("BugItems")
                         .HasForeignKey("TaskItemId")
                         .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("DAL.Models.ApplicationUser", "Tester")
-                        .WithMany("TesterBugItems")
-                        .HasForeignKey("TesterId");
                 });
 
             modelBuilder.Entity("DAL.Models.TaskModel.TaskItem", b =>

@@ -1,5 +1,6 @@
 ﻿using DAL.Models;
 using DAL.Models.Interfaces;
+using DAL.Models.ProjectModel;
 using DAL.Models.TaskModel;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -13,9 +14,10 @@ namespace DAL
 	public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string>
 	{
 		public string CurrentUserId { get; set; }
-		public DbSet<TaskItem> Tasks { get; set; }
-
-
+		public DbSet<TaskItem> TaskItems { get; set; }
+		public DbSet<BugItem> BugItems { get; set; }
+		public DbSet<Project> Projects { get; set; }
+		public DbSet<ProjectMember> ProjectMembers { get; set; }
 
 
 		public ApplicationDbContext(DbContextOptions options) : base(options)
@@ -28,10 +30,26 @@ namespace DAL
 
 			builder.Entity<ApplicationUser>().HasMany(u => u.Claims).WithOne().HasForeignKey(c => c.UserId).IsRequired().OnDelete(DeleteBehavior.Cascade);
 			builder.Entity<ApplicationUser>().HasMany(u => u.Roles).WithOne().HasForeignKey(r => r.UserId).IsRequired().OnDelete(DeleteBehavior.Cascade);
-
 			builder.Entity<ApplicationRole>().HasMany(r => r.Claims).WithOne().HasForeignKey(c => c.RoleId).IsRequired().OnDelete(DeleteBehavior.Cascade);
 			builder.Entity<ApplicationRole>().HasMany(r => r.Users).WithOne().HasForeignKey(r => r.RoleId).IsRequired().OnDelete(DeleteBehavior.Cascade);
 
+			//builder.Entity<ApplicationUser>().HasMany(u => u.DeveloperTaskItems).WithOne(t => t.Developer).HasForeignKey(r => r.DeveloperId).OnDelete(DeleteBehavior.SetNull);
+			//builder.Entity<ApplicationUser>().HasMany(u => u.TesterTaskItems).WithOne(t => t.Tester).HasForeignKey(r => r.TesterId).OnDelete(DeleteBehavior.SetNull);
+			//builder.Entity<ApplicationUser>().HasMany(u => u.DeveloperBugItems).WithOne(t => t.Developer).HasForeignKey(r => r.DeveloperId).OnDelete(DeleteBehavior.SetNull);
+			//builder.Entity<ApplicationUser>().HasMany(u => u.TesterBugItems).WithOne(t => t.Tester).HasForeignKey(r => r.TesterId).OnDelete(DeleteBehavior.SetNull);
+
+			builder.Entity<TaskItem>().HasMany(r => r.BugItems).WithOne(t => t.TaskItem).HasForeignKey(r => r.TaskItemId).IsRequired();
+			builder.Entity<TaskItem>().HasOne(r => r.Developer).WithMany(t => t.DeveloperTaskItems).HasForeignKey(r => r.DeveloperId);
+			builder.Entity<TaskItem>().HasOne(r => r.Tester).WithMany(t => t.TesterTaskItems).HasForeignKey(r => r.TesterId);
+
+			builder.Entity<BugItem>().HasOne(r => r.Developer).WithMany(t => t.DeveloperBugItems).HasForeignKey(r => r.DeveloperId);
+			builder.Entity<BugItem>().HasOne(r => r.Tester).WithMany(t => t.TesterBugItems).HasForeignKey(r => r.TesterId);
+			builder.Entity<BugItem>().HasOne(r => r.TaskItem).WithMany(t => t.BugItems).HasForeignKey(r => r.TaskItemId);
+
+			builder.Entity<Project>().HasMany(r => r.TaskItems).WithOne(t => t.Project).HasForeignKey(r => r.ProjectId);
+			builder.Entity<ProjectMember>().HasKey(t => new { t.ProjectId, t.ApplicationUserId });
+			builder.Entity<ProjectMember>().HasOne(pc => pc.Project).WithMany(p => p.ProjectMembers).HasForeignKey(pc => pc.ProjectId);
+			builder.Entity<ProjectMember>().HasOne(pc => pc.ApplicationUser).WithMany(c => c.Projects).HasForeignKey(pc => pc.ApplicationUserId);
 		}
 
 

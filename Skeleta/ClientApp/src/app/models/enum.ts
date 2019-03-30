@@ -11,6 +11,12 @@ export enum Gender {
   Male
 }
 
+export enum Job {
+  None,
+  Developer,
+  Tester
+}
+
 export enum Priority {
   Critical = "Critical",
   High = "High",

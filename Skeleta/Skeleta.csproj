@@ -44,6 +44,12 @@
 	  <Compile Remove="Migrations\20190223194410_tasks_fluentApi.Designer.cs" />
 	  <Compile Remove="Migrations\20190302120713_tasksRoles.cs" />
 	  <Compile Remove="Migrations\20190302120713_tasksRoles.Designer.cs" />
+	  <Compile Remove="Migrations\20190329232452_taskRelation.cs" />
+	  <Compile Remove="Migrations\20190329232452_taskRelation.Designer.cs" />
+	  <Compile Remove="Migrations\20190329233929_workItems.cs" />
+	  <Compile Remove="Migrations\20190329233929_workItems.Designer.cs" />
+	  <Compile Remove="Migrations\20190329235357_workitems.cs" />
+	  <Compile Remove="Migrations\20190329235357_workitems.Designer.cs" />
 	</ItemGroup>
 	
 	<ItemGroup>

@@ -115,7 +115,8 @@ export class TaskManagementComponent implements OnInit {
 
   onDataLoadSuccessful(tasks: Task[]) {
     for (let item of tasks) {
-      item.assignedToName = item.assignedTo.fullName;
+      item.developerName = item.developer.fullName;
+      item.testerName = item.tester.fullName;
     }
     this.alertService.stopLoadingMessage();
     this.loadingIndicator = false;
@@ -134,7 +135,7 @@ export class TaskManagementComponent implements OnInit {
 
   onSearchChanged(value: string) {
     this.tasks = this.tasksCache
-      .filter(r => Utilities.searchArray(value, false, r.id, r.title, r.description, r.priority, r.status, r.assignedToName));
+      .filter(r => Utilities.searchArray(value, false, r.id, r.title, r.description, r.priority, r.status, r.developerName, r.testerName));
   }
 
   popItem(task: Task) {

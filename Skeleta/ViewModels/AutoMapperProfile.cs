@@ -9,6 +9,7 @@ using DAL.Models;
 using DAL.Models.TaskModel;
 using Microsoft.AspNetCore.Identity;
 using Skeleta.ViewModels.UserViewModels;
+using Skeleta.ViewModels.WorkItemViewModels;
 
 namespace Skeleta.ViewModels
 {
@@ -48,7 +49,14 @@ namespace Skeleta.ViewModels
 			CreateMap<TaskItem, TaskViewModel>();
 
 			CreateMap<TaskViewModel, TaskItem>()
-				.ForMember(d => d.AssignedTo, map => map.Ignore());
+				 .ForMember(d => d.Developer, map => map.Ignore())
+				 .ForMember(d => d.Tester, map => map.Ignore());
+
+
+			CreateMap<BugItem, BugViewModel>()
+			.ReverseMap();
+
+
 		}
 	}
 }

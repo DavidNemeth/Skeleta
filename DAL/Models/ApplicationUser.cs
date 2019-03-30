@@ -1,4 +1,6 @@
-﻿using DAL.Models.Interfaces;
+﻿using DAL.Core;
+using DAL.Models.Interfaces;
+using DAL.Models.ProjectModel;
 using DAL.Models.TaskModel;
 using Microsoft.AspNetCore.Identity;
 using System;
@@ -8,21 +10,8 @@ namespace DAL.Models
 {
 	public class ApplicationUser : IdentityUser, IAuditableEntity
 	{
-		public virtual string FriendlyName
-		{
-			get
-			{
-				string friendlyName = string.IsNullOrWhiteSpace(FullName) ? UserName : FullName;
-
-				if (!string.IsNullOrWhiteSpace(JobTitle))
-					friendlyName = $"{JobTitle} {friendlyName}";
-
-				return friendlyName;
-			}
-		}
-
-
 		public string JobTitle { get; set; }
+		public Job Job { get; set; }
 		public string FullName { get; set; }
 		public string Configuration { get; set; }
 		public bool IsEnabled { get; set; }
@@ -33,22 +22,17 @@ namespace DAL.Models
 		public DateTime CreatedDate { get; set; }
 		public DateTime UpdatedDate { get; set; }
 
-
-
-		/// <summary>
-		/// Navigation property for the roles this user belongs to.
-		/// </summary>
+		/*Navigation properties*/
 		public virtual ICollection<IdentityUserRole<string>> Roles { get; set; }
-
-		/// <summary>
-		/// Navigation property for the claims this user possesses.
-		/// </summary>
 		public virtual ICollection<IdentityUserClaim<string>> Claims { get; set; }
 
-		/// <summary>
-		/// Navigation property for the Tasks this user possesses.
-		/// </summary>
-		/// 
-		public ICollection<TaskItem> Tasks { get; set; }
+		public virtual ICollection<TaskItem> DeveloperTaskItems { get; set; }
+		public virtual ICollection<TaskItem> TesterTaskItems { get; set; }
+
+		public virtual ICollection<BugItem> DeveloperBugItems { get; set; }
+		public virtual ICollection<BugItem> TesterBugItems { get; set; }
+
+		public virtual ICollection<ProjectMember> Projects { get; set; }
+
 	}
 }

@@ -13,6 +13,13 @@ namespace DAL.Core
 		Male
 	}
 
+	public enum Job
+	{
+		None,
+		Tester,
+		Developer
+	}
+
 	public enum Priority
 	{
 		Critical,

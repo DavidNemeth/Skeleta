@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 using OpenIddict.Validation;
 using Skeleta.Authorization;
 using Skeleta.Services;
-using Skeleta.ViewModels;
+using Skeleta.ViewModels.WorkItemViewModels;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -103,7 +103,7 @@ namespace Skeleta.Controllers
 					return BadRequest($"{nameof(viewmodel)} cannot be null");
 
 				var item = Mapper.Map<TaskItem>(viewmodel);
-				context.Tasks.Add(item);
+				context.TaskItems.Add(item);
 				await context.SaveChangesAsync();
 
 				return NoContent();
@@ -132,7 +132,7 @@ namespace Skeleta.Controllers
 					return NotFound(id);
 
 				Mapper.Map(viewmodel, appTask);
-				context.Tasks.Update(appTask);
+				context.TaskItems.Update(appTask);
 				await context.SaveChangesAsync();
 
 				return NoContent();
@@ -159,7 +159,7 @@ namespace Skeleta.Controllers
 			if (taskVM == null)
 				return NotFound(id);
 
-			context.Tasks.Remove(task);
+			context.TaskItems.Remove(task);
 			await context.SaveChangesAsync();
 			return Ok(taskVM);
 		}
@@ -190,7 +190,7 @@ namespace Skeleta.Controllers
 				}
 			}
 
-			context.Tasks.RemoveRange(tasks);
+			context.TaskItems.RemoveRange(tasks);
 			await context.SaveChangesAsync();
 			return Ok(tasksVM);
 		}

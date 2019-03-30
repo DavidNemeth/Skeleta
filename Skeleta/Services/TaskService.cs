@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Skeleta.ViewModels;
 using DAL;
 using System.Linq;
 using DAL.Core;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
+using Skeleta.ViewModels.WorkItemViewModels;
 
 namespace Skeleta.Services
 {
@@ -19,7 +19,7 @@ namespace Skeleta.Services
 
 		public async Task<IEnumerable<TaskViewModel>> GetAllClosedTask()
 		{
-			var query = context.Tasks
+			var query = context.TaskItems
 				.Where(t => t.Status == Status.Closed);
 
 			return await query
@@ -28,7 +28,7 @@ namespace Skeleta.Services
 
 		public async Task<IEnumerable<TaskViewModel>> GetAllCompletedTask()
 		{
-			var query = context.Tasks
+			var query = context.TaskItems
 				.Where(t => t.Status == Status.Completed);
 
 			return await query
@@ -37,7 +37,7 @@ namespace Skeleta.Services
 
 		public async Task<IEnumerable<TaskViewModel>> GetAllPendingTask()
 		{
-			var query = context.Tasks
+			var query = context.TaskItems
 				.Where(t => t.Status == Status.New || t.Status == Status.Active);
 
 			return await query
@@ -46,7 +46,7 @@ namespace Skeleta.Services
 
 		public async Task<IEnumerable<TaskViewModel>> GetAllResolvedTask()
 		{
-			var query = context.Tasks
+			var query = context.TaskItems
 				.Where(t => t.Status == Status.Resolved);
 
 			return await query
@@ -55,7 +55,7 @@ namespace Skeleta.Services
 
 		public async Task<IEnumerable<TaskViewModel>> GetAllTask()
 		{
-			var query = context.Tasks;
+			var query = context.TaskItems;
 
 			return await query
 				.ProjectTo<TaskViewModel>().ToListAsync();
@@ -63,7 +63,7 @@ namespace Skeleta.Services
 
 		public async Task<TaskViewModel> GetById(int id)
 		{
-			var query = context.Tasks
+			var query = context.TaskItems
 				.Where(x=>x.Id == id);
 
 			return await query

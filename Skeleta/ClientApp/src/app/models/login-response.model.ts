@@ -1,4 +1,5 @@
-﻿import { PermissionValues } from './permission.model';
+import { PermissionValues } from './permission.model';
+import { Job } from './enum';
 
 
 export interface LoginResponse {
@@ -13,7 +14,8 @@ export interface IdToken {
 	sub: string;
 	name: string;
 	fullname: string;
-	jobtitle: string;
+  jobtitle: string;
+  job: Job;
 	email: string;
 	phone: string;
 	role: string | string[];

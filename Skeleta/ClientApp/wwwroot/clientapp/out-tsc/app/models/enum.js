@@ -13,6 +13,12 @@ var Gender;
     Gender[Gender["Female"] = 1] = "Female";
     Gender[Gender["Male"] = 2] = "Male";
 })(Gender = exports.Gender || (exports.Gender = {}));
+var Job;
+(function (Job) {
+    Job[Job["None"] = 0] = "None";
+    Job[Job["Developer"] = 1] = "Developer";
+    Job[Job["Tester"] = 2] = "Tester";
+})(Job = exports.Job || (exports.Job = {}));
 var Priority;
 (function (Priority) {
     Priority["Critical"] = "Critical";

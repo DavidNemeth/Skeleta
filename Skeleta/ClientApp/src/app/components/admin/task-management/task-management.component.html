@@ -49,9 +49,14 @@
                   {{'tasks.management.Status' | translate}}
                 </ng-container>
               </clr-dg-column>
-              <clr-dg-column [(clrFilterValue)]="nameFilterValue" [clrDgField]="'assignedToName'">
+              <clr-dg-column [(clrFilterValue)]="nameFilterValue" [clrDgField]="'developerName'">
                 <ng-container *clrDgHideableColumn="{hidden: false}">
-                  {{'tasks.management.AssignedTo' | translate}}
+                  {{'tasks.management.Developer' | translate}}
+                </ng-container>
+              </clr-dg-column>
+              <clr-dg-column [(clrFilterValue)]="nameFilterValue" [clrDgField]="'testerName'">
+                <ng-container *clrDgHideableColumn="{hidden: false}">
+                  {{'tasks.management.Tester' | translate}}
                 </ng-container>
               </clr-dg-column>
               <clr-dg-placeholder>Loading Tasks!</clr-dg-placeholder>
@@ -62,15 +67,6 @@
                   <clr-signpost (click)="onEdit(task)">
                   </clr-signpost>
                 </clr-dg-cell>
-                <clr-signpost>
-                  <clr-signpost-content [clrPosition]="'left-middle'" *clrIfOpen>
-                    {{task.assignedTo.fullName}}
-                    <br />
-                    Phone: {{task.assignedTo.phoneNumber}}
-                    <br />
-                    Email: {{task.assignedTo.email}}
-                  </clr-signpost-content>
-                </clr-signpost>
                 <clr-dg-cell>
                   <clr-icon *ngIf="task.priority == 'Critical' && task.status != 'Completed'" shape="exclamation-triangle" class="is-error"></clr-icon>
                   <clr-icon *ngIf="task.status == 'Completed'" shape="check" class="is-success"></clr-icon>
@@ -78,20 +74,32 @@
                 </clr-dg-cell>
                 <clr-dg-cell>{{task.status}}</clr-dg-cell>
                 <clr-dg-cell>
-                  {{task.assignedToName}}
+                  {{task.developerName}}
                   <clr-signpost>
                     <clr-signpost-content [clrPosition]="'left-middle'" *clrIfOpen>
-                      {{task.assignedTo.fullName}}
+                      {{task.developer.fullName}}
                       <br />
-                      Phone: {{task.assignedTo.phoneNumber}}
+                      Phone: {{task.developer.phoneNumber}}
                       <br />
-                      Email: {{task.assignedTo.email}}
+                      Email: {{task.developer.email}}
                     </clr-signpost-content>
                   </clr-signpost>
                 </clr-dg-cell>
-                  <clr-dg-row-detail *clrIfExpanded>
-                    TODO: BugList
-                  </clr-dg-row-detail>
+                <clr-dg-cell>
+                  {{task.testerName}}
+                  <clr-signpost>
+                    <clr-signpost-content [clrPosition]="'left-middle'" *clrIfOpen>
+                      {{task.tester.fullName}}
+                      <br />
+                      Phone: {{task.tester.phoneNumber}}
+                      <br />
+                      Email: {{task.tester.email}}
+                    </clr-signpost-content>
+                  </clr-signpost>
+                </clr-dg-cell>
+                <clr-dg-row-detail *clrIfExpanded>
+                  TODO: BugList
+                </clr-dg-row-detail>
                 <clr-dg-action-overflow>
                   <button [disabled]="task.status === 'Active'" class="action-item" (click)="onActive(task)">Mark as Active</button>
                   <button [disabled]="task.status === 'New'" class="action-item" (click)="onResolved(task)">Mark as Resolved</button>

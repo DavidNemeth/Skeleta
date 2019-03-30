@@ -1,5 +1,4 @@
-﻿using FluentValidation;
-using Skeleta.ViewModels.UserViewModels;
+﻿using Skeleta.ViewModels.UserViewModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -7,10 +6,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Skeleta.ViewModels
+namespace Skeleta.ViewModels.WorkItemViewModels
 {
-	public class TaskViewModel
-	{
+    public class BugViewModel
+    {
 		public int Id { get; set; }
 
 		[Required(ErrorMessage = "Title is required"), StringLength(200, MinimumLength = 2, ErrorMessage = "Title must be between 2 and 200 characters")]
@@ -18,17 +17,15 @@ namespace Skeleta.ViewModels
 
 		public string Description { get; set; }
 
-		public string Comment { get; set; }
-
-		[Required(ErrorMessage = "Priority is required")]
-		public string Priority { get; set; }
-
 		[Required(ErrorMessage = "Status is required")]
 		public string Status { get; set; }
 
-		[Required(ErrorMessage = "AssignedTo is required")]
-		public AssignUserViewModel AssignedTo { get; set; }
-		
-		public string AssignedBy { get; set; }
+		[Required]
+		public TaskViewModel TaskItem { get; set; }
+
+		public string DeveloperId { get; set; }
+		public AssignUserViewModel Developer { get; set; }
+		public string TesterId { get; set; }
+		public AssignUserViewModel Tester { get; set; }
 	}
 }

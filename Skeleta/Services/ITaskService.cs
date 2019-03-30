@@ -1,5 +1,4 @@
-﻿using DAL.Models.TaskModel;
-using Skeleta.ViewModels;
+﻿using Skeleta.ViewModels.WorkItemViewModels;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

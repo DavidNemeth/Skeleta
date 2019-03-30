@@ -1,4 +1,4 @@
-﻿import { Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Router, NavigationExtras } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -145,6 +145,7 @@ export class AuthService {
       decodedIdToken.fullname,
       decodedIdToken.email,
       decodedIdToken.jobtitle,
+      decodedIdToken.job,
       decodedIdToken.phone,
       Array.isArray(decodedIdToken.role) ? decodedIdToken.role : [decodedIdToken.role]);
     user.isEnabled = true;

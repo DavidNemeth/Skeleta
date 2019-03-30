@@ -37,7 +37,7 @@ export class TaskEditComponent implements OnInit {
   taskForm: FormGroup;
   users: User[] = [];
   currentUser: User;
-  assignedTo: User;
+  //assignedTo: User;
 
   @ViewChild(ClrForm) clrForm;
 
@@ -65,7 +65,8 @@ export class TaskEditComponent implements OnInit {
       comment: [''],
       priority: ['High', Validators.required],
       status: ['New', Validators.required],
-      assignedTo: [this.currentUser.id, Validators.required]
+      developerId: [this.currentUser.id],
+      testerId: [this.currentUser.id]
     });
   }
 
@@ -83,7 +84,6 @@ export class TaskEditComponent implements OnInit {
   private save() {
     this.submitBtnState = ClrLoadingState.LOADING;
     Object.assign(this.taskEdit, this.taskForm.value);
-    this.taskEdit.assignedTo = this.users.find(u => u.id == this.taskForm.controls['assignedTo'].value);
 
     if (this.isNewTask) {
       this.taskService.NewTask(this.taskEdit).subscribe(task => this.saveSuccessHelper(), error => this.saveFailedHelper(error));
@@ -96,7 +96,7 @@ export class TaskEditComponent implements OnInit {
 
   private saveSuccessHelper(): void {
     Object.assign(this.initialTask, this.taskEdit);
-    this.initialTask.assignedTo = this.users.find(u => u.id == this.taskEdit.assignedTo.id);
+    //this.initialTask.assignedTo = this.users.find(u => u.id == this.taskEdit.assignedTo.id);
     this.updateData.emit(this.initialTask);
 
     if (this.isNewTask)
@@ -112,7 +112,6 @@ export class TaskEditComponent implements OnInit {
     this.submitBtnState = ClrLoadingState.ERROR;
     this.alertService.stopLoadingMessage();
     this.alertService.showStickyMessage(error, null, MessageSeverity.error);
-    this.clrForm.markAsDirty();
   }
 
   private resetForm() {
@@ -120,7 +119,6 @@ export class TaskEditComponent implements OnInit {
     this.alertService.resetStickyMessage();
     if (!this.isNewTask) {
       this.taskForm.patchValue(this.initialTask);
-      this.taskForm.controls['assignedTo'].setValue(this.assignedTo.id);
     }
   }
 
@@ -130,7 +128,26 @@ export class TaskEditComponent implements OnInit {
     this.actionTitle = "Add";
     this.initialTask = new Task();
     this.taskEdit = new Task();
-    this.assignedTo = new User();
+  }
+
+
+  Edit(task: Task) {
+    if (task) {
+      this.openModal = true;
+      this.isNewTask = false;
+      this.actionTitle = "Edit";
+
+      this.initialTask = new Task();
+      Object.assign(this.initialTask, task);
+
+      this.taskEdit = new Task;
+      Object.assign(this.taskEdit, task);
+
+      this.taskForm.patchValue(this.taskEdit);
+    }
+    else {
+      return this.Create();
+    }
   }
 
   MarkActive(task: Task) {
@@ -177,26 +194,6 @@ export class TaskEditComponent implements OnInit {
     }
   }
 
-  Edit(task: Task) {
-    if (task) {
-      this.openModal = true;
-      this.isNewTask = false;
-      this.actionTitle = "Edit";
-      this.assignedTo = this.users.find(u => u.fullName == task.assignedTo.fullName);
-
-      this.initialTask = new Task();
-      Object.assign(this.initialTask, task);
-
-      this.taskEdit = new Task;
-      Object.assign(this.taskEdit, task);
-
-      this.taskForm.patchValue(this.taskEdit);
-      this.taskForm.controls['assignedTo'].setValue(this.assignedTo.id);
-    }
-    else {
-      return this.Create();
-    }
-  }
 
   View(task: Task) {
     this.resetForm();

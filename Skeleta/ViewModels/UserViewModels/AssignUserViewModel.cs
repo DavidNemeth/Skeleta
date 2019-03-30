@@ -16,6 +16,8 @@ namespace Skeleta.ViewModels.UserViewModels
 
 		public string JobTitle { get; set; }
 
+		public string Job { get; set; }
+
 		public string PhoneNumber { get; set; }
 	}
 }

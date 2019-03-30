@@ -1,19 +1,15 @@
 ﻿using DAL.Core;
-using DAL.Models.ProjectModel;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace DAL.Models.TaskModel
 {
-	public class TaskItem : AuditableEntity
+	public class BugItem : AuditableEntity
 	{
 		public int Id { get; set; }
-
+		
 		[Required]
 		public string Title { get; set; }
 		public string Description { get; set; }
-		public string Comment { get; set; }
-		public Priority Priority { get; set; }
 		public Status Status { get; set; }
 
 
@@ -25,11 +21,7 @@ namespace DAL.Models.TaskModel
 		public string TesterId { get; set; }
 		public ApplicationUser Tester { get; set; }
 
-		public int? ProjectId { get; set; }
-		public Project Project { get; set; }
-
-
-		/*Navigation properties*/
-		public virtual ICollection<BugItem> BugItems { get; set; }
+		public int TaskItemId { get; set; }
+		public TaskItem TaskItem { get; set; }
 	}
 }
