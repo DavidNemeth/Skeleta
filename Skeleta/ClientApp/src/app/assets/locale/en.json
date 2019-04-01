@@ -89,7 +89,7 @@
   },
   "tasks": {
     "management": {
-      "Search": "Search for user...",
+      "Search": "Search...",
       "NewTask": "New Task",
       "Edit": "Edit",
       "Delete": "Delete",

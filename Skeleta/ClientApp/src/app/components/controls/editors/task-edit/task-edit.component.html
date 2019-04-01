@@ -1,63 +1,66 @@
-<form class="clr-form" autocomplete="off" [formGroup]="taskForm" (ngSubmit)="save()">
-  <clr-modal [(clrModalOpen)]="openModal" (clrModalOpenChange)="openChange($event)" [clrModalSize]="'lg'">
+<form *ngIf="isOpen" class="clr-form card" autocomplete="off" [formGroup]="taskForm" (ngSubmit)="save()">
 
-    <div class="clr-form-control modal-title">
-      <div class="clr-control-container clr-control-inline btn-group">
-        <div *ngFor="let priority of allPriority" class="radio btn">
-          <input type="radio" formControlName="priority" [value]="priority" id="{{priority}}">
-          <label for="{{priority}}">{{priority}}</label>
-        </div>
+  <div class="card-header">
+    <div class="clr-control-container clr-control-inline btn-group btn-sm">
+      <div *ngFor="let priority of allPriority" class="radio btn">
+        <input type="radio" formControlName="priority" [value]="priority" id="{{priority}}">
+        <label for="{{priority}}">{{priority}}</label>
       </div>
     </div>
-    <div class="modal-body">
+  </div>
 
-      <div class="clr-form-control">
-        <label class="clr-control-label">{{'tasks.editor.Developer' | translate}}</label>
-        <div class="clr-control-container">
-          <div class="clr-select-wrapper">
-            <select class="clr-select" formControlName="developerId">
-              <option *ngFor="let user of users" [value]="user.id">{{user.fullName}}</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <div class="clr-form-control">
-        <label class="clr-control-label">{{'tasks.editor.Tester' | translate}}</label>
-        <div class="clr-control-container">
-          <div class="clr-select-wrapper">
-            <select class="clr-select" formControlName="testerId">
-              <option *ngFor="let user of users" [value]="user.id">{{user.fullName}}</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <div class="clr-form-control">
-        <label class="clr-control-label">{{'tasks.editor.Title' | translate}}</label>
-        <div class="clr-control-container">
-          <div class="clr-input-wrapper">
-            <input class="clr-input" type="text" formControlName="title" />
-          </div>
-        </div>
-      </div>
-
-      <div class="clr-form-control">
-        <label for="example" class="clr-control-label">{{'tasks.editor.Description' | translate}}</label>
-        <div class="clr-control-container">
-          <div class="clr-textarea-wrapper">
-            <ckeditor [config]="{ toolbar: [ 'heading', '|', 'bold', 'italic', 'trike', 'bulletedList', 'numberedList', 'blockQuote','insertTable', 'Undo', 'Redo' ] }" [editor]="description" name="myEditor" formControlName="description"></ckeditor>
-            <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
-          </div>
+  <div class="card-block">
+    <div class="clr-form-control">
+      <label class="clr-control-label">{{'tasks.editor.Developer' | translate}}</label>
+      <div class="clr-control-container">
+        <div class="clr-select-wrapper">
+          <select class="clr-select" formControlName="developerId">
+            <option *ngFor="let user of users" [value]="user.id">{{user.fullName}}</option>
+          </select>
         </div>
       </div>
     </div>
 
-    <div class="modal-footer">
-      <button type="button" (click)="resetForm()" class="btn btn-info">Reset</button>
-      <button [clrLoading]="submitBtnState" type="submit" [disabled]="taskForm.invalid" class="btn btn-primary">{{actionTitle}}</button>
+    <div class="clr-form-control">
+      <label class="clr-control-label">{{'tasks.editor.Tester' | translate}}</label>
+      <div class="clr-control-container">
+        <div class="clr-select-wrapper">
+          <select class="clr-select" formControlName="testerId">
+            <option *ngFor="let user of users" [value]="user.id">{{user.fullName}}</option>
+          </select>
+        </div>
+      </div>
     </div>
-  </clr-modal>
+
+    <div class="clr-form-control">
+      <label class="clr-control-label">{{'tasks.editor.Title' | translate}}</label>
+      <div class="clr-control-container">
+        <div class="clr-input-wrapper">
+          <input class="clr-input" type="text" formControlName="title" />
+        </div>
+      </div>
+    </div>
+
+    <div class="clr-form-control">
+      <label for="example" class="clr-control-label">{{'tasks.editor.Description' | translate}}</label>
+      <quill-editor [style]="{height: '200px'}" style="width: 100%;" formControlName="description"></quill-editor>
+      <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+    </div>
+
+    <div class="clr-row">
+      <div class="clr-form-control">
+        <button [clrLoading]="submitBtnState" type="submit" [disabled]="taskForm.invalid" class="btn btn-primary">{{actionTitle}}</button>
+      </div>
+      <div class="clr-form-control">
+      </div>
+    </div>
+  </div>
+
+  <div class="card-footer">
+    <button type="button" (click)="close()" class="btn btn-sm btn-link">Back</button>
+    <button type="button" (click)="resetForm()" class="btn btn-sm btn-link">Reset</button>
+  </div>
+
 </form>
 
 <clr-modal [(clrModalOpen)]="deleteOpen">

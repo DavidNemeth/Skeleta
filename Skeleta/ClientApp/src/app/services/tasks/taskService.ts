@@ -12,6 +12,10 @@ export class TaskService {
   constructor(private router: Router, private http: HttpClient,
     private taskEndpoint: TaskEndpoint, private authService: AuthService) { }
 
+  GetTask(taskId: number) {
+    return this.taskEndpoint.getTaskEndpoint<Task>(taskId);
+  }
+
   GetAllTask() {
     return this.taskEndpoint.getAllEndpoint<Task[]>();
   }

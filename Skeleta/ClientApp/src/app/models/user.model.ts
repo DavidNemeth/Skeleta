@@ -15,17 +15,6 @@ export class User {
 		this.roles = roles;
 	}
 
-
-	get friendlyName(): string {
-		let name = this.fullName || this.userName;
-
-		if (this.jobTitle)
-			name = this.jobTitle + ' ' + name;
-
-		return name;
-	}
-
-
 	public id: string;
 	public userName: string;
 	public fullName: string;

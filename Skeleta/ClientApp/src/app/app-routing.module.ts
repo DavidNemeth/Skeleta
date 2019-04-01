@@ -20,6 +20,7 @@ import { SmartAdminComponent } from './components/admin/smart-admin/smart-admin.
 import { AdminComponent } from './components/admin/admin.component';
 import { TaskManagementComponent } from './components/admin/task-management/task-management.component';
 import { TasksComponent } from './components/tasks/tasks.component';
+import { BugitemsComponent } from './components/tasks/bugitems/bugitems.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent, canActivate: [AuthGuard], data: { title: 'Home' } },
@@ -52,8 +53,9 @@ const routes: Routes = [
   },
   {
     path: 'tasks', component: TasksComponent, canActivate: [AuthGuard], data: { title: 'Settings' }, children: [
-      { path: '', component: SmartAdminComponent, data: { title: 'Smart Panel' } },      
-      { path: 'tasks', component: TaskManagementComponent, data: { title: 'Tasks' } }
+      { path: '', component: SmartAdminComponent, data: { title: 'Smart Panel' } },
+      { path: 'tasks', component: TaskManagementComponent, data: { title: 'Tasks' } },
+      { path: 'bugs', component: BugitemsComponent, data: { title: 'Bugs' } }
     ]
   }
 

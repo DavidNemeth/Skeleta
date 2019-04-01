@@ -12,16 +12,6 @@ var User = /** @class */ (function () {
         this.phoneNumber = phoneNumber;
         this.roles = roles;
     }
-    Object.defineProperty(User.prototype, "friendlyName", {
-        get: function () {
-            var name = this.fullName || this.userName;
-            if (this.jobTitle)
-                name = this.jobTitle + ' ' + name;
-            return name;
-        },
-        enumerable: true,
-        configurable: true
-    });
     return User;
 }());
 exports.User = User;

@@ -29,6 +29,15 @@ export class TaskEndpoint extends EndpointFactory {
     super(http, configurations, injector);
   }
 
+  getTaskEndpoint<T>(taskId: number): Observable<T> {
+    const endpointUrl = `${this.baseUrl}/${taskId}`;
+
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders()).pipe<T>(
+      catchError(error => {
+        return this.handleError(error, () => this.getTaskEndpoint(taskId));
+      }));
+  }
+
   getAllEndpoint<T>(): Observable<T> {
     const endpointUrl = this.allUrl;
 

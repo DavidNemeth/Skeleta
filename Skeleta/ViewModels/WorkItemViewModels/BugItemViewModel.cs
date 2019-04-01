@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Skeleta.ViewModels.WorkItemViewModels
 {
-    public class BugViewModel
+    public class BugItemViewModel
     {
 		public int Id { get; set; }
 
@@ -21,7 +21,8 @@ namespace Skeleta.ViewModels.WorkItemViewModels
 		public string Status { get; set; }
 
 		[Required]
-		public TaskViewModel TaskItem { get; set; }
+		public string TaskItemId { get; set; }
+		public string TaskItemTitle { get; set; }
 
 		public string DeveloperId { get; set; }
 		public AssignUserViewModel Developer { get; set; }

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Skeleta.ViewModels.WorkItemViewModels
 {
-	public class TaskViewModel
+	public class TaskItemViewModel
 	{
 		public int Id { get; set; }
 
@@ -12,8 +12,6 @@ namespace Skeleta.ViewModels.WorkItemViewModels
 		public string Title { get; set; }
 
 		public string Description { get; set; }
-
-		public string Comment { get; set; }
 
 		[Required(ErrorMessage = "Priority is required")]
 		public string Priority { get; set; }
@@ -26,6 +24,6 @@ namespace Skeleta.ViewModels.WorkItemViewModels
 		public string TesterId { get; set; }
 		public AssignUserViewModel Tester { get; set; }
 
-		public virtual ICollection<BugViewModel> BugItems { get; set; }
+		public virtual ICollection<BugItemViewModel> BugItems { get; set; }
 	}
 }

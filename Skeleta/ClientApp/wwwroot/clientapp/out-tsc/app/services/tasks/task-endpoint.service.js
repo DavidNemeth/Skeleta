@@ -69,6 +69,13 @@ var TaskEndpoint = /** @class */ (function (_super) {
         enumerable: true,
         configurable: true
     });
+    TaskEndpoint.prototype.getTaskEndpoint = function (taskId) {
+        var _this = this;
+        var endpointUrl = this.baseUrl + "/" + taskId;
+        return this.http.get(endpointUrl, this.getRequestHeaders()).pipe(operators_1.catchError(function (error) {
+            return _this.handleError(error, function () { return _this.getTaskEndpoint(taskId); });
+        }));
+    };
     TaskEndpoint.prototype.getAllEndpoint = function () {
         var _this = this;
         var endpointUrl = this.allUrl;

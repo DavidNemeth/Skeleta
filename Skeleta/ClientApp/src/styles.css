@@ -1,6 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 /*@import "~@ng-select/ng-select/themes/material.theme.css";*/
 @import '../node_modules/@clr/icons/clr-icons.min.css';
+@import '../node_modules/quill/dist/quill.snow.css';
 @import '../src/app/assets/styles/themes/light.css';
 @import '~ngx-toasta/styles/style-default.css';
 /*@import '../src/app/assets/styles/themes/dark.css';*/
@@ -102,4 +103,12 @@ g[class^='raphael-group-'][class$='-creditgroup'] {
   max-height: 800px;
   display: inline-block;
   overflow: auto;
+}
+
+.maxwidth {
+  max-width: 900px !important;
+}
+
+.is-inverse {
+  fill: #e1f1f6 !important;
 }

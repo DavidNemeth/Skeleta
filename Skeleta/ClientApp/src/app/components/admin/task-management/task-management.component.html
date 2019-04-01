@@ -1,334 +1,340 @@
-<app-task-edit (updateData)="updateList($event)" (popData)="popItem($event)" (updateStatus)="updateStatus($event)" (deleteData)="deleteList($event)"></app-task-edit>
+<div class="maxwidth">
+  <app-task-edit [isOpen]="isOpen" (openClose)="closeTab($event)" (updateData)="updateList($event)" (popData)="popItem($event)" (updateStatus)="updateStatus($event)" (deleteData)="deleteList($event)"></app-task-edit>
+  <clr-tabs *ngIf="isOpen===false">
+    <clr-tab>
+      <button (click)="loadPending()" clrTabLink>Pending Tasks</button>
+      <ng-template [(clrIfActive)]="PendingActive">
+        <clr-tab-content>
+          <clr-datagrid style="height:710px;" class="datagrid-compact">
+            <clr-dg-action-bar>
+              <div style="margin-right: 0rem; margin-left: 0rem;" class="clr-row clr-justify-content-between">
+                <div class="btn-group btn-primary btn-sm">
 
-<clr-tabs>
-  <clr-tab>
-    <button (click)="loadPending()" clrTabLink>Pending Tasks</button>
-    <ng-template [(clrIfActive)]="PendingActive">
-      <clr-tab-content>
-        <div class="card">
-          <div class="card-header">
-            Pending Tasks
-          </div>
-          <div class="card-block">
-            <app-search-box (searchChange)="onSearchChanged($event)" placeholder="{{'tasks.management.Search' | translate}}"></app-search-box>
 
-            <clr-datagrid style="height: 500px" class="datagrid-compact">
-              <clr-dg-action-bar>
-                <div class="btn-group">
-                  <button type="button" class="btn btn-sm btn-secondary" (click)="onAdd()">
-                    <clr-icon shape="plus"></clr-icon>{{'tasks.management.NewTask' | translate}}
-                  </button>
-                  <button type="button" class="btn btn-sm btn-secondary" (click)="onDelete()"><clr-icon shape="close"></clr-icon>{{'tasks.management.Delete' | translate}}</button>
-                  <button type="button" class="btn btn-sm btn-secondary" (click)="onEdit(selected[0])" *ngIf="selected.length == 1"><clr-icon shape="pencil"></clr-icon> Edit</button>
-                </div>
-                <div class="btn-group">
-                  <clr-dropdown>
-                    <button type="button" class="btn btn-sm btn-secondary" clrDropdownTrigger>
-                      Export
-                      <clr-icon shape="caret down"></clr-icon>
-                    </button>
+                  <button type="button" class="btn" (click)="onAdd()"><clr-icon shape="plus"></clr-icon>{{'tasks.management.NewTask' | translate}}</button>
+                  <!--<clr-dropdown>
+                    <button type="button" class="btn" clrDropdownTrigger>Export<clr-icon shape="caret down"></clr-icon></button>
                     <clr-dropdown-menu clrPosition="bottom-left" *clrIfOpen>
                       <button type="button" (click)="onExportAll()" clrDropdownItem>Export All</button>
                       <button type="button" (click)="onExportSelected()" [disabled]="selected.length === 0" clrDropdownItem>Export Selected Items</button>
                     </clr-dropdown-menu>
-                  </clr-dropdown>
-                </div>
-              </clr-dg-action-bar>
-              <clr-dg-column [clrDgField]="'title'">
-                <ng-container *clrDgHideableColumn="{hidden: false}">
-                  {{'tasks.management.Title' | translate}}
-                </ng-container>
-              </clr-dg-column>
-              <clr-dg-column [clrDgField]="'priority'">
-                <ng-container *clrDgHideableColumn="{hidden: false}">
-                  {{'tasks.management.Priority' | translate}}
-                </ng-container>
-              </clr-dg-column>
-              <clr-dg-column [clrDgField]="'status'">
-                <ng-container *clrDgHideableColumn="{hidden: false}">
-                  {{'tasks.management.Status' | translate}}
-                </ng-container>
-              </clr-dg-column>
-              <clr-dg-column [(clrFilterValue)]="nameFilterValue" [clrDgField]="'developerName'">
-                <ng-container *clrDgHideableColumn="{hidden: false}">
-                  {{'tasks.management.Developer' | translate}}
-                </ng-container>
-              </clr-dg-column>
-              <clr-dg-column [(clrFilterValue)]="nameFilterValue" [clrDgField]="'testerName'">
-                <ng-container *clrDgHideableColumn="{hidden: false}">
-                  {{'tasks.management.Tester' | translate}}
-                </ng-container>
-              </clr-dg-column>
-              <clr-dg-placeholder>Loading Tasks!</clr-dg-placeholder>
-
-              <clr-dg-row *clrDgItems="let task of tasks" [clrDgItem]="task">
-                <clr-dg-cell>
-                  {{task.title}}
-                  <clr-signpost (click)="onEdit(task)">
-                  </clr-signpost>
-                </clr-dg-cell>
-                <clr-dg-cell>
-                  <clr-icon *ngIf="task.priority == 'Critical' && task.status != 'Completed'" shape="exclamation-triangle" class="is-error"></clr-icon>
-                  <clr-icon *ngIf="task.status == 'Completed'" shape="check" class="is-success"></clr-icon>
-                  {{task.priority}}
-                </clr-dg-cell>
-                <clr-dg-cell>{{task.status}}</clr-dg-cell>
-                <clr-dg-cell>
-                  {{task.developerName}}
-                  <clr-signpost>
-                    <clr-signpost-content [clrPosition]="'left-middle'" *clrIfOpen>
-                      {{task.developer.fullName}}
-                      <br />
-                      Phone: {{task.developer.phoneNumber}}
-                      <br />
-                      Email: {{task.developer.email}}
-                    </clr-signpost-content>
-                  </clr-signpost>
-                </clr-dg-cell>
-                <clr-dg-cell>
-                  {{task.testerName}}
-                  <clr-signpost>
-                    <clr-signpost-content [clrPosition]="'left-middle'" *clrIfOpen>
-                      {{task.tester.fullName}}
-                      <br />
-                      Phone: {{task.tester.phoneNumber}}
-                      <br />
-                      Email: {{task.tester.email}}
-                    </clr-signpost-content>
-                  </clr-signpost>
-                </clr-dg-cell>
-                <clr-dg-row-detail *clrIfExpanded>
-                  TODO: BugList
-                </clr-dg-row-detail>
-                <clr-dg-action-overflow>
-                  <button [disabled]="task.status === 'Active'" class="action-item" (click)="onActive(task)">Mark as Active</button>
-                  <button [disabled]="task.status === 'New'" class="action-item" (click)="onResolved(task)">Mark as Resolved</button>
-                  <button class="action-item" (click)="onDelete(task)">Delete</button>
-                </clr-dg-action-overflow>
-              </clr-dg-row>
-
-              <clr-dg-footer>
-                <clr-dg-column-toggle>
-                </clr-dg-column-toggle>
-                <clr-dg-pagination #pagination [clrDgPageSize]="20">
-
-                  <!--<clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100,1000]">{{'tasks.management.TasksPerPage' | translate}}</clr-dg-page-size>-->
-                  {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
-                  {{pagination.totalItems}} {{'tasks.management.Tasks' | translate}}
-                </clr-dg-pagination>
-              </clr-dg-footer>
-            </clr-datagrid>
-          </div>
-        </div>
-      </clr-tab-content>
-    </ng-template>
-  </clr-tab>
-
-  <clr-tab>
-    <button (click)="loadResolved()" clrTabLink>Resolved Tasks - For Testing</button>
-    <ng-template [(clrIfActive)]="ResolvedActive">
-      <clr-tab-content>
-        <div class="card">
-          <div class="card-header">
-            Resolved Tasks
-          </div>
-          <div class="card-block">
-            <clr-datagrid style="height: 500px" class="datagrid-compact" [(clrDgSelected)]="selected" [clrDgRowSelection]="true">
-              <clr-dg-action-bar>
-                <div class="btn-group">
-                  <button type="button" class="btn btn-sm btn-secondary" (click)="onAdd()">
-                    <clr-icon shape="plus"></clr-icon>{{'tasks.management.NewTask' | translate}}
-                  </button>
-                  <button type="button" class="btn btn-sm btn-secondary" (click)="onDelete()"><clr-icon shape="close"></clr-icon>{{'tasks.management.Delete' | translate}}</button>
-                  <button type="button" class="btn btn-sm btn-secondary" (click)="onEdit(selected[0])" *ngIf="selected.length == 1"><clr-icon shape="pencil"></clr-icon> Edit</button>
-                </div>
-                <div class="btn-group">
-                  <clr-dropdown>
-                    <button type="button" class="btn btn-sm btn-secondary" clrDropdownTrigger>
-                      Export
-                      <clr-icon shape="caret down"></clr-icon>
-                    </button>
-                    <clr-dropdown-menu clrPosition="bottom-left" *clrIfOpen>
-                      <button type="button" (click)="onExportAll()" clrDropdownItem>Export All</button>
-                      <button type="button" (click)="onExportSelected()" [disabled]="selected.length === 0" clrDropdownItem>Export Selected Items</button>
-                    </clr-dropdown-menu>
-                  </clr-dropdown>
+                  </clr-dropdown>-->
                 </div>
                 <div class="btn-group">
                   <app-search-box (searchChange)="onSearchChanged($event)" placeholder="{{'tasks.management.Search' | translate}}"></app-search-box>
                 </div>
-              </clr-dg-action-bar>
-              <clr-dg-column [clrDgField]="'title'">
-                <ng-container *clrDgHideableColumn="{hidden: false}">
-                  {{'tasks.management.Title' | translate}}
-                </ng-container>
-              </clr-dg-column>
-              <clr-dg-column [clrDgField]="'priority'">
-                <ng-container *clrDgHideableColumn="{hidden: false}">
-                  {{'tasks.management.Priority' | translate}}
-                </ng-container>
-              </clr-dg-column>
-              <clr-dg-column [clrDgField]="'status'">
-                <ng-container *clrDgHideableColumn="{hidden: false}">
-                  {{'tasks.management.Status' | translate}}
-                </ng-container>
-              </clr-dg-column>
-              <clr-dg-column [(clrFilterValue)]="nameFilterValue" [clrDgField]="'assignedToName'">
-                <ng-container *clrDgHideableColumn="{hidden: false}">
-                  {{'tasks.management.AssignedTo' | translate}}
-                </ng-container>
-              </clr-dg-column>
+              </div>
 
-              <clr-dg-placeholder>Loading Tasks!</clr-dg-placeholder>
+            </clr-dg-action-bar>
+            <clr-dg-column [clrDgField]="'title'">
+              <ng-container *clrDgHideableColumn="{hidden: false}">
+                {{'tasks.management.Title' | translate}}
+              </ng-container>
+            </clr-dg-column>
+            <clr-dg-column [clrDgField]="'priority'">
+              <ng-container *clrDgHideableColumn="{hidden: false}">
+                {{'tasks.management.Priority' | translate}}
+              </ng-container>
+            </clr-dg-column>
+            <clr-dg-column [clrDgField]="'status'">
+              <ng-container *clrDgHideableColumn="{hidden: false}">
+                {{'tasks.management.Status' | translate}}
+              </ng-container>
+            </clr-dg-column>
+            <clr-dg-column [clrDgField]="'developer.fullName'">
+              <ng-container *clrDgHideableColumn="{hidden: false}">
+                {{'tasks.management.Developer' | translate}}
+              </ng-container>
+            </clr-dg-column>
+            <clr-dg-column [clrDgField]="'tester.fullName'">
+              <ng-container *clrDgHideableColumn="{hidden: false}">
+                {{'tasks.management.Tester' | translate}}
+              </ng-container>
+            </clr-dg-column>
+            <clr-dg-placeholder>Loading Tasks!</clr-dg-placeholder>
 
-              <clr-dg-row *clrDgItems="let task of tasks" [clrDgItem]="task">
+            <clr-dg-row *clrDgItems="let task of tasks" [clrDgItem]="task">
+              <clr-dg-cell>
+                <a href="javascript:void(0)" (click)="onEdit(task.id)">{{task.title}}</a>
+              </clr-dg-cell>
 
-                <clr-dg-cell>{{task.title}}</clr-dg-cell>
-                <clr-dg-cell>
-                  <clr-icon *ngIf="task.priority == 'Critical' && task.status != 'Completed'" shape="exclamation-triangle" class="is-error"></clr-icon>
-                  <clr-icon *ngIf="task.status == 'Completed'" shape="check" class="is-success"></clr-icon>
-                  {{task.priority}}
-                </clr-dg-cell>
-                <clr-dg-cell>{{task.status}}</clr-dg-cell>
+              <clr-dg-cell>
+                <clr-icon *ngIf="task.priority == 'Critical'" shape="exclamation-triangle" size="15" class="is-error"></clr-icon>
+                <clr-icon *ngIf="task.priority == 'High'" shape="exclamation-triangle" size="15" class="is-warning"></clr-icon>
+                <clr-icon *ngIf="task.priority == 'Medium'" shape="exclamation-triangle" size="15" class="is-highlight"></clr-icon>
+                <clr-icon *ngIf="task.priority == 'Low'" shape="exclamation-triangle" size="15" class="is-success"></clr-icon>
+                <clr-icon *ngIf="task.status == 'Completed'" shape="check" size="15" class="is-success"></clr-icon>
+                {{task.priority}}
+              </clr-dg-cell>
 
-                <clr-dg-cell>
-                  {{task.assignedToName}}
-                  <clr-signpost>
-                    <clr-signpost-content [clrPosition]="'left-middle'" *clrIfOpen>
-                      {{task.assignedTo.fullName}}
-                      <br />
-                      Phone: {{task.assignedTo.phoneNumber}}
-                      <br />
-                      Email: {{task.assignedTo.email}}
-                    </clr-signpost-content>
-                  </clr-signpost>
-                </clr-dg-cell>
-                <clr-dg-row-detail *clrIfExpanded>
-                  <p>{{task.description}} <br /><br /> {{task.comment}}</p>
-                </clr-dg-row-detail>
-                <clr-dg-action-overflow>
-                  <button class="action-item" (click)="onCompleted(task)">Mark as Completed</button>
-                  <button class="action-item" (click)="onActive(task)">Return for Bugfix</button>
-                  <button class="action-item" (click)="onAddBug(task)">Add new Bug</button>
-                </clr-dg-action-overflow>
-              </clr-dg-row>
+              <clr-dg-cell>
+                <clr-icon *ngIf="task.status == 'New'" shape="circle" size="12" class="is-inverse is-solid"></clr-icon>
+                <clr-icon *ngIf="task.status == 'Active'" shape="circle" size="12" class="is-solid is-highlight"></clr-icon>
+                {{task.status}}
+              </clr-dg-cell>
 
-              <clr-dg-footer>
-                <clr-dg-column-toggle>
-                </clr-dg-column-toggle>
-                <clr-dg-pagination #pagination [clrDgPageSize]="20">
-                  <!--<clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100,1000]">{{'tasks.management.TasksPerPage' | translate}}</clr-dg-page-size>-->
-                  {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
-                  {{pagination.totalItems}} {{'tasks.management.Tasks' | translate}}
-                </clr-dg-pagination>
-              </clr-dg-footer>
-            </clr-datagrid>
-          </div>
-        </div>
-      </clr-tab-content>
-    </ng-template>
-  </clr-tab>
+              <clr-dg-cell>
+                <clr-signpost>
+                  <clr-icon size="15" shape="avatar"
+                            clrSignpostTrigger>
+                  </clr-icon>
+                  <clr-signpost-content [clrPosition]="'left-middle'" *clrIfOpen>
+                    {{task.developer.fullName}}
+                    <br />
+                    Phone: {{task.developer.phoneNumber}}
+                    <br />
+                    Email: {{task.developer.email}}
+                  </clr-signpost-content>
+                </clr-signpost>
+                {{task.developer.fullName}}
+              </clr-dg-cell>
 
-  <clr-tab>
-    <button (click)="loadCompleted()" clrTabLink>Completed Tasks - For Release</button>
-    <ng-template [(clrIfActive)]="CompletedActive">
-      <clr-tab-content>
-        <div class="card">
-          <div class="card-header">
-            Completed Tasks
-          </div>
-          <div class="card-block">
-            <app-search-box (searchChange)="onSearchChanged($event)" placeholder="{{'tasks.management.Search' | translate}}"></app-search-box>
+              <clr-dg-cell>
+                <clr-signpost>
+                  <clr-icon size="15" shape="avatar"
+                            clrSignpostTrigger>
+                  </clr-icon>
+                  <clr-signpost-content [clrPosition]="'left-middle'" *clrIfOpen>
+                    {{task.tester.fullName}}
+                    <br />
+                    Phone: {{task.tester.phoneNumber}}
+                    <br />
+                    Email: {{task.tester.email}}
+                  </clr-signpost-content>
+                </clr-signpost>
+                {{task.tester.fullName}}
+              </clr-dg-cell>
 
-            <clr-datagrid style="height: 500px" class="datagrid-compact" [(clrDgSelected)]="selected" [clrDgRowSelection]="true">
-              <clr-dg-action-bar>
-                <div class="btn-group">
-                  <button type="button" class="btn btn-sm btn-secondary" (click)="onAdd()">
-                    <clr-icon shape="plus"></clr-icon>{{'tasks.management.NewTask' | translate}}
-                  </button>
-                  <button type="button" class="btn btn-sm btn-secondary" (click)="onDelete()"><clr-icon shape="close"></clr-icon>{{'tasks.management.Delete' | translate}}</button>
-                  <button type="button" class="btn btn-sm btn-secondary" (click)="onEdit(selected[0])" *ngIf="selected.length == 1"><clr-icon shape="pencil"></clr-icon> Edit</button>
-                </div>
-                <div class="btn-group">
-                  <clr-dropdown>
-                    <button type="button" class="btn btn-sm btn-secondary" clrDropdownTrigger>
-                      Export
-                      <clr-icon shape="caret down"></clr-icon>
+              <clr-dg-action-overflow>
+                <button [disabled]="task.status === 'Active'" class="action-item" (click)="onActive(task)">Mark as Active</button>
+                <button [disabled]="task.status === 'New'" class="action-item" (click)="onResolved(task)">Mark as Resolved</button>
+                <button class="action-item" (click)="onDelete(task)">Delete</button>
+              </clr-dg-action-overflow>
+            </clr-dg-row>
+
+            <clr-dg-footer>
+              <clr-dg-column-toggle>
+              </clr-dg-column-toggle>
+              <clr-dg-pagination #pagination [clrDgPageSize]="20">
+                <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100,1000]">{{'tasks.management.TasksPerPage' | translate}}</clr-dg-page-size>
+                {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+                {{pagination.totalItems}} {{'tasks.management.Tasks' | translate}}
+              </clr-dg-pagination>
+            </clr-dg-footer>
+          </clr-datagrid>
+        </clr-tab-content>
+      </ng-template>
+    </clr-tab>
+
+    <clr-tab>
+      <button (click)="loadResolved()" clrTabLink>Resolved Tasks - For Testing</button>
+      <ng-template [(clrIfActive)]="ResolvedActive">
+        <clr-tab-content>
+          <div class="card">
+            <div class="card-header">
+              Resolved Tasks
+            </div>
+            <div class="card-block">
+              <clr-datagrid style="height: 500px" class="datagrid-compact" [(clrDgSelected)]="selected" [clrDgRowSelection]="true">
+                <clr-dg-action-bar>
+                  <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-secondary" (click)="onAdd()">
+                      <clr-icon shape="plus"></clr-icon>{{'tasks.management.NewTask' | translate}}
                     </button>
-                    <clr-dropdown-menu clrPosition="bottom-left" *clrIfOpen>
-                      <button type="button" (click)="onExportAll()" clrDropdownItem>Export All</button>
-                      <button type="button" (click)="onExportSelected()" [disabled]="selected.length === 0" clrDropdownItem>Export Selected Items</button>
-                    </clr-dropdown-menu>
-                  </clr-dropdown>
-                </div>
-              </clr-dg-action-bar>
-              <clr-dg-column [clrDgField]="'title'">
-                <ng-container *clrDgHideableColumn="{hidden: false}">
-                  {{'tasks.management.Title' | translate}}
-                </ng-container>
-              </clr-dg-column>
-              <clr-dg-column [clrDgField]="'priority'">
-                <ng-container *clrDgHideableColumn="{hidden: false}">
-                  {{'tasks.management.Priority' | translate}}
-                </ng-container>
-              </clr-dg-column>
-              <clr-dg-column [clrDgField]="'status'">
-                <ng-container *clrDgHideableColumn="{hidden: false}">
-                  {{'tasks.management.Status' | translate}}
-                </ng-container>
-              </clr-dg-column>
-              <clr-dg-column [(clrFilterValue)]="nameFilterValue" [clrDgField]="'assignedToName'">
-                <ng-container *clrDgHideableColumn="{hidden: false}">
-                  {{'tasks.management.AssignedTo' | translate}}
-                </ng-container>
-              </clr-dg-column>
+                    <button type="button" class="btn btn-sm btn-secondary" (click)="onDelete()"><clr-icon shape="close"></clr-icon>{{'tasks.management.Delete' | translate}}</button>
+                    <button type="button" class="btn btn-sm btn-secondary" (click)="onEdit(selected[0])" *ngIf="selected.length == 1"><clr-icon shape="pencil"></clr-icon> Edit</button>
+                  </div>
+                  <div class="btn-group">
+                    <clr-dropdown>
+                      <button type="button" class="btn btn-sm btn-secondary" clrDropdownTrigger>
+                        Export
+                        <clr-icon shape="caret down"></clr-icon>
+                      </button>
+                      <clr-dropdown-menu clrPosition="bottom-left" *clrIfOpen>
+                        <button type="button" (click)="onExportAll()" clrDropdownItem>Export All</button>
+                        <button type="button" (click)="onExportSelected()" [disabled]="selected.length === 0" clrDropdownItem>Export Selected Items</button>
+                      </clr-dropdown-menu>
+                    </clr-dropdown>
+                  </div>
+                  <div class="btn-group">
+                    <app-search-box (searchChange)="onSearchChanged($event)" placeholder="{{'tasks.management.Search' | translate}}"></app-search-box>
+                  </div>
+                </clr-dg-action-bar>
+                <clr-dg-column [clrDgField]="'title'">
+                  <ng-container *clrDgHideableColumn="{hidden: false}">
+                    {{'tasks.management.Title' | translate}}
+                  </ng-container>
+                </clr-dg-column>
+                <clr-dg-column [clrDgField]="'priority'">
+                  <ng-container *clrDgHideableColumn="{hidden: false}">
+                    {{'tasks.management.Priority' | translate}}
+                  </ng-container>
+                </clr-dg-column>
+                <clr-dg-column [clrDgField]="'status'">
+                  <ng-container *clrDgHideableColumn="{hidden: false}">
+                    {{'tasks.management.Status' | translate}}
+                  </ng-container>
+                </clr-dg-column>
+                <clr-dg-column [(clrFilterValue)]="nameFilterValue" [clrDgField]="'assignedToName'">
+                  <ng-container *clrDgHideableColumn="{hidden: false}">
+                    {{'tasks.management.AssignedTo' | translate}}
+                  </ng-container>
+                </clr-dg-column>
 
-              <clr-dg-placeholder>Loading Tasks!</clr-dg-placeholder>
+                <clr-dg-placeholder>Loading Tasks!</clr-dg-placeholder>
 
-              <clr-dg-row *clrDgItems="let task of tasks" [clrDgItem]="task">
+                <clr-dg-row *clrDgItems="let task of tasks" [clrDgItem]="task">
 
-                <clr-dg-cell>{{task.title}}</clr-dg-cell>
-                <clr-dg-cell>
-                  <clr-icon *ngIf="task.priority == 'Critical' && task.status != 'Completed'" shape="exclamation-triangle" class="is-error"></clr-icon>
-                  <clr-icon *ngIf="task.status == 'Completed'" shape="check" class="is-success"></clr-icon>
-                  {{task.priority}}
-                </clr-dg-cell>
-                <clr-dg-cell>{{task.status}}</clr-dg-cell>
+                  <clr-dg-cell>{{task.title}}</clr-dg-cell>
+                  <clr-dg-cell>
+                    <clr-icon *ngIf="task.priority == 'Critical' && task.status != 'Completed'" shape="exclamation-triangle" class="is-error"></clr-icon>
+                    <clr-icon *ngIf="task.status == 'Completed'" shape="check" class="is-success"></clr-icon>
+                    {{task.priority}}
+                  </clr-dg-cell>
+                  <clr-dg-cell>{{task.status}}</clr-dg-cell>
 
-                <clr-dg-cell>
-                  {{task.assignedToName}}
-                  <clr-signpost>
-                    <clr-signpost-content [clrPosition]="'left-middle'" *clrIfOpen>
-                      {{task.assignedTo.fullName}}
-                      <br />
-                      Phone: {{task.assignedTo.phoneNumber}}
-                      <br />
-                      Email: {{task.assignedTo.email}}
-                    </clr-signpost-content>
-                  </clr-signpost>
-                </clr-dg-cell>
-                <clr-dg-row-detail *clrIfExpanded>
-                  <p>{{task.description}} <br /><br /> {{task.comment}}</p>
-                </clr-dg-row-detail>
-                <!--<clr-dg-action-overflow>
-                  <button class="action-item" (click)="onEdit(task)">Edit</button>
-                  <button class="action-item" (click)="onDelete(task)">Delete</button>
-                </clr-dg-action-overflow>-->
-              </clr-dg-row>
+                  <clr-dg-cell>
+                    {{task.assignedToName}}
+                    <clr-signpost>
+                      <clr-signpost-content [clrPosition]="'left-middle'" *clrIfOpen>
+                        {{task.assignedTo.fullName}}
+                        <br />
+                        Phone: {{task.assignedTo.phoneNumber}}
+                        <br />
+                        Email: {{task.assignedTo.email}}
+                      </clr-signpost-content>
+                    </clr-signpost>
+                  </clr-dg-cell>
+                  <clr-dg-row-detail *clrIfExpanded>
+                    <p>{{task.description}} <br /><br /> {{task.comment}}</p>
+                  </clr-dg-row-detail>
+                  <clr-dg-action-overflow>
+                    <button class="action-item" (click)="onCompleted(task)">Mark as Completed</button>
+                    <button class="action-item" (click)="onActive(task)">Return for Bugfix</button>
+                    <button class="action-item" (click)="onAddBug(task)">Add new Bug</button>
+                  </clr-dg-action-overflow>
+                </clr-dg-row>
 
-              <clr-dg-footer>
-                <clr-dg-column-toggle>
-                </clr-dg-column-toggle>
-                <clr-dg-pagination #pagination [clrDgPageSize]="20">
-                  <!--<clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100,1000]">{{'tasks.management.TasksPerPage' | translate}}</clr-dg-page-size>-->
-                  {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
-                  {{pagination.totalItems}} {{'tasks.management.Tasks' | translate}}
-                </clr-dg-pagination>
-              </clr-dg-footer>
-            </clr-datagrid>
+                <clr-dg-footer>
+                  <clr-dg-column-toggle>
+                  </clr-dg-column-toggle>
+                  <clr-dg-pagination #pagination [clrDgPageSize]="20">
+
+                    <!--<clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100,1000]">{{'tasks.management.TasksPerPage' | translate}}</clr-dg-page-size>-->
+                    {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+                    {{pagination.totalItems}} {{'tasks.management.Tasks' | translate}}
+                  </clr-dg-pagination>
+                </clr-dg-footer>
+              </clr-datagrid>
+            </div>
           </div>
-        </div>
-      </clr-tab-content>
-    </ng-template>
-  </clr-tab>
-</clr-tabs>
+        </clr-tab-content>
+      </ng-template>
+    </clr-tab>
+
+    <clr-tab>
+      <button (click)="loadCompleted()" clrTabLink>Completed Tasks - For Release</button>
+      <ng-template [(clrIfActive)]="CompletedActive">
+        <clr-tab-content>
+          <div class="card">
+            <div class="card-header">
+              Completed Tasks
+            </div>
+            <div class="card-block">
+              <app-search-box (searchChange)="onSearchChanged($event)" placeholder="{{'tasks.management.Search' | translate}}"></app-search-box>
+
+              <clr-datagrid style="height: 500px" class="datagrid-compact" [(clrDgSelected)]="selected" [clrDgRowSelection]="true">
+                <clr-dg-action-bar>
+                  <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-secondary" (click)="onAdd()">
+                      <clr-icon shape="plus"></clr-icon>{{'tasks.management.NewTask' | translate}}
+                    </button>
+                    <button type="button" class="btn btn-sm btn-secondary" (click)="onDelete()"><clr-icon shape="close"></clr-icon>{{'tasks.management.Delete' | translate}}</button>
+                    <button type="button" class="btn btn-sm btn-secondary" (click)="onEdit(selected[0])" *ngIf="selected.length == 1"><clr-icon shape="pencil"></clr-icon> Edit</button>
+                  </div>
+                  <div class="btn-group">
+                    <clr-dropdown>
+                      <button type="button" class="btn btn-sm btn-secondary" clrDropdownTrigger>
+                        Export
+                        <clr-icon shape="caret down"></clr-icon>
+                      </button>
+                      <clr-dropdown-menu clrPosition="bottom-left" *clrIfOpen>
+                        <button type="button" (click)="onExportAll()" clrDropdownItem>Export All</button>
+                        <button type="button" (click)="onExportSelected()" [disabled]="selected.length === 0" clrDropdownItem>Export Selected Items</button>
+                      </clr-dropdown-menu>
+                    </clr-dropdown>
+                  </div>
+                </clr-dg-action-bar>
+                <clr-dg-column [clrDgField]="'title'">
+                  <ng-container *clrDgHideableColumn="{hidden: false}">
+                    {{'tasks.management.Title' | translate}}
+                  </ng-container>
+                </clr-dg-column>
+                <clr-dg-column [clrDgField]="'priority'">
+                  <ng-container *clrDgHideableColumn="{hidden: false}">
+                    {{'tasks.management.Priority' | translate}}
+                  </ng-container>
+                </clr-dg-column>
+                <clr-dg-column [clrDgField]="'status'">
+                  <ng-container *clrDgHideableColumn="{hidden: false}">
+                    {{'tasks.management.Status' | translate}}
+                  </ng-container>
+                </clr-dg-column>
+                <clr-dg-column [(clrFilterValue)]="nameFilterValue" [clrDgField]="'assignedToName'">
+                  <ng-container *clrDgHideableColumn="{hidden: false}">
+                    {{'tasks.management.AssignedTo' | translate}}
+                  </ng-container>
+                </clr-dg-column>
+
+                <clr-dg-placeholder>Loading Tasks!</clr-dg-placeholder>
+
+                <clr-dg-row *clrDgItems="let task of tasks" [clrDgItem]="task">
+
+                  <clr-dg-cell>{{task.title}}</clr-dg-cell>
+                  <clr-dg-cell>
+                    <clr-icon *ngIf="task.priority == 'Critical' && task.status != 'Completed'" shape="exclamation-triangle" class="is-error"></clr-icon>
+                    <clr-icon *ngIf="task.status == 'Completed'" shape="check" class="is-success"></clr-icon>
+                    {{task.priority}}
+                  </clr-dg-cell>
+                  <clr-dg-cell>{{task.status}}</clr-dg-cell>
+
+                  <clr-dg-cell>
+                    {{task.assignedToName}}
+                    <clr-signpost>
+                      <clr-signpost-content [clrPosition]="'left-middle'" *clrIfOpen>
+                        {{task.assignedTo.fullName}}
+                        <br />
+                        Phone: {{task.assignedTo.phoneNumber}}
+                        <br />
+                        Email: {{task.assignedTo.email}}
+                      </clr-signpost-content>
+                    </clr-signpost>
+                  </clr-dg-cell>
+                  <clr-dg-row-detail *clrIfExpanded>
+
+                  </clr-dg-row-detail>
+
+                  <!--<clr-dg-action-overflow>
+                    <button class="action-item" (click)="onEdit(task)">Edit</button>
+                    <button class="action-item" (click)="onDelete(task)">Delete</button>
+                  </clr-dg-action-overflow>-->
+                </clr-dg-row>
+
+                <clr-dg-footer>
+                  <clr-dg-column-toggle>
+                  </clr-dg-column-toggle>
+                  <clr-dg-pagination #pagination [clrDgPageSize]="20">
+
+                    <!--<clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100,1000]">{{'tasks.management.TasksPerPage' | translate}}</clr-dg-page-size>-->
+                    {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+                    {{pagination.totalItems}} {{'tasks.management.Tasks' | translate}}
+                  </clr-dg-pagination>
+                </clr-dg-footer>
+              </clr-datagrid>
+            </div>
+          </div>
+        </clr-tab-content>
+      </ng-template>
+    </clr-tab>
+  </clr-tabs>
+</div>

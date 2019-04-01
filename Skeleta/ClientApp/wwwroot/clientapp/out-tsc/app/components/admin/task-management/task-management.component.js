@@ -16,7 +16,6 @@ var taskService_1 = require("../../../services/tasks/taskService");
 var app_translation_service_1 = require("../../../services/app-translation.service");
 var utilities_1 = require("../../../services/utilities");
 var account_service_1 = require("../../../services/account.service");
-var ClassicEditor = require("@ckeditor/ckeditor5-build-classic");
 var TaskManagementComponent = /** @class */ (function () {
     function TaskManagementComponent(accountService, alertService, translationService, taskService) {
         var _this = this;
@@ -29,32 +28,28 @@ var TaskManagementComponent = /** @class */ (function () {
         this.tasksCache = [];
         this.selected = [];
         this.gT = function (key) { return _this.translationService.getTranslation(key); };
-        this.description = ClassicEditor;
+        this.isOpen = false;
     }
     TaskManagementComponent.prototype.ngOnInit = function () {
         this.PendingActive = true;
         this.loadData();
-        this.nameFilterValue = this.accountService.currentUser.fullName;
     };
     TaskManagementComponent.prototype.onAdd = function () {
-        this.sourceTask = null;
         this.taskEdit.Create();
+        this.isOpen = true;
     };
     TaskManagementComponent.prototype.onActive = function (task) {
-        this.sourceTask = task;
         this.taskEdit.MarkActive(task);
     };
     TaskManagementComponent.prototype.onResolved = function (task) {
-        this.sourceTask = task;
         this.taskEdit.MarkResolved(task);
     };
     TaskManagementComponent.prototype.onCompleted = function (task) {
-        this.sourceTask = task;
         this.taskEdit.MarkCompleted(task);
     };
     TaskManagementComponent.prototype.onEdit = function (task) {
-        this.sourceTask = task;
-        this.taskEdit.Edit(task);
+        this.taskEdit.Edit(task.id);
+        this.isOpen = true;
     };
     TaskManagementComponent.prototype.onDelete = function (task) {
         if (task) {
@@ -98,11 +93,6 @@ var TaskManagementComponent = /** @class */ (function () {
             .subscribe(function (results) { return _this.onDataLoadSuccessful(results); }, function (error) { return _this.onDataLoadFailed(error); });
     };
     TaskManagementComponent.prototype.onDataLoadSuccessful = function (tasks) {
-        for (var _i = 0, tasks_1 = tasks; _i < tasks_1.length; _i++) {
-            var item = tasks_1[_i];
-            item.developerName = item.developer.fullName;
-            item.testerName = item.tester.fullName;
-        }
         this.alertService.stopLoadingMessage();
         this.loadingIndicator = false;
         this.tasksCache = tasks;
@@ -115,7 +105,7 @@ var TaskManagementComponent = /** @class */ (function () {
     };
     TaskManagementComponent.prototype.onSearchChanged = function (value) {
         this.tasks = this.tasksCache
-            .filter(function (r) { return utilities_1.Utilities.searchArray(value, false, r.id, r.title, r.description, r.priority, r.status, r.developerName, r.testerName); });
+            .filter(function (r) { return utilities_1.Utilities.searchArray(value, false, r.id, r.title, r.priority, r.status, r.developer.fullName, r.developer.fullName); });
     };
     TaskManagementComponent.prototype.popItem = function (task) {
         this.removeItem(task);
@@ -149,6 +139,9 @@ var TaskManagementComponent = /** @class */ (function () {
     TaskManagementComponent.prototype.updateItem = function (task) {
         var index = this.tasks.indexOf(task);
         this.tasks[index] = task;
+    };
+    TaskManagementComponent.prototype.closeTab = function () {
+        this.isOpen = false;
     };
     __decorate([
         core_1.ViewChild(task_edit_component_1.TaskEditComponent),

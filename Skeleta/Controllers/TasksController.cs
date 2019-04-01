@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using OpenIddict.Validation;
 using Skeleta.Authorization;
-using Skeleta.Services;
+using Skeleta.Services.WorkItemServices;
 using Skeleta.ViewModels.WorkItemViewModels;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -35,7 +35,7 @@ namespace Skeleta.Controllers
 
 		// GET: api/values
 		[HttpGet("all")]
-		[ProducesResponseType(200, Type = typeof(IEnumerable<TaskViewModel>))]
+		[ProducesResponseType(200, Type = typeof(IEnumerable<TaskListViewModel>))]
 		public async Task<IActionResult> GetAll()
 		{
 			return Ok(await taskService.GetAllTask());
@@ -44,7 +44,7 @@ namespace Skeleta.Controllers
 		// GET: api/values
 		[HttpGet("pending")]
 		[Authorize(Authorization.Policies.ViewAllTasksPolicy)]
-		[ProducesResponseType(200, Type = typeof(IEnumerable<TaskViewModel>))]
+		[ProducesResponseType(200, Type = typeof(IEnumerable<TaskListViewModel>))]
 		public async Task<IActionResult> GetPending()
 		{
 			if (!(await authorizationService.AuthorizeAsync(this.User, "", TaskManagementOperations.Read)).Succeeded)
@@ -56,7 +56,7 @@ namespace Skeleta.Controllers
 
 		// GET: api/values
 		[HttpGet("closed")]
-		[ProducesResponseType(200, Type = typeof(IEnumerable<TaskViewModel>))]
+		[ProducesResponseType(200, Type = typeof(IEnumerable<TaskListViewModel>))]
 		public async Task<IActionResult> GetClosed()
 		{
 			var closedTasks = await taskService.GetAllClosedTask();
@@ -65,7 +65,7 @@ namespace Skeleta.Controllers
 
 		// GET: api/values
 		[HttpGet("completed")]
-		[ProducesResponseType(200, Type = typeof(IEnumerable<TaskViewModel>))]
+		[ProducesResponseType(200, Type = typeof(IEnumerable<TaskListViewModel>))]
 		public async Task<IActionResult> GetCompleted()
 		{
 			var completedTasks = await taskService.GetAllCompletedTask();
@@ -74,7 +74,7 @@ namespace Skeleta.Controllers
 
 		// GET: api/values
 		[HttpGet("resolved")]
-		[ProducesResponseType(200, Type = typeof(IEnumerable<TaskViewModel>))]
+		[ProducesResponseType(200, Type = typeof(IEnumerable<TaskListViewModel>))]
 		public async Task<IActionResult> GetResolved()
 		{
 			var resolvedTasks = await taskService.GetAllResolvedTask();
@@ -83,7 +83,7 @@ namespace Skeleta.Controllers
 
 		// GET api/values/5
 		[HttpGet("{id}")]
-		[ProducesResponseType(200, Type = typeof(TaskViewModel))]
+		[ProducesResponseType(200, Type = typeof(TaskItemViewModel))]
 		public async Task<IActionResult> Get(int id)
 		{
 			var task = await taskService.GetById(id);
@@ -94,8 +94,8 @@ namespace Skeleta.Controllers
 
 		// POST api/values
 		[HttpPost()]
-		[ProducesResponseType(201, Type = typeof(TaskViewModel))]
-		public async Task<IActionResult> CreateTask([FromBody] TaskViewModel viewmodel)
+		[ProducesResponseType(201, Type = typeof(TaskItemViewModel))]
+		public async Task<IActionResult> CreateTask([FromBody] TaskItemViewModel viewmodel)
 		{
 			if (ModelState.IsValid)
 			{
@@ -119,7 +119,7 @@ namespace Skeleta.Controllers
 		[ProducesResponseType(400)]
 		[ProducesResponseType(403)]
 		[ProducesResponseType(404)]
-		public async Task<IActionResult> UpdateAsync(int id, [FromBody] TaskViewModel viewmodel)
+		public async Task<IActionResult> UpdateAsync(int id, [FromBody] TaskItemViewModel viewmodel)
 		{
 			if (ModelState.IsValid)
 			{
@@ -145,16 +145,16 @@ namespace Skeleta.Controllers
 
 		// DELETE api/values/5
 		[HttpDelete("{id}")]
-		[ProducesResponseType(200, Type = typeof(TaskViewModel))]
+		[ProducesResponseType(200, Type = typeof(TaskItemViewModel))]
 		[ProducesResponseType(400)]
 		[ProducesResponseType(404)]
 		public async Task<IActionResult> Delete(int id)
 		{
-			TaskViewModel taskVM = null;
+			TaskItemViewModel taskVM = null;
 			TaskItem task = Mapper.Map<TaskItem>(await taskService.GetById(id));
 
 			if (task != null)
-				taskVM = Mapper.Map<TaskViewModel>(task);
+				taskVM = Mapper.Map<TaskItemViewModel>(task);
 
 			if (taskVM == null)
 				return NotFound(id);
@@ -166,22 +166,22 @@ namespace Skeleta.Controllers
 
 		// DELETE RANGE api/values/range/5
 		[HttpDelete("range/{ids}")]
-		[ProducesResponseType(200, Type = typeof(TaskViewModel))]
+		[ProducesResponseType(200, Type = typeof(TaskItemViewModel))]
 		[ProducesResponseType(400)]
 		[ProducesResponseType(404)]
 		public async Task<IActionResult> DeleteRange(int[] ids)
 		{
-			List<TaskViewModel> tasksVM = new List<TaskViewModel>();
+			List<TaskItemViewModel> tasksVM = new List<TaskItemViewModel>();
 			List<TaskItem> tasks = new List<TaskItem>();
 
 			foreach (var id in ids)
 			{
-				TaskViewModel taskVM = null;
+				TaskItemViewModel taskVM = null;
 				TaskItem task = Mapper.Map<TaskItem>(await taskService.GetById(id));
 
 				if (task != null)
 				{
-					taskVM = Mapper.Map<TaskViewModel>(task);
+					taskVM = Mapper.Map<TaskItemViewModel>(task);
 					tasks.Add(task);
 					if (taskVM != null)
 					{

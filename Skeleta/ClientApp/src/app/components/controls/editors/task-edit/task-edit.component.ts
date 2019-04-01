@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, ViewChild, Output, EventEmitter, Input } from '@angular/core';
 import { ClrLoadingState, ClrForm } from '@clr/angular';
 import { AppTranslationService } from '../../../../services/app-translation.service';
 import { AlertService, MessageSeverity } from '../../../../services/alert.service';
@@ -9,7 +9,6 @@ import { Status, Priority } from '../../../../models/enum';
 import { Observable, forkJoin } from 'rxjs';
 import { AccountService } from '../../../../services/account.service';
 import { User } from '../../../../models/user.model';
-import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 @Component({
   selector: 'app-task-edit',
@@ -25,10 +24,8 @@ export class TaskEditComponent implements OnInit {
   private actionTitle = "";
   private deleteOpen = false;
   private isNewTask = false;
-  private openModal;
   private allStatus = [...Object.keys(Status)];
   private allPriority = [...Object.keys(Priority)];
-  public description = ClassicEditor;
 
   initialTask: Task = new Task();
   taskEdit: Task;
@@ -37,14 +34,15 @@ export class TaskEditComponent implements OnInit {
   taskForm: FormGroup;
   users: User[] = [];
   currentUser: User;
-  //assignedTo: User;
 
   @ViewChild(ClrForm) clrForm;
 
+  @Input() isOpen: boolean;
   @Output() popData = new EventEmitter<Task>();
   @Output() updateStatus = new EventEmitter<Task>();
   @Output() updateData = new EventEmitter<Task>();
   @Output() deleteData = new EventEmitter<Task[]>();
+  @Output() openClose = new EventEmitter();
 
   constructor(private translationService: AppTranslationService,
     private alertService: AlertService, private formBuilder: FormBuilder,
@@ -61,7 +59,7 @@ export class TaskEditComponent implements OnInit {
   private loadForm() {
     this.taskForm = this.formBuilder.group({
       title: ['', Validators.required],
-      description: new FormControl(this.Edit),
+      description: [''],
       comment: [''],
       priority: ['High', Validators.required],
       status: ['New', Validators.required],
@@ -70,15 +68,12 @@ export class TaskEditComponent implements OnInit {
     });
   }
 
-  private openChange(value: boolean) {
-    if (value) {
-    }
-    else {
-      this.isNewTask = false;
-      this.openModal = false;
-      this.loadForm();
-      this.alertService.resetStickyMessage();
-    }
+  private close() {
+    this.isOpen = false;
+    this.openClose.emit();
+    this.isNewTask = false;
+    this.loadForm();
+    this.alertService.resetStickyMessage();
   }
 
   private save() {
@@ -96,7 +91,6 @@ export class TaskEditComponent implements OnInit {
 
   private saveSuccessHelper(): void {
     Object.assign(this.initialTask, this.taskEdit);
-    //this.initialTask.assignedTo = this.users.find(u => u.id == this.taskEdit.assignedTo.id);
     this.updateData.emit(this.initialTask);
 
     if (this.isNewTask)
@@ -105,7 +99,7 @@ export class TaskEditComponent implements OnInit {
       this.alertService.showMessage(this.gT('toasts.saved'), `Task modified!`, MessageSeverity.success);
 
     this.submitBtnState = ClrLoadingState.SUCCESS;
-    this.openModal = false;
+    this.close();
   }
 
   private saveFailedHelper(error: any): void {
@@ -123,7 +117,7 @@ export class TaskEditComponent implements OnInit {
   }
 
   Create() {
-    this.openModal = true;
+    this.submitBtnState = ClrLoadingState.DEFAULT;
     this.isNewTask = true;
     this.actionTitle = "Add";
     this.initialTask = new Task();
@@ -131,22 +125,25 @@ export class TaskEditComponent implements OnInit {
   }
 
 
-  Edit(task: Task) {
-    if (task) {
-      this.openModal = true;
-      this.isNewTask = false;
-      this.actionTitle = "Edit";
-
-      this.initialTask = new Task();
-      Object.assign(this.initialTask, task);
-
-      this.taskEdit = new Task;
-      Object.assign(this.taskEdit, task);
-
-      this.taskForm.patchValue(this.taskEdit);
-    }
+  Edit(taskid: number) {
+    if (taskid) {
+      this.taskService.GetTask(taskid).subscribe(response => {
+        this.initialTask = new Task();
+        Object.assign(this.initialTask, response);
+        this.taskEdit = new Task;
+        Object.assign(this.taskEdit, response);
+        this.submitBtnState = ClrLoadingState.DEFAULT;
+        this.isNewTask = false;
+        this.actionTitle = "Edit";
+        this.taskForm.patchValue(this.taskEdit);
+      },
+        error => {
+          console.log(error);
+          this.Create();
+        }   
+    )}
     else {
-      return this.Create();
+      this.Create();
     }
   }
 
@@ -221,23 +218,21 @@ export class TaskEditComponent implements OnInit {
       this.taskService.DeleteRangeTasks(this.tasksToDelete).subscribe(
         response => {
           this.deleteData.emit(this.tasksToDelete);
+          this.deleteBtnState = ClrLoadingState.SUCCESS;
           this.deleteOpen = false;
           this.alertService.showMessage(this.gT('toasts.saved'), `${this.tasksToDelete.length} record Deleted!`, MessageSeverity.success);
-          this.deleteBtnState = ClrLoadingState.SUCCESS;
         });
     }
 
     if (this.taskToDelete != null) {
-      this.taskService.DeleteTask(this.taskToDelete).subscribe(
-        response => {
-          this.tasksToDelete = [];
-          this.tasksToDelete.push(this.taskToDelete);
-
-          this.deleteData.emit(this.tasksToDelete);
-          this.deleteOpen = false;
-          this.alertService.showMessage(this.gT('toasts.saved'), `${this.tasksToDelete.length} record Deleted!`, MessageSeverity.success);
-          this.deleteBtnState = ClrLoadingState.SUCCESS;
-        });
+      this.taskToDelete.status = Status.Closed;
+      this.taskService.UpdateTask(this.taskToDelete).subscribe(response => {
+        this.alertService.showMessage(this.gT('toasts.saved'), `Record Deleted!`, MessageSeverity.success);
+        this.popData.emit(this.taskToDelete);
+        this.deleteBtnState = ClrLoadingState.SUCCESS;
+        this.deleteOpen = false;
+      },
+        error => this.alertService.showMessage(error, null, MessageSeverity.error));
     }
   }
 }

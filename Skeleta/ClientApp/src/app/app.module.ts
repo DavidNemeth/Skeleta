@@ -10,7 +10,7 @@ import { ToastaModule } from 'ngx-toasta';
 import { ClarityModule } from "@clr/angular";
 import { NgSelectModule } from '@ng-select/ng-select';
 
-import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+import { QuillModule } from 'ngx-quill'
 import { FusionChartsModule } from 'angular-fusioncharts';
 import FusionCharts from 'fusioncharts/core';
 import Column2d from 'fusioncharts/viz/column2d';
@@ -37,13 +37,14 @@ import { AccountEndpoint } from './services/account-endpoint.service';
 import { AccountService } from './services/account.service';
 import { TaskService } from './services/tasks/taskService';
 import { TaskEndpoint } from './services/tasks/task-endpoint.service';
+import { BugItemService } from './services/bugItems/bugitemService';
+import { BugItemEndpoint } from './services/bugItems/bugItem-endpoint.service';
 
 import { AppComponent } from './components/app.component';
 import { HomeComponent } from './components/home/home.component';
 import { LoginComponent } from './components/login/login.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { FusionComponent } from './components/controls/charts/fusion/fusion.component';
-import { ThemesComponent } from './components/controls/themes/themes.component';
 import { MachinechartComponent } from './components/controls/charts/machinechart/machinechart.component';
 import { ShiftschartComponent } from './components/controls/charts/shiftschart/shiftschart.component';
 import { SettingsComponent } from './components/settings/settings.component';
@@ -62,6 +63,8 @@ import { RoleEditComponent } from './components/controls/editors/role-edit/role-
 import { TaskManagementComponent } from './components/admin/task-management/task-management.component';
 import { TaskEditComponent } from './components/controls/editors/task-edit/task-edit.component';
 import { TasksComponent } from './components/tasks/tasks.component';
+import { BugitemsComponent } from './components/tasks/bugitems/bugitems.component';
+import { BugitemEditComponent } from './components/controls/editors/bugitem-edit/bugitem-edit.component';
 
 @NgModule({
   declarations: [
@@ -72,7 +75,6 @@ import { TasksComponent } from './components/tasks/tasks.component';
     KeysPipe,
     DashboardComponent,
     FusionComponent,
-    ThemesComponent,
     MachinechartComponent,
     ShiftschartComponent,
     SettingsComponent,
@@ -90,7 +92,9 @@ import { TasksComponent } from './components/tasks/tasks.component';
     RoleEditComponent,
     TaskManagementComponent,
     TaskEditComponent,
-    TasksComponent
+    TasksComponent,
+    BugitemsComponent,
+    BugitemEditComponent
   ],
   imports: [
     BrowserModule,
@@ -109,7 +113,21 @@ import { TasksComponent } from './components/tasks/tasks.component';
     ToastaModule.forRoot(),
     ClarityModule,    
     FusionChartsModule,
-    CKEditorModule
+    QuillModule.forRoot({
+      modules: {
+        toolbar: [
+          [{ 'size': ['small', false, 'large', 'huge'] }], 
+          ['bold', 'italic', 'strike'],
+          ['blockquote', 'code-block'],
+          [{ 'header': 1 }, { 'header': 2 }],
+          [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+          [{ 'color': [] }, { 'background': [] }],
+          [{ 'font': [] }],
+          [{ 'align': [] }],
+          ['link', 'image', 'video'],
+        ]       
+      }
+    })
   ],
   providers: [
     { provide: 'BASE_URL', useFactory: getBaseUrl },
@@ -125,7 +143,9 @@ import { TasksComponent } from './components/tasks/tasks.component';
     ConfigurationService,  
     EndpointFactory,
     TaskService,
-    TaskEndpoint
+    TaskEndpoint,
+    BugItemService,
+    BugItemEndpoint
   ],
   exports: [
     IfTabActive

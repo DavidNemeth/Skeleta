@@ -1,4 +1,4 @@
-<clr-input-container>  
+<clr-input-container style="margin-top: 0rem !important;">  
   <input clrInput id="searchInput" #searchInput type="search" ngModel="" (ngModelChange)="onValueChange($event)" [attr.placeholder]="placeholder">
   <clr-icon *ngIf="searchInput.value" href="javascript:;" (click)="clear()" class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
 </clr-input-container>

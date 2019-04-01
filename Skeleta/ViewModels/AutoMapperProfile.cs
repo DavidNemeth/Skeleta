@@ -46,17 +46,22 @@ namespace Skeleta.ViewModels
 			CreateMap<IdentityRoleClaim<string>, PermissionViewModel>()
 				.ConvertUsing(s => Mapper.Map<PermissionViewModel>(ApplicationPermissions.GetPermissionByValue(s.ClaimValue)));
 
-			CreateMap<TaskItem, TaskViewModel>();
-
-			CreateMap<TaskViewModel, TaskItem>()
+			CreateMap<TaskItem, TaskListViewModel>();
+			CreateMap<TaskItem, TaskItemViewModel>();
+			CreateMap<TaskItemViewModel, TaskItem>()
 				 .ForMember(d => d.Developer, map => map.Ignore())
 				 .ForMember(d => d.Tester, map => map.Ignore());
 
 
-			CreateMap<BugItem, BugViewModel>()
-			.ReverseMap();
+			CreateMap<BugItem, BugitemListViewModel>()
+				.ForMember(d => d.TaskItemTitle, map => map.MapFrom(s => s.TaskItem.Title));
 
-
+			CreateMap<BugItem, BugItemViewModel>()
+				.ForMember(d => d.TaskItemTitle, map => map.MapFrom(s => s.TaskItem.Title));
+				
+			CreateMap<BugItemViewModel, BugItem>()
+				 .ForMember(d => d.Developer, map => map.Ignore())
+				 .ForMember(d => d.Tester, map => map.Ignore());
 		}
 	}
 }

@@ -15,7 +15,7 @@ var core_2 = require("@ngx-translate/core");
 var ngx_toasta_1 = require("ngx-toasta");
 var angular_1 = require("@clr/angular");
 var ng_select_1 = require("@ng-select/ng-select");
-var ckeditor5_angular_1 = require("@ckeditor/ckeditor5-angular");
+var ngx_quill_1 = require("ngx-quill");
 var angular_fusioncharts_1 = require("angular-fusioncharts");
 var core_3 = require("fusioncharts/core");
 var column2d_1 = require("fusioncharts/viz/column2d");
@@ -39,12 +39,13 @@ var account_endpoint_service_1 = require("./services/account-endpoint.service");
 var account_service_1 = require("./services/account.service");
 var taskService_1 = require("./services/tasks/taskService");
 var task_endpoint_service_1 = require("./services/tasks/task-endpoint.service");
+var bugitemService_1 = require("./services/bugItems/bugitemService");
+var bugItem_endpoint_service_1 = require("./services/bugItems/bugItem-endpoint.service");
 var app_component_1 = require("./components/app.component");
 var home_component_1 = require("./components/home/home.component");
 var login_component_1 = require("./components/login/login.component");
 var dashboard_component_1 = require("./components/dashboard/dashboard.component");
 var fusion_component_1 = require("./components/controls/charts/fusion/fusion.component");
-var themes_component_1 = require("./components/controls/themes/themes.component");
 var machinechart_component_1 = require("./components/controls/charts/machinechart/machinechart.component");
 var shiftschart_component_1 = require("./components/controls/charts/shiftschart/shiftschart.component");
 var settings_component_1 = require("./components/settings/settings.component");
@@ -63,6 +64,8 @@ var role_edit_component_1 = require("./components/controls/editors/role-edit/rol
 var task_management_component_1 = require("./components/admin/task-management/task-management.component");
 var task_edit_component_1 = require("./components/controls/editors/task-edit/task-edit.component");
 var tasks_component_1 = require("./components/tasks/tasks.component");
+var bugitems_component_1 = require("./components/tasks/bugitems/bugitems.component");
+var bugitem_edit_component_1 = require("./components/controls/editors/bugitem-edit/bugitem-edit.component");
 var AppModule = /** @class */ (function () {
     function AppModule() {
     }
@@ -76,7 +79,6 @@ var AppModule = /** @class */ (function () {
                 keys_pipe_1.KeysPipe,
                 dashboard_component_1.DashboardComponent,
                 fusion_component_1.FusionComponent,
-                themes_component_1.ThemesComponent,
                 machinechart_component_1.MachinechartComponent,
                 shiftschart_component_1.ShiftschartComponent,
                 settings_component_1.SettingsComponent,
@@ -94,7 +96,9 @@ var AppModule = /** @class */ (function () {
                 role_edit_component_1.RoleEditComponent,
                 task_management_component_1.TaskManagementComponent,
                 task_edit_component_1.TaskEditComponent,
-                tasks_component_1.TasksComponent
+                tasks_component_1.TasksComponent,
+                bugitems_component_1.BugitemsComponent,
+                bugitem_edit_component_1.BugitemEditComponent
             ],
             imports: [
                 platform_browser_1.BrowserModule,
@@ -113,7 +117,21 @@ var AppModule = /** @class */ (function () {
                 ngx_toasta_1.ToastaModule.forRoot(),
                 angular_1.ClarityModule,
                 angular_fusioncharts_1.FusionChartsModule,
-                ckeditor5_angular_1.CKEditorModule
+                ngx_quill_1.QuillModule.forRoot({
+                    modules: {
+                        toolbar: [
+                            [{ 'size': ['small', false, 'large', 'huge'] }],
+                            ['bold', 'italic', 'strike'],
+                            ['blockquote', 'code-block'],
+                            [{ 'header': 1 }, { 'header': 2 }],
+                            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                            [{ 'color': [] }, { 'background': [] }],
+                            [{ 'font': [] }],
+                            [{ 'align': [] }],
+                            ['link', 'image', 'video'],
+                        ]
+                    }
+                })
             ],
             providers: [
                 { provide: 'BASE_URL', useFactory: getBaseUrl },
@@ -129,7 +147,9 @@ var AppModule = /** @class */ (function () {
                 configuration_service_1.ConfigurationService,
                 endpoint_factory_service_1.EndpointFactory,
                 taskService_1.TaskService,
-                task_endpoint_service_1.TaskEndpoint
+                task_endpoint_service_1.TaskEndpoint,
+                bugitemService_1.BugItemService,
+                bugItem_endpoint_service_1.BugItemEndpoint
             ],
             exports: [
                 if_tab_active_directive_1.IfTabActive

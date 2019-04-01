@@ -21,6 +21,9 @@ var TaskService = /** @class */ (function () {
         this.taskEndpoint = taskEndpoint;
         this.authService = authService;
     }
+    TaskService.prototype.GetTask = function (taskId) {
+        return this.taskEndpoint.getTaskEndpoint(taskId);
+    };
     TaskService.prototype.GetAllTask = function () {
         return this.taskEndpoint.getAllEndpoint();
     };

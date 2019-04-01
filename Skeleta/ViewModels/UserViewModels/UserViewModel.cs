@@ -36,11 +36,11 @@ namespace Skeleta.ViewModels.UserViewModels
 		[MinimumCount(1, ErrorMessage = "Roles cannot be empty")]
 		public string[] Roles { get; set; }
 
-		public virtual ICollection<TaskViewModel> DeveloperTaskItems { get; set; }
-		public virtual ICollection<TaskViewModel> TesterTaskItems { get; set; }
+		public virtual ICollection<TaskItemViewModel> DeveloperTaskItems { get; set; }
+		public virtual ICollection<TaskItemViewModel> TesterTaskItems { get; set; }
 
-		public virtual ICollection<BugViewModel> DeveloperBugItems { get; set; }
-		public virtual ICollection<BugViewModel> TesterBugItems { get; set; }
+		public virtual ICollection<BugItemViewModel> DeveloperBugItems { get; set; }
+		public virtual ICollection<BugItemViewModel> TesterBugItems { get; set; }
 
 	}
 }

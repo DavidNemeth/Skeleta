@@ -10,9 +10,9 @@ namespace DAL.Models.TaskModel
 		public int Id { get; set; }
 
 		[Required]
+		[MaxLength(100)]
 		public string Title { get; set; }
 		public string Description { get; set; }
-		public string Comment { get; set; }
 		public Priority Priority { get; set; }
 		public Status Status { get; set; }
 

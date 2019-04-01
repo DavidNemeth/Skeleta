@@ -7,7 +7,7 @@ using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using Skeleta.ViewModels.WorkItemViewModels;
 
-namespace Skeleta.Services
+namespace Skeleta.Services.WorkItemServices
 {
 	public class TaskService : ITaskService
 	{
@@ -17,57 +17,58 @@ namespace Skeleta.Services
 			this.context = context;
 		}
 
-		public async Task<IEnumerable<TaskViewModel>> GetAllClosedTask()
+		public async Task<IEnumerable<TaskListViewModel>> GetAllClosedTask()
 		{
 			var query = context.TaskItems
 				.Where(t => t.Status == Status.Closed);
 
 			return await query
-				.ProjectTo<TaskViewModel>().ToListAsync();
+				.ProjectTo<TaskListViewModel>().ToListAsync();
 		}
 
-		public async Task<IEnumerable<TaskViewModel>> GetAllCompletedTask()
+		public async Task<IEnumerable<TaskListViewModel>> GetAllCompletedTask()
 		{
 			var query = context.TaskItems
 				.Where(t => t.Status == Status.Completed);
 
 			return await query
-				.ProjectTo<TaskViewModel>().ToListAsync();
+				.ProjectTo<TaskListViewModel>().ToListAsync();
 		}
 
-		public async Task<IEnumerable<TaskViewModel>> GetAllPendingTask()
+		public async Task<IEnumerable<TaskListViewModel>> GetAllPendingTask()
 		{
 			var query = context.TaskItems
 				.Where(t => t.Status == Status.New || t.Status == Status.Active);
 
 			return await query
-				.ProjectTo<TaskViewModel>().ToListAsync();
+				.ProjectTo<TaskListViewModel>().ToListAsync();
 		}
 
-		public async Task<IEnumerable<TaskViewModel>> GetAllResolvedTask()
+		public async Task<IEnumerable<TaskListViewModel>> GetAllResolvedTask()
 		{
 			var query = context.TaskItems
 				.Where(t => t.Status == Status.Resolved);
 
 			return await query
-				.ProjectTo<TaskViewModel>().ToListAsync();
+				.ProjectTo<TaskListViewModel>().ToListAsync();
 		}
 
-		public async Task<IEnumerable<TaskViewModel>> GetAllTask()
+		public async Task<IEnumerable<TaskListViewModel>> GetAllTask()
 		{
-			var query = context.TaskItems;
+			var query = context.TaskItems
+				.Where(t => t.Status != Status.Closed);
 
 			return await query
-				.ProjectTo<TaskViewModel>().ToListAsync();
+				.ProjectTo<TaskListViewModel>().ToListAsync();
 		}
 
-		public async Task<TaskViewModel> GetById(int id)
+		public async Task<TaskItemViewModel> GetById(int id)
 		{
 			var query = context.TaskItems
 				.Where(x=>x.Id == id);
 
 			return await query
-				.ProjectTo<TaskViewModel>().FirstOrDefaultAsync();
+				.ProjectTo<TaskItemViewModel>().FirstOrDefaultAsync();
 		}
 
 	}

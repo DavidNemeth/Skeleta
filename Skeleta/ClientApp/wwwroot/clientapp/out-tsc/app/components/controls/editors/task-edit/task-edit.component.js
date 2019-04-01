@@ -18,7 +18,6 @@ var taskService_1 = require("../../../../services/tasks/taskService");
 var task_model_1 = require("../../../../services/tasks/task.model");
 var enum_1 = require("../../../../models/enum");
 var account_service_1 = require("../../../../services/account.service");
-var ClassicEditor = require("@ckeditor/ckeditor5-build-classic");
 var TaskEditComponent = /** @class */ (function () {
     function TaskEditComponent(translationService, alertService, formBuilder, taskService, accountService) {
         var _this = this;
@@ -35,7 +34,6 @@ var TaskEditComponent = /** @class */ (function () {
         this.isNewTask = false;
         this.allStatus = Object.keys(enum_1.Status).slice();
         this.allPriority = Object.keys(enum_1.Priority).slice();
-        this.description = ClassicEditor;
         this.initialTask = new task_model_1.Task();
         this.tasksToDelete = [];
         this.users = [];
@@ -43,6 +41,7 @@ var TaskEditComponent = /** @class */ (function () {
         this.updateStatus = new core_1.EventEmitter();
         this.updateData = new core_1.EventEmitter();
         this.deleteData = new core_1.EventEmitter();
+        this.openClose = new core_1.EventEmitter();
     }
     TaskEditComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -53,7 +52,7 @@ var TaskEditComponent = /** @class */ (function () {
     TaskEditComponent.prototype.loadForm = function () {
         this.taskForm = this.formBuilder.group({
             title: ['', forms_1.Validators.required],
-            description: new forms_1.FormControl(this.Edit),
+            description: [''],
             comment: [''],
             priority: ['High', forms_1.Validators.required],
             status: ['New', forms_1.Validators.required],
@@ -61,15 +60,12 @@ var TaskEditComponent = /** @class */ (function () {
             testerId: [this.currentUser.id]
         });
     };
-    TaskEditComponent.prototype.openChange = function (value) {
-        if (value) {
-        }
-        else {
-            this.isNewTask = false;
-            this.openModal = false;
-            this.loadForm();
-            this.alertService.resetStickyMessage();
-        }
+    TaskEditComponent.prototype.close = function () {
+        this.isOpen = false;
+        this.openClose.emit();
+        this.isNewTask = false;
+        this.loadForm();
+        this.alertService.resetStickyMessage();
     };
     TaskEditComponent.prototype.save = function () {
         var _this = this;
@@ -84,14 +80,13 @@ var TaskEditComponent = /** @class */ (function () {
     };
     TaskEditComponent.prototype.saveSuccessHelper = function () {
         Object.assign(this.initialTask, this.taskEdit);
-        //this.initialTask.assignedTo = this.users.find(u => u.id == this.taskEdit.assignedTo.id);
         this.updateData.emit(this.initialTask);
         if (this.isNewTask)
             this.alertService.showMessage(this.gT('toasts.saved'), "Task added!", alert_service_1.MessageSeverity.success);
         else
             this.alertService.showMessage(this.gT('toasts.saved'), "Task modified!", alert_service_1.MessageSeverity.success);
         this.submitBtnState = angular_1.ClrLoadingState.SUCCESS;
-        this.openModal = false;
+        this.close();
     };
     TaskEditComponent.prototype.saveFailedHelper = function (error) {
         this.submitBtnState = angular_1.ClrLoadingState.ERROR;
@@ -106,25 +101,31 @@ var TaskEditComponent = /** @class */ (function () {
         }
     };
     TaskEditComponent.prototype.Create = function () {
-        this.openModal = true;
+        this.submitBtnState = angular_1.ClrLoadingState.DEFAULT;
         this.isNewTask = true;
         this.actionTitle = "Add";
         this.initialTask = new task_model_1.Task();
         this.taskEdit = new task_model_1.Task();
     };
-    TaskEditComponent.prototype.Edit = function (task) {
-        if (task) {
-            this.openModal = true;
-            this.isNewTask = false;
-            this.actionTitle = "Edit";
-            this.initialTask = new task_model_1.Task();
-            Object.assign(this.initialTask, task);
-            this.taskEdit = new task_model_1.Task;
-            Object.assign(this.taskEdit, task);
-            this.taskForm.patchValue(this.taskEdit);
+    TaskEditComponent.prototype.Edit = function (taskid) {
+        var _this = this;
+        if (taskid) {
+            this.taskService.GetTask(taskid).subscribe(function (response) {
+                _this.initialTask = new task_model_1.Task();
+                Object.assign(_this.initialTask, response);
+                _this.taskEdit = new task_model_1.Task;
+                Object.assign(_this.taskEdit, response);
+                _this.submitBtnState = angular_1.ClrLoadingState.DEFAULT;
+                _this.isNewTask = false;
+                _this.actionTitle = "Edit";
+                _this.taskForm.patchValue(_this.taskEdit);
+            }, function (error) {
+                console.log(error);
+                _this.Create();
+            });
         }
         else {
-            return this.Create();
+            this.Create();
         }
     };
     TaskEditComponent.prototype.MarkActive = function (task) {
@@ -188,26 +189,29 @@ var TaskEditComponent = /** @class */ (function () {
         if (this.tasksToDelete != null) {
             this.taskService.DeleteRangeTasks(this.tasksToDelete).subscribe(function (response) {
                 _this.deleteData.emit(_this.tasksToDelete);
+                _this.deleteBtnState = angular_1.ClrLoadingState.SUCCESS;
                 _this.deleteOpen = false;
                 _this.alertService.showMessage(_this.gT('toasts.saved'), _this.tasksToDelete.length + " record Deleted!", alert_service_1.MessageSeverity.success);
-                _this.deleteBtnState = angular_1.ClrLoadingState.SUCCESS;
             });
         }
         if (this.taskToDelete != null) {
-            this.taskService.DeleteTask(this.taskToDelete).subscribe(function (response) {
-                _this.tasksToDelete = [];
-                _this.tasksToDelete.push(_this.taskToDelete);
-                _this.deleteData.emit(_this.tasksToDelete);
-                _this.deleteOpen = false;
-                _this.alertService.showMessage(_this.gT('toasts.saved'), _this.tasksToDelete.length + " record Deleted!", alert_service_1.MessageSeverity.success);
+            this.taskToDelete.status = enum_1.Status.Closed;
+            this.taskService.UpdateTask(this.taskToDelete).subscribe(function (response) {
+                _this.alertService.showMessage(_this.gT('toasts.saved'), "Record Deleted!", alert_service_1.MessageSeverity.success);
+                _this.popData.emit(_this.taskToDelete);
                 _this.deleteBtnState = angular_1.ClrLoadingState.SUCCESS;
-            });
+                _this.deleteOpen = false;
+            }, function (error) { return _this.alertService.showMessage(error, null, alert_service_1.MessageSeverity.error); });
         }
     };
     __decorate([
         core_1.ViewChild(angular_1.ClrForm),
         __metadata("design:type", Object)
     ], TaskEditComponent.prototype, "clrForm", void 0);
+    __decorate([
+        core_1.Input(),
+        __metadata("design:type", Boolean)
+    ], TaskEditComponent.prototype, "isOpen", void 0);
     __decorate([
         core_1.Output(),
         __metadata("design:type", Object)
@@ -224,6 +228,10 @@ var TaskEditComponent = /** @class */ (function () {
         core_1.Output(),
         __metadata("design:type", Object)
     ], TaskEditComponent.prototype, "deleteData", void 0);
+    __decorate([
+        core_1.Output(),
+        __metadata("design:type", Object)
+    ], TaskEditComponent.prototype, "openClose", void 0);
     TaskEditComponent = __decorate([
         core_1.Component({
             selector: 'app-task-edit',

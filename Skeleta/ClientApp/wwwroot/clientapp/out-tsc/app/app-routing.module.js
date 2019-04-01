@@ -27,6 +27,7 @@ var smart_admin_component_1 = require("./components/admin/smart-admin/smart-admi
 var admin_component_1 = require("./components/admin/admin.component");
 var task_management_component_1 = require("./components/admin/task-management/task-management.component");
 var tasks_component_1 = require("./components/tasks/tasks.component");
+var bugitems_component_1 = require("./components/tasks/bugitems/bugitems.component");
 var routes = [
     { path: '', component: home_component_1.HomeComponent, canActivate: [auth_guard_service_1.AuthGuard], data: { title: 'Home' } },
     { path: 'login', component: login_component_1.LoginComponent, data: { title: 'Login' } },
@@ -57,7 +58,8 @@ var routes = [
     {
         path: 'tasks', component: tasks_component_1.TasksComponent, canActivate: [auth_guard_service_1.AuthGuard], data: { title: 'Settings' }, children: [
             { path: '', component: smart_admin_component_1.SmartAdminComponent, data: { title: 'Smart Panel' } },
-            { path: 'tasks', component: task_management_component_1.TaskManagementComponent, data: { title: 'Tasks' } }
+            { path: 'tasks', component: task_management_component_1.TaskManagementComponent, data: { title: 'Tasks' } },
+            { path: 'bugs', component: bugitems_component_1.BugitemsComponent, data: { title: 'Bugs' } }
         ]
     }
 ];

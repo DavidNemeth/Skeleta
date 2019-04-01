@@ -175,7 +175,8 @@ namespace Skeleta.Migrations
                     b.Property<string>("TesterId");
 
                     b.Property<string>("Title")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasMaxLength(100);
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(256);
@@ -199,8 +200,6 @@ namespace Skeleta.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Comment");
-
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(256);
 
@@ -219,7 +218,8 @@ namespace Skeleta.Migrations
                     b.Property<string>("TesterId");
 
                     b.Property<string>("Title")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasMaxLength(100);
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(256);
