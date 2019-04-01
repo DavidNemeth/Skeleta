@@ -50,16 +50,19 @@ export class BugItemEndpoint extends EndpointFactory {
       }));
   }
 
-  getAllEndpoint<T>(): Observable<T> {
-    const endpointUrl = this.allUrl;
+  getAllEndpoint<T>(taskid?: number): Observable<T> {
+    const endpointUrl = taskid != null ? `${this.allUrl}/${taskid}` : this.allUrl;
+
     return this.http.get<T>(endpointUrl, this.getRequestHeaders()).pipe<T>(
       catchError(error => {
         return this.handleError(error, () => this.getAllEndpoint());
       }));
   }
 
-  getPendingEndpoint<T>(): Observable<T> {
-    const endpointUrl = this.pendingUrl;
+  getPendingEndpoint<T>(taskid?: number): Observable<T> {
+    console.log(taskid != null ? `${this.pendingUrl}/${taskid}` : this.pendingUrl)
+
+    const endpointUrl = taskid != null ? `${this.pendingUrl}/${taskid}` : this.pendingUrl;
 
     return this.http.get<T>(endpointUrl, this.getRequestHeaders()).pipe<T>(
       catchError(error => {
@@ -67,8 +70,8 @@ export class BugItemEndpoint extends EndpointFactory {
       }));
   }
 
-  getResolvedEndpoint<T>(): Observable<T> {
-    const endpointUrl = this.resolvedUrl;
+  getResolvedEndpoint<T>(taskid?: number): Observable<T> {
+    const endpointUrl = taskid != null ? `${this.resolvedUrl}/${taskid}` : this.resolvedUrl;
 
     return this.http.get<T>(endpointUrl, this.getRequestHeaders()).pipe<T>(
       catchError(error => {
@@ -76,8 +79,8 @@ export class BugItemEndpoint extends EndpointFactory {
       }));
   }
 
-  getClosedEndpoint<T>(): Observable<T> {
-    const endpointUrl = this.closedUrl;
+  getClosedEndpoint<T>(taskid?: number): Observable<T> {
+    const endpointUrl = taskid != null ? `${this.closedUrl}/${taskid}` : this.closedUrl;
 
     return this.http.get<T>(endpointUrl, this.getRequestHeaders()).pipe<T>(
       catchError(error => {

@@ -38,42 +38,39 @@ namespace Skeleta.Controllers
 		}
 
 		// GET: api/values
-		[HttpGet("all")]
+		[HttpGet("all/{taskid}")]
 		[ProducesResponseType(200, Type = typeof(IEnumerable<BugitemListViewModel>))]
-		public async Task<IActionResult> GetAll()
+		public async Task<IActionResult> GetAll(int? taskid)
 		{
-			return Ok(await bugitemService.GetAllBug());
+			return Ok(await bugitemService.GetAllBug(taskid));
 		}
 
 		// GET: api/values
-		[HttpGet("pending")]
+		[HttpGet("pending/{taskid}")]
 		[Authorize(Authorization.Policies.ViewAllTasksPolicy)]
 		[ProducesResponseType(200, Type = typeof(IEnumerable<BugitemListViewModel>))]
-		public async Task<IActionResult> GetPending()
+		public async Task<IActionResult> GetPending(int? taskid)
 		{
 			if (!(await authorizationService.AuthorizeAsync(this.User, "", TaskManagementOperations.Read)).Succeeded)
 				return new ChallengeResult();
 
-			var pendingBugs = await bugitemService.GetAllPendingBug();
-			return Ok(pendingBugs);
+			return Ok(await bugitemService.GetAllPendingBug(taskid));
 		}
 
 		// GET: api/values
-		[HttpGet("closed")]
+		[HttpGet("closed/{taskid}")]
 		[ProducesResponseType(200, Type = typeof(IEnumerable<BugitemListViewModel>))]
-		public async Task<IActionResult> GetClosed()
+		public async Task<IActionResult> GetClosed(int? taskid)
 		{
-			var closedBugs = await bugitemService.GetAllClosedBug();
-			return Ok(closedBugs);
+			return Ok(await bugitemService.GetAllClosedBug(taskid));
 		}
 
 		// GET: api/values
-		[HttpGet("resolved")]
+		[HttpGet("resolved/{taskid}")]
 		[ProducesResponseType(200, Type = typeof(IEnumerable<BugitemListViewModel>))]
-		public async Task<IActionResult> GetResolved()
+		public async Task<IActionResult> GetResolved(int? taskid)
 		{
-			var resolvedBugs = await bugitemService.GetAllResolvedBug();
-			return Ok(resolvedBugs);
+			return Ok(await bugitemService.GetAllResolvedBug(taskid));
 		}
 
 		// GET api/values/5

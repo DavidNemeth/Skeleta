@@ -30,17 +30,17 @@ var BugItemService = /** @class */ (function () {
     BugItemService.prototype.UpdateItem = function (bug) {
         return this.bugItemEndpoint.getUpdateEndpoint(bug, bug.id);
     };
-    BugItemService.prototype.GetAllBugItem = function () {
-        return this.bugItemEndpoint.getAllEndpoint();
+    BugItemService.prototype.GetAllBugItem = function (taskId) {
+        return this.bugItemEndpoint.getAllEndpoint(taskId);
     };
-    BugItemService.prototype.GetPendingBugs = function () {
-        return this.bugItemEndpoint.getPendingEndpoint();
+    BugItemService.prototype.GetPendingBugs = function (taskId) {
+        return this.bugItemEndpoint.getPendingEndpoint(taskId);
     };
-    BugItemService.prototype.GetResolvedBugs = function () {
-        return this.bugItemEndpoint.getResolvedEndpoint();
+    BugItemService.prototype.GetResolvedBugs = function (taskId) {
+        return this.bugItemEndpoint.getResolvedEndpoint(taskId);
     };
-    BugItemService.prototype.GetClosedBugs = function () {
-        return this.bugItemEndpoint.getClosedEndpoint();
+    BugItemService.prototype.GetClosedBugs = function (taskId) {
+        return this.bugItemEndpoint.getClosedEndpoint(taskId);
     };
     BugItemService = __decorate([
         core_1.Injectable(),

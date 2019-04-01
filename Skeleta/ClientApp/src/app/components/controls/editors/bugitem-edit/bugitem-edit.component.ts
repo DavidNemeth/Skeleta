@@ -32,9 +32,8 @@ export class BugitemEditComponent implements OnInit {
   users: User[] = [];
   tasks: Task[] = [];
   currentUser: User;
-
+  taskId: number;
   @ViewChild(ClrForm) clrForm;
-
   @Input() isOpen: boolean;
   @Output() popData = new EventEmitter<BugItem>();
   @Output() updateData = new EventEmitter<BugItem>();
@@ -62,10 +61,15 @@ export class BugitemEditComponent implements OnInit {
       description: [''],
       status: ['New', Validators.required],
       developerId: [this.currentUser.id],
-      testerId: [this.currentUser.id],
-      taskItemId: ['']
+      testerId: [this.currentUser.id]
     });
   }
+
+  onOpen(event) {
+    this.close();
+  }
+
+  
 
   private close() {
     this.isOpen = false;
@@ -115,12 +119,13 @@ export class BugitemEditComponent implements OnInit {
     }
   }
 
-  Create() {
+  Create(taskId: number) {
     this.submitBtnState = ClrLoadingState.DEFAULT;
     this.isNewItem = true;
     this.actionTitle = "Add";
     this.initialItem = new BugItem();
     this.itemEdit = new BugItem();
+    this.itemEdit.taskItemId = taskId;
   }
 
   Edit(itemid: number) {
@@ -135,11 +140,10 @@ export class BugitemEditComponent implements OnInit {
         this.actionTitle = "Edit";
         this.bugForm.patchValue(this.itemEdit);
       },
-        error =>
-          this.Create());
+        error => this.alertService.showMessage(error, null, MessageSeverity.error));
     }
     else {
-      this.Create();
+      this.alertService.showMessage("error no item found", null, MessageSeverity.error);
     }
   }
 

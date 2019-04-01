@@ -60,6 +60,7 @@ var TaskEditComponent = /** @class */ (function () {
         });
     };
     TaskEditComponent.prototype.close = function () {
+        this.isEdit = false;
         this.isOpen = false;
         this.openClose.emit();
         this.isNewTask = false;
@@ -100,6 +101,7 @@ var TaskEditComponent = /** @class */ (function () {
         }
     };
     TaskEditComponent.prototype.Create = function () {
+        this.isEdit = false;
         this.submitBtnState = angular_1.ClrLoadingState.DEFAULT;
         this.isNewTask = true;
         this.actionTitle = "Add";
@@ -109,6 +111,8 @@ var TaskEditComponent = /** @class */ (function () {
     TaskEditComponent.prototype.Edit = function (taskid) {
         var _this = this;
         if (taskid) {
+            this.isEdit = true;
+            this.taskId = taskid;
             this.taskService.GetTask(taskid).subscribe(function (response) {
                 _this.initialTask = new task_model_1.Task();
                 Object.assign(_this.initialTask, response);

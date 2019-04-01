@@ -40,7 +40,7 @@ var BugitemsComponent = /** @class */ (function () {
     };
     BugitemsComponent.prototype.onAdd = function () {
         this.sourceBug = null;
-        this.bugEdit.Create();
+        this.bugEdit.Create(this.taskId);
         this.isOpen = true;
     };
     BugitemsComponent.prototype.onEdit = function (bug) {
@@ -53,28 +53,28 @@ var BugitemsComponent = /** @class */ (function () {
     };
     BugitemsComponent.prototype.loadData = function () {
         if (this.PendingActive) {
-            this.loadPending();
+            this.loadPending(this.taskId);
         }
         if (this.ResolvedActive) {
-            this.loadResolved();
+            this.loadResolved(this.taskId);
         }
     };
-    BugitemsComponent.prototype.loadPending = function () {
+    BugitemsComponent.prototype.loadPending = function (taskId) {
         var _this = this;
         this.bugs = [];
         this.bugsCache = [];
         this.alertService.startLoadingMessage();
         this.loadingIndicator = true;
-        this.bugitemService.GetPendingBugs()
+        this.bugitemService.GetPendingBugs(taskId)
             .subscribe(function (results) { return _this.onDataLoadSuccessful(results); }, function (error) { return _this.onDataLoadFailed(error); });
     };
-    BugitemsComponent.prototype.loadResolved = function () {
+    BugitemsComponent.prototype.loadResolved = function (taskId) {
         var _this = this;
         this.bugs = [];
         this.bugsCache = [];
         this.alertService.startLoadingMessage();
         this.loadingIndicator = true;
-        this.bugitemService.GetResolvedBugs()
+        this.bugitemService.GetResolvedBugs(taskId)
             .subscribe(function (results) { return _this.onDataLoadSuccessful(results); }, function (error) { return _this.onDataLoadFailed(error); });
     };
     BugitemsComponent.prototype.onDataLoadSuccessful = function (bugs) {
@@ -101,6 +101,10 @@ var BugitemsComponent = /** @class */ (function () {
     BugitemsComponent.prototype.closeTab = function () {
         this.isOpen = false;
     };
+    __decorate([
+        core_1.Input(),
+        __metadata("design:type", Number)
+    ], BugitemsComponent.prototype, "taskId", void 0);
     __decorate([
         core_1.ViewChild(bugitem_edit_component_1.BugitemEditComponent),
         __metadata("design:type", Object)

@@ -57,8 +57,11 @@ var BugitemEditComponent = /** @class */ (function () {
             status: ['New', forms_1.Validators.required],
             developerId: [this.currentUser.id],
             testerId: [this.currentUser.id],
-            taskItemId: ['']
+            taskItemId: [this.taskId]
         });
+    };
+    BugitemEditComponent.prototype.onOpen = function (event) {
+        this.close();
     };
     BugitemEditComponent.prototype.close = function () {
         this.isOpen = false;
@@ -100,7 +103,8 @@ var BugitemEditComponent = /** @class */ (function () {
             this.bugForm.patchValue(this.initialItem);
         }
     };
-    BugitemEditComponent.prototype.Create = function () {
+    BugitemEditComponent.prototype.Create = function (taskId) {
+        this.taskId = taskId;
         this.submitBtnState = angular_1.ClrLoadingState.DEFAULT;
         this.isNewItem = true;
         this.actionTitle = "Add";
@@ -119,12 +123,10 @@ var BugitemEditComponent = /** @class */ (function () {
                 _this.isNewItem = false;
                 _this.actionTitle = "Edit";
                 _this.bugForm.patchValue(_this.itemEdit);
-            }, function (error) {
-                return _this.Create();
-            });
+            }, function (error) { return _this.alertService.showMessage(error, null, alert_service_1.MessageSeverity.error); });
         }
         else {
-            this.Create();
+            this.alertService.showMessage("error no item found", null, alert_service_1.MessageSeverity.error);
         }
     };
     BugitemEditComponent.prototype.MarkActive = function (item) {

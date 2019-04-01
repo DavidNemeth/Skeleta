@@ -1,11 +1,11 @@
 <div class="maxwidth">
   <app-bugitem-edit [isOpen]="isOpen" (openClose)="closeTab($event)" (updateData)="updateList($event)" (popData)="popItem($event)" (updateStatus)="updateStatus($event)" (deleteData)="deleteList($event)"></app-bugitem-edit>
-  <clr-datagrid *ngIf="isOpen===false" class="datagrid-compact">
+  <clr-datagrid class="datagrid-compact">
     <clr-dg-action-bar>
       <div style="margin-right: 0rem; margin-left: 0rem;" class="clr-row clr-justify-content-between">
         <div class="btn-group btn-sm">
-          <button type="button" class="btn btn-icon btn-warning" (click)="onAdd()">
-            <clr-icon shape="plus"></clr-icon> Create Bug
+          <button type="button" class="btn btn-icon btn-outline-warning" (click)="onAdd()">
+           Register a Bug
           </button>
         </div>
         <div class="btn-group">

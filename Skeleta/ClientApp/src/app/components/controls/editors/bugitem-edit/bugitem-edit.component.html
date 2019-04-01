@@ -1,6 +1,16 @@
-<clr-modal [(clrModalOpen)]="isOpen" [clrModalStaticBackdrop]="false">
-
+<clr-modal [(clrModalOpen)]="isOpen" (clrModalOpenChange)=onOpen($event) [clrModalStaticBackdrop]="false" [clrModalSize]="'lg'">
   <form *ngIf="isOpen" class="clr-form modal-body" autocomplete="off" [formGroup]="bugForm" (ngSubmit)="save()">
+
+    <div class="clr-form-control">
+      <div class="clr-control-container">
+        <div class="clr-select-wrapper">
+          <select class="clr-select" formControlName="status">
+            <option *ngFor="let status of allStatus" [value]="status">{{status}}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
     <div class="clr-row">
       <div class="clr-form-control clr-col">
         <label class="clr-control-label">{{'general.management.Title' | translate}}</label>
@@ -33,21 +43,11 @@
     </div>
 
     <div class="clr-form-control">
-      <label for="example" class="clr-control-label">{{'general.management.Description' | translate}}</label>
       <quill-editor [style]="{height: '200px'}" style="width: 100%;" formControlName="description"></quill-editor>
       <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
     </div>
-
-    <div class="clr-row">
-      <div class="clr-form-control">
-        <button [clrLoading]="submitBtnState" type="submit" [disabled]="bugForm.invalid" class="btn btn-primary">{{actionTitle}}</button>
-      </div>
-      <div class="clr-form-control">
-      </div>
-    </div>
-
-    <div class="modal-footer">
-      <button type="button" (click)="close()" class="btn btn-sm btn-link">{{'general.management.Cancel' | translate}}</button>
+    <div class="card-footer">
+      <button [clrLoading]="submitBtnState" type="submit" [disabled]="bugForm.invalid" class="btn btn-primary">{{actionTitle}}</button>
       <button type="button" (click)="resetForm()" class="btn btn-sm btn-link">Reset</button>
     </div>
   </form>

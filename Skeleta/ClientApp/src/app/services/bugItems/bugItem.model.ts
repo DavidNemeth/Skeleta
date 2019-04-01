@@ -5,9 +5,9 @@ import { Task } from "../tasks/task.model";
 export class BugItem {
 
   constructor(title?: string, description?: string, status?: Status, id?: number,
-    developer?: User, developerId?: string,
-    tester?: User, testerId?: string,
-    taskItemTitle?: string, taskItemId?: string) {
+    developer?: User, developerId?: number,
+    tester?: User, testerId?: number,
+    taskItemTitle?: string, taskItemId?: number) {
 
     this.id = id;
 
@@ -31,11 +31,11 @@ export class BugItem {
   public status: Status;
 
   public developer: User
-  public developerId: string;
+  public developerId: number;
 
   public tester: User;
-  public testerId: string;
+  public testerId: number;
 
   public taskItemTitle: string;
-  public taskItemId: string;
+  public taskItemId: number;
 }

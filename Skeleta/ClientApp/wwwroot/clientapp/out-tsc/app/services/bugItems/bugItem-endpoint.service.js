@@ -83,30 +83,31 @@ var BugItemEndpoint = /** @class */ (function (_super) {
             return _this.handleError(error, function () { return _this.getUpdateEndpoint(bugitemObject); });
         }));
     };
-    BugItemEndpoint.prototype.getAllEndpoint = function () {
+    BugItemEndpoint.prototype.getAllEndpoint = function (taskid) {
         var _this = this;
-        var endpointUrl = this.allUrl;
+        var endpointUrl = taskid != null ? this.allUrl + "/" + taskid : this.allUrl;
         return this.http.get(endpointUrl, this.getRequestHeaders()).pipe(operators_1.catchError(function (error) {
             return _this.handleError(error, function () { return _this.getAllEndpoint(); });
         }));
     };
-    BugItemEndpoint.prototype.getPendingEndpoint = function () {
+    BugItemEndpoint.prototype.getPendingEndpoint = function (taskid) {
         var _this = this;
-        var endpointUrl = this.pendingUrl;
+        console.log(taskid != null ? this.pendingUrl + "/" + taskid : this.pendingUrl);
+        var endpointUrl = taskid != null ? this.pendingUrl + "/" + taskid : this.pendingUrl;
         return this.http.get(endpointUrl, this.getRequestHeaders()).pipe(operators_1.catchError(function (error) {
             return _this.handleError(error, function () { return _this.getPendingEndpoint(); });
         }));
     };
-    BugItemEndpoint.prototype.getResolvedEndpoint = function () {
+    BugItemEndpoint.prototype.getResolvedEndpoint = function (taskid) {
         var _this = this;
-        var endpointUrl = this.resolvedUrl;
+        var endpointUrl = taskid != null ? this.resolvedUrl + "/" + taskid : this.resolvedUrl;
         return this.http.get(endpointUrl, this.getRequestHeaders()).pipe(operators_1.catchError(function (error) {
             return _this.handleError(error, function () { return _this.getResolvedEndpoint(); });
         }));
     };
-    BugItemEndpoint.prototype.getClosedEndpoint = function () {
+    BugItemEndpoint.prototype.getClosedEndpoint = function (taskid) {
         var _this = this;
-        var endpointUrl = this.closedUrl;
+        var endpointUrl = taskid != null ? this.closedUrl + "/" + taskid : this.closedUrl;
         return this.http.get(endpointUrl, this.getRequestHeaders()).pipe(operators_1.catchError(function (error) {
             return _this.handleError(error, function () { return _this.getClosedEndpoint(); });
         }));

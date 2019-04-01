@@ -1,7 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var BugItem = /** @class */ (function () {
-    function BugItem(title, description, status, developer, developerId, tester, testerId, taskItemTitle, taskItemId) {
+    function BugItem(title, description, status, id, developer, developerId, tester, testerId, taskItemTitle, taskItemId) {
+        this.id = id;
         this.title = title;
         this.description = description;
         this.status = status;

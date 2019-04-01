@@ -17,37 +17,46 @@ namespace Skeleta.Services.WorkItemServices
 			this.context = context;
 		}
 
-		public async Task<IEnumerable<BugitemListViewModel>> GetAllBug()
+		public async Task<IEnumerable<BugitemListViewModel>> GetAllBug(int? taskid)
 		{
+			
 			var query = context.BugItems
 				.Where(b => b.Status != Status.Closed);
+
+			query = taskid != null ? query.Where(x => x.TaskItemId == taskid) : query;
 
 			return await query
 				.ProjectTo<BugitemListViewModel>().ToListAsync();
 		}
 
-		public async Task<IEnumerable<BugitemListViewModel>> GetAllClosedBug()
+		public async Task<IEnumerable<BugitemListViewModel>> GetAllClosedBug(int? taskid)
 		{
 			var query = context.BugItems
 				.Where(b => b.Status == Status.Closed);
 
+			query = taskid != null ? query.Where(x => x.TaskItemId == taskid) : query;
+
 			return await query
 				.ProjectTo<BugitemListViewModel>().ToListAsync();
 		}
 
-		public async Task<IEnumerable<BugitemListViewModel>> GetAllPendingBug()
+		public async Task<IEnumerable<BugitemListViewModel>> GetAllPendingBug(int? taskid)
 		{
 			var query = context.BugItems
 					.Where(t => t.Status == Status.New || t.Status == Status.Active);
 
+			query = taskid != null ? query.Where(x => x.TaskItemId == taskid) : query;
+
 			return await query
 				.ProjectTo<BugitemListViewModel>().ToListAsync();
 		}
 
-		public async Task<IEnumerable<BugitemListViewModel>> GetAllResolvedBug()
+		public async Task<IEnumerable<BugitemListViewModel>> GetAllResolvedBug(int? taskid)
 		{
 			var query = context.BugItems
 				.Where(t => t.Status == Status.Resolved);
+
+			query = taskid != null ? query.Where(x => x.TaskItemId == taskid) : query;
 
 			return await query
 				.ProjectTo<BugitemListViewModel>().ToListAsync();

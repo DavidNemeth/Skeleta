@@ -26,7 +26,6 @@ export class TaskEditComponent implements OnInit {
   private isNewTask = false;
   private allStatus = [...Object.keys(Status)];
   private allPriority = [...Object.keys(Priority)];
-
   initialTask: Task = new Task();
   taskEdit: Task;
   private tasksToDelete: Task[] = [];
@@ -34,7 +33,7 @@ export class TaskEditComponent implements OnInit {
   taskForm: FormGroup;
   users: User[] = [];
   currentUser: User;
-
+  isEdit: boolean;
   @ViewChild(ClrForm) clrForm;
 
   @Input() isOpen: boolean;
@@ -53,7 +52,7 @@ export class TaskEditComponent implements OnInit {
       users => this.users = users
     );
     this.currentUser = this.accountService.currentUser;
-    this.loadForm();
+    this.loadForm();   
   }
 
   private loadForm() {
@@ -68,6 +67,7 @@ export class TaskEditComponent implements OnInit {
   }
 
   private close() {
+    this.isEdit = false;
     this.isOpen = false;
     this.openClose.emit();
     this.isNewTask = false;
@@ -116,6 +116,7 @@ export class TaskEditComponent implements OnInit {
   }
 
   Create() {
+    this.isEdit = false;
     this.submitBtnState = ClrLoadingState.DEFAULT;
     this.isNewTask = true;
     this.actionTitle = "Add";
@@ -126,6 +127,7 @@ export class TaskEditComponent implements OnInit {
 
   Edit(taskid: number) {
     if (taskid) {
+      this.isEdit = true;     
       this.taskService.GetTask(taskid).subscribe(response => {
         this.initialTask = new Task();
         Object.assign(this.initialTask, response);

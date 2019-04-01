@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { BugItem } from '../../../services/bugItems/bugItem.model';
 import { AccountService } from '../../../services/account.service';
 import { AlertService, MessageSeverity } from '../../../services/alert.service';
@@ -7,6 +7,7 @@ import { AppTranslationService } from '../../../services/app-translation.service
 import { BugitemEditComponent } from '../../controls/editors/bugitem-edit/bugitem-edit.component';
 import { BugItemService } from '../../../services/bugItems/bugitemService';
 import { Utilities } from '../../../services/utilities';
+import { Task } from '../../../services/tasks/task.model';
 
 @Component({
   selector: 'app-bugitems',
@@ -25,6 +26,7 @@ export class BugitemsComponent implements OnInit {
   ResolvedActive;
   PendingActive;
 
+  @Input() task: Task;
   @ViewChild(BugitemEditComponent) bugEdit;
 
   constructor(private accountService: AccountService, private alertService: AlertService,
@@ -42,7 +44,7 @@ export class BugitemsComponent implements OnInit {
 
   onAdd() {
     this.sourceBug = null;
-    this.bugEdit.Create();
+    this.bugEdit.Create(this.task.id);
     this.isOpen = true;
   }
 
@@ -58,28 +60,28 @@ export class BugitemsComponent implements OnInit {
 
   private loadData() {
     if (this.PendingActive) {
-      this.loadPending();
+      this.loadPending(this.task.id);
     }
     if (this.ResolvedActive) {
-      this.loadResolved();
+      this.loadResolved(this.task.id);
     }
   }
 
-  loadPending() {
+  loadPending(taskId?: number) {
     this.bugs = [];
     this.bugsCache = [];
     this.alertService.startLoadingMessage();
     this.loadingIndicator = true;
-    this.bugitemService.GetPendingBugs()
+    this.bugitemService.GetPendingBugs(taskId)
       .subscribe(results => this.onDataLoadSuccessful(results), error => this.onDataLoadFailed(error));
   }
 
-  loadResolved() {
+  loadResolved(taskId?: number) {
     this.bugs = [];
     this.bugsCache = [];
     this.alertService.startLoadingMessage();
     this.loadingIndicator = true;
-    this.bugitemService.GetResolvedBugs()
+    this.bugitemService.GetResolvedBugs(taskId)
       .subscribe(results => this.onDataLoadSuccessful(results), error => this.onDataLoadFailed(error));
   }
 

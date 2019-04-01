@@ -52,7 +52,7 @@
     <div class="clr-form-control">
       <quill-editor [style]="{height: '200px'}" style="width: 100%;" formControlName="description"></quill-editor>
     </div>
-    <app-bugitems></app-bugitems>
+    <app-bugitems *ngIf="isEdit" [task]="initialTask"></app-bugitems>
     <div class="clr-row">
       <div class="clr-form-control">
         <button [clrLoading]="submitBtnState" type="submit" [disabled]="taskForm.invalid" class="btn btn-primary">{{actionTitle}}</button>

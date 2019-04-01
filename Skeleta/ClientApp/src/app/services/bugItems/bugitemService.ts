@@ -23,19 +23,19 @@ export class BugItemService {
     return this.bugItemEndpoint.getUpdateEndpoint(bug, bug.id);
   }
 
-  GetAllBugItem() {
-    return this.bugItemEndpoint.getAllEndpoint<BugItem[]>();
+  GetAllBugItem(taskId?: number) {
+    return this.bugItemEndpoint.getAllEndpoint<BugItem[]>(taskId);
   }
 
-  GetPendingBugs() {
-    return this.bugItemEndpoint.getPendingEndpoint<BugItem[]>();
+  GetPendingBugs(taskId?: number) {
+    return this.bugItemEndpoint.getPendingEndpoint<BugItem[]>(taskId);
   }
 
-  GetResolvedBugs() {
-    return this.bugItemEndpoint.getResolvedEndpoint<BugItem[]>();
+  GetResolvedBugs(taskId?: number) {
+    return this.bugItemEndpoint.getResolvedEndpoint<BugItem[]>(taskId);
   }
 
-  GetClosedBugs() {
-    return this.bugItemEndpoint.getClosedEndpoint<BugItem[]>();
+  GetClosedBugs(taskId?: number) {
+    return this.bugItemEndpoint.getClosedEndpoint<BugItem[]>(taskId);
   }
 }
