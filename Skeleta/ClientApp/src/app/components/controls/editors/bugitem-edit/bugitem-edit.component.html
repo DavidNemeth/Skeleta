@@ -1,3 +1,80 @@
-<p>
-  bugitem-edit works!
-</p>
+<form *ngIf="isOpen" class="clr-form card" autocomplete="off" [formGroup]="bugForm" (ngSubmit)="save()">
+
+   
+
+  <div class="card-block">
+
+    <div class="clr-form-control">
+      <label class="clr-control-label">{{'general.management.Task' | translate}}</label>
+      <div class="clr-control-container">
+        <div class="clr-select-wrapper">
+          <select class="clr-select" formControlName="taskItemId">
+            <option *ngFor="let task of tasks" [value]="task.id">{{task.title}}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="clr-form-control">
+      <label class="clr-control-label">{{'general.management.Developer' | translate}}</label>
+      <div class="clr-control-container">
+        <div class="clr-select-wrapper">
+          <select class="clr-select" formControlName="developerId">
+            <option *ngFor="let user of users" [value]="user.id">{{user.fullName}}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="clr-form-control">
+      <label class="clr-control-label">{{'general.management.Tester' | translate}}</label>
+      <div class="clr-control-container">
+        <div class="clr-select-wrapper">
+          <select class="clr-select" formControlName="testerId">
+            <option *ngFor="let user of users" [value]="user.id">{{user.fullName}}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="clr-form-control">
+      <label class="clr-control-label">{{'general.management.Title' | translate}}</label>
+      <div class="clr-control-container">
+        <div class="clr-input-wrapper">
+          <input class="clr-input" type="text" formControlName="title" />
+        </div>
+      </div>
+    </div>
+
+    <div class="clr-form-control">
+      <label for="example" class="clr-control-label">{{'general.management.Description' | translate}}</label>
+      <quill-editor [style]="{height: '200px'}" style="width: 100%;" formControlName="description"></quill-editor>
+      <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+    </div>
+
+    <div class="clr-row">
+      <div class="clr-form-control">
+        <button [clrLoading]="submitBtnState" type="submit" [disabled]="bugForm.invalid" class="btn btn-primary">{{actionTitle}}</button>
+      </div>
+      <div class="clr-form-control">
+      </div>
+    </div>
+  </div>
+
+    <div class="card-footer">
+      <button type="button" (click)="close()" class="btn btn-sm btn-link">{{'general.management.Cancel' | translate}}</button>
+      <button type="button" (click)="resetForm()" class="btn btn-sm btn-link">Reset</button>
+    </div>
+
+</form>
+
+<clr-modal [(clrModalOpen)]="deleteOpen">
+  <h3 class="modal-title">Delete bug</h3>
+  <div class="modal-body">
+    <p>Are you sure?</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline" (click)="deleteOpen = false">{{'general.management.Cancel' | translate}}</button>
+    <button type="button" [clrLoading]="deleteBtnState" class="btn btn-danger" (click)="Delete()">{{'general.management.Delete' | translate}}</button>
+  </div>
+</clr-modal>

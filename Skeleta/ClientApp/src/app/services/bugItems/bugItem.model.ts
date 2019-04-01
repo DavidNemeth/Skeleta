@@ -4,10 +4,12 @@ import { Task } from "../tasks/task.model";
 
 export class BugItem {
 
-  constructor(title?: string, description?: string, status?: Status,
+  constructor(title?: string, description?: string, status?: Status, id?: number,
     developer?: User, developerId?: string,
     tester?: User, testerId?: string,
     taskItemTitle?: string, taskItemId?: string) {
+
+    this.id = id;
 
     this.title = title;
     this.description = description;

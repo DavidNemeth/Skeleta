@@ -21,6 +21,15 @@ var BugItemService = /** @class */ (function () {
         this.bugItemEndpoint = bugItemEndpoint;
         this.authService = authService;
     }
+    BugItemService.prototype.GetItem = function (bugid) {
+        return this.bugItemEndpoint.getBugEndpoint(bugid);
+    };
+    BugItemService.prototype.NewItem = function (bug) {
+        return this.bugItemEndpoint.getCreateEndpoint(bug);
+    };
+    BugItemService.prototype.UpdateItem = function (bug) {
+        return this.bugItemEndpoint.getUpdateEndpoint(bug, bug.id);
+    };
     BugItemService.prototype.GetAllBugItem = function () {
         return this.bugItemEndpoint.getAllEndpoint();
     };

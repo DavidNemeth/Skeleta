@@ -60,7 +60,6 @@ export class TaskEditComponent implements OnInit {
     this.taskForm = this.formBuilder.group({
       title: ['', Validators.required],
       description: [''],
-      comment: [''],
       priority: ['High', Validators.required],
       status: ['New', Validators.required],
       developerId: [this.currentUser.id],
@@ -140,8 +139,9 @@ export class TaskEditComponent implements OnInit {
         error => {
           console.log(error);
           this.Create();
-        }   
-    )}
+        }
+      )
+    }
     else {
       this.Create();
     }
@@ -150,20 +150,27 @@ export class TaskEditComponent implements OnInit {
   MarkActive(task: Task) {
     if (task) {
       if (task.status == Status.New) {
-        task.status = Status.Active;
-        this.taskService.UpdateTask(task).subscribe(response => {
-          this.alertService.showMessage(this.gT('toasts.saved'), `Task set as Active!`, MessageSeverity.success);
-          this.updateStatus.emit(task);
-        },
-          error => this.alertService.showMessage(error, null, MessageSeverity.error));
+        this.taskService.GetTask(task.id).subscribe(
+          editTask => {
+            editTask.status = Status.Active;
+            this.taskService.UpdateTask(editTask).subscribe(response => {
+              this.alertService.showMessage(this.gT('toasts.saved'), `Task set as Resolved!`, MessageSeverity.success);
+              Object.assign(task, editTask);
+              this.updateStatus.emit(task);
+            },
+              error => this.alertService.showMessage(error, null, MessageSeverity.error));
+          })
       }
       else {
-        task.status = Status.Active;
-        this.taskService.UpdateTask(task).subscribe(response => {
-          this.alertService.showMessage(this.gT('toasts.saved'), `Task set as Active!`, MessageSeverity.success);
-          this.popData.emit(task);
-        },
-          error => this.alertService.showMessage(error, null, MessageSeverity.error));
+        this.taskService.GetTask(task.id).subscribe(
+          editTask => {
+            editTask.status = Status.Active;
+            this.taskService.UpdateTask(editTask).subscribe(response => {
+              this.alertService.showMessage(this.gT('toasts.saved'), `Task set as Resolved!`, MessageSeverity.success);
+              this.popData.emit(task);
+            },
+              error => this.alertService.showMessage(error, null, MessageSeverity.error));
+          })
       }
     }
   }
@@ -171,32 +178,30 @@ export class TaskEditComponent implements OnInit {
 
   MarkResolved(task: Task) {
     if (task) {
-      task.status = Status.Resolved;
-      this.taskService.UpdateTask(task).subscribe(response => {
-        this.alertService.showMessage(this.gT('toasts.saved'), `Task set as Resolved!`, MessageSeverity.success);
-        this.popData.emit(task);
-      },
-        error => this.alertService.showMessage(error, null, MessageSeverity.error));
+      this.taskService.GetTask(task.id).subscribe(
+        editTask => {
+          editTask.status = Status.Resolved;
+          this.taskService.UpdateTask(editTask).subscribe(response => {
+            this.alertService.showMessage(this.gT('toasts.saved'), `Task set as Resolved!`, MessageSeverity.success);
+            this.popData.emit(task);
+          },
+            error => this.alertService.showMessage(error, null, MessageSeverity.error));
+        })
     }
   }
 
   MarkCompleted(task: Task) {
     if (task) {
-      task.status = Status.Completed;
-      this.taskService.UpdateTask(task).subscribe(response => {
-        this.alertService.showMessage(this.gT('toasts.saved'), `Task set as Completed!`, MessageSeverity.success);
-        this.popData.emit(task);
-      },
-        error => this.alertService.showMessage(error, null, MessageSeverity.error));
+      this.taskService.GetTask(task.id).subscribe(
+        editTask => {
+          editTask.status = Status.Completed;
+          this.taskService.UpdateTask(editTask).subscribe(response => {
+            this.alertService.showMessage(this.gT('toasts.saved'), `Task set as Completed!`, MessageSeverity.success);
+            this.popData.emit(task);
+          },
+            error => this.alertService.showMessage(error, null, MessageSeverity.error));
+        })
     }
-  }
-
-
-  View(task: Task) {
-    this.resetForm();
-    this.alertService.resetStickyMessage();
-    Object.assign(this.initialTask, task);
-    this.taskForm.patchValue(this.initialTask);
   }
 
   DeleteRange(tasks: Task[]) {

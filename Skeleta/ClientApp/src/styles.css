@@ -112,3 +112,8 @@ g[class^='raphael-group-'][class$='-creditgroup'] {
 .is-inverse {
   fill: #e1f1f6 !important;
 }
+
+.datagrid-row .datagrid-signpost-trigger .signpost {
+  margin: 0.0rem 0 !important;
+  height: 0rem !important;
+}

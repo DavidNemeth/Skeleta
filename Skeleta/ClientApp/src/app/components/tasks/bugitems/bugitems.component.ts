@@ -48,8 +48,12 @@ export class BugitemsComponent implements OnInit {
 
   onEdit(bug: BugItem) {
     this.sourceBug = bug;
-    this.bugEdit.Edit(bug);
+    this.bugEdit.Edit(bug.id);
     this.isOpen = true;
+  }
+
+  updateList(returnBug: BugItem) {
+    this.loadData();
   }
 
   private loadData() {
@@ -93,5 +97,21 @@ export class BugitemsComponent implements OnInit {
     this.alertService.showStickyMessage('Load Error',
       `Unable to retrieve users from the server.\r\nErrors: "${Utilities.getHttpResponseMessage(error)}"`,
       MessageSeverity.error, error);
+  }
+
+  private removeItem(bug: BugItem) {
+    const itemIndex = this.bugs.indexOf(bug, 0);
+    if (itemIndex > -1) {
+      this.bugs.splice(itemIndex, 1);
+    }
+  }
+
+  private updateItem(bug: BugItem) {
+    let index = this.bugs.indexOf(bug);
+    this.bugs[index] = bug;
+  }
+
+  private closeTab() {
+    this.isOpen = false;
   }
 }

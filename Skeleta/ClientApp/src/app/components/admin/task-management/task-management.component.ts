@@ -51,8 +51,8 @@ export class TaskManagementComponent implements OnInit {
     this.taskEdit.MarkCompleted(task);
   }
 
-  onEdit(taskId: number) {
-    this.taskEdit.Edit(taskId);
+  onEdit(task: Task) {
+    this.taskEdit.Edit(task.id);
     this.isOpen = true;
   }
 

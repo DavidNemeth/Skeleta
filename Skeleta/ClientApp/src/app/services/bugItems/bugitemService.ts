@@ -11,6 +11,18 @@ export class BugItemService {
   constructor(private router: Router, private http: HttpClient,
     private bugItemEndpoint: BugItemEndpoint, private authService: AuthService) { }
 
+  GetItem(bugid: number) {
+    return this.bugItemEndpoint.getBugEndpoint<BugItem>(bugid);
+  }
+
+  NewItem(bug: BugItem) {
+    return this.bugItemEndpoint.getCreateEndpoint<BugItem>(bug);
+  }
+
+  UpdateItem(bug: BugItem) {
+    return this.bugItemEndpoint.getUpdateEndpoint(bug, bug.id);
+  }
+
   GetAllBugItem() {
     return this.bugItemEndpoint.getAllEndpoint<BugItem[]>();
   }

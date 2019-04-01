@@ -63,6 +63,26 @@ var BugItemEndpoint = /** @class */ (function (_super) {
         enumerable: true,
         configurable: true
     });
+    BugItemEndpoint.prototype.getBugEndpoint = function (bugid) {
+        var _this = this;
+        var endpointUrl = this.baseUrl + "/" + bugid;
+        return this.http.get(endpointUrl, this.getRequestHeaders()).pipe(operators_1.catchError(function (error) {
+            return _this.handleError(error, function () { return _this.getBugEndpoint(bugid); });
+        }));
+    };
+    BugItemEndpoint.prototype.getCreateEndpoint = function (bugitemObject) {
+        var _this = this;
+        return this.http.post(this.baseUrl, JSON.stringify(bugitemObject), this.getRequestHeaders()).pipe(operators_1.catchError(function (error) {
+            return _this.handleError(error, function () { return _this.getCreateEndpoint(bugitemObject); });
+        }));
+    };
+    BugItemEndpoint.prototype.getUpdateEndpoint = function (bugitemObject, bugId) {
+        var _this = this;
+        var endpointUrl = this.baseUrl + "/" + bugId;
+        return this.http.put(endpointUrl, JSON.stringify(bugitemObject), this.getRequestHeaders()).pipe(operators_1.catchError(function (error) {
+            return _this.handleError(error, function () { return _this.getUpdateEndpoint(bugitemObject); });
+        }));
+    };
     BugItemEndpoint.prototype.getAllEndpoint = function () {
         var _this = this;
         var endpointUrl = this.allUrl;

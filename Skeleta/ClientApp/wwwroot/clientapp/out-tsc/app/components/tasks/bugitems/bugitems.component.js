@@ -36,7 +36,7 @@ var BugitemsComponent = /** @class */ (function () {
     };
     BugitemsComponent.prototype.onSearchChanged = function (value) {
         this.bugs = this.bugsCache
-            .filter(function (r) { return utilities_1.Utilities.searchArray(value, false, r.id, r.title, r.status, r.developer.fullName, r.developer.fullName, r.TaskItemTitle); });
+            .filter(function (r) { return utilities_1.Utilities.searchArray(value, false, r.id, r.title, r.status, r.developer.fullName, r.developer.fullName, r.taskItemTitle); });
     };
     BugitemsComponent.prototype.onAdd = function () {
         this.sourceBug = null;
@@ -45,8 +45,11 @@ var BugitemsComponent = /** @class */ (function () {
     };
     BugitemsComponent.prototype.onEdit = function (bug) {
         this.sourceBug = bug;
-        this.bugEdit.Edit(bug);
+        this.bugEdit.Edit(bug.id);
         this.isOpen = true;
+    };
+    BugitemsComponent.prototype.updateList = function (returnBug) {
+        this.loadData();
     };
     BugitemsComponent.prototype.loadData = function () {
         if (this.PendingActive) {
@@ -84,6 +87,19 @@ var BugitemsComponent = /** @class */ (function () {
         this.alertService.stopLoadingMessage();
         this.loadingIndicator = false;
         this.alertService.showStickyMessage('Load Error', "Unable to retrieve users from the server.\r\nErrors: \"" + utilities_1.Utilities.getHttpResponseMessage(error) + "\"", alert_service_1.MessageSeverity.error, error);
+    };
+    BugitemsComponent.prototype.removeItem = function (bug) {
+        var itemIndex = this.bugs.indexOf(bug, 0);
+        if (itemIndex > -1) {
+            this.bugs.splice(itemIndex, 1);
+        }
+    };
+    BugitemsComponent.prototype.updateItem = function (bug) {
+        var index = this.bugs.indexOf(bug);
+        this.bugs[index] = bug;
+    };
+    BugitemsComponent.prototype.closeTab = function () {
+        this.isOpen = false;
     };
     __decorate([
         core_1.ViewChild(bugitem_edit_component_1.BugitemEditComponent),

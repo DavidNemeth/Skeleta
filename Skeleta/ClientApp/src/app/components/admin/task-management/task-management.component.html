@@ -55,7 +55,7 @@
 
             <clr-dg-row *clrDgItems="let task of tasks" [clrDgItem]="task">
               <clr-dg-cell>
-                <a href="javascript:void(0)" (click)="onEdit(task.id)">{{task.title}}</a>
+                <a href="javascript:void(0)" (click)="onEdit(task)">{{task.title}}</a>
               </clr-dg-cell>
 
               <clr-dg-cell>

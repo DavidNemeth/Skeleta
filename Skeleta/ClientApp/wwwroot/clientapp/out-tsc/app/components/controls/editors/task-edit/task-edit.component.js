@@ -53,7 +53,6 @@ var TaskEditComponent = /** @class */ (function () {
         this.taskForm = this.formBuilder.group({
             title: ['', forms_1.Validators.required],
             description: [''],
-            comment: [''],
             priority: ['High', forms_1.Validators.required],
             status: ['New', forms_1.Validators.required],
             developerId: [this.currentUser.id],
@@ -132,46 +131,49 @@ var TaskEditComponent = /** @class */ (function () {
         var _this = this;
         if (task) {
             if (task.status == enum_1.Status.New) {
-                task.status = enum_1.Status.Active;
-                this.taskService.UpdateTask(task).subscribe(function (response) {
-                    _this.alertService.showMessage(_this.gT('toasts.saved'), "Task set as Active!", alert_service_1.MessageSeverity.success);
-                    _this.updateStatus.emit(task);
-                }, function (error) { return _this.alertService.showMessage(error, null, alert_service_1.MessageSeverity.error); });
+                this.taskService.GetTask(task.id).subscribe(function (editTask) {
+                    editTask.status = enum_1.Status.Active;
+                    _this.taskService.UpdateTask(editTask).subscribe(function (response) {
+                        _this.alertService.showMessage(_this.gT('toasts.saved'), "Task set as Resolved!", alert_service_1.MessageSeverity.success);
+                        Object.assign(task, editTask);
+                        _this.updateStatus.emit(task);
+                    }, function (error) { return _this.alertService.showMessage(error, null, alert_service_1.MessageSeverity.error); });
+                });
             }
             else {
-                task.status = enum_1.Status.Active;
-                this.taskService.UpdateTask(task).subscribe(function (response) {
-                    _this.alertService.showMessage(_this.gT('toasts.saved'), "Task set as Active!", alert_service_1.MessageSeverity.success);
-                    _this.popData.emit(task);
-                }, function (error) { return _this.alertService.showMessage(error, null, alert_service_1.MessageSeverity.error); });
+                this.taskService.GetTask(task.id).subscribe(function (editTask) {
+                    editTask.status = enum_1.Status.Active;
+                    _this.taskService.UpdateTask(editTask).subscribe(function (response) {
+                        _this.alertService.showMessage(_this.gT('toasts.saved'), "Task set as Resolved!", alert_service_1.MessageSeverity.success);
+                        _this.popData.emit(task);
+                    }, function (error) { return _this.alertService.showMessage(error, null, alert_service_1.MessageSeverity.error); });
+                });
             }
         }
     };
     TaskEditComponent.prototype.MarkResolved = function (task) {
         var _this = this;
         if (task) {
-            task.status = enum_1.Status.Resolved;
-            this.taskService.UpdateTask(task).subscribe(function (response) {
-                _this.alertService.showMessage(_this.gT('toasts.saved'), "Task set as Resolved!", alert_service_1.MessageSeverity.success);
-                _this.popData.emit(task);
-            }, function (error) { return _this.alertService.showMessage(error, null, alert_service_1.MessageSeverity.error); });
+            this.taskService.GetTask(task.id).subscribe(function (editTask) {
+                editTask.status = enum_1.Status.Resolved;
+                _this.taskService.UpdateTask(editTask).subscribe(function (response) {
+                    _this.alertService.showMessage(_this.gT('toasts.saved'), "Task set as Resolved!", alert_service_1.MessageSeverity.success);
+                    _this.popData.emit(task);
+                }, function (error) { return _this.alertService.showMessage(error, null, alert_service_1.MessageSeverity.error); });
+            });
         }
     };
     TaskEditComponent.prototype.MarkCompleted = function (task) {
         var _this = this;
         if (task) {
-            task.status = enum_1.Status.Completed;
-            this.taskService.UpdateTask(task).subscribe(function (response) {
-                _this.alertService.showMessage(_this.gT('toasts.saved'), "Task set as Completed!", alert_service_1.MessageSeverity.success);
-                _this.popData.emit(task);
-            }, function (error) { return _this.alertService.showMessage(error, null, alert_service_1.MessageSeverity.error); });
+            this.taskService.GetTask(task.id).subscribe(function (editTask) {
+                editTask.status = enum_1.Status.Completed;
+                _this.taskService.UpdateTask(editTask).subscribe(function (response) {
+                    _this.alertService.showMessage(_this.gT('toasts.saved'), "Task set as Completed!", alert_service_1.MessageSeverity.success);
+                    _this.popData.emit(task);
+                }, function (error) { return _this.alertService.showMessage(error, null, alert_service_1.MessageSeverity.error); });
+            });
         }
-    };
-    TaskEditComponent.prototype.View = function (task) {
-        this.resetForm();
-        this.alertService.resetStickyMessage();
-        Object.assign(this.initialTask, task);
-        this.taskForm.patchValue(this.initialTask);
     };
     TaskEditComponent.prototype.DeleteRange = function (tasks) {
         this.deleteOpen = true;

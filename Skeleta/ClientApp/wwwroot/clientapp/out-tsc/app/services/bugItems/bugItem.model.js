@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var BugItem = /** @class */ (function () {
-    function BugItem(title, description, status, developer, developerId, tester, testerId, TaskItemTitle, taskItemId) {
+    function BugItem(title, description, status, developer, developerId, tester, testerId, taskItemTitle, taskItemId) {
         this.title = title;
         this.description = description;
         this.status = status;
@@ -9,7 +9,7 @@ var BugItem = /** @class */ (function () {
         this.developerId = developerId;
         this.tester = tester;
         this.testerId = testerId;
-        this.TaskItemTitle = TaskItemTitle;
+        this.taskItemTitle = taskItemTitle;
         this.taskItemId = taskItemId;
     }
     return BugItem;

@@ -87,6 +87,28 @@
     "ResetDefault": "Reset default",
     "SetDefault": "Set as default"
   },
+  "general": {
+    "management": {
+      "Search": "Search...",
+      "New": "New Item",
+      "Edit": "Edit",
+      "Delete": "Delete",
+      "Title": "Title",
+      "Description": "Description",
+      "Priority": "Priority",
+      "Status": "Status",
+      "Developer": "Developer",
+      "Tester": "Tester",
+      "ItemPerPage": "Item / page",
+      "Items": "Items",
+      "Item": "Item",
+      "Task": "Task",
+      "Bug": "Bug",
+      "LoadingData": "Loading data...",
+      "Cancel": "Cancel",
+      "Back": "Back"
+    }
+  },
   "tasks": {
     "management": {
       "Search": "Search...",

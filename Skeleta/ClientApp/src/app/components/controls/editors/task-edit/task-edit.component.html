@@ -9,7 +9,20 @@
     </div>
   </div>
 
+  
+
   <div class="card-block">
+    <div class="clr-form-control">
+      <label class="clr-control-label">{{'tasks.editor.Status' | translate}}</label>
+      <div class="clr-control-container">
+        <div class="clr-select-wrapper">
+          <select class="clr-select" formControlName="status">
+            <option *ngFor="let status of allStatus" [value]="status">{{status}}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
     <div class="clr-form-control">
       <label class="clr-control-label">{{'tasks.editor.Developer' | translate}}</label>
       <div class="clr-control-container">
@@ -56,10 +69,10 @@
     </div>
   </div>
 
-  <div class="card-footer">
-    <button type="button" (click)="close()" class="btn btn-sm btn-link">Back</button>
-    <button type="button" (click)="resetForm()" class="btn btn-sm btn-link">Reset</button>
-  </div>
+    <div class="card-footer">
+      <button type="button" (click)="close()" class="btn btn-sm btn-link">Back</button>
+      <button type="button" (click)="resetForm()" class="btn btn-sm btn-link">Reset</button>
+    </div>
 
 </form>
 

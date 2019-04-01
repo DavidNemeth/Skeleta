@@ -25,6 +25,31 @@ export class BugItemEndpoint extends EndpointFactory {
     super(http, configurations, injector);
   }
 
+  getBugEndpoint<T>(bugid: number): Observable<T> {
+    const endpointUrl = `${this.baseUrl}/${bugid}`;
+
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders()).pipe<T>(
+      catchError(error => {
+        return this.handleError(error, () => this.getBugEndpoint(bugid));
+      }));
+  }
+
+  getCreateEndpoint<T>(bugitemObject: any): Observable<T> {
+    return this.http.post<T>(this.baseUrl, JSON.stringify(bugitemObject), this.getRequestHeaders()).pipe<T>(
+      catchError(error => {
+        return this.handleError(error, () => this.getCreateEndpoint(bugitemObject));
+      }));
+  }
+
+  getUpdateEndpoint<T>(bugitemObject: any, bugId?: number): Observable<T> {
+    const endpointUrl = `${this.baseUrl}/${bugId}`;
+
+    return this.http.put<T>(endpointUrl, JSON.stringify(bugitemObject), this.getRequestHeaders()).pipe<T>(
+      catchError(error => {
+        return this.handleError(error, () => this.getUpdateEndpoint(bugitemObject));
+      }));
+  }
+
   getAllEndpoint<T>(): Observable<T> {
     const endpointUrl = this.allUrl;
     return this.http.get<T>(endpointUrl, this.getRequestHeaders()).pipe<T>(
