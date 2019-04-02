@@ -5,7 +5,7 @@
       <button (click)="loadPending()" clrTabLink>Pending Tasks</button>
       <ng-template [(clrIfActive)]="PendingActive">
         <clr-tab-content>
-          <clr-datagrid style="height:710px;" class="datagrid-compact">
+          <clr-datagrid style="height:510px;" class="datagrid-compact">
             <clr-dg-action-bar>
               <div style="margin-right: 0rem; margin-left: 0rem;" class="clr-row clr-justify-content-between">
                 <div class="btn-group btn-primary btn-sm">
@@ -218,7 +218,7 @@
                 <clr-dg-footer>
                   <clr-dg-column-toggle>
                   </clr-dg-column-toggle>
-                  <clr-dg-pagination #pagination [clrDgPageSize]="20">
+                  <clr-dg-pagination #pagination [clrDgPageSize]="10">
 
                     <!--<clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100,1000]">{{'tasks.management.TasksPerPage' | translate}}</clr-dg-page-size>-->
                     {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}

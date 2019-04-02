@@ -24,6 +24,13 @@ namespace Skeleta.ViewModels.WorkItemViewModels
 		public string TesterId { get; set; }
 		public AssignUserViewModel Tester { get; set; }
 
-		public virtual ICollection<BugItemViewModel> BugItems { get; set; }
+		public virtual ICollection<ItemBugViewModel> BugItems { get; set; }
+	}
+
+	public class ItemBugViewModel
+	{
+		public int Id { get; set; }
+		public string Title { get; set; }
+		public string Status { get; set; }
 	}
 }

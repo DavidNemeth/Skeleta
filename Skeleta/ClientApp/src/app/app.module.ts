@@ -10,7 +10,7 @@ import { ToastaModule } from 'ngx-toasta';
 import { ClarityModule } from "@clr/angular";
 import { NgSelectModule } from '@ng-select/ng-select';
 
-import { QuillModule } from 'ngx-quill'
+import { QuillModule } from 'ngx-quill';
 import { FusionChartsModule } from 'angular-fusioncharts';
 import FusionCharts from 'fusioncharts/core';
 import Column2d from 'fusioncharts/viz/column2d';

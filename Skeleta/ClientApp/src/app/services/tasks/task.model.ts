@@ -1,13 +1,16 @@
 import { User } from "../../models/user.model";
 import { Priority, Status } from "../../models/enum";
+import { BugItem } from "../bugItems/bugItem.model";
 
 export class Task {
 
-  constructor(title?: string, description?: string,
+  constructor(title?: string, description?: string, id?: number,
     priority?: Priority, status?: Status,
     developer?: User, developerId?: string,
-    tester?: User, testerId?: string) {
+    tester?: User, testerId?: string,
+    bugcount?: number, bugItems?: BugItem[]) {
 
+    this.id = id;
     this.title = title;
     this.description = description;
     this.priority = priority;
@@ -16,6 +19,8 @@ export class Task {
     this.developerId = developerId;
     this.tester = tester;
     this.testerId = testerId;
+    this.bugcount = bugcount;
+    this.bugItems = bugItems;
   }
 
   public id: number;
@@ -23,6 +28,7 @@ export class Task {
   public description: string;
   public priority: Priority;
   public status: Status;
+  public bugcount: number;
 
   public developer: User
   public developerId: string;
@@ -30,4 +36,5 @@ export class Task {
   public tester: User;
   public testerId: string;
 
+  public bugItems: BugItem[];
 }

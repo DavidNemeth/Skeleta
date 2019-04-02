@@ -56,8 +56,7 @@ var BugitemEditComponent = /** @class */ (function () {
             description: [''],
             status: ['New', forms_1.Validators.required],
             developerId: [this.currentUser.id],
-            testerId: [this.currentUser.id],
-            taskItemId: [this.taskId]
+            testerId: [this.currentUser.id]
         });
     };
     BugitemEditComponent.prototype.onOpen = function (event) {
@@ -104,12 +103,12 @@ var BugitemEditComponent = /** @class */ (function () {
         }
     };
     BugitemEditComponent.prototype.Create = function (taskId) {
-        this.taskId = taskId;
         this.submitBtnState = angular_1.ClrLoadingState.DEFAULT;
         this.isNewItem = true;
         this.actionTitle = "Add";
         this.initialItem = new bugItem_model_1.BugItem();
         this.itemEdit = new bugItem_model_1.BugItem();
+        this.itemEdit.taskItemId = taskId;
     };
     BugitemEditComponent.prototype.Edit = function (itemid) {
         var _this = this;

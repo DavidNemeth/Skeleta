@@ -16,6 +16,7 @@ var app_translation_service_1 = require("../../../services/app-translation.servi
 var bugitem_edit_component_1 = require("../../controls/editors/bugitem-edit/bugitem-edit.component");
 var bugitemService_1 = require("../../../services/bugItems/bugitemService");
 var utilities_1 = require("../../../services/utilities");
+var task_model_1 = require("../../../services/tasks/task.model");
 var BugitemsComponent = /** @class */ (function () {
     function BugitemsComponent(accountService, alertService, translationService, bugitemService) {
         var _this = this;
@@ -40,7 +41,7 @@ var BugitemsComponent = /** @class */ (function () {
     };
     BugitemsComponent.prototype.onAdd = function () {
         this.sourceBug = null;
-        this.bugEdit.Create(this.taskId);
+        this.bugEdit.Create(this.task.id);
         this.isOpen = true;
     };
     BugitemsComponent.prototype.onEdit = function (bug) {
@@ -52,29 +53,37 @@ var BugitemsComponent = /** @class */ (function () {
         this.loadData();
     };
     BugitemsComponent.prototype.loadData = function () {
-        if (this.PendingActive) {
-            this.loadPending(this.taskId);
+        if (this.task) {
+            console.log(this.task);
+            this.bugs = [];
+            this.bugsCache = [];
+            this.onDataLoadSuccessful(this.task.bugItems);
         }
-        if (this.ResolvedActive) {
-            this.loadResolved(this.taskId);
+        else {
+            if (this.PendingActive) {
+                this.loadPending();
+            }
+            if (this.ResolvedActive) {
+                this.loadResolved();
+            }
         }
     };
-    BugitemsComponent.prototype.loadPending = function (taskId) {
+    BugitemsComponent.prototype.loadPending = function () {
         var _this = this;
         this.bugs = [];
         this.bugsCache = [];
         this.alertService.startLoadingMessage();
         this.loadingIndicator = true;
-        this.bugitemService.GetPendingBugs(taskId)
+        this.bugitemService.GetPendingBugs()
             .subscribe(function (results) { return _this.onDataLoadSuccessful(results); }, function (error) { return _this.onDataLoadFailed(error); });
     };
-    BugitemsComponent.prototype.loadResolved = function (taskId) {
+    BugitemsComponent.prototype.loadResolved = function () {
         var _this = this;
         this.bugs = [];
         this.bugsCache = [];
         this.alertService.startLoadingMessage();
         this.loadingIndicator = true;
-        this.bugitemService.GetResolvedBugs(taskId)
+        this.bugitemService.GetResolvedBugs()
             .subscribe(function (results) { return _this.onDataLoadSuccessful(results); }, function (error) { return _this.onDataLoadFailed(error); });
     };
     BugitemsComponent.prototype.onDataLoadSuccessful = function (bugs) {
@@ -103,8 +112,8 @@ var BugitemsComponent = /** @class */ (function () {
     };
     __decorate([
         core_1.Input(),
-        __metadata("design:type", Number)
-    ], BugitemsComponent.prototype, "taskId", void 0);
+        __metadata("design:type", task_model_1.Task)
+    ], BugitemsComponent.prototype, "task", void 0);
     __decorate([
         core_1.ViewChild(bugitem_edit_component_1.BugitemEditComponent),
         __metadata("design:type", Object)

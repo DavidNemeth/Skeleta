@@ -59,29 +59,37 @@ export class BugitemsComponent implements OnInit {
   }
 
   private loadData() {
-    if (this.PendingActive) {
-      this.loadPending(this.task.id);
+    if (this.task) {
+      console.log(this.task);
+      this.bugs = [];
+      this.bugsCache = [];
+      this.onDataLoadSuccessful(this.task.bugItems);
     }
-    if (this.ResolvedActive) {
-      this.loadResolved(this.task.id);
+    else {
+      if (this.PendingActive) {
+        this.loadPending();
+      }
+      if (this.ResolvedActive) {
+        this.loadResolved();
+      }
     }
   }
 
-  loadPending(taskId?: number) {
+  loadPending() {
     this.bugs = [];
     this.bugsCache = [];
     this.alertService.startLoadingMessage();
     this.loadingIndicator = true;
-    this.bugitemService.GetPendingBugs(taskId)
+    this.bugitemService.GetPendingBugs()
       .subscribe(results => this.onDataLoadSuccessful(results), error => this.onDataLoadFailed(error));
   }
 
-  loadResolved(taskId?: number) {
+  loadResolved() {
     this.bugs = [];
     this.bugsCache = [];
     this.alertService.startLoadingMessage();
     this.loadingIndicator = true;
-    this.bugitemService.GetResolvedBugs(taskId)
+    this.bugitemService.GetResolvedBugs()
       .subscribe(results => this.onDataLoadSuccessful(results), error => this.onDataLoadFailed(error));
   }
 

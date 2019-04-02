@@ -112,7 +112,6 @@ var TaskEditComponent = /** @class */ (function () {
         var _this = this;
         if (taskid) {
             this.isEdit = true;
-            this.taskId = taskid;
             this.taskService.GetTask(taskid).subscribe(function (response) {
                 _this.initialTask = new task_model_1.Task();
                 Object.assign(_this.initialTask, response);
