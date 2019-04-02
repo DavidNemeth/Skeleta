@@ -47,11 +47,17 @@ namespace Skeleta.ViewModels
 				.ConvertUsing(s => Mapper.Map<PermissionViewModel>(ApplicationPermissions.GetPermissionByValue(s.ClaimValue)));
 
 			CreateMap<TaskItem, TaskListViewModel>()
-				.ForMember(t => t.BugCount, map => map.MapFrom(t=>t.BugItems.Count()));
-			CreateMap<TaskItem, TaskItemViewModel>();
+				.ForMember(t => t.OpenBugcount, map => map.MapFrom(t => t.BugItems.Where(b=>b.Status == Status.New || b.Status == Status.Active).Count()))
+				.ForMember(t => t.ResolvedBugcount, map => map.MapFrom(t => t.BugItems.Where(b => b.Status == Status.Resolved).Count()));
+
+
+			CreateMap<TaskItem, TaskItemViewModel>()
+				.ForMember(d => d.BugItems, map => map.MapFrom(s => s.BugItems.Where(x=>x.Status != Status.Closed)));
+			;
 			CreateMap<TaskItemViewModel, TaskItem>()
-				 .ForMember(d => d.Developer, map => map.Ignore())
-				 .ForMember(d => d.Tester, map => map.Ignore());
+				.ForMember(d => d.BugItems, map => map.Ignore())
+				.ForMember(d => d.Developer, map => map.Ignore())
+				.ForMember(d => d.Tester, map => map.Ignore());
 
 
 			CreateMap<BugItem, BugitemListViewModel>()
@@ -59,7 +65,7 @@ namespace Skeleta.ViewModels
 
 			CreateMap<BugItem, BugItemViewModel>()
 				.ForMember(d => d.TaskItemTitle, map => map.MapFrom(s => s.TaskItem.Title));
-				
+
 			CreateMap<BugItemViewModel, BugItem>()
 				 .ForMember(d => d.Developer, map => map.Ignore())
 				 .ForMember(d => d.Tester, map => map.Ignore());

@@ -93,13 +93,6 @@ var TaskEditComponent = /** @class */ (function () {
         this.alertService.stopLoadingMessage();
         this.alertService.showStickyMessage(error, null, alert_service_1.MessageSeverity.error);
     };
-    TaskEditComponent.prototype.resetForm = function () {
-        this.loadForm();
-        this.alertService.resetStickyMessage();
-        if (!this.isNewTask) {
-            this.taskForm.patchValue(this.initialTask);
-        }
-    };
     TaskEditComponent.prototype.Create = function () {
         this.isEdit = false;
         this.submitBtnState = angular_1.ClrLoadingState.DEFAULT;

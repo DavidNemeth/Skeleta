@@ -142,7 +142,12 @@ var TaskManagementComponent = /** @class */ (function () {
     };
     TaskManagementComponent.prototype.closeTab = function () {
         this.isOpen = false;
+        this.loadData();
     };
+    __decorate([
+        core_1.ViewChild("dg"),
+        __metadata("design:type", Object)
+    ], TaskManagementComponent.prototype, "dg", void 0);
     __decorate([
         core_1.ViewChild(task_edit_component_1.TaskEditComponent),
         __metadata("design:type", Object)

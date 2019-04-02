@@ -23,12 +23,14 @@ export class TaskEditComponent implements OnInit {
 
   private actionTitle = "";
   private deleteOpen = false;
+  private archiveOpen = false;
   private isNewTask = false;
   private allStatus = [...Object.keys(Status)];
   private allPriority = [...Object.keys(Priority)];
   initialTask: Task = new Task();
   taskEdit: Task;
   private tasksToDelete: Task[] = [];
+  private tasksToClose: Task[] = [];
   private taskToDelete: Task;
   taskForm: FormGroup;
   users: User[] = [];
@@ -40,8 +42,10 @@ export class TaskEditComponent implements OnInit {
   @Output() popData = new EventEmitter<Task>();
   @Output() updateStatus = new EventEmitter<Task>();
   @Output() updateData = new EventEmitter<Task>();
+  @Output() popSelected = new EventEmitter<Task[]>();
   @Output() deleteData = new EventEmitter<Task[]>();
   @Output() openClose = new EventEmitter();
+
 
   constructor(private translationService: AppTranslationService,
     private alertService: AlertService, private formBuilder: FormBuilder,
@@ -107,13 +111,6 @@ export class TaskEditComponent implements OnInit {
     this.alertService.showStickyMessage(error, null, MessageSeverity.error);
   }
 
-  private resetForm() {
-    this.loadForm();
-    this.alertService.resetStickyMessage();
-    if (!this.isNewTask) {
-      this.taskForm.patchValue(this.initialTask);
-    }
-  }
 
   Create() {
     this.isEdit = false;
@@ -203,6 +200,32 @@ export class TaskEditComponent implements OnInit {
           },
             error => this.alertService.showMessage(error, null, MessageSeverity.error));
         })
+    }
+  }
+
+  MarkClosed(tasks: Task[]) {
+    this.tasksToClose = tasks;
+    this.archiveOpen = true;
+   
+  }
+
+  private CloseTasks() {
+    this.deleteBtnState = ClrLoadingState.LOADING;
+
+    if (this.tasksToClose) {
+      for (var i = 0; i < this.tasksToClose.length; i++) {
+        this.taskService.GetTask(this.tasksToClose[i].id).subscribe(
+          editTask => {
+            editTask.status = Status.Closed;
+            this.taskService.UpdateTask(editTask).subscribe(response => {
+            },
+              error => this.alertService.showMessage(error, null, MessageSeverity.error));
+          })
+      }
+      this.alertService.showMessage(this.gT('toasts.saved'), `Task(s) Archived!`, MessageSeverity.success);
+      this.deleteBtnState = ClrLoadingState.SUCCESS;
+      this.popSelected.emit(this.tasksToClose);
+      this.archiveOpen = false;
     }
   }
 

@@ -95,13 +95,6 @@ var BugitemEditComponent = /** @class */ (function () {
         this.alertService.stopLoadingMessage();
         this.alertService.showStickyMessage(error, null, alert_service_1.MessageSeverity.error);
     };
-    BugitemEditComponent.prototype.resetForm = function () {
-        this.loadForm();
-        this.alertService.resetStickyMessage();
-        if (!this.isNewItem) {
-            this.bugForm.patchValue(this.initialItem);
-        }
-    };
     BugitemEditComponent.prototype.Create = function (taskId) {
         this.submitBtnState = angular_1.ClrLoadingState.DEFAULT;
         this.isNewItem = true;

@@ -46,9 +46,8 @@
       <quill-editor [style]="{height: '200px'}" style="width: 100%;" formControlName="description"></quill-editor>
       <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
     </div>
-    <div class="card-footer">
+    <div class="modal-footer">
       <button [clrLoading]="submitBtnState" type="submit" [disabled]="bugForm.invalid" class="btn btn-primary">{{actionTitle}}</button>
-      <button type="button" (click)="resetForm()" class="btn btn-sm btn-link">Reset</button>
     </div>
   </form>
 </clr-modal>

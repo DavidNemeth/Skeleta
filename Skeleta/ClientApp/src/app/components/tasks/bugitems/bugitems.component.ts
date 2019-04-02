@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, Input, SimpleChanges } from '@angular/core';
 import { BugItem } from '../../../services/bugItems/bugItem.model';
 import { AccountService } from '../../../services/account.service';
 import { AlertService, MessageSeverity } from '../../../services/alert.service';
@@ -25,21 +25,30 @@ export class BugitemsComponent implements OnInit {
   isOpen: boolean = false;
   ResolvedActive;
   PendingActive;
+  taskCache: Task;
+  @Input()
+  task: Task;
 
-  @Input() task: Task;
+  ngOnChanges(changes: SimpleChanges) {
+    if (this.task && changes.task.firstChange == false) {
+      this.bugs = [];
+      this.bugsCache = [];
+      this.onDataLoadSuccessful(this.task.bugItems);
+    }
+  }
+
   @ViewChild(BugitemEditComponent) bugEdit;
 
   constructor(private accountService: AccountService, private alertService: AlertService,
     private translationService: AppTranslationService, private bugitemService: BugItemService) { }
 
   ngOnInit() {
-    this.PendingActive = true;
-    this.loadData();
+    this.task = this.taskCache;
   }
 
   onSearchChanged(value: string) {
     this.bugs = this.bugsCache
-      .filter(r => Utilities.searchArray(value, false, r.id, r.title, r.status, r.developer.fullName, r.developer.fullName, r.taskItemTitle));
+      .filter(r => Utilities.searchArray(value, false, r.title, r.status));
   }
 
   onAdd() {
@@ -55,44 +64,21 @@ export class BugitemsComponent implements OnInit {
   }
 
   updateList(returnBug: BugItem) {
-    this.loadData();
+    this.loadData(returnBug.taskItemId);
   }
 
-  private loadData() {
-    if (this.task) {
-      console.log(this.task);
-      this.bugs = [];
-      this.bugsCache = [];
-      this.onDataLoadSuccessful(this.task.bugItems);
-    }
-    else {
-      if (this.PendingActive) {
-        this.loadPending();
-      }
-      if (this.ResolvedActive) {
-        this.loadResolved();
-      }
-    }
+  private loadData(taskid?: number) {
+    this.loadAll(taskid);
   }
 
-  loadPending() {
+  loadAll(taskid?: number) {
     this.bugs = [];
     this.bugsCache = [];
     this.alertService.startLoadingMessage();
     this.loadingIndicator = true;
-    this.bugitemService.GetPendingBugs()
+    this.bugitemService.GetAllBugItem(taskid)
       .subscribe(results => this.onDataLoadSuccessful(results), error => this.onDataLoadFailed(error));
   }
-
-  loadResolved() {
-    this.bugs = [];
-    this.bugsCache = [];
-    this.alertService.startLoadingMessage();
-    this.loadingIndicator = true;
-    this.bugitemService.GetResolvedBugs()
-      .subscribe(results => this.onDataLoadSuccessful(results), error => this.onDataLoadFailed(error));
-  }
-
   onDataLoadSuccessful(bugs: BugItem[]) {
     this.alertService.stopLoadingMessage();
     this.loadingIndicator = false;

@@ -16,7 +16,6 @@
     </div>
   </div>
 
-
   <div class="card-block">
     <div class="clr-row">
       <div class="clr-form-control clr-col">
@@ -52,30 +51,22 @@
     <div class="clr-form-control">
       <quill-editor [style]="{height: '200px'}" style="width: 100%;" formControlName="description"></quill-editor>
     </div>
-    <app-bugitems *ngIf="isEdit" [task]="initialTask"></app-bugitems>
-    <div class="clr-row">
-      <div class="clr-form-control">
-        <button [clrLoading]="submitBtnState" type="submit" [disabled]="taskForm.invalid" class="btn btn-primary">{{actionTitle}}</button>
-      </div>
-      <div class="clr-form-control">
-      </div>
-    </div>
+    <app-bugitems *ngIf="isEdit" [task]="taskEdit"></app-bugitems>
   </div>
-
   <div class="card-footer">
-    <button type="button" (click)="close()" class="btn btn-sm btn-link">Back</button>
-    <button type="button" (click)="resetForm()" class="btn btn-sm btn-link">Reset</button>
+    <button [clrLoading]="submitBtnState" type="submit" [disabled]="taskForm.invalid" class="btn btn-primary">{{actionTitle}}</button>
+    <button type="button" (click)="close()" class="btn btn btn-outline">Cancel</button>
   </div>
 
 </form>
 
-<clr-modal [(clrModalOpen)]="deleteOpen">
-  <h3 class="modal-title">Delete task</h3>
+<clr-modal [(clrModalOpen)]="archiveOpen">
+  <h3 class="modal-title">Archive tasks</h3>
   <div class="modal-body">
-    <p>Are you sure?</p>
+    <p>Are you sure you want to archive all selected Tasks?</p>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-outline" (click)="deleteOpen = false">Cancel</button>
-    <button type="button" [clrLoading]="deleteBtnState" class="btn btn-danger" (click)="Delete()">Delete</button>
+    <button type="button" class="btn btn-outline" (click)="archiveOpen = false">Cancel</button>
+    <button type="button" [clrLoading]="deleteBtnState" class="btn btn-danger" (click)="CloseTasks()">Archive</button>
   </div>
 </clr-modal>

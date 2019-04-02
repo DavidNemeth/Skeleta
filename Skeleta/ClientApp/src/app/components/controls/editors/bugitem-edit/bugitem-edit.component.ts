@@ -89,7 +89,6 @@ export class BugitemEditComponent implements OnInit {
     else {
       this.bugService.UpdateItem(this.itemEdit).subscribe(response => this.saveSuccessHelper(), error => this.saveFailedHelper(error));
     }
-
   }
 
   private saveSuccessHelper(): void {
@@ -109,14 +108,6 @@ export class BugitemEditComponent implements OnInit {
     this.submitBtnState = ClrLoadingState.ERROR;
     this.alertService.stopLoadingMessage();
     this.alertService.showStickyMessage(error, null, MessageSeverity.error);
-  }
-
-  private resetForm() {
-    this.loadForm();
-    this.alertService.resetStickyMessage();
-    if (!this.isNewItem) {
-      this.bugForm.patchValue(this.initialItem);
-    }
   }
 
   Create(taskId: number) {

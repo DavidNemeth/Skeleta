@@ -6,28 +6,6 @@
 @import '~ngx-toasta/styles/style-default.css';
 /*@import '../src/app/assets/styles/themes/dark.css';*/
 
-
-/*Side-Nav Changes*/
-/*.sidenav .sidenav-content > .nav-link.active {
-  box-shadow: inset 3px 0 0 #004a70;
-  border-radius: 0 0.125rem 0.125rem 0;
-}
-
-.sidenav .sidenav-content > .nav-link:hover {
-  box-shadow: inset 3px 0 0 #004a70;
-  border-radius: 0 0.125rem 0.125rem 0;
-}
-
-.sidenav .nav-group .nav-list .nav-link.active {
-  box-shadow: inset 3px 0 0 #004a70;
-  border-radius: 0 0.125rem 0.125rem 0;
-}
-
-.sidenav .nav-group .nav-list .nav-link:hover {
-  box-shadow: inset 3px 0 0 #004a70;
-  border-radius: 0 0.125rem 0.125rem 0;
-}*/
-
 .sidenav .nav-group label, .slider-nav .nav-group label {
   font-weight: 700;
   color: #000;
@@ -42,31 +20,26 @@
   background-color: #002538 !important;
 }
 
-:host(), .side-nav {
+/*:host(), .side-nav {
   height: 100%;
-}
+}*/
 
-:host() {
+/*:host() {
   display: flex;
-}
-
-/*fusion remove link*/
-
-g[class$='creditgroup'] {
-  display: none !important;
-}
-
-g[class^='raphael-group-'][class$='-creditgroup'] {
-  display: none !important;
-}
+}*/
 
 /*custom classes*/
 .formwrapper {
   max-width: 600px;
 }
 
+.btn-secondary {
+  color: #fff !important;
+  background-color: #6c757d !important;
+  border-color: #6c757d !important;
+}
 
-.ng-value  {
+.ng-value {
   background: #e1f1f6;
   color: #004a70;
   border: 1px solid #49afd9;
@@ -106,11 +79,11 @@ g[class^='raphael-group-'][class$='-creditgroup'] {
 }
 
 .maxwidth {
-  max-width: 900px !important;
+  max-width: 1000px !important;
 }
 
 .is-inverse {
-  fill: #e1f1f6 !important;
+  fill: rgb(178, 178, 178) !important;
 }
 
 .datagrid-row .datagrid-signpost-trigger .signpost {

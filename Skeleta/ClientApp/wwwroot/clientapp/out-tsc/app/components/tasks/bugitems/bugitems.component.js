@@ -31,13 +31,19 @@ var BugitemsComponent = /** @class */ (function () {
         this.gT = function (key) { return _this.translationService.getTranslation(key); };
         this.isOpen = false;
     }
+    BugitemsComponent.prototype.ngOnChanges = function (changes) {
+        if (this.task && changes.task.firstChange == false) {
+            this.bugs = [];
+            this.bugsCache = [];
+            this.onDataLoadSuccessful(this.task.bugItems);
+        }
+    };
     BugitemsComponent.prototype.ngOnInit = function () {
-        this.PendingActive = true;
-        this.loadData();
+        this.task = this.taskCache;
     };
     BugitemsComponent.prototype.onSearchChanged = function (value) {
         this.bugs = this.bugsCache
-            .filter(function (r) { return utilities_1.Utilities.searchArray(value, false, r.id, r.title, r.status, r.developer.fullName, r.developer.fullName, r.taskItemTitle); });
+            .filter(function (r) { return utilities_1.Utilities.searchArray(value, false, r.title, r.status); });
     };
     BugitemsComponent.prototype.onAdd = function () {
         this.sourceBug = null;
@@ -50,40 +56,18 @@ var BugitemsComponent = /** @class */ (function () {
         this.isOpen = true;
     };
     BugitemsComponent.prototype.updateList = function (returnBug) {
-        this.loadData();
+        this.loadData(returnBug.taskItemId);
     };
-    BugitemsComponent.prototype.loadData = function () {
-        if (this.task) {
-            console.log(this.task);
-            this.bugs = [];
-            this.bugsCache = [];
-            this.onDataLoadSuccessful(this.task.bugItems);
-        }
-        else {
-            if (this.PendingActive) {
-                this.loadPending();
-            }
-            if (this.ResolvedActive) {
-                this.loadResolved();
-            }
-        }
+    BugitemsComponent.prototype.loadData = function (taskid) {
+        this.loadAll(taskid);
     };
-    BugitemsComponent.prototype.loadPending = function () {
+    BugitemsComponent.prototype.loadAll = function (taskid) {
         var _this = this;
         this.bugs = [];
         this.bugsCache = [];
         this.alertService.startLoadingMessage();
         this.loadingIndicator = true;
-        this.bugitemService.GetPendingBugs()
-            .subscribe(function (results) { return _this.onDataLoadSuccessful(results); }, function (error) { return _this.onDataLoadFailed(error); });
-    };
-    BugitemsComponent.prototype.loadResolved = function () {
-        var _this = this;
-        this.bugs = [];
-        this.bugsCache = [];
-        this.alertService.startLoadingMessage();
-        this.loadingIndicator = true;
-        this.bugitemService.GetResolvedBugs()
+        this.bugitemService.GetAllBugItem(taskid)
             .subscribe(function (results) { return _this.onDataLoadSuccessful(results); }, function (error) { return _this.onDataLoadFailed(error); });
     };
     BugitemsComponent.prototype.onDataLoadSuccessful = function (bugs) {
