@@ -8,11 +8,13 @@ import { BugitemEditComponent } from '../../controls/editors/bugitem-edit/bugite
 import { BugItemService } from '../../../services/bugItems/bugitemService';
 import { Utilities } from '../../../services/utilities';
 import { Task } from '../../../services/tasks/task.model';
+import { fadeInOut } from '../../../services/animations';
 
 @Component({
   selector: 'app-bugitems',
   templateUrl: './bugitems.component.html',
-  styleUrls: ['./bugitems.component.css']
+  styleUrls: ['./bugitems.component.css'],
+  animations: [fadeInOut]
 })
 export class BugitemsComponent implements OnInit {
   columns: any[] = [];

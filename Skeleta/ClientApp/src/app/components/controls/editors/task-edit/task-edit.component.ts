@@ -9,11 +9,13 @@ import { Status, Priority } from '../../../../models/enum';
 import { Observable, forkJoin } from 'rxjs';
 import { AccountService } from '../../../../services/account.service';
 import { User } from '../../../../models/user.model';
+import { fadeInOut } from '../../../../services/animations';
 
 @Component({
   selector: 'app-task-edit',
   templateUrl: './task-edit.component.html',
-  styleUrls: ['./task-edit.component.css']
+  styleUrls: ['./task-edit.component.css'],
+  animations: [fadeInOut],
 })
 
 export class TaskEditComponent implements OnInit {

@@ -10,11 +10,13 @@ import { AlertService, MessageSeverity } from '../../../../services/alert.servic
 import { BugItemService } from '../../../../services/bugItems/bugitemService';
 import { AccountService } from '../../../../services/account.service';
 import { TaskService } from '../../../../services/tasks/taskService';
+import { fadeInOut } from '../../../../services/animations';
 
 @Component({
   selector: 'app-bugitem-edit',
   templateUrl: './bugitem-edit.component.html',
-  styleUrls: ['./bugitem-edit.component.css']
+  styleUrls: ['./bugitem-edit.component.css'],
+  animations: [fadeInOut]
 })
 export class BugitemEditComponent implements OnInit {
   submitBtnState: ClrLoadingState = ClrLoadingState.DEFAULT;

@@ -6,9 +6,6 @@ import { HomeComponent } from './components/home/home.component';
 import { AuthService } from './services/auth.service';
 import { AuthGuard } from './services/auth-guard.service';
 import { SettingsComponent } from './components/settings/settings.component';
-import { ShiftschartComponent } from './components/controls/charts/shiftschart/shiftschart.component';
-import { MachinechartComponent } from './components/controls/charts/machinechart/machinechart.component';
-import { FusionComponent } from './components/controls/charts/fusion/fusion.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { SmartDashboardComponent } from './components/dashboard/smart-dashboard/smart-dashboard.component';
 import { SmartSettingsComponent } from './components/settings/smart-settings/smart-settings.component';
@@ -38,9 +35,6 @@ const routes: Routes = [
   {
     path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard], data: { title: 'Dashboard' }, children: [
       { path: '', component: SmartDashboardComponent, data: { title: 'Smart Panel' } },
-      { path: 'machinechart', component: MachinechartComponent, data: { title: 'Machine Breakdown' } },
-      { path: 'fusionchart', component: FusionComponent, data: { title: 'Fusion Chart' } },
-      { path: 'shiftchart', component: ShiftschartComponent, data: { title: 'Shift Assignment' } }
     ]
   },
   {

@@ -8,21 +8,11 @@ import { HttpClientModule } from '@angular/common/http';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { ToastaModule } from 'ngx-toasta';
 import { ClarityModule } from "@clr/angular";
+
 import { NgSelectModule } from '@ng-select/ng-select';
-
 import { QuillModule } from 'ngx-quill';
-import { FusionChartsModule } from 'angular-fusioncharts';
-import FusionCharts from 'fusioncharts/core';
-import Column2d from 'fusioncharts/viz/column2d';
-import stackedcolumn3dline from 'fusioncharts/viz/stackedcolumn3dline'
-import gantt from 'fusioncharts/gantt'
-import FusionTheme from 'fusioncharts/themes/es/fusioncharts.theme.fusion';
-
-FusionChartsModule.fcRoot(FusionCharts, Column2d, stackedcolumn3dline, FusionTheme, gantt);
-
 import { GroupByPipe } from './pipes/group-by.pipe';
 import { KeysPipe } from './pipes/keys.pipe';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppErrorHandler } from './app-error.handler';
 import { AppTitleService } from './services/app-title.service';
@@ -44,9 +34,6 @@ import { AppComponent } from './components/app.component';
 import { HomeComponent } from './components/home/home.component';
 import { LoginComponent } from './components/login/login.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
-import { FusionComponent } from './components/controls/charts/fusion/fusion.component';
-import { MachinechartComponent } from './components/controls/charts/machinechart/machinechart.component';
-import { ShiftschartComponent } from './components/controls/charts/shiftschart/shiftschart.component';
 import { SettingsComponent } from './components/settings/settings.component';
 import { SearchBoxComponent } from './components/controls/search-box/search-box.component';
 import { UserInfoComponent } from './components/settings/user-info/user-info.component';
@@ -74,9 +61,6 @@ import { BugitemEditComponent } from './components/controls/editors/bugitem-edit
     GroupByPipe,
     KeysPipe,
     DashboardComponent,
-    FusionComponent,
-    MachinechartComponent,
-    ShiftschartComponent,
     SettingsComponent,
     UserManagementComponent,
     SearchBoxComponent,
@@ -112,7 +96,6 @@ import { BugitemEditComponent } from './components/controls/editors/bugitem-edit
     }),
     ToastaModule.forRoot(),
     ClarityModule,    
-    FusionChartsModule,
     QuillModule.forRoot({
       modules: {
         toolbar: [

@@ -16,19 +16,22 @@ var taskService_1 = require("../../../services/tasks/taskService");
 var app_translation_service_1 = require("../../../services/app-translation.service");
 var utilities_1 = require("../../../services/utilities");
 var account_service_1 = require("../../../services/account.service");
+var animations_1 = require("../../../services/animations");
 var TaskManagementComponent = /** @class */ (function () {
-    function TaskManagementComponent(accountService, alertService, translationService, taskService) {
+    function TaskManagementComponent(accountService, alertService, translationService, taskService, renderer) {
         var _this = this;
         this.accountService = accountService;
         this.alertService = alertService;
         this.translationService = translationService;
         this.taskService = taskService;
+        this.renderer = renderer;
         this.columns = [];
         this.tasks = [];
         this.tasksCache = [];
         this.selected = [];
         this.gT = function (key) { return _this.translationService.getTranslation(key); };
         this.isOpen = false;
+        this.curDate = new Date();
     }
     TaskManagementComponent.prototype.ngOnInit = function () {
         this.PendingActive = true;
@@ -37,6 +40,9 @@ var TaskManagementComponent = /** @class */ (function () {
     TaskManagementComponent.prototype.onAdd = function () {
         this.taskEdit.Create();
         this.isOpen = true;
+    };
+    TaskManagementComponent.prototype.onClose = function (tasks) {
+        this.taskEdit.MarkClosed(tasks);
     };
     TaskManagementComponent.prototype.onActive = function (task) {
         this.taskEdit.MarkActive(task);
@@ -51,19 +57,30 @@ var TaskManagementComponent = /** @class */ (function () {
         this.taskEdit.Edit(task.id);
         this.isOpen = true;
     };
-    TaskManagementComponent.prototype.onDelete = function (task) {
-        if (task) {
-            this.taskEdit.DeleteSingle(task);
-        }
-        else {
-            if (this.selected.length > 0) {
-                this.taskEdit.DeleteRange(this.selected);
-            }
+    TaskManagementComponent.prototype.onExportSelected = function (selected, exportOption) {
+        var _this = this;
+        switch (exportOption) {
+            case 'excel':
+                var csv = this.selected.map(function (task) { return _this.taskToFile(task); }).join("\n");
+                var titlecsv = "Releasenote;" + this.curDate.toLocaleDateString() + "\n" + "Id;Title" + "\n";
+                this.renderer.setAttribute(this.excelLink.nativeElement, "href", "data:text/plain;charset=utf-8," + titlecsv + csv);
+            case 'word':
+                var docx = this.selected.map(function (task) { return _this.excelToFile(task); }).join("\n\n");
+                var titleDoc = "Releasenote: " + this.curDate.toLocaleDateString() + "\n" + "\n" + "\n" + "\n" + "Az alkalmazás az alábbi fejlesztésekkel bővült: " + "\n" + "\n" + "\n";
+                this.renderer.setAttribute(this.wordLink.nativeElement, "href", "data:text/plain;charset=utf-8," + titleDoc + docx);
+                console.log(titleDoc + docx);
+            case 'pdf':
+                var pdf = this.selected.map(function (task) { return _this.taskToFile(task); }).join("\n");
+                var titlePdf = "Releasenote" + this.curDate.toLocaleDateString() + "\n" + "Id;Title" + "\n";
+                this.renderer.setAttribute(this.pdfLink.nativeElement, "href", "data:text/plain;charset=utf-8," + titlePdf + pdf);
+            default:
         }
     };
-    TaskManagementComponent.prototype.onExportAll = function () {
+    TaskManagementComponent.prototype.taskToFile = function (task) {
+        return [task.id, task.title].join(';');
     };
-    TaskManagementComponent.prototype.onExportSelected = function () {
+    TaskManagementComponent.prototype.excelToFile = function (task) {
+        return ["Azonositó: " + task.id + " Fejlesztés: " + task.title];
     };
     TaskManagementComponent.prototype.loadResolved = function () {
         var _this = this;
@@ -110,6 +127,12 @@ var TaskManagementComponent = /** @class */ (function () {
     TaskManagementComponent.prototype.popItem = function (task) {
         this.removeItem(task);
     };
+    TaskManagementComponent.prototype.popSelected = function (tasks) {
+        for (var _i = 0, tasks_1 = tasks; _i < tasks_1.length; _i++) {
+            var task = tasks_1[_i];
+            this.removeItem(task);
+        }
+    };
     TaskManagementComponent.prototype.updateStatus = function (task) {
         this.updateItem(task);
     };
@@ -152,14 +175,27 @@ var TaskManagementComponent = /** @class */ (function () {
         core_1.ViewChild(task_edit_component_1.TaskEditComponent),
         __metadata("design:type", Object)
     ], TaskManagementComponent.prototype, "taskEdit", void 0);
+    __decorate([
+        core_1.ViewChild("excel"),
+        __metadata("design:type", core_1.ElementRef)
+    ], TaskManagementComponent.prototype, "excelLink", void 0);
+    __decorate([
+        core_1.ViewChild("word"),
+        __metadata("design:type", core_1.ElementRef)
+    ], TaskManagementComponent.prototype, "wordLink", void 0);
+    __decorate([
+        core_1.ViewChild("pdf"),
+        __metadata("design:type", core_1.ElementRef)
+    ], TaskManagementComponent.prototype, "pdfLink", void 0);
     TaskManagementComponent = __decorate([
         core_1.Component({
             selector: 'app-task-management',
             templateUrl: './task-management.component.html',
-            styleUrls: ['./task-management.component.css']
+            styleUrls: ['./task-management.component.css'],
+            animations: [animations_1.fadeInOut]
         }),
         __metadata("design:paramtypes", [account_service_1.AccountService, alert_service_1.AlertService,
-            app_translation_service_1.AppTranslationService, taskService_1.TaskService])
+            app_translation_service_1.AppTranslationService, taskService_1.TaskService, core_1.Renderer2])
     ], TaskManagementComponent);
     return TaskManagementComponent;
 }());

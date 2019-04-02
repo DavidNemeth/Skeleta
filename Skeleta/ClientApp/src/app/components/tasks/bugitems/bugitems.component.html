@@ -1,6 +1,6 @@
 <div class="maxwidth">
   <app-bugitem-edit [isOpen]="isOpen" (openClose)="closeTab($event)" (updateData)="updateList($event)" (popData)="popItem($event)" (updateStatus)="updateStatus($event)" (deleteData)="deleteList($event)"></app-bugitem-edit>
-  <clr-datagrid style="min-height:200px;" class="datagrid-compact">
+  <clr-datagrid [@fadeInOut] style="min-height:200px;" class="datagrid-compact">
     <clr-dg-action-bar>
       <div style="margin-right: 0rem; margin-left: 0rem;" class="clr-row clr-justify-content-between">
         <div class="btn-group">

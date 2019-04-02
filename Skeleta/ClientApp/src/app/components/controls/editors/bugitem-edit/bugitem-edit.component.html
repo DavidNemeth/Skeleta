@@ -1,5 +1,5 @@
 <clr-modal [(clrModalOpen)]="isOpen" (clrModalOpenChange)=onOpen($event) [clrModalStaticBackdrop]="false" [clrModalSize]="'lg'">
-  <form *ngIf="isOpen" class="clr-form modal-body" autocomplete="off" [formGroup]="bugForm" (ngSubmit)="save()">
+  <form [@fadeInOut] *ngIf="isOpen" class="clr-form modal-body" autocomplete="off" [formGroup]="bugForm" (ngSubmit)="save()">
 
     <div class="clr-form-control">
       <div class="clr-control-container">

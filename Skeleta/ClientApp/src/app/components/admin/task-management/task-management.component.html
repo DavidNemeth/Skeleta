@@ -2,7 +2,7 @@
   <app-task-edit [isOpen]="isOpen" (openClose)="closeTab($event)" (popSelected)="popSelected($event)" (updateData)="updateList($event)" (popData)="popItem($event)" (updateStatus)="updateStatus($event)" (deleteData)="deleteList($event)"></app-task-edit>
   <clr-tabs *ngIf="isOpen===false">
     <!-- Active Tab -->
-    <clr-tab>
+    <clr-tab [@fadeInOut]>
       <button (click)="loadPending()" clrTabLink>Pending</button>
       <ng-template [(clrIfActive)]="PendingActive">
         <clr-tab-content>
@@ -96,7 +96,7 @@
       </ng-template>
     </clr-tab>
     <!-- Resolved Tab -->
-    <clr-tab>
+    <clr-tab [@fadeInOut]>
       <button (click)="loadResolved()" clrTabLink>Resolved</button>
       <ng-template [(clrIfActive)]="ResolvedActive">
         <clr-tab-content>
@@ -201,7 +201,7 @@
       </ng-template>
     </clr-tab>
     <!-- Completed Tab -->
-    <clr-tab>
+    <clr-tab [@fadeInOut]>
       <button (click)="loadCompleted()" clrTabLink>Completed</button>
       <ng-template [(clrIfActive)]="CompletedActive">
         <clr-tab-content>

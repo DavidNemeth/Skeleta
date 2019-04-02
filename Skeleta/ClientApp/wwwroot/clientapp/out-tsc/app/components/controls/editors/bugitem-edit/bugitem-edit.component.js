@@ -19,6 +19,7 @@ var alert_service_1 = require("../../../../services/alert.service");
 var bugitemService_1 = require("../../../../services/bugItems/bugitemService");
 var account_service_1 = require("../../../../services/account.service");
 var taskService_1 = require("../../../../services/tasks/taskService");
+var animations_1 = require("../../../../services/animations");
 var BugitemEditComponent = /** @class */ (function () {
     function BugitemEditComponent(translationService, taskService, alertService, formBuilder, bugService, accountService) {
         var _this = this;
@@ -188,7 +189,8 @@ var BugitemEditComponent = /** @class */ (function () {
         core_1.Component({
             selector: 'app-bugitem-edit',
             templateUrl: './bugitem-edit.component.html',
-            styleUrls: ['./bugitem-edit.component.css']
+            styleUrls: ['./bugitem-edit.component.css'],
+            animations: [animations_1.fadeInOut]
         }),
         __metadata("design:paramtypes", [app_translation_service_1.AppTranslationService, taskService_1.TaskService,
             alert_service_1.AlertService, forms_1.FormBuilder,

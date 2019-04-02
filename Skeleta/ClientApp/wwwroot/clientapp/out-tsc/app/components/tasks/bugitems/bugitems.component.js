@@ -17,6 +17,7 @@ var bugitem_edit_component_1 = require("../../controls/editors/bugitem-edit/bugi
 var bugitemService_1 = require("../../../services/bugItems/bugitemService");
 var utilities_1 = require("../../../services/utilities");
 var task_model_1 = require("../../../services/tasks/task.model");
+var animations_1 = require("../../../services/animations");
 var BugitemsComponent = /** @class */ (function () {
     function BugitemsComponent(accountService, alertService, translationService, bugitemService) {
         var _this = this;
@@ -106,7 +107,8 @@ var BugitemsComponent = /** @class */ (function () {
         core_1.Component({
             selector: 'app-bugitems',
             templateUrl: './bugitems.component.html',
-            styleUrls: ['./bugitems.component.css']
+            styleUrls: ['./bugitems.component.css'],
+            animations: [animations_1.fadeInOut]
         }),
         __metadata("design:paramtypes", [account_service_1.AccountService, alert_service_1.AlertService,
             app_translation_service_1.AppTranslationService, bugitemService_1.BugItemService])

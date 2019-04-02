@@ -6,12 +6,13 @@ import { TaskService } from '../../../services/tasks/taskService';
 import { AppTranslationService } from '../../../services/app-translation.service';
 import { Utilities } from '../../../services/utilities';
 import { AccountService } from '../../../services/account.service';
-import { forEach } from '@angular/router/src/utils/collection';
+import { fadeInOut } from '../../../services/animations';
 
 @Component({
   selector: 'app-task-management',
   templateUrl: './task-management.component.html',
-  styleUrls: ['./task-management.component.css']
+  styleUrls: ['./task-management.component.css'],
+  animations: [fadeInOut]
 })
 export class TaskManagementComponent implements OnInit {
   columns: any[] = [];

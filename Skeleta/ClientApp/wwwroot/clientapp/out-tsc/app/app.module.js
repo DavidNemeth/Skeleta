@@ -16,13 +16,6 @@ var ngx_toasta_1 = require("ngx-toasta");
 var angular_1 = require("@clr/angular");
 var ng_select_1 = require("@ng-select/ng-select");
 var ngx_quill_1 = require("ngx-quill");
-var angular_fusioncharts_1 = require("angular-fusioncharts");
-var core_3 = require("fusioncharts/core");
-var column2d_1 = require("fusioncharts/viz/column2d");
-var stackedcolumn3dline_1 = require("fusioncharts/viz/stackedcolumn3dline");
-var gantt_1 = require("fusioncharts/gantt");
-var fusioncharts_theme_fusion_1 = require("fusioncharts/themes/es/fusioncharts.theme.fusion");
-angular_fusioncharts_1.FusionChartsModule.fcRoot(core_3.default, column2d_1.default, stackedcolumn3dline_1.default, fusioncharts_theme_fusion_1.default, gantt_1.default);
 var group_by_pipe_1 = require("./pipes/group-by.pipe");
 var keys_pipe_1 = require("./pipes/keys.pipe");
 var app_routing_module_1 = require("./app-routing.module");
@@ -45,9 +38,6 @@ var app_component_1 = require("./components/app.component");
 var home_component_1 = require("./components/home/home.component");
 var login_component_1 = require("./components/login/login.component");
 var dashboard_component_1 = require("./components/dashboard/dashboard.component");
-var fusion_component_1 = require("./components/controls/charts/fusion/fusion.component");
-var machinechart_component_1 = require("./components/controls/charts/machinechart/machinechart.component");
-var shiftschart_component_1 = require("./components/controls/charts/shiftschart/shiftschart.component");
 var settings_component_1 = require("./components/settings/settings.component");
 var search_box_component_1 = require("./components/controls/search-box/search-box.component");
 var user_info_component_1 = require("./components/settings/user-info/user-info.component");
@@ -78,9 +68,6 @@ var AppModule = /** @class */ (function () {
                 group_by_pipe_1.GroupByPipe,
                 keys_pipe_1.KeysPipe,
                 dashboard_component_1.DashboardComponent,
-                fusion_component_1.FusionComponent,
-                machinechart_component_1.MachinechartComponent,
-                shiftschart_component_1.ShiftschartComponent,
                 settings_component_1.SettingsComponent,
                 user_management_component_1.UserManagementComponent,
                 search_box_component_1.SearchBoxComponent,
@@ -116,7 +103,6 @@ var AppModule = /** @class */ (function () {
                 }),
                 ngx_toasta_1.ToastaModule.forRoot(),
                 angular_1.ClarityModule,
-                angular_fusioncharts_1.FusionChartsModule,
                 ngx_quill_1.QuillModule.forRoot({
                     modules: {
                         toolbar: [

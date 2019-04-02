@@ -18,6 +18,7 @@ var taskService_1 = require("../../../../services/tasks/taskService");
 var task_model_1 = require("../../../../services/tasks/task.model");
 var enum_1 = require("../../../../models/enum");
 var account_service_1 = require("../../../../services/account.service");
+var animations_1 = require("../../../../services/animations");
 var TaskEditComponent = /** @class */ (function () {
     function TaskEditComponent(translationService, alertService, formBuilder, taskService, accountService) {
         var _this = this;
@@ -31,15 +32,18 @@ var TaskEditComponent = /** @class */ (function () {
         this.gT = function (key) { return _this.translationService.getTranslation(key); };
         this.actionTitle = "";
         this.deleteOpen = false;
+        this.archiveOpen = false;
         this.isNewTask = false;
         this.allStatus = Object.keys(enum_1.Status).slice();
         this.allPriority = Object.keys(enum_1.Priority).slice();
         this.initialTask = new task_model_1.Task();
         this.tasksToDelete = [];
+        this.tasksToClose = [];
         this.users = [];
         this.popData = new core_1.EventEmitter();
         this.updateStatus = new core_1.EventEmitter();
         this.updateData = new core_1.EventEmitter();
+        this.popSelected = new core_1.EventEmitter();
         this.deleteData = new core_1.EventEmitter();
         this.openClose = new core_1.EventEmitter();
     }
@@ -171,6 +175,27 @@ var TaskEditComponent = /** @class */ (function () {
             });
         }
     };
+    TaskEditComponent.prototype.MarkClosed = function (tasks) {
+        this.tasksToClose = tasks;
+        this.archiveOpen = true;
+    };
+    TaskEditComponent.prototype.CloseTasks = function () {
+        var _this = this;
+        this.deleteBtnState = angular_1.ClrLoadingState.LOADING;
+        if (this.tasksToClose) {
+            for (var i = 0; i < this.tasksToClose.length; i++) {
+                this.taskService.GetTask(this.tasksToClose[i].id).subscribe(function (editTask) {
+                    editTask.status = enum_1.Status.Closed;
+                    _this.taskService.UpdateTask(editTask).subscribe(function (response) {
+                    }, function (error) { return _this.alertService.showMessage(error, null, alert_service_1.MessageSeverity.error); });
+                });
+            }
+            this.alertService.showMessage(this.gT('toasts.saved'), "Task(s) Archived!", alert_service_1.MessageSeverity.success);
+            this.deleteBtnState = angular_1.ClrLoadingState.SUCCESS;
+            this.popSelected.emit(this.tasksToClose);
+            this.archiveOpen = false;
+        }
+    };
     TaskEditComponent.prototype.DeleteRange = function (tasks) {
         this.deleteOpen = true;
         this.tasksToDelete = tasks;
@@ -225,6 +250,10 @@ var TaskEditComponent = /** @class */ (function () {
     __decorate([
         core_1.Output(),
         __metadata("design:type", Object)
+    ], TaskEditComponent.prototype, "popSelected", void 0);
+    __decorate([
+        core_1.Output(),
+        __metadata("design:type", Object)
     ], TaskEditComponent.prototype, "deleteData", void 0);
     __decorate([
         core_1.Output(),
@@ -234,7 +263,8 @@ var TaskEditComponent = /** @class */ (function () {
         core_1.Component({
             selector: 'app-task-edit',
             templateUrl: './task-edit.component.html',
-            styleUrls: ['./task-edit.component.css']
+            styleUrls: ['./task-edit.component.css'],
+            animations: [animations_1.fadeInOut],
         }),
         __metadata("design:paramtypes", [app_translation_service_1.AppTranslationService,
             alert_service_1.AlertService, forms_1.FormBuilder,

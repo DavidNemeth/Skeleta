@@ -13,9 +13,6 @@ var home_component_1 = require("./components/home/home.component");
 var auth_service_1 = require("./services/auth.service");
 var auth_guard_service_1 = require("./services/auth-guard.service");
 var settings_component_1 = require("./components/settings/settings.component");
-var shiftschart_component_1 = require("./components/controls/charts/shiftschart/shiftschart.component");
-var machinechart_component_1 = require("./components/controls/charts/machinechart/machinechart.component");
-var fusion_component_1 = require("./components/controls/charts/fusion/fusion.component");
 var dashboard_component_1 = require("./components/dashboard/dashboard.component");
 var smart_dashboard_component_1 = require("./components/dashboard/smart-dashboard/smart-dashboard.component");
 var smart_settings_component_1 = require("./components/settings/smart-settings/smart-settings.component");
@@ -42,9 +39,6 @@ var routes = [
     {
         path: 'dashboard', component: dashboard_component_1.DashboardComponent, canActivate: [auth_guard_service_1.AuthGuard], data: { title: 'Dashboard' }, children: [
             { path: '', component: smart_dashboard_component_1.SmartDashboardComponent, data: { title: 'Smart Panel' } },
-            { path: 'machinechart', component: machinechart_component_1.MachinechartComponent, data: { title: 'Machine Breakdown' } },
-            { path: 'fusionchart', component: fusion_component_1.FusionComponent, data: { title: 'Fusion Chart' } },
-            { path: 'shiftchart', component: shiftschart_component_1.ShiftschartComponent, data: { title: 'Shift Assignment' } }
         ]
     },
     {
