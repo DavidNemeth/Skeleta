@@ -1,5 +1,5 @@
-<clr-main-container [@fadeInOut] class="main-container">
-  <clr-header [@fadeInOut] *ngIf="isUserLoggedIn">
+<div [@fadeInOut] class="main-container">
+  <header class="header header-6" *ngIf="isUserLoggedIn">
     <div class="branding">
       <a routerLink="" class="nav-link">
         <span class="title">Project SimpleTask</span>
@@ -32,7 +32,7 @@
         </clr-dropdown-menu>
       </clr-dropdown>
     </div>
-  </clr-header>
-  <ngx-toasta></ngx-toasta>
-  <router-outlet></router-outlet>
-</clr-main-container>
+  </header>
+    <ngx-toasta></ngx-toasta>
+      <router-outlet></router-outlet>
+</div>

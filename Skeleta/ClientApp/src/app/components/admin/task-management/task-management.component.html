@@ -1,11 +1,11 @@
-<div class="maxwidth">
+<div class="contentWrapper">
   <app-task-edit [isOpen]="isOpen" (openClose)="closeTab($event)" (popSelected)="popSelected($event)" (updateData)="updateList($event)" (popData)="popItem($event)" (updateStatus)="updateStatus($event)" (deleteData)="deleteList($event)"></app-task-edit>
   <clr-tabs *ngIf="isOpen===false">
     <!-- Active Tab -->
-    <clr-tab [@fadeInOut]>
+    <clr-tab>
       <button (click)="loadPending()" clrTabLink>Pending</button>
       <ng-template [(clrIfActive)]="PendingActive">
-        <clr-tab-content>
+        <clr-tab-content [@fadeInOut]>
           <clr-datagrid style="height:632px;" class="datagrid-compact">
             <clr-dg-action-bar>
               <div style="margin-right: 0rem; margin-left: 0rem;" class="clr-row clr-justify-content-between">
@@ -96,7 +96,7 @@
       </ng-template>
     </clr-tab>
     <!-- Resolved Tab -->
-    <clr-tab [@fadeInOut]>
+    <clr-tab>
       <button (click)="loadResolved()" clrTabLink>Resolved</button>
       <ng-template [(clrIfActive)]="ResolvedActive">
         <clr-tab-content>
@@ -201,7 +201,7 @@
       </ng-template>
     </clr-tab>
     <!-- Completed Tab -->
-    <clr-tab [@fadeInOut]>
+    <clr-tab>
       <button (click)="loadCompleted()" clrTabLink>Completed</button>
       <ng-template [(clrIfActive)]="CompletedActive">
         <clr-tab-content>
@@ -240,7 +240,7 @@
                 {{'tasks.management.Title' | translate}}
               </ng-container>
             </clr-dg-column>
-          
+
             <clr-dg-column [clrDgField]="'status'">
               <ng-container *clrDgHideableColumn="{hidden: false}">
                 {{'tasks.management.Status' | translate}}

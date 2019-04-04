@@ -15,7 +15,7 @@
 }
 
 .header {
-  background-color: #002538 !important;
+  background: #006a91 !important;
 }
 
 /*custom classes*/
@@ -145,3 +145,14 @@ clr-tabs.vertical-tabs {
       clr-tabs.vertical-tabs.nav-align-right .nav .nav-link.nav-item.active, clr-tabs.vertical-tabs.nav-align-right .nav .nav-link.nav-item:hover {
         box-shadow: inset -3px 0 0 #007cbb;
       }
+
+.contentWrapper {
+  max-width: 1248px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.rowwidthfix {
+  margin-right: 0rem !important;
+  margin-left: 0rem !important;
+}

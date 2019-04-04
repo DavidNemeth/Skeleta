@@ -104,10 +104,9 @@ import { BugitemEditComponent } from './components/controls/editors/bugitem-edit
           ['blockquote', 'code-block'],
           [{ 'header': 1 }, { 'header': 2 }],
           [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-          [{ 'color': [] }, { 'background': [] }],
-          [{ 'font': [] }],
+          [{ 'color': [] }],
           [{ 'align': [] }],
-          ['link', 'image', 'video'],
+          ['link', 'image'],
         ]       
       }
     })
