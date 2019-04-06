@@ -1,12 +1,12 @@
 <div class="contentWrapper">
-  <app-task-edit [isOpen]="isOpen" (openClose)="closeTab($event)" (popSelected)="popSelected($event)" (updateData)="updateList($event)" (popData)="popItem($event)" (updateStatus)="updateStatus($event)" (deleteData)="deleteList($event)"></app-task-edit>
-  <clr-tabs *ngIf="isOpen===false">
+  <app-task-edit (cancel)="open($event)" (addData)="addItem($event)" (popSelected)="popSelected($event)" (popData)="popItem($event)" (updateData)="handleUpdate($event)" (deleteData)="loadData($event)"></app-task-edit>
+  <clr-tabs [hidden]="!isOpen">
     <!-- Active Tab -->
     <clr-tab>
       <button (click)="loadPending()" clrTabLink>Pending</button>
       <ng-template [(clrIfActive)]="PendingActive">
-        <clr-tab-content [@fadeInOut]>
-          <clr-datagrid style="height:632px;" class="datagrid-compact">
+        <clr-tab-content>
+          <clr-datagrid [@fadeInOut] style="height:632px;" class="datagrid-compact">
             <clr-dg-action-bar>
               <div style="margin-right: 0rem; margin-left: 0rem;" class="clr-row clr-justify-content-between">
                 <div class="btn-group btn-primary btn-sm">
@@ -19,7 +19,7 @@
             </clr-dg-action-bar>
             <clr-dg-column [clrDgField]="'title'">
               <ng-container *clrDgHideableColumn="{hidden: false}">
-                {{'tasks.management.Title' | translate}}
+                {{'tasks.management.Task' | translate}}
               </ng-container>
             </clr-dg-column>
             <clr-dg-column [clrDgField]="'priority'">
@@ -40,7 +40,7 @@
             <clr-dg-placeholder>Loading Tasks!</clr-dg-placeholder>
             <clr-dg-row *clrDgItems="let task of tasks" [clrDgItem]="task">
               <clr-dg-cell>
-                <span *ngIf="task.openBugcount > 0" class="badge badge-danger">{{task.openBugcount}}</span>
+                <clr-icon shape="tasks" class="is-highlight is-solid"></clr-icon>
                 <a href="javascript:void(0)" (click)="onEdit(task)">{{task.title}} </a>
               </clr-dg-cell>
 
@@ -50,6 +50,8 @@
                 <clr-icon *ngIf="task.priority == 'Medium'" shape="exclamation-triangle" size="15" class="is-highlight"></clr-icon>
                 <clr-icon *ngIf="task.priority == 'Low'" shape="exclamation-triangle" size="15" class="is-success"></clr-icon>
                 {{task.priority}}
+                <span *ngIf="task.openBugcount > 0" class="badge badge-danger">{{task.openBugcount}}</span>
+
               </clr-dg-cell>
 
               <clr-dg-cell>
@@ -100,7 +102,7 @@
       <button (click)="loadResolved()" clrTabLink>Resolved</button>
       <ng-template [(clrIfActive)]="ResolvedActive">
         <clr-tab-content>
-          <clr-datagrid style="height:632px;" class="datagrid-compact">
+          <clr-datagrid [@fadeInOut] style="height:632px;" class="datagrid-compact">
             <clr-dg-action-bar>
               <div style="margin-right: 0rem; margin-left: 0rem;" class="clr-row clr-justify-content-between">
                 <div class="btn-group btn-primary btn-sm">
@@ -205,7 +207,7 @@
       <button (click)="loadCompleted()" clrTabLink>Completed</button>
       <ng-template [(clrIfActive)]="CompletedActive">
         <clr-tab-content>
-          <clr-datagrid [(clrDgSelected)]="selected" style="height:632px;" class="datagrid-compact">
+          <clr-datagrid [@fadeInOut] [(clrDgSelected)]="selected" style="height:632px;" class="datagrid-compact">
             <clr-dg-action-bar>
               <div style="margin-right: 0rem; margin-left: 0rem;" class="clr-row clr-justify-content-between">
                 <div class="btn-group btn-primary btn-sm">
@@ -230,14 +232,14 @@
                 </div>
               </div>
             </clr-dg-action-bar>
-            <clr-dg-column>
+            <clr-dg-column [style.width.px]="100">
               <ng-container *clrDgHideableColumn="{hidden: false}">
                 Id
               </ng-container>
             </clr-dg-column>
             <clr-dg-column [clrDgField]="'title'">
               <ng-container *clrDgHideableColumn="{hidden: false}">
-                {{'tasks.management.Title' | translate}}
+                {{'tasks.management.Task' | translate}}
               </ng-container>
             </clr-dg-column>
 
@@ -250,12 +252,11 @@
 
             <clr-dg-row *clrDgItems="let task of tasks" [clrDgItem]="task">
               <clr-dg-cell>
-                <a href="javascript:void(0)" (click)="onEdit(task)">{{task.id}} </a>
-                <span *ngIf="task.openBugcount > 0" class="badge badge-danger">{{task.openBugcount}}</span>
-                <span *ngIf="task.resolvedBugcount > 0" class="badge badge-warning">{{task.resolvedBugcount}}</span>
+                <clr-icon shape="tasks" class="is-highlight is-solid"></clr-icon>
+                <a href="javascript:void(0)" (click)="onEdit(task)">{{task.id}}</a>
               </clr-dg-cell>
               <clr-dg-cell>
-                {{task.title}}
+                <a href="javascript:void(0)" (click)="onEdit(task)">{{task.title}} </a>
               </clr-dg-cell>
 
               <clr-dg-cell>

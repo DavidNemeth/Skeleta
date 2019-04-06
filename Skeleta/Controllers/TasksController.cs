@@ -1,14 +1,17 @@
 ﻿using AutoMapper;
 using DAL;
 using DAL.Core.Interfaces;
+using DAL.Models;
 using DAL.Models.TaskModel;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using OpenIddict.Validation;
 using Skeleta.Authorization;
 using Skeleta.Services.WorkItemServices;
 using Skeleta.ViewModels.WorkItemViewModels;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -18,18 +21,14 @@ namespace Skeleta.Controllers
 	[Route("api/[controller]")]
 	public class TasksController : Controller
 	{
-		private readonly IAccountManager accountManager;
-		private ITaskService taskService;
-		private ApplicationDbContext context;
-		readonly ILogger logger;
+		private ITaskService _taskService;
 		private readonly IAuthorizationService authorizationService;
+		private readonly UserManager<ApplicationUser> _userManager;
 
-		public TasksController(ApplicationDbContext context, ITaskService taskService, ILogger<TasksController> logger, IAccountManager accountManager, IAuthorizationService authorizationService)
+		public TasksController(ITaskService taskService, IAuthorizationService authorizationService, UserManager<ApplicationUser> userManager)
 		{
-			this.accountManager = accountManager;
-			this.taskService = taskService;
-			this.context = context;
-			this.logger = logger;
+			_userManager = userManager;
+			_taskService = taskService;
 			this.authorizationService = authorizationService;
 		}
 
@@ -38,7 +37,7 @@ namespace Skeleta.Controllers
 		[ProducesResponseType(200, Type = typeof(IEnumerable<TaskListViewModel>))]
 		public async Task<IActionResult> GetAll()
 		{
-			return Ok(await taskService.GetAllTask());
+			return Ok(await _taskService.GetAllTask());
 		}
 
 		// GET: api/values
@@ -50,7 +49,7 @@ namespace Skeleta.Controllers
 			if (!(await authorizationService.AuthorizeAsync(this.User, "", TaskManagementOperations.Read)).Succeeded)
 				return new ChallengeResult();
 
-			var pendingTasks = await taskService.GetAllPendingTask();
+			var pendingTasks = await _taskService.GetAllPendingTask();
 			return Ok(pendingTasks);
 		}
 
@@ -59,7 +58,7 @@ namespace Skeleta.Controllers
 		[ProducesResponseType(200, Type = typeof(IEnumerable<TaskListViewModel>))]
 		public async Task<IActionResult> GetClosed()
 		{
-			var closedTasks = await taskService.GetAllClosedTask();
+			var closedTasks = await _taskService.GetAllClosedTask();
 			return Ok(closedTasks);
 		}
 
@@ -68,7 +67,7 @@ namespace Skeleta.Controllers
 		[ProducesResponseType(200, Type = typeof(IEnumerable<TaskListViewModel>))]
 		public async Task<IActionResult> GetCompleted()
 		{
-			var completedTasks = await taskService.GetAllCompletedTask();
+			var completedTasks = await _taskService.GetAllCompletedTask();
 			return Ok(completedTasks);
 		}
 
@@ -77,7 +76,7 @@ namespace Skeleta.Controllers
 		[ProducesResponseType(200, Type = typeof(IEnumerable<TaskListViewModel>))]
 		public async Task<IActionResult> GetResolved()
 		{
-			var resolvedTasks = await taskService.GetAllResolvedTask();
+			var resolvedTasks = await _taskService.GetAllResolvedTask();
 			return Ok(resolvedTasks);
 		}
 
@@ -86,8 +85,8 @@ namespace Skeleta.Controllers
 		[ProducesResponseType(200, Type = typeof(TaskItemViewModel))]
 		public async Task<IActionResult> Get(int id)
 		{
-			var task = await taskService.GetById(id);
-			return Ok(task);
+			var viewmodel = await _taskService.GetVMById(id);
+			return Ok(viewmodel);
 		}
 
 
@@ -102,14 +101,17 @@ namespace Skeleta.Controllers
 				if (viewmodel == null)
 					return BadRequest($"{nameof(viewmodel)} cannot be null");
 
-				var item = Mapper.Map<TaskItem>(viewmodel);
-				context.TaskItems.Add(item);
-				await context.SaveChangesAsync();
+				var taskItem = Mapper.Map<TaskItem>(viewmodel);
+				AuditEntity(ref taskItem);
+				_taskService.Add(taskItem);
+				await _taskService.SaveChangesAsync();
 
-				return NoContent();
+				return Ok();
 			}
 			return BadRequest(ModelState);
 		}
+
+
 
 
 
@@ -126,16 +128,16 @@ namespace Skeleta.Controllers
 				if (viewmodel == null)
 					return BadRequest($"{nameof(viewmodel)} cannot be null");
 
-				TaskItem appTask = Mapper.Map<TaskItem>(await taskService.GetById(id));
+				TaskItem taskItem = await _taskService.GetById(id);
 
-				if (appTask == null)
+				if (taskItem == null)
 					return NotFound(id);
 
-				Mapper.Map(viewmodel, appTask);
-				context.TaskItems.Update(appTask);
-				await context.SaveChangesAsync();
-
-				return NoContent();
+				Mapper.Map(viewmodel, taskItem);
+				AuditEntity(ref taskItem);
+				_taskService.Update(taskItem);
+				await _taskService.SaveChangesAsync();
+				return Ok();
 			}
 
 			return BadRequest(ModelState);
@@ -145,54 +147,44 @@ namespace Skeleta.Controllers
 
 		// DELETE api/values/5
 		[HttpDelete("{id}")]
-		[ProducesResponseType(200, Type = typeof(TaskItemViewModel))]
+		[ProducesResponseType(200)]
 		[ProducesResponseType(400)]
 		[ProducesResponseType(404)]
 		public async Task<IActionResult> Delete(int id)
 		{
-			TaskItemViewModel taskVM = null;
-			TaskItem task = Mapper.Map<TaskItem>(await taskService.GetById(id));
-
-			if (task != null)
-				taskVM = Mapper.Map<TaskItemViewModel>(task);
-
-			if (taskVM == null)
+			TaskItem taskItem = await _taskService.GetById(id);
+			if (taskItem == null)
 				return NotFound(id);
 
-			context.TaskItems.Remove(task);
-			await context.SaveChangesAsync();
-			return Ok(taskVM);
+			_taskService.Remove(taskItem);
+			await _taskService.SaveChangesAsync();
+			return Ok();
 		}
 
 		// DELETE RANGE api/values/range/5
 		[HttpDelete("range/{ids}")]
-		[ProducesResponseType(200, Type = typeof(TaskItemViewModel))]
+		[ProducesResponseType(200)]
 		[ProducesResponseType(400)]
 		[ProducesResponseType(404)]
 		public async Task<IActionResult> DeleteRange(int[] ids)
 		{
-			List<TaskItemViewModel> tasksVM = new List<TaskItemViewModel>();
-			List<TaskItem> tasks = new List<TaskItem>();
+			_taskService.RemoveRange(ids);
+			await _taskService.SaveChangesAsync();
+			return Ok();
+		}
 
-			foreach (var id in ids)
+
+		private void AuditEntity(ref TaskItem item)
+		{
+			var date = DateTime.Now;
+			if (item.CreatedBy == null)
 			{
-				TaskItemViewModel taskVM = null;
-				TaskItem task = Mapper.Map<TaskItem>(await taskService.GetById(id));
-
-				if (task != null)
-				{
-					taskVM = Mapper.Map<TaskItemViewModel>(task);
-					tasks.Add(task);
-					if (taskVM != null)
-					{
-						tasksVM.Add(taskVM);
-					}
-				}
+				item.CreatedBy = _userManager.GetUserId(User);
+				item.CreatedDate = date;
 			}
 
-			context.TaskItems.RemoveRange(tasks);
-			await context.SaveChangesAsync();
-			return Ok(tasksVM);
+			item.UpdatedBy = _userManager.GetUserId(User);
+			item.UpdatedDate = date;
 		}
 	}
 }

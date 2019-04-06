@@ -30,7 +30,6 @@ var TaskEditComponent = /** @class */ (function () {
         this.submitBtnState = angular_1.ClrLoadingState.DEFAULT;
         this.deleteBtnState = angular_1.ClrLoadingState.DEFAULT;
         this.gT = function (key) { return _this.translationService.getTranslation(key); };
-        this.actionTitle = "";
         this.deleteOpen = false;
         this.archiveOpen = false;
         this.isNewTask = false;
@@ -51,7 +50,6 @@ var TaskEditComponent = /** @class */ (function () {
         var _this = this;
         this.accountService.getUsers().subscribe(function (users) { return _this.users = users; });
         this.currentUser = this.accountService.currentUser;
-        this.loadForm();
     };
     TaskEditComponent.prototype.loadForm = function () {
         this.taskForm = this.formBuilder.group({
@@ -62,13 +60,14 @@ var TaskEditComponent = /** @class */ (function () {
             developerId: [this.currentUser.id],
             testerId: [this.currentUser.id]
         });
+        this.dataLoaded = true;
     };
     TaskEditComponent.prototype.close = function () {
+        this.dataLoaded = false;
+        this.taskForm.reset();
         this.isEdit = false;
-        this.isOpen = false;
         this.openClose.emit();
         this.isNewTask = false;
-        this.loadForm();
         this.alertService.resetStickyMessage();
     };
     TaskEditComponent.prototype.save = function () {
@@ -101,9 +100,9 @@ var TaskEditComponent = /** @class */ (function () {
         this.isEdit = false;
         this.submitBtnState = angular_1.ClrLoadingState.DEFAULT;
         this.isNewTask = true;
-        this.actionTitle = "Add";
         this.initialTask = new task_model_1.Task();
         this.taskEdit = new task_model_1.Task();
+        this.loadForm();
     };
     TaskEditComponent.prototype.Edit = function (taskid) {
         var _this = this;
@@ -116,7 +115,7 @@ var TaskEditComponent = /** @class */ (function () {
                 Object.assign(_this.taskEdit, response);
                 _this.submitBtnState = angular_1.ClrLoadingState.DEFAULT;
                 _this.isNewTask = false;
-                _this.actionTitle = "Edit";
+                _this.loadForm();
                 _this.taskForm.patchValue(_this.taskEdit);
             }, function (error) {
                 console.log(error);
@@ -231,10 +230,6 @@ var TaskEditComponent = /** @class */ (function () {
         core_1.ViewChild(angular_1.ClrForm),
         __metadata("design:type", Object)
     ], TaskEditComponent.prototype, "clrForm", void 0);
-    __decorate([
-        core_1.Input(),
-        __metadata("design:type", Boolean)
-    ], TaskEditComponent.prototype, "isOpen", void 0);
     __decorate([
         core_1.Output(),
         __metadata("design:type", Object)

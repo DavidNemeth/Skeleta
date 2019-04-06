@@ -111,10 +111,9 @@ var AppModule = /** @class */ (function () {
                             ['blockquote', 'code-block'],
                             [{ 'header': 1 }, { 'header': 2 }],
                             [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                            [{ 'color': [] }, { 'background': [] }],
-                            [{ 'font': [] }],
+                            [{ 'color': [] }],
                             [{ 'align': [] }],
-                            ['link', 'image', 'video'],
+                            ['link', 'image'],
                         ]
                     }
                 })

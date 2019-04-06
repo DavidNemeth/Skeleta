@@ -9,7 +9,6 @@ import { AppTranslationService } from '../../../../services/app-translation.serv
 import { AlertService, MessageSeverity } from '../../../../services/alert.service';
 import { BugItemService } from '../../../../services/bugItems/bugitemService';
 import { AccountService } from '../../../../services/account.service';
-import { TaskService } from '../../../../services/tasks/taskService';
 import { fadeInOut } from '../../../../services/animations';
 
 @Component({
@@ -26,23 +25,24 @@ export class BugitemEditComponent implements OnInit {
   private actionTitle = "";
   private deleteOpen = false;
   private isNewItem = false;
-  private allStatus = [...Object.keys(Status)];
+  private allStatus: string[] = ["Active", "Resolved", "Completed"];
+  private dataLoaded: boolean;
 
+  devId: string;
+  testerId: string;
   initialItem: BugItem = new BugItem();
   itemEdit: BugItem;
   bugForm: FormGroup;
   users: User[] = [];
-  tasks: Task[] = [];
   currentUser: User;
   taskId: number;
   @ViewChild(ClrForm) clrForm;
-  @Input() isOpen: boolean;
   @Output() popData = new EventEmitter<BugItem>();
   @Output() updateData = new EventEmitter<BugItem>();
   @Output() updateStatus = new EventEmitter<BugItem>();
   @Output() openClose = new EventEmitter();
 
-  constructor(private translationService: AppTranslationService, private taskService: TaskService,
+  constructor(private translationService: AppTranslationService,
     private alertService: AlertService, private formBuilder: FormBuilder,
     private bugService: BugItemService, private accountService: AccountService) { }
 
@@ -50,34 +50,30 @@ export class BugitemEditComponent implements OnInit {
     this.accountService.getUsers().subscribe(
       users => this.users = users
     );
-    this.taskService.GetPendingTask().subscribe(
-      tasks => this.tasks = tasks
-    );
     this.currentUser = this.accountService.currentUser;
-    this.loadForm();
   }
 
   private loadForm() {
     this.bugForm = this.formBuilder.group({
       title: ['', Validators.required],
       description: [''],
-      status: ['New', Validators.required],
-      developerId: [this.currentUser.id],
-      testerId: [this.currentUser.id]
+      status: ['Active', Validators.required],
+      developerId: [this.devId],
+      testerId: [this.testerId]
     });
+    this.dataLoaded = true;
   }
 
   onOpen(event) {
     this.close();
   }
 
-  
 
   private close() {
-    this.isOpen = false;
+    this.dataLoaded = false;
+    this.bugForm.reset();
     this.openClose.emit();
     this.isNewItem = false;
-    this.loadForm();
     this.alertService.resetStickyMessage();
   }
 
@@ -112,13 +108,16 @@ export class BugitemEditComponent implements OnInit {
     this.alertService.showStickyMessage(error, null, MessageSeverity.error);
   }
 
-  Create(taskId: number) {
+  Create(taskId: number, devId: string, testerId: string) {
     this.submitBtnState = ClrLoadingState.DEFAULT;
     this.isNewItem = true;
     this.actionTitle = "Add";
+    this.testerId = testerId;
+    this.devId = devId ;
     this.initialItem = new BugItem();
     this.itemEdit = new BugItem();
     this.itemEdit.taskItemId = taskId;
+    this.loadForm();
   }
 
   Edit(itemid: number) {
@@ -130,7 +129,7 @@ export class BugitemEditComponent implements OnInit {
         Object.assign(this.itemEdit, response);
         this.submitBtnState = ClrLoadingState.DEFAULT;
         this.isNewItem = false;
-        this.actionTitle = "Edit";
+        this.loadForm();
         this.bugForm.patchValue(this.itemEdit);
       },
         error => this.alertService.showMessage(error, null, MessageSeverity.error));
@@ -151,7 +150,7 @@ export class BugitemEditComponent implements OnInit {
         },
           error => this.alertService.showMessage(error, null, MessageSeverity.error));
       },
-          error => this.alertService.showMessage(error, null, MessageSeverity.error));
+        error => this.alertService.showMessage(error, null, MessageSeverity.error));
     }
   }
 

@@ -7,6 +7,7 @@ import { AppTranslationService } from '../../../services/app-translation.service
 import { Utilities } from '../../../services/utilities';
 import { AccountService } from '../../../services/account.service';
 import { fadeInOut } from '../../../services/animations';
+import { Status } from '../../../models/enum';
 
 @Component({
   selector: 'app-task-management',
@@ -21,7 +22,6 @@ export class TaskManagementComponent implements OnInit {
   loadingIndicator: boolean;
   selected: Task[] = [];
   gT = (key: string) => this.translationService.getTranslation(key);
-  isOpen: boolean = false;
   CompletedActive;
   ResolvedActive;
   PendingActive;
@@ -31,18 +31,23 @@ export class TaskManagementComponent implements OnInit {
   @ViewChild("excel") excelLink: ElementRef;
   @ViewChild("word") wordLink: ElementRef;
   @ViewChild("pdf") pdfLink: ElementRef;
+  private isOpen = true;
 
   constructor(private accountService: AccountService, private alertService: AlertService,
     private translationService: AppTranslationService, private taskService: TaskService, private renderer: Renderer2) { }
 
   ngOnInit() {
     this.PendingActive = true;
-    this.loadData();
+    this.loadPending();
   }
 
   onAdd() {
     this.taskEdit.Create();
-    this.isOpen = true;
+    this.isOpen = false;
+  }
+  onEdit(task: Task) {
+    this.taskEdit.Edit(task.id);
+    this.isOpen = false;
   }
 
   onClose(tasks: Task[]) {
@@ -59,11 +64,6 @@ export class TaskManagementComponent implements OnInit {
 
   onCompleted(task: Task) {
     this.taskEdit.MarkCompleted(task);
-  }
-
-  onEdit(task: Task) {
-    this.taskEdit.Edit(task.id);
-    this.isOpen = true;
   }
 
   onExportSelected(selected: Task[], exportOption: string) {
@@ -102,7 +102,7 @@ export class TaskManagementComponent implements OnInit {
     this.tasksCache = [];
     this.alertService.startLoadingMessage();
     this.loadingIndicator = true;
-
+    console.log("RESOLVED");
     this.taskService.GetResolvedTask()
       .subscribe(results => this.onDataLoadSuccessful(results), error => this.onDataLoadFailed(error));
   }
@@ -112,7 +112,7 @@ export class TaskManagementComponent implements OnInit {
     this.tasksCache = [];
     this.alertService.startLoadingMessage();
     this.loadingIndicator = true;
-
+    console.log("COMPLETED");
     this.taskService.GetCompletedTask()
       .subscribe(results => this.onDataLoadSuccessful(results), error => this.onDataLoadFailed(error));
   }
@@ -122,7 +122,7 @@ export class TaskManagementComponent implements OnInit {
     this.tasksCache = [];
     this.alertService.startLoadingMessage();
     this.loadingIndicator = true;
-
+    console.log("PENDING");
     this.taskService.GetPendingTask()
       .subscribe(results => this.onDataLoadSuccessful(results), error => this.onDataLoadFailed(error));
   }
@@ -132,6 +132,7 @@ export class TaskManagementComponent implements OnInit {
     this.loadingIndicator = false;
     this.tasksCache = tasks;
     this.tasks = tasks;
+    this.isOpen = true; 
   }
 
   onDataLoadFailed(error: any) {
@@ -141,11 +142,55 @@ export class TaskManagementComponent implements OnInit {
     this.alertService.showStickyMessage('Load Error',
       `Unable to retrieve users from the server.\r\nErrors: "${Utilities.getHttpResponseMessage(error)}"`,
       MessageSeverity.error, error);
+    this.isOpen = true;
   }
 
   onSearchChanged(value: string) {
     this.tasks = this.tasksCache
       .filter(r => Utilities.searchArray(value, false, r.id, r.title, r.priority, r.status, r.developer.fullName, r.developer.fullName));
+  }
+
+
+  addItem(task: Task) {
+    this.tasks.unshift(task);
+    this.isOpen = true;
+  }
+
+  handleUpdate(task: Task) {
+    if (this.PendingActive) {
+      if (task.status == Status.Active || task.status == Status.New) {
+        this.updateTasks(task);
+        console.log("handled pending");
+      }
+      else {
+        this.removeItem(task);
+      }
+    }
+    if (this.CompletedActive) {
+      if (task.status == Status.Completed) {
+        this.updateTasks(task);
+        console.log("handled completed");
+      }
+      else {
+        this.removeItem(task);
+      }
+    }
+    if (this.ResolvedActive) {
+      if (task.status == Status.Resolved) {
+        this.updateTasks(task);
+        console.log("handled resolved");
+      }
+      else {
+        this.removeItem(task);
+      }
+    }
+    this.isOpen = true;
+  }
+
+  deleteList(tasksToDelete: Task[]) {
+    for (let task of tasksToDelete) {
+      this.removeItem(task)
+    }
   }
 
   popItem(task: Task) {
@@ -158,44 +203,29 @@ export class TaskManagementComponent implements OnInit {
     }
   }
 
-  updateStatus(task: Task) {
-    this.updateItem(task);
-  }
-
-  updateList(returnTask: Task) {
-    this.loadData();
-  }
-
-  deleteList(tasksToDelete: Task[]) {
-    this.loadData();
-  }
-
-  private loadData() {
-    if (this.PendingActive) {
-      this.loadPending();
-    }
-    if (this.CompletedActive) {
-      this.loadCompleted();
-    }
-    if (this.ResolvedActive) {
-      this.loadResolved();
-    }
-  }
-
   private removeItem(task: Task) {
+    let updateItem = this.tasks.find(this.findIndexToUpdate, task.id);
+
     const taskIndex = this.tasks.indexOf(task, 0);
     if (taskIndex > -1) {
       this.tasks.splice(taskIndex, 1);
     }
   }
 
-  private updateItem(task: Task) {
-    let index = this.tasks.indexOf(task);
-    this.tasks[index] = task;
+  private updateTasks(newItem) {
+    let updateItem = this.tasks.find(this.findIndexToUpdate, newItem.id);
+        let index = this.tasks.indexOf(updateItem);
+    this.tasks[index] = newItem;
+
+    console.log(newItem);
+    console.log(this.tasks);
   }
 
-  private closeTab() {
-    this.isOpen = false;
-    this.loadData();
+  private findIndexToUpdate(newItem) {
+    return newItem.id === this;
+  }
+
+  private open() {
+    this.isOpen = true;
   }
 }

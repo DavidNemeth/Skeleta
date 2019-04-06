@@ -1,53 +1,56 @@
-<clr-modal [(clrModalOpen)]="isOpen" (clrModalOpenChange)=onOpen($event) [clrModalStaticBackdrop]="false" [clrModalSize]="'lg'">
-  <form [@fadeInOut] *ngIf="isOpen" class="clr-form modal-body" autocomplete="off" [formGroup]="bugForm" (ngSubmit)="save()">
-
-    <div class="clr-form-control">
-      <div class="clr-control-container">
-        <div class="clr-select-wrapper">
-          <select class="clr-select" formControlName="status">
-            <option *ngFor="let status of allStatus" [value]="status">{{status}}</option>
-          </select>
-        </div>
-      </div>
-    </div>
-
-    <div class="clr-row">
-      <div class="clr-form-control clr-col">
-        <label class="clr-control-label">{{'general.management.Title' | translate}}</label>
-        <div class="clr-control-container">
-          <div class="clr-input-wrapper">
-            <input class="clr-input" type="text" formControlName="title" />
+<clr-modal *ngIf="dataLoaded" [(clrModalOpen)]="dataLoaded" (clrModalOpenChange)=onOpen($event) [clrModalStaticBackdrop]="false" [clrModalSize]="'lg'">
+  <form class="clr-form modal-body" autocomplete="off" [formGroup]="bugForm" (ngSubmit)="save()">
+    <div style="box-shadow: inset 5px 0 0 #e12200;">
+      <div style="margin-left:2rem; margin-right:2rem;">
+        <div class="clr-form-control">
+          <div class="clr-control-container">
+            <div class="clr-select-wrapper">
+              <select class="clr-select" formControlName="status">
+                <option *ngFor="let status of allStatus" [value]="status">{{status}}</option>
+              </select>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="clr-form-control clr-col">
-        <label class="clr-control-label">{{'general.management.Developer' | translate}}</label>
-        <div class="clr-control-container">
-          <div class="clr-select-wrapper">
-            <select class="clr-select" formControlName="developerId">
-              <option *ngFor="let user of users" [value]="user.id">{{user.fullName}}</option>
-            </select>
-          </div>
-        </div>
-      </div>
-      <div class="clr-form-control clr-col">
-        <label class="clr-control-label">{{'general.management.Tester' | translate}}</label>
-        <div class="clr-control-container">
-          <div class="clr-select-wrapper">
-            <select class="clr-select" formControlName="testerId">
-              <option *ngFor="let user of users" [value]="user.id">{{user.fullName}}</option>
-            </select>
-          </div>
-        </div>
-      </div>
-    </div>
 
-    <div class="clr-form-control">
-      <quill-editor [style]="{height: '200px'}" style="width: 100%;" formControlName="description"></quill-editor>
-      <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
-    </div>
-    <div class="modal-footer">
-      <button [clrLoading]="submitBtnState" type="submit" [disabled]="bugForm.invalid" class="btn btn-primary">{{actionTitle}}</button>
+        <div class="clr-row">
+          <div class="clr-form-control clr-col">
+            <label class="clr-control-label">{{'general.management.Title' | translate}}</label>
+            <div class="clr-control-container">
+              <div class="clr-input-wrapper">
+                <input class="clr-input" type="text" formControlName="title" />
+              </div>
+            </div>
+          </div>
+          <div class="clr-form-control clr-col">
+            <label class="clr-control-label">{{'general.management.Developer' | translate}}</label>
+            <div class="clr-control-container">
+              <div class="clr-select-wrapper">
+                <select class="clr-select" formControlName="developerId">
+                  <option *ngFor="let user of users" [value]="user.id">{{user.fullName}}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="clr-form-control clr-col">
+            <label class="clr-control-label">{{'general.management.Tester' | translate}}</label>
+            <div class="clr-control-container">
+              <div class="clr-select-wrapper">
+                <select class="clr-select" formControlName="testerId">
+                  <option *ngFor="let user of users" [value]="user.id">{{user.fullName}}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="clr-form-control">
+          <quill-editor [style]="{height: '200px'}" style="width: 100%;" formControlName="description"></quill-editor>
+          <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+        </div>
+        <div class="modal-footer">
+          <button [clrLoading]="submitBtnState" type="submit" [disabled]="bugForm.invalid" class="btn btn-primary">{{'general.management.Edit' | translate}}</button>
+        </div>
+      </div>
     </div>
   </form>
 </clr-modal>

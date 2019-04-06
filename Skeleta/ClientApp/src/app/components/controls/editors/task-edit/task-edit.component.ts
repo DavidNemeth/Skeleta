@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Output, EventEmitter, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, Output, EventEmitter, Input, ElementRef } from '@angular/core';
 import { ClrLoadingState, ClrForm } from '@clr/angular';
 import { AppTranslationService } from '../../../../services/app-translation.service';
 import { AlertService, MessageSeverity } from '../../../../services/alert.service';
@@ -22,8 +22,7 @@ export class TaskEditComponent implements OnInit {
   submitBtnState: ClrLoadingState = ClrLoadingState.DEFAULT;
   deleteBtnState: ClrLoadingState = ClrLoadingState.DEFAULT;
   gT = (key: string) => this.translationService.getTranslation(key);
-
-  private actionTitle = "";
+  
   private deleteOpen = false;
   private archiveOpen = false;
   private isNewTask = false;
@@ -34,19 +33,18 @@ export class TaskEditComponent implements OnInit {
   private tasksToDelete: Task[] = [];
   private tasksToClose: Task[] = [];
   private taskToDelete: Task;
+  private dataLoaded: boolean;
   taskForm: FormGroup;
   users: User[] = [];
   currentUser: User;
   isEdit: boolean;
   @ViewChild(ClrForm) clrForm;
-
-  @Input() isOpen: boolean;
   @Output() popData = new EventEmitter<Task>();
-  @Output() updateStatus = new EventEmitter<Task>();
-  @Output() updateData = new EventEmitter<Task>();
   @Output() popSelected = new EventEmitter<Task[]>();
+  @Output() updateData = new EventEmitter<Task>();
+  @Output() addData = new EventEmitter<Task>();
   @Output() deleteData = new EventEmitter<Task[]>();
-  @Output() openClose = new EventEmitter();
+  @Output() cancel = new EventEmitter();
 
 
   constructor(private translationService: AppTranslationService,
@@ -57,8 +55,7 @@ export class TaskEditComponent implements OnInit {
     this.accountService.getUsers().subscribe(
       users => this.users = users
     );
-    this.currentUser = this.accountService.currentUser;
-    this.loadForm();   
+    this.currentUser = this.accountService.currentUser;  
   }
 
   private loadForm() {
@@ -70,15 +67,19 @@ export class TaskEditComponent implements OnInit {
       developerId: [this.currentUser.id],
       testerId: [this.currentUser.id]
     });
+    this.dataLoaded = true;
   }
 
-  private close() {
+  private cleanup() {
+    this.taskForm.reset();
     this.isEdit = false;
-    this.isOpen = false;
-    this.openClose.emit();
     this.isNewTask = false;
-    this.loadForm();
     this.alertService.resetStickyMessage();
+  }
+  private close() {
+    this.cancel.emit();
+    this.dataLoaded = false;
+    this.cleanup();
   }
 
   private save() {
@@ -118,9 +119,9 @@ export class TaskEditComponent implements OnInit {
     this.isEdit = false;
     this.submitBtnState = ClrLoadingState.DEFAULT;
     this.isNewTask = true;
-    this.actionTitle = "Add";
     this.initialTask = new Task();
     this.taskEdit = new Task();
+    this.loadForm();
   }
 
 
@@ -134,7 +135,7 @@ export class TaskEditComponent implements OnInit {
         Object.assign(this.taskEdit, response);
         this.submitBtnState = ClrLoadingState.DEFAULT;
         this.isNewTask = false;
-        this.actionTitle = "Edit";
+        this.loadForm();
         this.taskForm.patchValue(this.taskEdit);
       },
         error => {
@@ -157,7 +158,7 @@ export class TaskEditComponent implements OnInit {
             this.taskService.UpdateTask(editTask).subscribe(response => {
               this.alertService.showMessage(this.gT('toasts.saved'), `Task set as Resolved!`, MessageSeverity.success);
               Object.assign(task, editTask);
-              this.updateStatus.emit(task);
+              this.updateData.emit(task);
             },
               error => this.alertService.showMessage(error, null, MessageSeverity.error));
           })

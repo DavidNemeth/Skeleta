@@ -1,4 +1,5 @@
-﻿using Skeleta.ViewModels.WorkItemViewModels;
+﻿using DAL.Models.TaskModel;
+using Skeleta.ViewModels.WorkItemViewModels;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -12,6 +13,14 @@ namespace Skeleta.Services.WorkItemServices
 		Task<IEnumerable<TaskListViewModel>> GetAllCompletedTask();
 		Task<IEnumerable<TaskListViewModel>> GetAllClosedTask();
 
-		Task<TaskItemViewModel> GetById(int id);
+		Task<TaskItemViewModel> GetVMById(int id);
+		Task<TaskItem> GetById(int id);
+
+		void Add(TaskItem taskItem);
+		void Update(TaskItem taskItem);
+		void Remove(TaskItem taskItem);
+		void RemoveRange(int[] ids);
+
+		Task SaveChangesAsync();
 	}
 }

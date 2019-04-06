@@ -1,4 +1,5 @@
-﻿using Skeleta.ViewModels.WorkItemViewModels;
+﻿using DAL.Models.TaskModel;
+using Skeleta.ViewModels.WorkItemViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,14 @@ namespace Skeleta.Services.WorkItemServices
 		Task<IEnumerable<BugitemListViewModel>> GetAllResolvedBug(int? taskid);
 		Task<IEnumerable<BugitemListViewModel>> GetAllClosedBug(int? taskid);
 
-		Task<BugItemViewModel> GetById(int id);
+		Task<BugItemViewModel> GetVMById(int id);
+		Task<BugItem> GetById(int id);
+
+		void Add(BugItem bugItem);
+		void Update(BugItem bugItem);
+		void Remove(BugItem bugItem);
+		void RemoveRange(int[] ids);
+
+		Task SaveChangesAsync();
 	}
 }

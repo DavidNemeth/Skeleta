@@ -18,13 +18,11 @@ var app_translation_service_1 = require("../../../../services/app-translation.se
 var alert_service_1 = require("../../../../services/alert.service");
 var bugitemService_1 = require("../../../../services/bugItems/bugitemService");
 var account_service_1 = require("../../../../services/account.service");
-var taskService_1 = require("../../../../services/tasks/taskService");
 var animations_1 = require("../../../../services/animations");
 var BugitemEditComponent = /** @class */ (function () {
-    function BugitemEditComponent(translationService, taskService, alertService, formBuilder, bugService, accountService) {
+    function BugitemEditComponent(translationService, alertService, formBuilder, bugService, accountService) {
         var _this = this;
         this.translationService = translationService;
-        this.taskService = taskService;
         this.alertService = alertService;
         this.formBuilder = formBuilder;
         this.bugService = bugService;
@@ -35,10 +33,9 @@ var BugitemEditComponent = /** @class */ (function () {
         this.actionTitle = "";
         this.deleteOpen = false;
         this.isNewItem = false;
-        this.allStatus = Object.keys(enum_1.Status).slice();
+        this.allStatus = ["Active", "Resolved", "Completed"];
         this.initialItem = new bugItem_model_1.BugItem();
         this.users = [];
-        this.tasks = [];
         this.popData = new core_1.EventEmitter();
         this.updateData = new core_1.EventEmitter();
         this.updateStatus = new core_1.EventEmitter();
@@ -47,27 +44,26 @@ var BugitemEditComponent = /** @class */ (function () {
     BugitemEditComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.accountService.getUsers().subscribe(function (users) { return _this.users = users; });
-        this.taskService.GetPendingTask().subscribe(function (tasks) { return _this.tasks = tasks; });
         this.currentUser = this.accountService.currentUser;
-        this.loadForm();
     };
     BugitemEditComponent.prototype.loadForm = function () {
         this.bugForm = this.formBuilder.group({
             title: ['', forms_1.Validators.required],
             description: [''],
-            status: ['New', forms_1.Validators.required],
-            developerId: [this.currentUser.id],
-            testerId: [this.currentUser.id]
+            status: ['Active', forms_1.Validators.required],
+            developerId: [this.devId],
+            testerId: [this.testerId]
         });
+        this.dataLoaded = true;
     };
     BugitemEditComponent.prototype.onOpen = function (event) {
         this.close();
     };
     BugitemEditComponent.prototype.close = function () {
-        this.isOpen = false;
+        this.dataLoaded = false;
+        this.bugForm.reset();
         this.openClose.emit();
         this.isNewItem = false;
-        this.loadForm();
         this.alertService.resetStickyMessage();
     };
     BugitemEditComponent.prototype.save = function () {
@@ -96,13 +92,16 @@ var BugitemEditComponent = /** @class */ (function () {
         this.alertService.stopLoadingMessage();
         this.alertService.showStickyMessage(error, null, alert_service_1.MessageSeverity.error);
     };
-    BugitemEditComponent.prototype.Create = function (taskId) {
+    BugitemEditComponent.prototype.Create = function (taskId, devId, testerId) {
         this.submitBtnState = angular_1.ClrLoadingState.DEFAULT;
         this.isNewItem = true;
         this.actionTitle = "Add";
+        this.testerId = testerId;
+        this.devId = devId;
         this.initialItem = new bugItem_model_1.BugItem();
         this.itemEdit = new bugItem_model_1.BugItem();
         this.itemEdit.taskItemId = taskId;
+        this.loadForm();
     };
     BugitemEditComponent.prototype.Edit = function (itemid) {
         var _this = this;
@@ -114,7 +113,7 @@ var BugitemEditComponent = /** @class */ (function () {
                 Object.assign(_this.itemEdit, response);
                 _this.submitBtnState = angular_1.ClrLoadingState.DEFAULT;
                 _this.isNewItem = false;
-                _this.actionTitle = "Edit";
+                _this.loadForm();
                 _this.bugForm.patchValue(_this.itemEdit);
             }, function (error) { return _this.alertService.showMessage(error, null, alert_service_1.MessageSeverity.error); });
         }
@@ -166,10 +165,6 @@ var BugitemEditComponent = /** @class */ (function () {
         __metadata("design:type", Object)
     ], BugitemEditComponent.prototype, "clrForm", void 0);
     __decorate([
-        core_1.Input(),
-        __metadata("design:type", Boolean)
-    ], BugitemEditComponent.prototype, "isOpen", void 0);
-    __decorate([
         core_1.Output(),
         __metadata("design:type", Object)
     ], BugitemEditComponent.prototype, "popData", void 0);
@@ -192,7 +187,7 @@ var BugitemEditComponent = /** @class */ (function () {
             styleUrls: ['./bugitem-edit.component.css'],
             animations: [animations_1.fadeInOut]
         }),
-        __metadata("design:paramtypes", [app_translation_service_1.AppTranslationService, taskService_1.TaskService,
+        __metadata("design:paramtypes", [app_translation_service_1.AppTranslationService,
             alert_service_1.AlertService, forms_1.FormBuilder,
             bugitemService_1.BugItemService, account_service_1.AccountService])
     ], BugitemEditComponent);

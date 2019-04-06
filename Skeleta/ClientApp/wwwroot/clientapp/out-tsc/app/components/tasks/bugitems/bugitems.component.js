@@ -18,6 +18,7 @@ var bugitemService_1 = require("../../../services/bugItems/bugitemService");
 var utilities_1 = require("../../../services/utilities");
 var task_model_1 = require("../../../services/tasks/task.model");
 var animations_1 = require("../../../services/animations");
+var enum_1 = require("../../../models/enum");
 var BugitemsComponent = /** @class */ (function () {
     function BugitemsComponent(accountService, alertService, translationService, bugitemService) {
         var _this = this;
@@ -27,20 +28,20 @@ var BugitemsComponent = /** @class */ (function () {
         this.bugitemService = bugitemService;
         this.columns = [];
         this.bugs = [];
+        this.ActiveBugs = [];
+        this.ResolvedBugs = [];
+        this.CompletedBugs = [];
         this.bugsCache = [];
         this.selected = [];
         this.gT = function (key) { return _this.translationService.getTranslation(key); };
         this.isOpen = false;
     }
-    BugitemsComponent.prototype.ngOnChanges = function (changes) {
-        if (this.task && changes.task.firstChange == false) {
-            this.bugs = [];
-            this.bugsCache = [];
-            this.onDataLoadSuccessful(this.task.bugItems);
-        }
-    };
     BugitemsComponent.prototype.ngOnInit = function () {
-        this.task = this.taskCache;
+        this.bugs = [];
+        this.bugsCache = [];
+        this.taskCache = this.task;
+        this.onDataLoadSuccessful(this.task.bugItems);
+        this.isOpen = true;
     };
     BugitemsComponent.prototype.onSearchChanged = function (value) {
         this.bugs = this.bugsCache
@@ -48,19 +49,20 @@ var BugitemsComponent = /** @class */ (function () {
     };
     BugitemsComponent.prototype.onAdd = function () {
         this.sourceBug = null;
-        this.bugEdit.Create(this.task.id);
-        this.isOpen = true;
+        this.bugEdit.Create(this.task.id, this.task.developerId, this.task.testerId);
+        this.isOpen = false;
     };
     BugitemsComponent.prototype.onEdit = function (bug) {
         this.sourceBug = bug;
         this.bugEdit.Edit(bug.id);
-        this.isOpen = true;
+        this.isOpen = false;
     };
     BugitemsComponent.prototype.updateList = function (returnBug) {
         this.loadData(returnBug.taskItemId);
     };
     BugitemsComponent.prototype.loadData = function (taskid) {
         this.loadAll(taskid);
+        this.isOpen = true;
     };
     BugitemsComponent.prototype.loadAll = function (taskid) {
         var _this = this;
@@ -76,11 +78,15 @@ var BugitemsComponent = /** @class */ (function () {
         this.loadingIndicator = false;
         this.bugsCache = bugs;
         this.bugs = bugs;
+        this.ActiveBugs = bugs.filter(function (x) { return x.status == enum_1.Status.New || x.status == enum_1.Status.Active; });
+        this.ResolvedBugs = bugs.filter(function (x) { return x.status == enum_1.Status.Resolved; });
+        this.CompletedBugs = bugs.filter(function (x) { return x.status == enum_1.Status.Completed; });
     };
     BugitemsComponent.prototype.onDataLoadFailed = function (error) {
         this.alertService.stopLoadingMessage();
         this.loadingIndicator = false;
         this.alertService.showStickyMessage('Load Error', "Unable to retrieve users from the server.\r\nErrors: \"" + utilities_1.Utilities.getHttpResponseMessage(error) + "\"", alert_service_1.MessageSeverity.error, error);
+        this.isOpen = true;
     };
     BugitemsComponent.prototype.removeItem = function (bug) {
         var itemIndex = this.bugs.indexOf(bug, 0);
@@ -91,9 +97,10 @@ var BugitemsComponent = /** @class */ (function () {
     BugitemsComponent.prototype.updateItem = function (bug) {
         var index = this.bugs.indexOf(bug);
         this.bugs[index] = bug;
+        this.isOpen = true;
     };
     BugitemsComponent.prototype.closeTab = function () {
-        this.isOpen = false;
+        this.isOpen = true;
     };
     __decorate([
         core_1.Input(),

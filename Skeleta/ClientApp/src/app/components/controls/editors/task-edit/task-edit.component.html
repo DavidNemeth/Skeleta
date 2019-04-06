@@ -1,4 +1,4 @@
-<form *ngIf="isOpen" class="clr-form card" autocomplete="off" [formGroup]="taskForm" (ngSubmit)="save()">
+<form *ngIf="dataLoaded" class="clr-form card" autocomplete="off" [formGroup]="taskForm" (ngSubmit)="save()">
   <div class="card-header clr-row clr-justify-content-between rowwidthfix">
     <div class="btn-group">
       <div *ngFor="let priority of allPriority" class="radio btn">
@@ -9,7 +9,9 @@
     <div class="clr-control-container">
       <div class="clr-select-wrapper">
         <select class="clr-select" formControlName="status">
-          <option *ngFor="let status of allStatus" [value]="status">{{status}}</option>
+          <option *ngFor="let status of allStatus" [value]="status">
+            {{status}}
+          </option>
         </select>
       </div>
     </div>
@@ -19,7 +21,7 @@
       <div style="margin-left:2rem; margin-right:2rem;">
         <div class="clr-row clr-justify-content-between" style="margin-left:0rem; margin-right:0rem;">
           <div class="clr-form-control">
-            <label for="title" class="clr-control-label">{{'tasks.editor.Developer' | translate}}</label>
+            <label class="clr-control-label">{{'tasks.editor.Developer' | translate}}</label>
             <div class="clr-select-wrapper">
               <select id="developer" class="clr-select" formControlName="developerId">
                 <option *ngFor="let user of users" [value]="user.id">{{user.fullName}}</option>
@@ -27,15 +29,14 @@
             </div>
           </div>
           <div class="clr-form-control">
-            <label for="title" class="clr-control-label">{{'tasks.editor.Tester' | translate}}</label>
+            <label class="clr-control-label">{{'tasks.editor.Tester' | translate}}</label>
             <div class="clr-select-wrapper">
-              <select id="developer" class="clr-select" formControlName="developerId">
+              <select class="clr-select" formControlName="testerId">
                 <option *ngFor="let user of users" [value]="user.id">{{user.fullName}}</option>
               </select>
             </div>
           </div>
         </div>
-
         <div class="clr-form-control">
           <div style="width:100%" class="clr-control-container">
             <div class="clr-input-wrapper">
@@ -43,7 +44,6 @@
             </div>
           </div>
         </div>
-
         <div class="clr-form-control">
           <quill-editor [style]="{height: '200px'}" style="width: 100%;" formControlName="description"></quill-editor>
         </div>

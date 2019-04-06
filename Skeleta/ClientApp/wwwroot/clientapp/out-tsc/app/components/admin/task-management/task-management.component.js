@@ -30,8 +30,8 @@ var TaskManagementComponent = /** @class */ (function () {
         this.tasksCache = [];
         this.selected = [];
         this.gT = function (key) { return _this.translationService.getTranslation(key); };
-        this.isOpen = false;
         this.curDate = new Date();
+        this.isOpen = true;
     }
     TaskManagementComponent.prototype.ngOnInit = function () {
         this.PendingActive = true;
@@ -39,7 +39,11 @@ var TaskManagementComponent = /** @class */ (function () {
     };
     TaskManagementComponent.prototype.onAdd = function () {
         this.taskEdit.Create();
-        this.isOpen = true;
+        this.isOpen = false;
+    };
+    TaskManagementComponent.prototype.onEdit = function (task) {
+        this.taskEdit.Edit(task.id);
+        this.isOpen = false;
     };
     TaskManagementComponent.prototype.onClose = function (tasks) {
         this.taskEdit.MarkClosed(tasks);
@@ -52,10 +56,6 @@ var TaskManagementComponent = /** @class */ (function () {
     };
     TaskManagementComponent.prototype.onCompleted = function (task) {
         this.taskEdit.MarkCompleted(task);
-    };
-    TaskManagementComponent.prototype.onEdit = function (task) {
-        this.taskEdit.Edit(task.id);
-        this.isOpen = true;
     };
     TaskManagementComponent.prototype.onExportSelected = function (selected, exportOption) {
         var _this = this;
@@ -114,11 +114,13 @@ var TaskManagementComponent = /** @class */ (function () {
         this.loadingIndicator = false;
         this.tasksCache = tasks;
         this.tasks = tasks;
+        this.isOpen = true;
     };
     TaskManagementComponent.prototype.onDataLoadFailed = function (error) {
         this.alertService.stopLoadingMessage();
         this.loadingIndicator = false;
         this.alertService.showStickyMessage('Load Error', "Unable to retrieve users from the server.\r\nErrors: \"" + utilities_1.Utilities.getHttpResponseMessage(error) + "\"", alert_service_1.MessageSeverity.error, error);
+        this.isOpen = true;
     };
     TaskManagementComponent.prototype.onSearchChanged = function (value) {
         this.tasks = this.tasksCache
@@ -162,9 +164,9 @@ var TaskManagementComponent = /** @class */ (function () {
     TaskManagementComponent.prototype.updateItem = function (task) {
         var index = this.tasks.indexOf(task);
         this.tasks[index] = task;
+        this.isOpen = true;
     };
     TaskManagementComponent.prototype.closeTab = function () {
-        this.isOpen = false;
         this.loadData();
     };
     __decorate([

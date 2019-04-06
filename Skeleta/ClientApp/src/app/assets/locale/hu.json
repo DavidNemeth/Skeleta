@@ -94,7 +94,7 @@
       "New": "Új Felvétel",
       "Edit": "Módositás",
       "Delete": "Törlés",
-      "Title": "Cim",
+      "Title": "Bug",
       "Description": "Leirás",
       "Priority": "Prioritás",
       "Status": "Státusz",
@@ -112,12 +112,13 @@
   },
     "tasks": {
       "management": {
+        "Task": "Feladat",
         "Search": "Keresés...",
         "NewTask": "Új feladat",
         "Edit": "Módositás",
         "Delete": "Kijelöltek Törlése",
         "EditTask": "Feladat Módositása \"{{name}}\"",
-        "Title": "Feladat cime",
+        "Title": "Cim",
         "Description": "Leirása",
         "Comment": "Komment",
         "Priority": "Prioritás",
@@ -130,7 +131,7 @@
       "editor": {
         "Search": "Keresés...",
         "NewTask": "Új feladat",
-        "Edit": "Módositás",
+        "Edit": "Mentés",
         "Delete": "Törlés",
         "EditTask": "Feladat Módositása \"{{name}}\"",
         "Title": "Feladat neve",

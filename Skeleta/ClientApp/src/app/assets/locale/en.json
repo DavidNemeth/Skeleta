@@ -91,7 +91,7 @@
     "management": {
       "Search": "Search...",
       "New": "New Item",
-      "Edit": "Edit",
+      "Edit": "Save",
       "Delete": "Delete",
       "Title": "Title",
       "Description": "Description",
@@ -111,9 +111,10 @@
   },
   "tasks": {
     "management": {
+      "Task": "Task",
       "Search": "Search...",
       "NewTask": "New Task",
-      "Edit": "Edit",
+      "Edit": "Save",
       "Delete": "Delete",
       "EditTask": "Edit Tasks \"{{name}}\"",
       "Title": "Title",

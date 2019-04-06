@@ -15,6 +15,8 @@ using Skeleta.ViewModels.WorkItemViewModels;
 using OpenIddict.Validation;
 using Skeleta.Authorization;
 using AutoMapper;
+using Microsoft.AspNetCore.Identity;
+using DAL.Models;
 
 namespace Skeleta.Controllers
 {
@@ -22,19 +24,15 @@ namespace Skeleta.Controllers
 	[Route("api/[controller]")]
     public class BugItemsController : Controller
 	{
-		private readonly IAccountManager accountManager;
-		private IBugItemService bugitemService;
-		private ApplicationDbContext context;
-		readonly ILogger logger;
-		private readonly IAuthorizationService authorizationService;
+		private IBugItemService _bugitemService;
+		private readonly UserManager<ApplicationUser> _userManager;
+		private readonly IAuthorizationService _authorizationService;
 
-		public BugItemsController(ApplicationDbContext context, IBugItemService bugitemService, ILogger<TasksController> logger, IAccountManager accountManager, IAuthorizationService authorizationService)
+		public BugItemsController(IBugItemService bugitemService, IAuthorizationService authorizationService, UserManager<ApplicationUser> userManager)
 		{
-			this.accountManager = accountManager;
-			this.bugitemService = bugitemService;
-			this.context = context;
-			this.logger = logger;
-			this.authorizationService = authorizationService;
+			_userManager = userManager;
+			_bugitemService = bugitemService;
+			_authorizationService = authorizationService;
 		}
 
 		// GET: api/values
@@ -42,7 +40,7 @@ namespace Skeleta.Controllers
 		[ProducesResponseType(200, Type = typeof(IEnumerable<BugitemListViewModel>))]
 		public async Task<IActionResult> GetAll(int? taskid)
 		{
-			return Ok(await bugitemService.GetAllBug(taskid));
+			return Ok(await _bugitemService.GetAllBug(taskid));
 		}
 
 		// GET: api/values
@@ -51,10 +49,10 @@ namespace Skeleta.Controllers
 		[ProducesResponseType(200, Type = typeof(IEnumerable<BugitemListViewModel>))]
 		public async Task<IActionResult> GetPending(int? taskid)
 		{
-			if (!(await authorizationService.AuthorizeAsync(this.User, "", TaskManagementOperations.Read)).Succeeded)
+			if (!(await _authorizationService.AuthorizeAsync(this.User, "", TaskManagementOperations.Read)).Succeeded)
 				return new ChallengeResult();
 
-			return Ok(await bugitemService.GetAllPendingBug(taskid));
+			return Ok(await _bugitemService.GetAllPendingBug(taskid));
 		}
 
 		// GET: api/values
@@ -62,7 +60,7 @@ namespace Skeleta.Controllers
 		[ProducesResponseType(200, Type = typeof(IEnumerable<BugitemListViewModel>))]
 		public async Task<IActionResult> GetClosed(int? taskid)
 		{
-			return Ok(await bugitemService.GetAllClosedBug(taskid));
+			return Ok(await _bugitemService.GetAllClosedBug(taskid));
 		}
 
 		// GET: api/values
@@ -70,7 +68,7 @@ namespace Skeleta.Controllers
 		[ProducesResponseType(200, Type = typeof(IEnumerable<BugitemListViewModel>))]
 		public async Task<IActionResult> GetResolved(int? taskid)
 		{
-			return Ok(await bugitemService.GetAllResolvedBug(taskid));
+			return Ok(await _bugitemService.GetAllResolvedBug(taskid));
 		}
 
 		// GET api/values/5
@@ -78,8 +76,8 @@ namespace Skeleta.Controllers
 		[ProducesResponseType(200, Type = typeof(BugItemViewModel))]
 		public async Task<IActionResult> Get(int id)
 		{
-			var bug = await bugitemService.GetById(id);
-			return Ok(bug);
+			var bugitemVM = await _bugitemService.GetVMById(id);
+			return Ok(bugitemVM);
 		}
 
 
@@ -87,16 +85,17 @@ namespace Skeleta.Controllers
 		// POST api/values
 		[HttpPost()]
 		[ProducesResponseType(201, Type = typeof(BugItemViewModel))]
-		public async Task<IActionResult> CreateAsync([FromBody] BugItemViewModel bugVM)
+		public async Task<IActionResult> CreateAsync([FromBody] BugItemViewModel bugitemVM)
 		{
 			if (ModelState.IsValid)
 			{
-				if (bugVM == null)
-					return BadRequest($"{nameof(bugVM)} cannot be null");
+				if (bugitemVM == null)
+					return BadRequest($"{nameof(bugitemVM)} cannot be null");
 
-				var bug = Mapper.Map<BugItem>(bugVM);
-				context.BugItems.Add(bug);
-				await context.SaveChangesAsync();
+				var bugItem = Mapper.Map<BugItem>(bugitemVM);
+				AuditEntity(ref bugItem);
+				_bugitemService.Add(bugItem);
+				await _bugitemService.SaveChangesAsync();
 
 				return NoContent();
 			}
@@ -118,14 +117,15 @@ namespace Skeleta.Controllers
 				if (viewmodel == null)
 					return BadRequest($"{nameof(viewmodel)} cannot be null");
 
-				BugItem bug = Mapper.Map<BugItem>(await bugitemService.GetById(id));
+				BugItem bugItem =await _bugitemService.GetById(id);
 
-				if (bug == null)
+				if (bugItem == null)
 					return NotFound(id);
 
-				Mapper.Map(viewmodel, bug);
-				context.BugItems.Update(bug);
-				await context.SaveChangesAsync();
+				Mapper.Map(viewmodel, bugItem);
+				AuditEntity(ref bugItem);
+				_bugitemService.Update(bugItem);
+				await _bugitemService.SaveChangesAsync();
 
 				return NoContent();
 			}
@@ -137,23 +137,43 @@ namespace Skeleta.Controllers
 
 		// DELETE api/values/5
 		[HttpDelete("{id}")]
-		[ProducesResponseType(200, Type = typeof(BugItemViewModel))]
+		[ProducesResponseType(200)]
 		[ProducesResponseType(400)]
 		[ProducesResponseType(404)]
 		public async Task<IActionResult> Delete(int id)
 		{
-			BugItemViewModel bugVM = null;
-			BugItem bug = Mapper.Map<BugItem>(await bugitemService.GetById(id));
-
-			if (bug != null)
-				bugVM = Mapper.Map<BugItemViewModel>(bug);
-
-			if (bugVM == null)
+			BugItem bugItem = await _bugitemService.GetById(id);
+			if (bugItem == null)
 				return NotFound(id);
 
-			context.BugItems.Remove(bug);
-			await context.SaveChangesAsync();
-			return Ok(bugVM);
+			_bugitemService.Remove(bugItem);
+			await _bugitemService.SaveChangesAsync();
+			return Ok();
+		}
+
+		// DELETE RANGE api/values/range/5
+		[HttpDelete("range/{ids}")]
+		[ProducesResponseType(200)]
+		[ProducesResponseType(400)]
+		[ProducesResponseType(404)]
+		public async Task<IActionResult> DeleteRange(int[] ids)
+		{
+			_bugitemService.RemoveRange(ids);
+			await _bugitemService.SaveChangesAsync();
+			return Ok();
+		}
+
+		private void AuditEntity(ref BugItem item)
+		{
+			var date = DateTime.Now;
+			if (item.CreatedBy == null)
+			{
+				item.CreatedBy = _userManager.GetUserId(User);
+				item.CreatedDate = date;
+			}
+
+			item.UpdatedBy = _userManager.GetUserId(User);
+			item.UpdatedDate = date;
 		}
 	}
 }

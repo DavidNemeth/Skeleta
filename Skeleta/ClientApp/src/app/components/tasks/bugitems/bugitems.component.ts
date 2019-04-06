@@ -9,6 +9,7 @@ import { BugItemService } from '../../../services/bugItems/bugitemService';
 import { Utilities } from '../../../services/utilities';
 import { Task } from '../../../services/tasks/task.model';
 import { fadeInOut } from '../../../services/animations';
+import { Status } from '../../../models/enum';
 
 @Component({
   selector: 'app-bugitems',
@@ -19,6 +20,10 @@ import { fadeInOut } from '../../../services/animations';
 export class BugitemsComponent implements OnInit {
   columns: any[] = [];
   bugs: BugItem[] = [];
+  ActiveBugs: BugItem[] = [];
+  ResolvedBugs: BugItem[] = [];
+  CompletedBugs: BugItem[] = [];
+
   bugsCache: BugItem[] = [];
   sourceBug: BugItem;
   loadingIndicator: boolean;
@@ -31,21 +36,17 @@ export class BugitemsComponent implements OnInit {
   @Input()
   task: Task;
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (this.task && changes.task.firstChange == false) {
-      this.bugs = [];
-      this.bugsCache = [];
-      this.onDataLoadSuccessful(this.task.bugItems);
-    }
-  }
-
   @ViewChild(BugitemEditComponent) bugEdit;
 
   constructor(private accountService: AccountService, private alertService: AlertService,
     private translationService: AppTranslationService, private bugitemService: BugItemService) { }
 
   ngOnInit() {
-    this.task = this.taskCache;
+    this.bugs = [];
+    this.bugsCache = [];
+    this.taskCache = this.task;
+    this.onDataLoadSuccessful(this.task.bugItems);
+    this.isOpen = true;
   }
 
   onSearchChanged(value: string) {
@@ -55,14 +56,14 @@ export class BugitemsComponent implements OnInit {
 
   onAdd() {
     this.sourceBug = null;
-    this.bugEdit.Create(this.task.id);
-    this.isOpen = true;
+    this.bugEdit.Create(this.task.id, this.task.developerId, this.task.testerId);
+    this.isOpen = false;
   }
 
   onEdit(bug: BugItem) {
     this.sourceBug = bug;
     this.bugEdit.Edit(bug.id);
-    this.isOpen = true;
+    this.isOpen = false;
   }
 
   updateList(returnBug: BugItem) {
@@ -71,6 +72,7 @@ export class BugitemsComponent implements OnInit {
 
   private loadData(taskid?: number) {
     this.loadAll(taskid);
+    this.isOpen = true;
   }
 
   loadAll(taskid?: number) {
@@ -86,6 +88,10 @@ export class BugitemsComponent implements OnInit {
     this.loadingIndicator = false;
     this.bugsCache = bugs;
     this.bugs = bugs;
+    this.ActiveBugs = bugs.filter(x => x.status == Status.New || x.status == Status.Active);
+    this.ResolvedBugs = bugs.filter(x => x.status == Status.Resolved);
+    this.CompletedBugs = bugs.filter(x => x.status == Status.Completed);
+
   }
 
   onDataLoadFailed(error: any) {
@@ -95,6 +101,7 @@ export class BugitemsComponent implements OnInit {
     this.alertService.showStickyMessage('Load Error',
       `Unable to retrieve users from the server.\r\nErrors: "${Utilities.getHttpResponseMessage(error)}"`,
       MessageSeverity.error, error);
+    this.isOpen = true;
   }
 
   private removeItem(bug: BugItem) {
@@ -107,9 +114,10 @@ export class BugitemsComponent implements OnInit {
   private updateItem(bug: BugItem) {
     let index = this.bugs.indexOf(bug);
     this.bugs[index] = bug;
+    this.isOpen = true;
   }
 
   private closeTab() {
-    this.isOpen = false;
+    this.isOpen = true;
   }
 }

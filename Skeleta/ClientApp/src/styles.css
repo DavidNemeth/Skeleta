@@ -1,4 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
+@import '../node_modules/@clr/ui/clr-ui.min.css';
 @import '../node_modules/@clr/icons/clr-icons.min.css';
 @import '../node_modules/quill/dist/quill.snow.css';
 @import '../src/app/assets/styles/themes/light.css';
@@ -12,15 +13,6 @@
 /*DataGrid Changes*/
 .datagrid .datagrid-column, .datagrid .datagrid-cell {
   line-height: 0.6rem !important;
-}
-
-.header {
-  background: #006a91 !important;
-}
-
-/*custom classes*/
-.formwrapper {
-  max-width: 600px;
 }
 
 .btn-secondary {
@@ -68,10 +60,6 @@
   overflow: auto;
 }
 
-.maxwidth {
-  max-width: 1000px !important;
-}
-
 .is-inverse {
   fill: rgb(178, 178, 178) !important;
 }
@@ -80,71 +68,6 @@
   margin: 0.0rem 0 !important;
   height: 0rem !important;
 }
-
-clr-tabs.vertical-tabs {
-  display: flex;
-}
-
-  clr-tabs.vertical-tabs .nav {
-    flex-direction: column;
-    height: auto;
-    align-items: stretch;
-    box-shadow: none;
-    width: auto;
-    margin-right: 1rem;
-    overflow: auto;
-    flex-shrink: 0;
-  }
-
-    clr-tabs.vertical-tabs .nav .nav-link {
-      text-align: left;
-      padding: 0 0.5rem;
-      margin-bottom: 1px;
-      flex-shrink: 0;
-    }
-
-      clr-tabs.vertical-tabs .nav .nav-link.active, clr-tabs.vertical-tabs .nav .nav-link:hover {
-        box-shadow: inset 3px 0 0 #007cbb;
-        background-color: #eee;
-      }
-
-  clr-tabs.vertical-tabs.scrollable {
-    height: 100%;
-  }
-
-    clr-tabs.vertical-tabs.scrollable section.active {
-      height: 100%;
-      width: 100%;
-      overflow: auto;
-      background: lime;
-    }
-
-    clr-tabs.vertical-tabs.scrollable clr-tab.activeTab {
-      flex: 1 1 auto;
-    }
-
-      clr-tabs.vertical-tabs.scrollable clr-tab.activeTab clr-tab-content[aria-hidden="false"] {
-        display: block;
-        position: relative;
-        height: 100%;
-        width: 100%;
-        overflow: auto;
-      }
-
-  clr-tabs.vertical-tabs.nav-align-right .nav {
-    order: 2;
-    margin-right: 0;
-    margin-left: 1rem;
-  }
-
-    clr-tabs.vertical-tabs.nav-align-right .nav .nav-link.nav-item {
-      margin-right: 0;
-      border-radius: 0.125rem 0 0 0.125rem;
-    }
-
-      clr-tabs.vertical-tabs.nav-align-right .nav .nav-link.nav-item.active, clr-tabs.vertical-tabs.nav-align-right .nav .nav-link.nav-item:hover {
-        box-shadow: inset -3px 0 0 #007cbb;
-      }
 
 .contentWrapper {
   max-width: 1248px;
@@ -155,4 +78,12 @@ clr-tabs.vertical-tabs {
 .rowwidthfix {
   margin-right: 0rem !important;
   margin-left: 0rem !important;
+}
+
+/*TextEditor*/
+.ql-toolbar.ql-snow {
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+  padding: 0px !important;
 }
