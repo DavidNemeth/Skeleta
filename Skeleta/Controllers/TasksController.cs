@@ -93,7 +93,7 @@ namespace Skeleta.Controllers
 
 		// POST api/values
 		[HttpPost()]
-		[ProducesResponseType(201, Type = typeof(TaskItemViewModel))]
+		[ProducesResponseType(201, Type = typeof(TaskItem))]
 		public async Task<IActionResult> CreateTask([FromBody] TaskItemViewModel viewmodel)
 		{
 			if (ModelState.IsValid)
@@ -106,7 +106,7 @@ namespace Skeleta.Controllers
 				_taskService.Add(taskItem);
 				await _taskService.SaveChangesAsync();
 
-				return Ok();
+				return Ok(taskItem);
 			}
 			return BadRequest(ModelState);
 		}
@@ -117,7 +117,7 @@ namespace Skeleta.Controllers
 
 		// PUT api/values/5
 		[HttpPut("{id}")]
-		[ProducesResponseType(204)]
+		[ProducesResponseType(204, Type = typeof(TaskItem))]
 		[ProducesResponseType(400)]
 		[ProducesResponseType(403)]
 		[ProducesResponseType(404)]
@@ -137,7 +137,7 @@ namespace Skeleta.Controllers
 				AuditEntity(ref taskItem);
 				_taskService.Update(taskItem);
 				await _taskService.SaveChangesAsync();
-				return Ok();
+				return Ok(taskItem);
 			}
 
 			return BadRequest(ModelState);

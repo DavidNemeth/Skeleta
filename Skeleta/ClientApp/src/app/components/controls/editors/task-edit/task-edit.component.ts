@@ -22,7 +22,7 @@ export class TaskEditComponent implements OnInit {
   submitBtnState: ClrLoadingState = ClrLoadingState.DEFAULT;
   deleteBtnState: ClrLoadingState = ClrLoadingState.DEFAULT;
   gT = (key: string) => this.translationService.getTranslation(key);
-  
+
   private deleteOpen = false;
   private archiveOpen = false;
   private isNewTask = false;
@@ -34,6 +34,7 @@ export class TaskEditComponent implements OnInit {
   private tasksToClose: Task[] = [];
   private taskToDelete: Task;
   private dataLoaded: boolean;
+  private isOpen: boolean;
   taskForm: FormGroup;
   users: User[] = [];
   currentUser: User;
@@ -42,9 +43,9 @@ export class TaskEditComponent implements OnInit {
   @Output() popData = new EventEmitter<Task>();
   @Output() popSelected = new EventEmitter<Task[]>();
   @Output() updateData = new EventEmitter<Task>();
-  @Output() addData = new EventEmitter<Task>();
   @Output() deleteData = new EventEmitter<Task[]>();
   @Output() cancel = new EventEmitter();
+  @Output() refresh = new EventEmitter();
 
 
   constructor(private translationService: AppTranslationService,
@@ -55,7 +56,7 @@ export class TaskEditComponent implements OnInit {
     this.accountService.getUsers().subscribe(
       users => this.users = users
     );
-    this.currentUser = this.accountService.currentUser;  
+    this.currentUser = this.accountService.currentUser;
   }
 
   private loadForm() {
@@ -78,6 +79,7 @@ export class TaskEditComponent implements OnInit {
   }
   private close() {
     this.cancel.emit();
+    this.isOpen = false;
     this.dataLoaded = false;
     this.cleanup();
   }
@@ -87,18 +89,17 @@ export class TaskEditComponent implements OnInit {
     Object.assign(this.taskEdit, this.taskForm.value);
 
     if (this.isNewTask) {
-      this.taskService.NewTask(this.taskEdit).subscribe(task => this.saveSuccessHelper(), error => this.saveFailedHelper(error));
+      this.taskService.NewTask(this.taskEdit).subscribe(task => this.saveSuccessHelper(task), error => this.saveFailedHelper(error));
     }
     else {
-      this.taskService.UpdateTask(this.taskEdit).subscribe(response => this.saveSuccessHelper(), error => this.saveFailedHelper(error));
+      this.taskService.UpdateTask(this.taskEdit).subscribe(task => this.saveSuccessHelper(task), error => this.saveFailedHelper(error));
     }
 
   }
 
-  private saveSuccessHelper(): void {
+  private saveSuccessHelper(task: Task): void {
     Object.assign(this.initialTask, this.taskEdit);
-    this.updateData.emit(this.initialTask);
-
+    this.refresh.emit();
     if (this.isNewTask)
       this.alertService.showMessage(this.gT('toasts.saved'), `Task added!`, MessageSeverity.success);
     else
@@ -116,6 +117,7 @@ export class TaskEditComponent implements OnInit {
 
 
   Create() {
+    this.isOpen = true;
     this.isEdit = false;
     this.submitBtnState = ClrLoadingState.DEFAULT;
     this.isNewTask = true;
@@ -127,7 +129,8 @@ export class TaskEditComponent implements OnInit {
 
   Edit(taskid: number) {
     if (taskid) {
-      this.isEdit = true;     
+      this.isOpen = true;
+      this.isEdit = true;
       this.taskService.GetTask(taskid).subscribe(response => {
         this.initialTask = new Task();
         Object.assign(this.initialTask, response);
@@ -209,7 +212,7 @@ export class TaskEditComponent implements OnInit {
   MarkClosed(tasks: Task[]) {
     this.tasksToClose = tasks;
     this.archiveOpen = true;
-   
+
   }
 
   private CloseTasks() {

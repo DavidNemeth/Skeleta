@@ -5,7 +5,7 @@ using System;
 using System.Threading.Tasks;
 using DAL.Core;
 using DAL.Core.Interfaces;
-
+using DAL.Models.TaskModel;
 
 namespace DAL
 {
@@ -34,9 +34,9 @@ namespace DAL
 		{
 			await _context.Database.MigrateAsync().ConfigureAwait(false);
 
-			//for (int i = 0; i < 500; i++)
+			//for (int i = 0; i < 5000; i++)
 			//{
-			//	await EnsureRoleAsync("testroles" + i.ToString(), "Test Role description" + i.ToString(), ApplicationPermissions.GetAllPermissionValues());
+			//	await CreateTaskAsync(i);
 			//}
 			if (!await _context.Users.AnyAsync())
 			{
@@ -53,12 +53,7 @@ namespace DAL
 
 				_logger.LogInformation("Inbuilt account generation completed");
 			}
-
-
-
-
-
-
+			
 			await _context.SaveChangesAsync();
 
 			_logger.LogInformation("Seeding initial data completed");
@@ -78,6 +73,25 @@ namespace DAL
 				if (!result.Item1)
 					throw new Exception($"Seeding \"{description}\" role failed. Errors: {string.Join(Environment.NewLine, result.Item2)}");
 			}
+		}
+
+		private async Task CreateTaskAsync(int id)
+		{
+			TaskItem task = new TaskItem
+			{
+				Title = "test" + id,
+				TesterId = "0632e8f6-4816-491d-92e5-dff18678072d",
+				DeveloperId = "0632e8f6-4816-491d-92e5-dff18678072d",
+				Description = "descr" + id,
+				CreatedBy = "0632e8f6-4816-491d-92e5-dff18678072d",
+				CreatedDate = DateTime.Now,
+				UpdatedBy = "0632e8f6-4816-491d-92e5-dff18678072d",
+				UpdatedDate = DateTime.Now,
+				Status = Status.Active,
+				Priority = Priority.High
+			};
+			_context.TaskItems.Add(task);
+			await _context.SaveChangesAsync();
 		}
 
 		private async Task<ApplicationUser> CreateUserAsync(string userName, string password, string fullName, string email, string phoneNumber, string[] roles)

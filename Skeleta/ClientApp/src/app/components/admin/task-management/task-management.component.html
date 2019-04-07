@@ -1,5 +1,5 @@
 <div class="contentWrapper">
-  <app-task-edit (cancel)="open($event)" (addData)="addItem($event)" (popSelected)="popSelected($event)" (popData)="popItem($event)" (updateData)="handleUpdate($event)" (deleteData)="loadData($event)"></app-task-edit>
+  <app-task-edit (cancel)="open($event)" (refresh)="loadData($event)" (popSelected)="popSelected($event)" (popData)="popItem($event)" (updateData)="handleUpdate($event)" (deleteData)="loadData($event)"></app-task-edit>
   <clr-tabs [hidden]="!isOpen">
     <!-- Active Tab -->
     <clr-tab>
@@ -17,6 +17,11 @@
                 </div>
               </div>
             </clr-dg-action-bar>
+            <clr-dg-column [style.width.px]="120">
+              <ng-container *clrDgHideableColumn="{hidden: false}">
+                Id
+              </ng-container>
+            </clr-dg-column>
             <clr-dg-column [clrDgField]="'title'">
               <ng-container *clrDgHideableColumn="{hidden: false}">
                 {{'tasks.management.Task' | translate}}
@@ -41,6 +46,10 @@
             <clr-dg-row *clrDgItems="let task of tasks" [clrDgItem]="task">
               <clr-dg-cell>
                 <clr-icon shape="tasks" class="is-highlight is-solid"></clr-icon>
+                <a href="javascript:void(0)" (click)="onEdit(task)">{{task.id}} </a>
+                <span *ngIf="task.openBugcount > 0" class="badge badge-danger">{{task.openBugcount}}</span>
+              </clr-dg-cell>
+              <clr-dg-cell>
                 <a href="javascript:void(0)" (click)="onEdit(task)">{{task.title}} </a>
               </clr-dg-cell>
 
@@ -50,7 +59,6 @@
                 <clr-icon *ngIf="task.priority == 'Medium'" shape="exclamation-triangle" size="15" class="is-highlight"></clr-icon>
                 <clr-icon *ngIf="task.priority == 'Low'" shape="exclamation-triangle" size="15" class="is-success"></clr-icon>
                 {{task.priority}}
-                <span *ngIf="task.openBugcount > 0" class="badge badge-danger">{{task.openBugcount}}</span>
 
               </clr-dg-cell>
 
@@ -88,7 +96,7 @@
               <clr-dg-column-toggle>
               </clr-dg-column-toggle>
               <clr-dg-pagination #pagination [clrDgPageSize]="20">
-                <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100,1000]">{{'tasks.management.TasksPerPage' | translate}}</clr-dg-page-size>
+                <clr-dg-page-size [clrPageSizeOptions]="[10,20,50]">{{'tasks.management.TasksPerPage' | translate}}</clr-dg-page-size>
                 {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
                 {{pagination.totalItems}} {{'tasks.management.Tasks' | translate}}
               </clr-dg-pagination>
@@ -113,6 +121,11 @@
                 </div>
               </div>
             </clr-dg-action-bar>
+            <clr-dg-column [style.width.px]="120">
+              <ng-container *clrDgHideableColumn="{hidden: false}">
+                Id
+              </ng-container>
+            </clr-dg-column>
             <clr-dg-column [clrDgField]="'title'">
               <ng-container *clrDgHideableColumn="{hidden: false}">
                 {{'tasks.management.Title' | translate}}
@@ -137,8 +150,12 @@
 
             <clr-dg-row *clrDgItems="let task of tasks" [clrDgItem]="task">
               <clr-dg-cell>
+                <clr-icon shape="tasks" class="is-highlight is-solid"></clr-icon>
+                <a href="javascript:void(0)" (click)="onEdit(task)">{{task.id}} </a>
                 <span *ngIf="task.openBugcount > 0" class="badge badge-danger">{{task.openBugcount}}</span>
                 <span *ngIf="task.resolvedBugcount > 0" class="badge badge-warning">{{task.resolvedBugcount}}</span>
+              </clr-dg-cell>
+              <clr-dg-cell>
                 <a href="javascript:void(0)" (click)="onEdit(task)">{{task.title}} </a>
               </clr-dg-cell>
 
@@ -193,7 +210,7 @@
               <clr-dg-column-toggle>
               </clr-dg-column-toggle>
               <clr-dg-pagination #pagination [clrDgPageSize]="20">
-                <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100,1000]">{{'tasks.management.TasksPerPage' | translate}}</clr-dg-page-size>
+                <clr-dg-page-size [clrPageSizeOptions]="[10,20,50]">{{'tasks.management.TasksPerPage' | translate}}</clr-dg-page-size>
                 {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
                 {{pagination.totalItems}} {{'tasks.management.Tasks' | translate}}
               </clr-dg-pagination>
@@ -232,7 +249,7 @@
                 </div>
               </div>
             </clr-dg-action-bar>
-            <clr-dg-column [style.width.px]="100">
+            <clr-dg-column [style.width.px]="120">
               <ng-container *clrDgHideableColumn="{hidden: false}">
                 Id
               </ng-container>
@@ -273,7 +290,7 @@
               <clr-dg-column-toggle>
               </clr-dg-column-toggle>
               <clr-dg-pagination #pagination [clrDgPageSize]="20">
-                <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100,1000]">{{'tasks.management.TasksPerPage' | translate}}</clr-dg-page-size>
+                <clr-dg-page-size [clrPageSizeOptions]="[10,20,50]">{{'tasks.management.TasksPerPage' | translate}}</clr-dg-page-size>
                 {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
                 {{pagination.totalItems}} {{'tasks.management.Tasks' | translate}}
               </clr-dg-pagination>

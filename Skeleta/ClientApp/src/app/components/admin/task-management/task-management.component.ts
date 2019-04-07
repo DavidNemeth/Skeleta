@@ -8,6 +8,7 @@ import { Utilities } from '../../../services/utilities';
 import { AccountService } from '../../../services/account.service';
 import { fadeInOut } from '../../../services/animations';
 import { Status } from '../../../models/enum';
+import { ClrDatagrid } from "@clr/angular";
 
 @Component({
   selector: 'app-task-management',
@@ -26,7 +27,7 @@ export class TaskManagementComponent implements OnInit {
   ResolvedActive;
   PendingActive;
   curDate = new Date();
-  @ViewChild("dg") dg;
+  @ViewChild(ClrDatagrid) grid: ClrDatagrid;
   @ViewChild(TaskEditComponent) taskEdit;
   @ViewChild("excel") excelLink: ElementRef;
   @ViewChild("word") wordLink: ElementRef;
@@ -79,7 +80,6 @@ export class TaskManagementComponent implements OnInit {
         let titleDoc = "Releasenote: " + this.curDate.toLocaleDateString() + "\n" + "\n" + "\n" + "\n" + "Az alkalmazás az alábbi fejlesztésekkel bővült: " + "\n" + "\n" + "\n";
         this.renderer.setAttribute(this.wordLink.nativeElement, "href",
           "data:text/plain;charset=utf-8," + titleDoc + docx);
-        console.log(titleDoc + docx);
 
       case 'pdf':
         const pdf = this.selected.map(task => this.taskToFile(task)).join("\n");
@@ -97,12 +97,23 @@ export class TaskManagementComponent implements OnInit {
     return ["Azonositó: " + task.id + " Fejlesztés: " + task.title];
   }
 
+  loadData() {
+    if (this.CompletedActive) {
+      this.loadCompleted();
+    }
+    if (this.ResolvedActive) {
+      this.loadResolved();
+    }
+    if (this.PendingActive) {
+      this.loadPending();
+    }
+  }
+
   loadResolved() {
     this.tasks = [];
     this.tasksCache = [];
     this.alertService.startLoadingMessage();
     this.loadingIndicator = true;
-    console.log("RESOLVED");
     this.taskService.GetResolvedTask()
       .subscribe(results => this.onDataLoadSuccessful(results), error => this.onDataLoadFailed(error));
   }
@@ -112,7 +123,6 @@ export class TaskManagementComponent implements OnInit {
     this.tasksCache = [];
     this.alertService.startLoadingMessage();
     this.loadingIndicator = true;
-    console.log("COMPLETED");
     this.taskService.GetCompletedTask()
       .subscribe(results => this.onDataLoadSuccessful(results), error => this.onDataLoadFailed(error));
   }
@@ -122,7 +132,6 @@ export class TaskManagementComponent implements OnInit {
     this.tasksCache = [];
     this.alertService.startLoadingMessage();
     this.loadingIndicator = true;
-    console.log("PENDING");
     this.taskService.GetPendingTask()
       .subscribe(results => this.onDataLoadSuccessful(results), error => this.onDataLoadFailed(error));
   }
@@ -132,7 +141,7 @@ export class TaskManagementComponent implements OnInit {
     this.loadingIndicator = false;
     this.tasksCache = tasks;
     this.tasks = tasks;
-    this.isOpen = true; 
+    this.isOpen = true;
   }
 
   onDataLoadFailed(error: any) {
@@ -160,7 +169,6 @@ export class TaskManagementComponent implements OnInit {
     if (this.PendingActive) {
       if (task.status == Status.Active || task.status == Status.New) {
         this.updateTasks(task);
-        console.log("handled pending");
       }
       else {
         this.removeItem(task);
@@ -169,7 +177,6 @@ export class TaskManagementComponent implements OnInit {
     if (this.CompletedActive) {
       if (task.status == Status.Completed) {
         this.updateTasks(task);
-        console.log("handled completed");
       }
       else {
         this.removeItem(task);
@@ -178,7 +185,6 @@ export class TaskManagementComponent implements OnInit {
     if (this.ResolvedActive) {
       if (task.status == Status.Resolved) {
         this.updateTasks(task);
-        console.log("handled resolved");
       }
       else {
         this.removeItem(task);
@@ -214,7 +220,7 @@ export class TaskManagementComponent implements OnInit {
 
   private updateTasks(newItem) {
     let updateItem = this.tasks.find(this.findIndexToUpdate, newItem.id);
-        let index = this.tasks.indexOf(updateItem);
+    let index = this.tasks.indexOf(updateItem);
     this.tasks[index] = newItem;
 
     console.log(newItem);

@@ -40,11 +40,11 @@ var TaskEditComponent = /** @class */ (function () {
         this.tasksToClose = [];
         this.users = [];
         this.popData = new core_1.EventEmitter();
-        this.updateStatus = new core_1.EventEmitter();
-        this.updateData = new core_1.EventEmitter();
         this.popSelected = new core_1.EventEmitter();
+        this.updateData = new core_1.EventEmitter();
         this.deleteData = new core_1.EventEmitter();
-        this.openClose = new core_1.EventEmitter();
+        this.cancel = new core_1.EventEmitter();
+        this.refresh = new core_1.EventEmitter();
     }
     TaskEditComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -62,28 +62,32 @@ var TaskEditComponent = /** @class */ (function () {
         });
         this.dataLoaded = true;
     };
-    TaskEditComponent.prototype.close = function () {
-        this.dataLoaded = false;
+    TaskEditComponent.prototype.cleanup = function () {
         this.taskForm.reset();
         this.isEdit = false;
-        this.openClose.emit();
         this.isNewTask = false;
         this.alertService.resetStickyMessage();
+    };
+    TaskEditComponent.prototype.close = function () {
+        this.cancel.emit();
+        this.isOpen = false;
+        this.dataLoaded = false;
+        this.cleanup();
     };
     TaskEditComponent.prototype.save = function () {
         var _this = this;
         this.submitBtnState = angular_1.ClrLoadingState.LOADING;
         Object.assign(this.taskEdit, this.taskForm.value);
         if (this.isNewTask) {
-            this.taskService.NewTask(this.taskEdit).subscribe(function (task) { return _this.saveSuccessHelper(); }, function (error) { return _this.saveFailedHelper(error); });
+            this.taskService.NewTask(this.taskEdit).subscribe(function (task) { return _this.saveSuccessHelper(task); }, function (error) { return _this.saveFailedHelper(error); });
         }
         else {
-            this.taskService.UpdateTask(this.taskEdit).subscribe(function (response) { return _this.saveSuccessHelper(); }, function (error) { return _this.saveFailedHelper(error); });
+            this.taskService.UpdateTask(this.taskEdit).subscribe(function (task) { return _this.saveSuccessHelper(task); }, function (error) { return _this.saveFailedHelper(error); });
         }
     };
-    TaskEditComponent.prototype.saveSuccessHelper = function () {
+    TaskEditComponent.prototype.saveSuccessHelper = function (task) {
         Object.assign(this.initialTask, this.taskEdit);
-        this.updateData.emit(this.initialTask);
+        this.refresh.emit();
         if (this.isNewTask)
             this.alertService.showMessage(this.gT('toasts.saved'), "Task added!", alert_service_1.MessageSeverity.success);
         else
@@ -97,6 +101,7 @@ var TaskEditComponent = /** @class */ (function () {
         this.alertService.showStickyMessage(error, null, alert_service_1.MessageSeverity.error);
     };
     TaskEditComponent.prototype.Create = function () {
+        this.isOpen = true;
         this.isEdit = false;
         this.submitBtnState = angular_1.ClrLoadingState.DEFAULT;
         this.isNewTask = true;
@@ -107,6 +112,7 @@ var TaskEditComponent = /** @class */ (function () {
     TaskEditComponent.prototype.Edit = function (taskid) {
         var _this = this;
         if (taskid) {
+            this.isOpen = true;
             this.isEdit = true;
             this.taskService.GetTask(taskid).subscribe(function (response) {
                 _this.initialTask = new task_model_1.Task();
@@ -135,7 +141,7 @@ var TaskEditComponent = /** @class */ (function () {
                     _this.taskService.UpdateTask(editTask).subscribe(function (response) {
                         _this.alertService.showMessage(_this.gT('toasts.saved'), "Task set as Resolved!", alert_service_1.MessageSeverity.success);
                         Object.assign(task, editTask);
-                        _this.updateStatus.emit(task);
+                        _this.updateData.emit(task);
                     }, function (error) { return _this.alertService.showMessage(error, null, alert_service_1.MessageSeverity.error); });
                 });
             }
@@ -237,7 +243,7 @@ var TaskEditComponent = /** @class */ (function () {
     __decorate([
         core_1.Output(),
         __metadata("design:type", Object)
-    ], TaskEditComponent.prototype, "updateStatus", void 0);
+    ], TaskEditComponent.prototype, "popSelected", void 0);
     __decorate([
         core_1.Output(),
         __metadata("design:type", Object)
@@ -245,15 +251,15 @@ var TaskEditComponent = /** @class */ (function () {
     __decorate([
         core_1.Output(),
         __metadata("design:type", Object)
-    ], TaskEditComponent.prototype, "popSelected", void 0);
-    __decorate([
-        core_1.Output(),
-        __metadata("design:type", Object)
     ], TaskEditComponent.prototype, "deleteData", void 0);
     __decorate([
         core_1.Output(),
         __metadata("design:type", Object)
-    ], TaskEditComponent.prototype, "openClose", void 0);
+    ], TaskEditComponent.prototype, "cancel", void 0);
+    __decorate([
+        core_1.Output(),
+        __metadata("design:type", Object)
+    ], TaskEditComponent.prototype, "refresh", void 0);
     TaskEditComponent = __decorate([
         core_1.Component({
             selector: 'app-task-edit',

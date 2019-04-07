@@ -17,6 +17,8 @@ var app_translation_service_1 = require("../../../services/app-translation.servi
 var utilities_1 = require("../../../services/utilities");
 var account_service_1 = require("../../../services/account.service");
 var animations_1 = require("../../../services/animations");
+var enum_1 = require("../../../models/enum");
+var angular_1 = require("@clr/angular");
 var TaskManagementComponent = /** @class */ (function () {
     function TaskManagementComponent(accountService, alertService, translationService, taskService, renderer) {
         var _this = this;
@@ -35,7 +37,7 @@ var TaskManagementComponent = /** @class */ (function () {
     }
     TaskManagementComponent.prototype.ngOnInit = function () {
         this.PendingActive = true;
-        this.loadData();
+        this.loadPending();
     };
     TaskManagementComponent.prototype.onAdd = function () {
         this.taskEdit.Create();
@@ -68,7 +70,6 @@ var TaskManagementComponent = /** @class */ (function () {
                 var docx = this.selected.map(function (task) { return _this.excelToFile(task); }).join("\n\n");
                 var titleDoc = "Releasenote: " + this.curDate.toLocaleDateString() + "\n" + "\n" + "\n" + "\n" + "Az alkalmazás az alábbi fejlesztésekkel bővült: " + "\n" + "\n" + "\n";
                 this.renderer.setAttribute(this.wordLink.nativeElement, "href", "data:text/plain;charset=utf-8," + titleDoc + docx);
-                console.log(titleDoc + docx);
             case 'pdf':
                 var pdf = this.selected.map(function (task) { return _this.taskToFile(task); }).join("\n");
                 var titlePdf = "Releasenote" + this.curDate.toLocaleDateString() + "\n" + "Id;Title" + "\n";
@@ -81,6 +82,17 @@ var TaskManagementComponent = /** @class */ (function () {
     };
     TaskManagementComponent.prototype.excelToFile = function (task) {
         return ["Azonositó: " + task.id + " Fejlesztés: " + task.title];
+    };
+    TaskManagementComponent.prototype.loadData = function () {
+        if (this.CompletedActive) {
+            this.loadCompleted();
+        }
+        if (this.ResolvedActive) {
+            this.loadResolved();
+        }
+        if (this.PendingActive) {
+            this.loadPending();
+        }
     };
     TaskManagementComponent.prototype.loadResolved = function () {
         var _this = this;
@@ -126,6 +138,43 @@ var TaskManagementComponent = /** @class */ (function () {
         this.tasks = this.tasksCache
             .filter(function (r) { return utilities_1.Utilities.searchArray(value, false, r.id, r.title, r.priority, r.status, r.developer.fullName, r.developer.fullName); });
     };
+    TaskManagementComponent.prototype.addItem = function (task) {
+        this.tasks.unshift(task);
+        this.isOpen = true;
+    };
+    TaskManagementComponent.prototype.handleUpdate = function (task) {
+        if (this.PendingActive) {
+            if (task.status == enum_1.Status.Active || task.status == enum_1.Status.New) {
+                this.updateTasks(task);
+            }
+            else {
+                this.removeItem(task);
+            }
+        }
+        if (this.CompletedActive) {
+            if (task.status == enum_1.Status.Completed) {
+                this.updateTasks(task);
+            }
+            else {
+                this.removeItem(task);
+            }
+        }
+        if (this.ResolvedActive) {
+            if (task.status == enum_1.Status.Resolved) {
+                this.updateTasks(task);
+            }
+            else {
+                this.removeItem(task);
+            }
+        }
+        this.isOpen = true;
+    };
+    TaskManagementComponent.prototype.deleteList = function (tasksToDelete) {
+        for (var _i = 0, tasksToDelete_1 = tasksToDelete; _i < tasksToDelete_1.length; _i++) {
+            var task = tasksToDelete_1[_i];
+            this.removeItem(task);
+        }
+    };
     TaskManagementComponent.prototype.popItem = function (task) {
         this.removeItem(task);
     };
@@ -135,44 +184,30 @@ var TaskManagementComponent = /** @class */ (function () {
             this.removeItem(task);
         }
     };
-    TaskManagementComponent.prototype.updateStatus = function (task) {
-        this.updateItem(task);
-    };
-    TaskManagementComponent.prototype.updateList = function (returnTask) {
-        this.loadData();
-    };
-    TaskManagementComponent.prototype.deleteList = function (tasksToDelete) {
-        this.loadData();
-    };
-    TaskManagementComponent.prototype.loadData = function () {
-        if (this.PendingActive) {
-            this.loadPending();
-        }
-        if (this.CompletedActive) {
-            this.loadCompleted();
-        }
-        if (this.ResolvedActive) {
-            this.loadResolved();
-        }
-    };
     TaskManagementComponent.prototype.removeItem = function (task) {
+        var updateItem = this.tasks.find(this.findIndexToUpdate, task.id);
         var taskIndex = this.tasks.indexOf(task, 0);
         if (taskIndex > -1) {
             this.tasks.splice(taskIndex, 1);
         }
     };
-    TaskManagementComponent.prototype.updateItem = function (task) {
-        var index = this.tasks.indexOf(task);
-        this.tasks[index] = task;
+    TaskManagementComponent.prototype.updateTasks = function (newItem) {
+        var updateItem = this.tasks.find(this.findIndexToUpdate, newItem.id);
+        var index = this.tasks.indexOf(updateItem);
+        this.tasks[index] = newItem;
+        console.log(newItem);
+        console.log(this.tasks);
+    };
+    TaskManagementComponent.prototype.findIndexToUpdate = function (newItem) {
+        return newItem.id === this;
+    };
+    TaskManagementComponent.prototype.open = function () {
         this.isOpen = true;
     };
-    TaskManagementComponent.prototype.closeTab = function () {
-        this.loadData();
-    };
     __decorate([
-        core_1.ViewChild("dg"),
-        __metadata("design:type", Object)
-    ], TaskManagementComponent.prototype, "dg", void 0);
+        core_1.ViewChild(angular_1.ClrDatagrid),
+        __metadata("design:type", angular_1.ClrDatagrid)
+    ], TaskManagementComponent.prototype, "grid", void 0);
     __decorate([
         core_1.ViewChild(task_edit_component_1.TaskEditComponent),
         __metadata("design:type", Object)

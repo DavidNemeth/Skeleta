@@ -41,7 +41,7 @@ export class TaskService {
   }
 
   UpdateTask(task: Task) {    
-      return this.taskEndpoint.getUpdateEndpoint(task, task.id);   
+    return this.taskEndpoint.getUpdateEndpoint<Task>(task, task.id);   
   }
 
   DeleteTask(task: Task) {
