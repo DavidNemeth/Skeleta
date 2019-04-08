@@ -87,3 +87,8 @@
   font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
   padding: 0px !important;
 }
+
+.xs {
+  height: 0.9rem !important;
+  line-height: calc(0.9rem - 1px) !important;
+}

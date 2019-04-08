@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DAL.Models.ProjectModel
 {
-	public class ProjectMember
+	public class ProjectMember : AuditableEntity
 	{
 		public int ProjectId { get; set; }
 		public Project Project { get; set; }

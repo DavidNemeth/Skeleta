@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace DAL.Models.ProjectModel
 {
-    public class Project
-    {
+    public class Project : AuditableEntity
+	{
 		public int Id { get; set; }
 
 		[Required]

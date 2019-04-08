@@ -159,7 +159,7 @@ export class TaskEditComponent implements OnInit {
           editTask => {
             editTask.status = Status.Active;
             this.taskService.UpdateTask(editTask).subscribe(response => {
-              this.alertService.showMessage(this.gT('toasts.saved'), `Task set as Resolved!`, MessageSeverity.success);
+              this.alertService.showMessage(this.gT('toasts.saved'), `Task set as Active!`, MessageSeverity.success);
               Object.assign(task, editTask);
               this.updateData.emit(task);
             },
@@ -171,7 +171,7 @@ export class TaskEditComponent implements OnInit {
           editTask => {
             editTask.status = Status.Active;
             this.taskService.UpdateTask(editTask).subscribe(response => {
-              this.alertService.showMessage(this.gT('toasts.saved'), `Task set as Resolved!`, MessageSeverity.success);
+              this.alertService.showMessage(this.gT('toasts.saved'), `Task set as Active!`, MessageSeverity.success);
               this.popData.emit(task);
             },
               error => this.alertService.showMessage(error, null, MessageSeverity.error));

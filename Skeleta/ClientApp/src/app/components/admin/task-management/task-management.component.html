@@ -3,10 +3,13 @@
   <clr-tabs [hidden]="!isOpen">
     <!-- Active Tab -->
     <clr-tab>
-      <button (click)="loadPending()" clrTabLink>Pending</button>
+      <button (click)="loadData()" clrTabLink>
+        Pending
+        <clr-icon shape="refresh" size="12" class="is-highlight"></clr-icon>
+      </button>
       <ng-template [(clrIfActive)]="PendingActive">
         <clr-tab-content>
-          <clr-datagrid [@fadeInOut] style="height:632px;" class="datagrid-compact">
+          <clr-datagrid [@fadeInOut] style="height:672px;" class="datagrid-compact">
             <clr-dg-action-bar>
               <div style="margin-right: 0rem; margin-left: 0rem;" class="clr-row clr-justify-content-between">
                 <div class="btn-group btn-primary btn-sm">
@@ -42,8 +45,14 @@
                 {{'tasks.management.Developer' | translate}}
               </ng-container>
             </clr-dg-column>
-            <clr-dg-placeholder>Loading Tasks!</clr-dg-placeholder>
-            <clr-dg-row *clrDgItems="let task of tasks" [clrDgItem]="task">
+            <clr-dg-column [style.width.px]="132">
+              <ng-container *clrDgHideableColumn="{hidden: false}">
+
+              </ng-container>
+            </clr-dg-column>
+            <clr-dg-placeholder>Skeleta Task System</clr-dg-placeholder>
+            <clr-dg-row *clrDgItems="let task of pendingTasks" [clrDgItem]="task">
+
               <clr-dg-cell>
                 <clr-icon shape="tasks" class="is-highlight is-solid"></clr-icon>
                 <a href="javascript:void(0)" (click)="onEdit(task)">{{task.id}} </a>
@@ -73,8 +82,7 @@
 
               <clr-dg-cell>
                 <clr-signpost>
-                  <clr-icon size="15" shape="avatar"
-                            clrSignpostTrigger>
+                  <clr-icon size="15" shape="avatar" clrSignpostTrigger>
                   </clr-icon>
                   <clr-signpost-content [clrPosition]="'left-middle'" *clrIfOpen>
                     {{task.developer.fullName}}
@@ -87,10 +95,21 @@
                 {{task.developer.fullName}}
               </clr-dg-cell>
 
-              <clr-dg-action-overflow>
-                <button *ngIf="task.status === 'New'" class="action-item" (click)="onActive(task)">Mark as Active</button>
-                <button *ngIf="task.status === 'Active'" title="{{task.status === 'New' || task.openBugcount > 0 ? 'There are open bugs for this task, please resolve them first':'No bugs found, you can resolve the task'}}" [disabled]="task.openBugcount > 0" class="action-item" (click)="onResolved(task)">Mark as Resolved</button>
-              </clr-dg-action-overflow>
+              <clr-dg-cell style="text-align: right; padding-top: 2px; padding-bottom: 2px;">
+                <div style="margin: 0rem 0rem 0rem 0;" class="btn-group btn-primary">
+                  <button style="margin: 0rem 0rem 0rem 0;" *ngIf="task.status === 'New'" class="btn btn-sm xs btn-primary" (click)="onActive(task)">
+                    <clr-icon shape="play"></clr-icon>
+                    Active
+                  </button>
+                  <button style="margin: 0rem 0rem 0rem 0;" *ngIf="task.status === 'Active'" class="btn btn-sm xs btn-primary"
+                          title="{{task.status === 'New' || task.openBugcount > 0 ? 'There are open bugs for this task, please resolve them first':'No bugs found, you can resolve the task'}}"
+                          [disabled]="task.openBugcount > 0" (click)="onResolved(task)">
+                    <clr-icon shape="check"></clr-icon>
+                    Resolve
+                  </button>
+                </div>
+              </clr-dg-cell>
+
             </clr-dg-row>
             <clr-dg-footer>
               <clr-dg-column-toggle>
@@ -107,10 +126,13 @@
     </clr-tab>
     <!-- Resolved Tab -->
     <clr-tab>
-      <button (click)="loadResolved()" clrTabLink>Resolved</button>
+      <button (click)="loadData()" clrTabLink>
+        Resolved
+        <clr-icon shape="refresh" size="12" class="is-highlight"></clr-icon>
+      </button>
       <ng-template [(clrIfActive)]="ResolvedActive">
         <clr-tab-content>
-          <clr-datagrid [@fadeInOut] style="height:632px;" class="datagrid-compact">
+          <clr-datagrid [@fadeInOut] style="height:672px;" class="datagrid-compact">
             <clr-dg-action-bar>
               <div style="margin-right: 0rem; margin-left: 0rem;" class="clr-row clr-justify-content-between">
                 <div class="btn-group btn-primary btn-sm">
@@ -121,7 +143,7 @@
                 </div>
               </div>
             </clr-dg-action-bar>
-            <clr-dg-column [style.width.px]="120">
+            <clr-dg-column [style.width.px]="140">
               <ng-container *clrDgHideableColumn="{hidden: false}">
                 Id
               </ng-container>
@@ -146,9 +168,14 @@
                 {{'tasks.management.Tester' | translate}}
               </ng-container>
             </clr-dg-column>
-            <clr-dg-placeholder>Loading Tasks!</clr-dg-placeholder>
+            <clr-dg-column [style.width.px]="216">
+              <ng-container *clrDgHideableColumn="{hidden: false}">
 
-            <clr-dg-row *clrDgItems="let task of tasks" [clrDgItem]="task">
+              </ng-container>
+            </clr-dg-column>
+            <clr-dg-placeholder>Skeleta Task System</clr-dg-placeholder>
+
+            <clr-dg-row *clrDgItems="let task of resolvedTasks" [clrDgItem]="task">
               <clr-dg-cell>
                 <clr-icon shape="tasks" class="is-highlight is-solid"></clr-icon>
                 <a href="javascript:void(0)" (click)="onEdit(task)">{{task.id}} </a>
@@ -192,20 +219,22 @@
                 {{task.tester.fullName}}
               </clr-dg-cell>
 
-              <clr-dg-action-overflow>
-                <div *ngIf="task.status === 'Resolved'">
-                  <button title="{{task.openBugcount > 0 ? 'Return the task for the developer' : 'There are no active bugs'}}"
-                          [disabled]="task.openBugcount == 0" class="action-item" (click)="onActive(task)">
-                    Return for bugfixing
+              <clr-dg-cell style="text-align: right; padding-top: 2px; padding-bottom: 2px;">
+                <div style="margin: 0rem 0rem 0rem 0;" class="btn-group btn-primary" *ngIf="task.status === 'Resolved'">
+                  <button style="margin: 0rem 0rem 0rem 0;" title="{{task.openBugcount > 0 ? 'Return the task for the developer' : 'There are no active bugs'}}"
+                          [disabled]="task.openBugcount == 0" class="btn btn-sm xs btn-warning" (click)="onActive(task)">
+                    <clr-icon shape="ban"></clr-icon>
+                    Decline
                   </button>
-                  <button title="{{task.openBugcount == 0 && task.resolvedBugcount == 0 ? 'Task will be marked for release' : 'There are pending Bugs.'}}"
-                          [disabled]="task.openBugcount > 0 || task.resolvedBugcount > 0" class="action-item" (click)="onCompleted(task)">
-                    Mark task as Completed
+                  <button style="margin: 0rem 0rem 0rem 0;" title="{{task.openBugcount == 0 && task.resolvedBugcount == 0 ? 'Task will be marked for release' : 'There are pending Bugs.'}}"
+                          [disabled]="task.openBugcount > 0 || task.resolvedBugcount > 0" class="btn btn-sm xs btn-primary" (click)="onCompleted(task)">
+                    <clr-icon shape="check"></clr-icon>
+                    Accept
                   </button>
                 </div>
-              </clr-dg-action-overflow>
-            </clr-dg-row>
+              </clr-dg-cell>
 
+            </clr-dg-row>
             <clr-dg-footer>
               <clr-dg-column-toggle>
               </clr-dg-column-toggle>
@@ -221,16 +250,18 @@
     </clr-tab>
     <!-- Completed Tab -->
     <clr-tab>
-      <button (click)="loadCompleted()" clrTabLink>Completed</button>
+      <button (click)="loadData()" clrTabLink>
+        Completed
+        <clr-icon shape="refresh" size="12" class="is-highlight"></clr-icon>
+      </button>
       <ng-template [(clrIfActive)]="CompletedActive">
         <clr-tab-content>
-          <clr-datagrid [@fadeInOut] [(clrDgSelected)]="selected" style="height:632px;" class="datagrid-compact">
+          <clr-datagrid [@fadeInOut] [(clrDgSelected)]="selected" style="height:672px;" class="datagrid-compact">
             <clr-dg-action-bar>
               <div style="margin-right: 0rem; margin-left: 0rem;" class="clr-row clr-justify-content-between">
                 <div class="btn-group btn-primary btn-sm">
                   <button type="button" class="btn" (click)="onAdd()"><clr-icon shape="plus"></clr-icon>{{'tasks.management.NewTask' | translate}}</button>
                   <button type="button" class="btn" (click)="onClose(selected)" [disabled]="selected.length == 0"><clr-icon shape="archive" class="is-solid"></clr-icon>Archive Selected</button>
-
                   <clr-dropdown>
                     <button type="button" [disabled]="selected.length === 0" class="btn btn-success" clrDropdownTrigger>
                       <clr-icon shape="note"></clr-icon>Generate Releasenote
@@ -265,9 +296,9 @@
                 {{'tasks.management.Status' | translate}}
               </ng-container>
             </clr-dg-column>
-            <clr-dg-placeholder>Loading Tasks!</clr-dg-placeholder>
+            <clr-dg-placeholder>Skeleta Task Sysyem</clr-dg-placeholder>
 
-            <clr-dg-row *clrDgItems="let task of tasks" [clrDgItem]="task">
+            <clr-dg-row *clrDgItems="let task of completedTasks" [clrDgItem]="task">
               <clr-dg-cell>
                 <clr-icon shape="tasks" class="is-highlight is-solid"></clr-icon>
                 <a href="javascript:void(0)" (click)="onEdit(task)">{{task.id}}</a>

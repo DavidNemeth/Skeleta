@@ -18,8 +18,16 @@ import { ClrDatagrid } from "@clr/angular";
 })
 export class TaskManagementComponent implements OnInit {
   columns: any[] = [];
-  tasks: Task[] = [];
-  tasksCache: Task[] = [];
+
+  pendingTasks: Task[] = [];
+  pendingTasksCache: Task[] = [];
+
+  resolvedTasks: Task[] = [];
+  resolvedTasksCache: Task[] = [];
+
+  completedTasks: Task[] = [];
+  completedTasksCache: Task[] = [];
+
   loadingIndicator: boolean;
   selected: Task[] = [];
   gT = (key: string) => this.translationService.getTranslation(key);
@@ -109,38 +117,48 @@ export class TaskManagementComponent implements OnInit {
     }
   }
 
-  loadResolved() {
-    this.tasks = [];
-    this.tasksCache = [];
-    this.alertService.startLoadingMessage();
-    this.loadingIndicator = true;
-    this.taskService.GetResolvedTask()
-      .subscribe(results => this.onDataLoadSuccessful(results), error => this.onDataLoadFailed(error));
-  }
-
-  loadCompleted() {
-    this.tasks = [];
-    this.tasksCache = [];
-    this.alertService.startLoadingMessage();
-    this.loadingIndicator = true;
-    this.taskService.GetCompletedTask()
-      .subscribe(results => this.onDataLoadSuccessful(results), error => this.onDataLoadFailed(error));
-  }
-
   loadPending() {
-    this.tasks = [];
-    this.tasksCache = [];
+    this.pendingTasks = [];
+    this.pendingTasksCache = [];
     this.alertService.startLoadingMessage();
     this.loadingIndicator = true;
     this.taskService.GetPendingTask()
-      .subscribe(results => this.onDataLoadSuccessful(results), error => this.onDataLoadFailed(error));
+      .subscribe(results => this.onDataLoadSuccessful(results,null,null), error => this.onDataLoadFailed(error));
   }
 
-  onDataLoadSuccessful(tasks: Task[]) {
+  loadResolved() {
+    this.resolvedTasks = [];
+    this.resolvedTasksCache = [];
+    this.alertService.startLoadingMessage();
+    this.loadingIndicator = true;
+    this.taskService.GetResolvedTask()
+      .subscribe(results => this.onDataLoadSuccessful(null,results,null), error => this.onDataLoadFailed(error));
+  }
+
+  loadCompleted() {
+    this.completedTasks = [];
+    this.completedTasksCache = [];
+    this.alertService.startLoadingMessage();
+    this.loadingIndicator = true;
+    this.taskService.GetCompletedTask()
+      .subscribe(results => this.onDataLoadSuccessful(null,null,results), error => this.onDataLoadFailed(error));
+  }
+
+  onDataLoadSuccessful(pending?: Task[], resolved?: Task[], completed?: Task[]) {
     this.alertService.stopLoadingMessage();
     this.loadingIndicator = false;
-    this.tasksCache = tasks;
-    this.tasks = tasks;
+    if (pending) {
+      this.pendingTasks = pending;
+      this.pendingTasksCache = pending;
+    }
+    if (resolved) {
+      this.resolvedTasks = resolved;
+      this.resolvedTasksCache = resolved;
+    }
+    if (completed) {
+      this.completedTasks = completed;
+      this.completedTasksCache = completed;
+    }
     this.isOpen = true;
   }
 
@@ -155,42 +173,18 @@ export class TaskManagementComponent implements OnInit {
   }
 
   onSearchChanged(value: string) {
-    this.tasks = this.tasksCache
-      .filter(r => Utilities.searchArray(value, false, r.id, r.title, r.priority, r.status, r.developer.fullName, r.developer.fullName));
-  }
-
-
-  addItem(task: Task) {
-    this.tasks.unshift(task);
-    this.isOpen = true;
-  }
-
-  handleUpdate(task: Task) {
-    if (this.PendingActive) {
-      if (task.status == Status.Active || task.status == Status.New) {
-        this.updateTasks(task);
-      }
-      else {
-        this.removeItem(task);
-      }
-    }
     if (this.CompletedActive) {
-      if (task.status == Status.Completed) {
-        this.updateTasks(task);
-      }
-      else {
-        this.removeItem(task);
-      }
+      this.pendingTasks = this.pendingTasksCache
+        .filter(r => Utilities.searchArray(value, false, r.id, r.title, r.priority, r.status, r.developer.fullName, r.developer.fullName));
     }
     if (this.ResolvedActive) {
-      if (task.status == Status.Resolved) {
-        this.updateTasks(task);
-      }
-      else {
-        this.removeItem(task);
-      }
+      this.resolvedTasks = this.resolvedTasksCache
+        .filter(r => Utilities.searchArray(value, false, r.id, r.title, r.priority, r.status, r.developer.fullName, r.developer.fullName));
     }
-    this.isOpen = true;
+    if (this.PendingActive) {
+      this.completedTasks = this.completedTasksCache
+        .filter(r => Utilities.searchArray(value, false, r.id, r.title, r.priority, r.status, r.developer.fullName, r.developer.fullName));
+    }
   }
 
   deleteList(tasksToDelete: Task[]) {
@@ -210,23 +204,28 @@ export class TaskManagementComponent implements OnInit {
   }
 
   private removeItem(task: Task) {
-    let updateItem = this.tasks.find(this.findIndexToUpdate, task.id);
-
-    const taskIndex = this.tasks.indexOf(task, 0);
-    if (taskIndex > -1) {
-      this.tasks.splice(taskIndex, 1);
+    if (this.CompletedActive) {
+      let updateItem = this.completedTasks.find(this.findIndexToUpdate, task.id);
+      const taskIndex = this.completedTasks.indexOf(task, 0);
+      if (taskIndex > -1) {
+        this.completedTasks.splice(taskIndex, 1);
+      }
+    }
+    if (this.ResolvedActive) {
+      let updateItem = this.resolvedTasks.find(this.findIndexToUpdate, task.id);
+      const taskIndex = this.resolvedTasks.indexOf(task, 0);
+      if (taskIndex > -1) {
+        this.resolvedTasks.splice(taskIndex, 1);
+      }
+    }
+    if (this.PendingActive) {
+      let updateItem = this.pendingTasks.find(this.findIndexToUpdate, task.id);
+      const taskIndex = this.pendingTasks.indexOf(task, 0);
+      if (taskIndex > -1) {
+        this.pendingTasks.splice(taskIndex, 1);
+      }
     }
   }
-
-  private updateTasks(newItem) {
-    let updateItem = this.tasks.find(this.findIndexToUpdate, newItem.id);
-    let index = this.tasks.indexOf(updateItem);
-    this.tasks[index] = newItem;
-
-    console.log(newItem);
-    console.log(this.tasks);
-  }
-
   private findIndexToUpdate(newItem) {
     return newItem.id === this;
   }

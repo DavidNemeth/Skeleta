@@ -47,7 +47,7 @@ namespace Skeleta.Services.WorkItemServices
 		public async Task<IEnumerable<TaskListViewModel>> GetAllClosedTask()
 		{
 			var query = _context.TaskItems
-				.Where(t => t.Status == Status.Closed);
+				.Where(t => t.Status == Status.Closed).OrderByDescending(x=>x.UpdatedDate);
 
 			return await query
 				.ProjectTo<TaskListViewModel>().ToListAsync();
@@ -56,7 +56,7 @@ namespace Skeleta.Services.WorkItemServices
 		public async Task<IEnumerable<TaskListViewModel>> GetAllCompletedTask()
 		{
 			var query = _context.TaskItems
-				.Where(t => t.Status == Status.Completed);
+				.Where(t => t.Status == Status.Completed).OrderByDescending(x => x.UpdatedDate);
 
 			return await query
 				.ProjectTo<TaskListViewModel>().ToListAsync();
@@ -65,7 +65,7 @@ namespace Skeleta.Services.WorkItemServices
 		public async Task<IEnumerable<TaskListViewModel>> GetAllPendingTask()
 		{
 			var query = _context.TaskItems
-				.Where(t => t.Status == Status.New || t.Status == Status.Active);
+				.Where(t => t.Status == Status.New || t.Status == Status.Active).OrderByDescending(x => x.UpdatedDate);
 
 			return await query
 				.ProjectTo<TaskListViewModel>().ToListAsync();
@@ -74,7 +74,7 @@ namespace Skeleta.Services.WorkItemServices
 		public async Task<IEnumerable<TaskListViewModel>> GetAllResolvedTask()
 		{
 			var query = _context.TaskItems
-				.Where(t => t.Status == Status.Resolved);
+				.Where(t => t.Status == Status.Resolved).OrderByDescending(x => x.UpdatedDate);
 
 			return await query
 				.ProjectTo<TaskListViewModel>().ToListAsync();
@@ -83,7 +83,7 @@ namespace Skeleta.Services.WorkItemServices
 		public async Task<IEnumerable<TaskListViewModel>> GetAllTask()
 		{
 			var query = _context.TaskItems
-				.Where(t => t.Status != Status.Closed);
+				.Where(t => t.Status != Status.Closed).OrderByDescending(x => x.UpdatedDate);
 
 			return await query
 				.ProjectTo<TaskListViewModel>().ToListAsync();

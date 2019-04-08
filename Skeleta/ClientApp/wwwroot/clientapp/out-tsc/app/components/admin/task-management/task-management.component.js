@@ -96,6 +96,7 @@ var TaskManagementComponent = /** @class */ (function () {
     };
     TaskManagementComponent.prototype.loadResolved = function () {
         var _this = this;
+        console.log("resolved");
         this.tasks = [];
         this.tasksCache = [];
         this.alertService.startLoadingMessage();
@@ -105,6 +106,7 @@ var TaskManagementComponent = /** @class */ (function () {
     };
     TaskManagementComponent.prototype.loadCompleted = function () {
         var _this = this;
+        console.log("completed");
         this.tasks = [];
         this.tasksCache = [];
         this.alertService.startLoadingMessage();
@@ -114,6 +116,7 @@ var TaskManagementComponent = /** @class */ (function () {
     };
     TaskManagementComponent.prototype.loadPending = function () {
         var _this = this;
+        console.log("pending");
         this.tasks = [];
         this.tasksCache = [];
         this.alertService.startLoadingMessage();

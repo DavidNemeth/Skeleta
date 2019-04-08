@@ -41,15 +41,21 @@ namespace DAL
 			builder.Entity<TaskItem>().HasMany(r => r.BugItems).WithOne(t => t.TaskItem).HasForeignKey(r => r.TaskItemId).IsRequired();
 			builder.Entity<TaskItem>().HasOne(r => r.Developer).WithMany(t => t.DeveloperTaskItems).HasForeignKey(r => r.DeveloperId);
 			builder.Entity<TaskItem>().HasOne(r => r.Tester).WithMany(t => t.TesterTaskItems).HasForeignKey(r => r.TesterId);
+			builder.Entity<TaskItem>().HasIndex(x => x.UpdatedDate);
 
 			builder.Entity<BugItem>().HasOne(r => r.Developer).WithMany(t => t.DeveloperBugItems).HasForeignKey(r => r.DeveloperId);
 			builder.Entity<BugItem>().HasOne(r => r.Tester).WithMany(t => t.TesterBugItems).HasForeignKey(r => r.TesterId);
 			builder.Entity<BugItem>().HasOne(r => r.TaskItem).WithMany(t => t.BugItems).HasForeignKey(r => r.TaskItemId);
+			builder.Entity<BugItem>().HasIndex(x => x.UpdatedDate);
 
 			builder.Entity<Project>().HasMany(r => r.TaskItems).WithOne(t => t.Project).HasForeignKey(r => r.ProjectId);
+			builder.Entity<Project>().HasIndex(x => x.UpdatedDate);
+
 			builder.Entity<ProjectMember>().HasKey(t => new { t.ProjectId, t.ApplicationUserId });
 			builder.Entity<ProjectMember>().HasOne(pc => pc.Project).WithMany(p => p.ProjectMembers).HasForeignKey(pc => pc.ProjectId);
 			builder.Entity<ProjectMember>().HasOne(pc => pc.ApplicationUser).WithMany(c => c.Projects).HasForeignKey(pc => pc.ApplicationUserId);
+			builder.Entity<ProjectMember>().HasIndex(x => x.UpdatedDate);
+
 		}
 
 
