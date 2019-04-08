@@ -28,12 +28,16 @@ export class TaskManagementComponent implements OnInit {
   completedTasks: Task[] = [];
   completedTasksCache: Task[] = [];
 
+  archivedTasks: Task[] = [];
+  archivedTasksCache: Task[] = [];
+
   loadingIndicator: boolean;
   selected: Task[] = [];
   gT = (key: string) => this.translationService.getTranslation(key);
   CompletedActive;
   ResolvedActive;
   PendingActive;
+  ArchivedActive;
   curDate = new Date();
   @ViewChild(ClrDatagrid) grid: ClrDatagrid;
   @ViewChild(TaskEditComponent) taskEdit;
@@ -115,6 +119,9 @@ export class TaskManagementComponent implements OnInit {
     if (this.PendingActive) {
       this.loadPending();
     }
+    if (this.ArchivedActive) {
+      this.loadClosed();
+    }
   }
 
   loadPending() {
@@ -123,7 +130,7 @@ export class TaskManagementComponent implements OnInit {
     this.alertService.startLoadingMessage();
     this.loadingIndicator = true;
     this.taskService.GetPendingTask()
-      .subscribe(results => this.onDataLoadSuccessful(results,null,null), error => this.onDataLoadFailed(error));
+      .subscribe(results => this.onDataLoadSuccessful(results, Status.Active), error => this.onDataLoadFailed(error));
   }
 
   loadResolved() {
@@ -132,7 +139,7 @@ export class TaskManagementComponent implements OnInit {
     this.alertService.startLoadingMessage();
     this.loadingIndicator = true;
     this.taskService.GetResolvedTask()
-      .subscribe(results => this.onDataLoadSuccessful(null,results,null), error => this.onDataLoadFailed(error));
+      .subscribe(results => this.onDataLoadSuccessful(results, Status.Resolved), error => this.onDataLoadFailed(error));
   }
 
   loadCompleted() {
@@ -141,23 +148,36 @@ export class TaskManagementComponent implements OnInit {
     this.alertService.startLoadingMessage();
     this.loadingIndicator = true;
     this.taskService.GetCompletedTask()
-      .subscribe(results => this.onDataLoadSuccessful(null,null,results), error => this.onDataLoadFailed(error));
+      .subscribe(results => this.onDataLoadSuccessful(results, Status.Completed), error => this.onDataLoadFailed(error));
   }
 
-  onDataLoadSuccessful(pending?: Task[], resolved?: Task[], completed?: Task[]) {
+  loadClosed() {
+    this.archivedTasks = [];
+    this.archivedTasksCache = [];
+    this.alertService.startLoadingMessage();
+    this.loadingIndicator = true;
+    this.taskService.GetClosedTask()
+      .subscribe(results => this.onDataLoadSuccessful(results, Status.Closed), error => this.onDataLoadFailed(error));
+  }
+
+  onDataLoadSuccessful(tasks?: Task[], status?: Status) {
     this.alertService.stopLoadingMessage();
     this.loadingIndicator = false;
-    if (pending) {
-      this.pendingTasks = pending;
-      this.pendingTasksCache = pending;
+    if (status == Status.Active) {
+      this.pendingTasks = tasks;
+      this.pendingTasksCache = tasks;
     }
-    if (resolved) {
-      this.resolvedTasks = resolved;
-      this.resolvedTasksCache = resolved;
+    if (status == Status.Resolved) {
+      this.resolvedTasks = tasks;
+      this.resolvedTasksCache = tasks;
     }
-    if (completed) {
-      this.completedTasks = completed;
-      this.completedTasksCache = completed;
+    if (status == Status.Completed) {
+      this.completedTasks = tasks;
+      this.completedTasksCache = tasks;
+    }
+    if (status == Status.Closed) {
+      this.archivedTasks = tasks;
+      this.archivedTasksCache = tasks;
     }
     this.isOpen = true;
   }
@@ -165,7 +185,7 @@ export class TaskManagementComponent implements OnInit {
   onDataLoadFailed(error: any) {
     this.alertService.stopLoadingMessage();
     this.loadingIndicator = false;
-
+    console.log("Error while fetching list: ",error);
     this.alertService.showStickyMessage('Load Error',
       `Unable to retrieve users from the server.\r\nErrors: "${Utilities.getHttpResponseMessage(error)}"`,
       MessageSeverity.error, error);
@@ -228,6 +248,29 @@ export class TaskManagementComponent implements OnInit {
   }
   private findIndexToUpdate(newItem) {
     return newItem.id === this;
+  }
+
+  private handleUpdate(task: Task) {
+    if (this.PendingActive) {
+      if (task.status == Status.Active || task.status == Status.New) {
+        let updateItem = this.pendingTasks.find(this.findIndexToUpdate, task.id);
+        let index = this.pendingTasks.indexOf(updateItem);
+        this.pendingTasks[index] = task;
+      }
+      else {
+        this.removeItem(task);
+      }
+    }
+    if (this.CompletedActive) {
+      if (task.status == Status.Completed) {
+        let updateItem = this.completedTasks.find(this.findIndexToUpdate, task.id);
+        let index = this.completedTasks.indexOf(updateItem);
+        this.completedTasks[index] = task;
+      }
+      else {
+        this.removeItem(task);
+      }
+    }
   }
 
   private open() {

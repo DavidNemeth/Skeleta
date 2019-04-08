@@ -330,5 +330,85 @@
         </clr-tab-content>
       </ng-template>
     </clr-tab>
+
+    <clr-tab>
+      <button clrTabLink (click)="loadData()" [clrTabLinkInOverflow]=true>
+      Archived
+      </button>
+        <ng-template [(clrIfActive)]="ArchivedActive">
+          <clr-tab-content>
+            <clr-datagrid [@fadeInOut] [(clrDgSelected)]="selected" style="height:672px;" class="datagrid-compact">
+              <clr-dg-action-bar>
+                <div style="margin-right: 0rem; margin-left: 0rem;" class="clr-row clr-justify-content-between">
+                  <div class="btn-group btn-primary btn-sm">
+                    <button type="button" class="btn" (click)="onAdd()"><clr-icon shape="plus"></clr-icon>{{'tasks.management.NewTask' | translate}}</button>
+                    <clr-dropdown>
+                      <button type="button" [disabled]="selected.length === 0" class="btn btn-success" clrDropdownTrigger>
+                        <clr-icon shape="note"></clr-icon>Generate Releasenote
+                        <clr-icon shape="caret down"></clr-icon>
+                      </button>
+                      <clr-dropdown-menu clrPosition="bottom-left" *clrIfOpen>
+                        <a (click)="onExportSelected(selected, 'excel')" href="" #excel download="Releasenote_{{curDate | date:'yyyy_MM_dd'}}.csv" clrDropdownItem>Excel</a>
+                        <a (click)="onExportSelected(selected, 'word')" href="" #word download="Releasenote_{{curDate | date:'yyyy_MM_dd'}}.doc" clrDropdownItem>Word</a>
+                        <a (click)="onExportSelected(selected, 'pdf')" href="" #pdf download="Releasenote_{{curDate | date:'yyyy_MM_dd'}}.pdf" clrDropdownItem>Pdf</a>
+                      </clr-dropdown-menu>
+                    </clr-dropdown>
+
+                  </div>
+                  <div class="btn-group">
+                    <app-search-box (searchChange)="onSearchChanged($event)" placeholder="{{'tasks.management.Search' | translate}}"></app-search-box>
+                  </div>
+                </div>
+              </clr-dg-action-bar>
+              <clr-dg-column [style.width.px]="120">
+                <ng-container *clrDgHideableColumn="{hidden: false}">
+                  Id
+                </ng-container>
+              </clr-dg-column>
+              <clr-dg-column [clrDgField]="'title'">
+                <ng-container *clrDgHideableColumn="{hidden: false}">
+                  {{'tasks.management.Task' | translate}}
+                </ng-container>
+              </clr-dg-column>
+
+              <clr-dg-column [clrDgField]="'status'">
+                <ng-container *clrDgHideableColumn="{hidden: false}">
+                  {{'tasks.management.Status' | translate}}
+                </ng-container>
+              </clr-dg-column>
+              <clr-dg-placeholder>Skeleta Task Sysyem</clr-dg-placeholder>
+
+              <clr-dg-row *clrDgItems="let task of archivedTasks" [clrDgItem]="task">
+                <clr-dg-cell>
+                  <clr-icon shape="tasks" class="is-highlight is-solid"></clr-icon>
+                  <a href="javascript:void(0)" (click)="onEdit(task)">{{task.id}}</a>
+                </clr-dg-cell>
+                <clr-dg-cell>
+                  <a href="javascript:void(0)" (click)="onEdit(task)">{{task.title}} </a>
+                </clr-dg-cell>
+
+                <clr-dg-cell>
+                  <clr-icon *ngIf="task.status == 'New'" shape="circle" size="12" class="is-inverse is-solid"></clr-icon>
+                  <clr-icon *ngIf="task.status == 'Active'" shape="circle" size="12" class="is-solid is-highlight"></clr-icon>
+                  <clr-icon *ngIf="task.status == 'Resolved'" shape="circle" size="12" class="is-solid is-warning"></clr-icon>
+                  <clr-icon *ngIf="task.status == 'Completed'" shape="circle" size="12" class="is-solid is-success"></clr-icon>
+                  <clr-icon *ngIf="task.status == 'Closed'" shape="circle" size="12" class="is-solid is-error"></clr-icon>
+                  {{task.status}}
+                </clr-dg-cell>
+              </clr-dg-row>
+
+              <clr-dg-footer>
+                <clr-dg-column-toggle>
+                </clr-dg-column-toggle>
+                <clr-dg-pagination #pagination [clrDgPageSize]="20">
+                  <clr-dg-page-size [clrPageSizeOptions]="[10,20,50]">{{'tasks.management.TasksPerPage' | translate}}</clr-dg-page-size>
+                  {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+                  {{pagination.totalItems}} {{'tasks.management.Tasks' | translate}}
+                </clr-dg-pagination>
+              </clr-dg-footer>
+            </clr-datagrid>
+          </clr-tab-content>
+        </ng-template>
+    </clr-tab>
   </clr-tabs>
 </div>

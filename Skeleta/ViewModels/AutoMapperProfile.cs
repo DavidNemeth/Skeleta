@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using DAL;
 using DAL.Core;
 using DAL.Models;
 using DAL.Models.TaskModel;
@@ -53,8 +54,12 @@ namespace Skeleta.ViewModels
 
 			CreateMap<TaskItem, TaskItemViewModel>()
 				.ForMember(d => d.BugItems, map => map.MapFrom(s => s.BugItems.Where(x=>x.Status != Status.Closed)));
-			;
+		
 			CreateMap<TaskItemViewModel, TaskItem>()
+				.ForMember(d => d.CreatedBy, map => map.Ignore())
+				.ForMember(d => d.CreatedDate, map => map.Ignore())
+				.ForMember(d => d.UpdatedBy, map => map.Ignore())
+				.ForMember(d => d.UpdatedDate, map => map.Ignore())
 				.ForMember(d => d.BugItems, map => map.Ignore())
 				.ForMember(d => d.Developer, map => map.Ignore())
 				.ForMember(d => d.Tester, map => map.Ignore());

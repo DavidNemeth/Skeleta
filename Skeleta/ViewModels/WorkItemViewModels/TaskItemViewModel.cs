@@ -1,4 +1,5 @@
 ﻿using Skeleta.ViewModels.UserViewModels;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -25,6 +26,12 @@ namespace Skeleta.ViewModels.WorkItemViewModels
 		public AssignUserViewModel Tester { get; set; }
 
 		public virtual ICollection<ItemBugViewModel> BugItems { get; set; }
+
+
+		public string CreatedBy { get; set; }
+		public string UpdatedBy { get; set; }
+		public DateTime UpdatedDate { get; set; }
+		public DateTime CreatedDate { get; set; }
 	}
 
 	public class ItemBugViewModel

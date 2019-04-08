@@ -47,7 +47,6 @@ export class TaskEditComponent implements OnInit {
   @Output() cancel = new EventEmitter();
   @Output() refresh = new EventEmitter();
 
-
   constructor(private translationService: AppTranslationService,
     private alertService: AlertService, private formBuilder: FormBuilder,
     private taskService: TaskService, private accountService: AccountService) { }
@@ -98,8 +97,8 @@ export class TaskEditComponent implements OnInit {
   }
 
   private saveSuccessHelper(task: Task): void {
-    Object.assign(this.initialTask, this.taskEdit);
     this.refresh.emit();
+    Object.assign(this.initialTask, this.taskEdit);
     if (this.isNewTask)
       this.alertService.showMessage(this.gT('toasts.saved'), `Task added!`, MessageSeverity.success);
     else
@@ -134,6 +133,8 @@ export class TaskEditComponent implements OnInit {
       this.taskService.GetTask(taskid).subscribe(response => {
         this.initialTask = new Task();
         Object.assign(this.initialTask, response);
+        this.initialTask.createdBy = this.users.filter(x => x.id == this.initialTask.createdBy).map(x => x.fullName)[0];
+        this.initialTask.updatedBy = this.users.filter(x => x.id == this.initialTask.updatedBy).map(x => x.fullName)[0];
         this.taskEdit = new Task;
         Object.assign(this.taskEdit, response);
         this.submitBtnState = ClrLoadingState.DEFAULT;

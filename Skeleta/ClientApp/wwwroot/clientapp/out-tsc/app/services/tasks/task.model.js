@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Task = /** @class */ (function () {
-    function Task(title, description, id, priority, status, developer, developerId, tester, testerId, openBugcount, resolvedBugcount, bugItems) {
+    function Task(title, description, id, priority, status, developer, developerId, tester, testerId, openBugcount, resolvedBugcount, bugItems, createdBy, updatedBy, updatedDate, createdDate) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -14,6 +14,10 @@ var Task = /** @class */ (function () {
         this.bugItems = bugItems;
         this.openBugcount = openBugcount;
         this.resolvedBugcount = resolvedBugcount;
+        this.createdDate = createdDate;
+        this.createdBy = createdBy;
+        this.updatedDate = updatedDate;
+        this.updatedBy = updatedBy;
     }
     return Task;
 }());

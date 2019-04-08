@@ -8,7 +8,9 @@ export class Task {
     priority?: Priority, status?: Status,
     developer?: User, developerId?: string,
     tester?: User, testerId?: string,
-    openBugcount?: number, resolvedBugcount?: number, bugItems?: BugItem[]) {
+    openBugcount?: number, resolvedBugcount?: number, bugItems?: BugItem[],
+    createdBy?: string, updatedBy?: string,
+    updatedDate?: Date, createdDate?: Date, ) {
 
     this.id = id;
     this.title = title;
@@ -22,6 +24,10 @@ export class Task {
     this.bugItems = bugItems;
     this.openBugcount = openBugcount;
     this.resolvedBugcount = resolvedBugcount;
+    this.createdDate = createdDate;
+    this.createdBy = createdBy;
+    this.updatedDate = updatedDate;
+    this.updatedBy = updatedBy;
   }
 
   public id: number;
@@ -39,4 +45,10 @@ export class Task {
   public testerId: string;
 
   public bugItems: BugItem[];
+
+
+  public createdBy: string;
+  public updatedBy: string;
+  public updatedDate: Date;
+  public createdDate: Date;
 }

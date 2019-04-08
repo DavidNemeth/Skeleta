@@ -28,8 +28,12 @@ var TaskManagementComponent = /** @class */ (function () {
         this.taskService = taskService;
         this.renderer = renderer;
         this.columns = [];
-        this.tasks = [];
-        this.tasksCache = [];
+        this.pendingTasks = [];
+        this.pendingTasksCache = [];
+        this.resolvedTasks = [];
+        this.resolvedTasksCache = [];
+        this.completedTasks = [];
+        this.completedTasksCache = [];
         this.selected = [];
         this.gT = function (key) { return _this.translationService.getTranslation(key); };
         this.curDate = new Date();
@@ -94,41 +98,48 @@ var TaskManagementComponent = /** @class */ (function () {
             this.loadPending();
         }
     };
-    TaskManagementComponent.prototype.loadResolved = function () {
-        var _this = this;
-        console.log("resolved");
-        this.tasks = [];
-        this.tasksCache = [];
-        this.alertService.startLoadingMessage();
-        this.loadingIndicator = true;
-        this.taskService.GetResolvedTask()
-            .subscribe(function (results) { return _this.onDataLoadSuccessful(results); }, function (error) { return _this.onDataLoadFailed(error); });
-    };
-    TaskManagementComponent.prototype.loadCompleted = function () {
-        var _this = this;
-        console.log("completed");
-        this.tasks = [];
-        this.tasksCache = [];
-        this.alertService.startLoadingMessage();
-        this.loadingIndicator = true;
-        this.taskService.GetCompletedTask()
-            .subscribe(function (results) { return _this.onDataLoadSuccessful(results); }, function (error) { return _this.onDataLoadFailed(error); });
-    };
     TaskManagementComponent.prototype.loadPending = function () {
         var _this = this;
-        console.log("pending");
-        this.tasks = [];
-        this.tasksCache = [];
+        this.pendingTasks = [];
+        this.pendingTasksCache = [];
         this.alertService.startLoadingMessage();
         this.loadingIndicator = true;
         this.taskService.GetPendingTask()
-            .subscribe(function (results) { return _this.onDataLoadSuccessful(results); }, function (error) { return _this.onDataLoadFailed(error); });
+            .subscribe(function (results) { return _this.onDataLoadSuccessful(results, null, null); }, function (error) { return _this.onDataLoadFailed(error); });
     };
-    TaskManagementComponent.prototype.onDataLoadSuccessful = function (tasks) {
+    TaskManagementComponent.prototype.loadResolved = function () {
+        var _this = this;
+        this.resolvedTasks = [];
+        this.resolvedTasksCache = [];
+        this.alertService.startLoadingMessage();
+        this.loadingIndicator = true;
+        this.taskService.GetResolvedTask()
+            .subscribe(function (results) { return _this.onDataLoadSuccessful(null, results, null); }, function (error) { return _this.onDataLoadFailed(error); });
+    };
+    TaskManagementComponent.prototype.loadCompleted = function () {
+        var _this = this;
+        this.completedTasks = [];
+        this.completedTasksCache = [];
+        this.alertService.startLoadingMessage();
+        this.loadingIndicator = true;
+        this.taskService.GetCompletedTask()
+            .subscribe(function (results) { return _this.onDataLoadSuccessful(null, null, results); }, function (error) { return _this.onDataLoadFailed(error); });
+    };
+    TaskManagementComponent.prototype.onDataLoadSuccessful = function (pending, resolved, completed) {
         this.alertService.stopLoadingMessage();
         this.loadingIndicator = false;
-        this.tasksCache = tasks;
-        this.tasks = tasks;
+        if (pending) {
+            this.pendingTasks = pending;
+            this.pendingTasksCache = pending;
+        }
+        if (resolved) {
+            this.resolvedTasks = resolved;
+            this.resolvedTasksCache = resolved;
+        }
+        if (completed) {
+            this.completedTasks = completed;
+            this.completedTasksCache = completed;
+        }
         this.isOpen = true;
     };
     TaskManagementComponent.prototype.onDataLoadFailed = function (error) {
@@ -138,39 +149,18 @@ var TaskManagementComponent = /** @class */ (function () {
         this.isOpen = true;
     };
     TaskManagementComponent.prototype.onSearchChanged = function (value) {
-        this.tasks = this.tasksCache
-            .filter(function (r) { return utilities_1.Utilities.searchArray(value, false, r.id, r.title, r.priority, r.status, r.developer.fullName, r.developer.fullName); });
-    };
-    TaskManagementComponent.prototype.addItem = function (task) {
-        this.tasks.unshift(task);
-        this.isOpen = true;
-    };
-    TaskManagementComponent.prototype.handleUpdate = function (task) {
-        if (this.PendingActive) {
-            if (task.status == enum_1.Status.Active || task.status == enum_1.Status.New) {
-                this.updateTasks(task);
-            }
-            else {
-                this.removeItem(task);
-            }
-        }
         if (this.CompletedActive) {
-            if (task.status == enum_1.Status.Completed) {
-                this.updateTasks(task);
-            }
-            else {
-                this.removeItem(task);
-            }
+            this.pendingTasks = this.pendingTasksCache
+                .filter(function (r) { return utilities_1.Utilities.searchArray(value, false, r.id, r.title, r.priority, r.status, r.developer.fullName, r.developer.fullName); });
         }
         if (this.ResolvedActive) {
-            if (task.status == enum_1.Status.Resolved) {
-                this.updateTasks(task);
-            }
-            else {
-                this.removeItem(task);
-            }
+            this.resolvedTasks = this.resolvedTasksCache
+                .filter(function (r) { return utilities_1.Utilities.searchArray(value, false, r.id, r.title, r.priority, r.status, r.developer.fullName, r.developer.fullName); });
         }
-        this.isOpen = true;
+        if (this.PendingActive) {
+            this.completedTasks = this.completedTasksCache
+                .filter(function (r) { return utilities_1.Utilities.searchArray(value, false, r.id, r.title, r.priority, r.status, r.developer.fullName, r.developer.fullName); });
+        }
     };
     TaskManagementComponent.prototype.deleteList = function (tasksToDelete) {
         for (var _i = 0, tasksToDelete_1 = tasksToDelete; _i < tasksToDelete_1.length; _i++) {
@@ -188,21 +178,52 @@ var TaskManagementComponent = /** @class */ (function () {
         }
     };
     TaskManagementComponent.prototype.removeItem = function (task) {
-        var updateItem = this.tasks.find(this.findIndexToUpdate, task.id);
-        var taskIndex = this.tasks.indexOf(task, 0);
-        if (taskIndex > -1) {
-            this.tasks.splice(taskIndex, 1);
+        if (this.CompletedActive) {
+            var updateItem = this.completedTasks.find(this.findIndexToUpdate, task.id);
+            var taskIndex = this.completedTasks.indexOf(task, 0);
+            if (taskIndex > -1) {
+                this.completedTasks.splice(taskIndex, 1);
+            }
         }
-    };
-    TaskManagementComponent.prototype.updateTasks = function (newItem) {
-        var updateItem = this.tasks.find(this.findIndexToUpdate, newItem.id);
-        var index = this.tasks.indexOf(updateItem);
-        this.tasks[index] = newItem;
-        console.log(newItem);
-        console.log(this.tasks);
+        if (this.ResolvedActive) {
+            var updateItem = this.resolvedTasks.find(this.findIndexToUpdate, task.id);
+            var taskIndex = this.resolvedTasks.indexOf(task, 0);
+            if (taskIndex > -1) {
+                this.resolvedTasks.splice(taskIndex, 1);
+            }
+        }
+        if (this.PendingActive) {
+            var updateItem = this.pendingTasks.find(this.findIndexToUpdate, task.id);
+            var taskIndex = this.pendingTasks.indexOf(task, 0);
+            if (taskIndex > -1) {
+                this.pendingTasks.splice(taskIndex, 1);
+            }
+        }
     };
     TaskManagementComponent.prototype.findIndexToUpdate = function (newItem) {
         return newItem.id === this;
+    };
+    TaskManagementComponent.prototype.handleUpdate = function (task) {
+        if (this.PendingActive) {
+            if (task.status == enum_1.Status.Active || task.status == enum_1.Status.New) {
+                var updateItem = this.pendingTasks.find(this.findIndexToUpdate, task.id);
+                var index = this.pendingTasks.indexOf(updateItem);
+                this.pendingTasks[index] = task;
+            }
+            else {
+                this.removeItem(task);
+            }
+        }
+        if (this.CompletedActive) {
+            if (task.status == enum_1.Status.Completed) {
+                var updateItem = this.completedTasks.find(this.findIndexToUpdate, task.id);
+                var index = this.completedTasks.indexOf(updateItem);
+                this.completedTasks[index] = task;
+            }
+            else {
+                this.removeItem(task);
+            }
+        }
     };
     TaskManagementComponent.prototype.open = function () {
         this.isOpen = true;

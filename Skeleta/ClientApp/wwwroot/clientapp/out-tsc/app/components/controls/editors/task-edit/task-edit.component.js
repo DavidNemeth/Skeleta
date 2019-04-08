@@ -86,8 +86,8 @@ var TaskEditComponent = /** @class */ (function () {
         }
     };
     TaskEditComponent.prototype.saveSuccessHelper = function (task) {
-        Object.assign(this.initialTask, this.taskEdit);
         this.refresh.emit();
+        Object.assign(this.initialTask, this.taskEdit);
         if (this.isNewTask)
             this.alertService.showMessage(this.gT('toasts.saved'), "Task added!", alert_service_1.MessageSeverity.success);
         else
@@ -117,6 +117,8 @@ var TaskEditComponent = /** @class */ (function () {
             this.taskService.GetTask(taskid).subscribe(function (response) {
                 _this.initialTask = new task_model_1.Task();
                 Object.assign(_this.initialTask, response);
+                _this.initialTask.createdBy = _this.users.filter(function (x) { return x.id == _this.initialTask.createdBy; }).map(function (x) { return x.fullName; })[0];
+                _this.initialTask.updatedBy = _this.users.filter(function (x) { return x.id == _this.initialTask.updatedBy; }).map(function (x) { return x.fullName; })[0];
                 _this.taskEdit = new task_model_1.Task;
                 Object.assign(_this.taskEdit, response);
                 _this.submitBtnState = angular_1.ClrLoadingState.DEFAULT;
@@ -139,7 +141,7 @@ var TaskEditComponent = /** @class */ (function () {
                 this.taskService.GetTask(task.id).subscribe(function (editTask) {
                     editTask.status = enum_1.Status.Active;
                     _this.taskService.UpdateTask(editTask).subscribe(function (response) {
-                        _this.alertService.showMessage(_this.gT('toasts.saved'), "Task set as Resolved!", alert_service_1.MessageSeverity.success);
+                        _this.alertService.showMessage(_this.gT('toasts.saved'), "Task set as Active!", alert_service_1.MessageSeverity.success);
                         Object.assign(task, editTask);
                         _this.updateData.emit(task);
                     }, function (error) { return _this.alertService.showMessage(error, null, alert_service_1.MessageSeverity.error); });
@@ -149,7 +151,7 @@ var TaskEditComponent = /** @class */ (function () {
                 this.taskService.GetTask(task.id).subscribe(function (editTask) {
                     editTask.status = enum_1.Status.Active;
                     _this.taskService.UpdateTask(editTask).subscribe(function (response) {
-                        _this.alertService.showMessage(_this.gT('toasts.saved'), "Task set as Resolved!", alert_service_1.MessageSeverity.success);
+                        _this.alertService.showMessage(_this.gT('toasts.saved'), "Task set as Active!", alert_service_1.MessageSeverity.success);
                         _this.popData.emit(task);
                     }, function (error) { return _this.alertService.showMessage(error, null, alert_service_1.MessageSeverity.error); });
                 });

@@ -1,4 +1,8 @@
 <form *ngIf="dataLoaded" class="clr-form card" autocomplete="off" [formGroup]="taskForm" (ngSubmit)="save()">
+  <div class="clr-row clr-justify-content-between rowwidthfix">
+    <div style="margin-top: 0.2rem;" class="p8" *ngIf="isEdit">Created By: {{initialTask.createdBy}} {{initialTask.createdDate | date}}</div>
+    <div style="margin-top: 0.2rem;" class="p8" *ngIf="isEdit">Updated By: {{initialTask.updatedBy}} {{initialTask.updatedDate | date}}</div>
+  </div>
   <div class="card-header clr-row clr-justify-content-between rowwidthfix">
     <div class="btn-group">
       <div *ngFor="let priority of allPriority" class="radio btn">
@@ -58,7 +62,6 @@
     </button>
     <button type="button" (click)="close()" class="btn btn btn-outline">Cancel</button>
   </div>
-
 </form>
 
 <clr-modal [(clrModalOpen)]="archiveOpen">

@@ -56,7 +56,7 @@ export class AppComponent implements OnInit, OnDestroy {
     
     this.toastaConfig.theme = 'default';
     this.toastaConfig.position = 'top-right';
-    this.toastaConfig.limit = 100;
+    this.toastaConfig.limit = 1;
     this.toastaConfig.showClose = true;
 
     this.appTitleService.appName = this.appTitle;
