@@ -20,6 +20,7 @@ var must_match_validator_1 = require("../../../../helpers/must-match.validator")
 var rxjs_1 = require("rxjs");
 var alert_service_1 = require("../../../../services/alert.service");
 var app_translation_service_1 = require("../../../../services/app-translation.service");
+var enum_1 = require("../../../../models/enum");
 var UserEditComponent = /** @class */ (function () {
     function UserEditComponent(translationService, alertService, formBuilder, accountService) {
         var _this = this;
@@ -36,6 +37,7 @@ var UserEditComponent = /** @class */ (function () {
         this.isNewUser = false;
         this.isCurrentPassowrd = false;
         this.isConfirmPassword = false;
+        this.allJobs = Object.keys(enum_1.Job).slice();
         this.initialUser = new user_model_1.User();
         this.allRoles = [];
         this.usersToDelete = [];
@@ -66,10 +68,11 @@ var UserEditComponent = /** @class */ (function () {
     UserEditComponent.prototype.loadForm = function () {
         this.userForm = this.formBuilder.group({
             userName: ['', forms_1.Validators.required],
-            jobTitle: [''],
+            jobTitle: [enum_1.Job.None],
             fullName: ['', forms_1.Validators.required],
             email: ['', [forms_1.Validators.required, forms_1.Validators.email]],
             phoneNumber: ['', forms_1.Validators.required],
+            isEnabled: [true],
             roles: [{ value: [], disabled: !this.canAssignRoles }, forms_1.Validators.required],
             currentPassword: [{ value: '', disabled: true }, [forms_1.Validators.required, forms_1.Validators.minLength(6)]],
             newPassword: [{ value: '', disabled: true }, [forms_1.Validators.required, forms_1.Validators.minLength(6)]],

@@ -171,7 +171,7 @@ var TaskManagementComponent = /** @class */ (function () {
     };
     TaskManagementComponent.prototype.onSearchChanged = function (value) {
         if (this.CompletedActive) {
-            this.pendingTasks = this.pendingTasksCache
+            this.completedTasks = this.completedTasksCache
                 .filter(function (r) { return utilities_1.Utilities.searchArray(value, false, r.id, r.title, r.priority, r.status, r.developer.fullName, r.developer.fullName); });
         }
         if (this.ResolvedActive) {
@@ -179,7 +179,7 @@ var TaskManagementComponent = /** @class */ (function () {
                 .filter(function (r) { return utilities_1.Utilities.searchArray(value, false, r.id, r.title, r.priority, r.status, r.developer.fullName, r.developer.fullName); });
         }
         if (this.PendingActive) {
-            this.completedTasks = this.completedTasksCache
+            this.pendingTasks = this.pendingTasksCache
                 .filter(function (r) { return utilities_1.Utilities.searchArray(value, false, r.id, r.title, r.priority, r.status, r.developer.fullName, r.developer.fullName); });
         }
     };

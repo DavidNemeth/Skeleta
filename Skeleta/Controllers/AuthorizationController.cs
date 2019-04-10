@@ -218,8 +218,7 @@ namespace Skeleta.Controllers
 
 			if (ticket.HasScope(OpenIdConnectConstants.Scopes.Profile))
 			{
-				if (!string.IsNullOrWhiteSpace(user.JobTitle))
-					identity.AddClaim(CustomClaimTypes.JobTitle, user.JobTitle, OpenIdConnectConstants.Destinations.IdentityToken);
+				identity.AddClaim(CustomClaimTypes.JobTitle, user.JobTitle.ToString(), OpenIdConnectConstants.Destinations.IdentityToken);
 
 				if (!string.IsNullOrWhiteSpace(user.FullName))
 					identity.AddClaim(CustomClaimTypes.FullName, user.FullName, OpenIdConnectConstants.Destinations.IdentityToken);

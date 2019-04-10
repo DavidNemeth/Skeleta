@@ -53,6 +53,11 @@ export class AccountService {
     return this.accountEndpoint.getUsersEndpoint<User[]>(page, pageSize);
   }
 
+  getActiveUsers(page?: number, pageSize?: number) {
+
+    return this.accountEndpoint.getActiveUsersEndpoint<User[]>(page, pageSize);
+  }
+
   getUsersAndRoles(page?: number, pageSize?: number) {
 
     return forkJoin(

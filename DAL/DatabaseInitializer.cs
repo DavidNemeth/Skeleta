@@ -103,7 +103,8 @@ namespace DAL
 				Email = email,
 				PhoneNumber = phoneNumber,
 				EmailConfirmed = true,
-				IsEnabled = true
+				IsEnabled = true,
+				JobTitle = Job.None
 			};
 
 			var result = await _accountManager.CreateUserAsync(applicationUser, roles, password);

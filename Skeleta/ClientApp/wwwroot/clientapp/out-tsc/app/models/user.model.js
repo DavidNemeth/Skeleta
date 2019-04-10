@@ -2,13 +2,12 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var User = /** @class */ (function () {
     // Note: Using only optional constructor properties without backing store disables typescript's type checking for the type
-    function User(id, userName, fullName, email, jobTitle, job, phoneNumber, roles) {
+    function User(id, userName, fullName, email, jobTitle, phoneNumber, roles) {
         this.id = id;
         this.userName = userName;
         this.fullName = fullName;
         this.email = email;
-        this.job = job,
-            this.jobTitle = jobTitle;
+        this.jobTitle = jobTitle;
         this.phoneNumber = phoneNumber;
         this.roles = roles;
     }

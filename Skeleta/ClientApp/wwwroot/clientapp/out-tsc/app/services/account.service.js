@@ -34,6 +34,9 @@ var AccountService = /** @class */ (function () {
     AccountService.prototype.getUsers = function (page, pageSize) {
         return this.accountEndpoint.getUsersEndpoint(page, pageSize);
     };
+    AccountService.prototype.getActiveUsers = function (page, pageSize) {
+        return this.accountEndpoint.getActiveUsersEndpoint(page, pageSize);
+    };
     AccountService.prototype.getUsersAndRoles = function (page, pageSize) {
         return rxjs_1.forkJoin(this.accountEndpoint.getUsersEndpoint(page, pageSize), this.accountEndpoint.getRolesEndpoint());
     };

@@ -26,6 +26,7 @@ namespace DAL.Core
 		public static ApplicationPermission ViewTasks = new ApplicationPermission("View Tasks", "tasks.view", TasksPermissionGroupName, "Permission to view tasks");
 		public static ApplicationPermission ManageTasks = new ApplicationPermission("Manage Tasks", "tasks.manage", TasksPermissionGroupName, "Permission to create, delete and modify tasks");
 		public static ApplicationPermission AssignTasks = new ApplicationPermission("Assign Tasks", "tasks.assign", TasksPermissionGroupName, "Permission to assign tasks to users");
+		public static ApplicationPermission SetStatusTasks = new ApplicationPermission("SetStatus Tasks", "tasks.setStatus", TasksPermissionGroupName, "Permission to set status of tasks");
 
 		static ApplicationPermissions()
 		{
@@ -40,7 +41,8 @@ namespace DAL.Core
 
 				ViewTasks,
 				ManageTasks,
-				AssignTasks
+				AssignTasks,
+				SetStatusTasks
 			};
 
 			AllPermissions = allPermissions.AsReadOnly();

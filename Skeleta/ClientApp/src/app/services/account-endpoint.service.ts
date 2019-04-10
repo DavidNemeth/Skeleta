@@ -11,6 +11,8 @@ import { ConfigurationService } from './configuration.service';
 export class AccountEndpoint extends EndpointFactory {
 
   private readonly _usersUrl: string = '/api/account/users';
+  private readonly _activeUsersUrl: string = '/api/account/users/active';
+
   private readonly _userByUserNameUrl: string = '/api/account/users/username';
   private readonly _currentUserUrl: string = '/api/account/users/me';
   private readonly _currentUserPreferencesUrl: string = '/api/account/users/me/preferences';
@@ -20,6 +22,7 @@ export class AccountEndpoint extends EndpointFactory {
   private readonly _permissionsUrl: string = '/api/account/permissions';
 
   get usersUrl() { return this.configurations.baseUrl + this._usersUrl; }
+  get activeUsersUrl() { return this.configurations.baseUrl + this._activeUsersUrl; }
   get userByUserNameUrl() { return this.configurations.baseUrl + this._userByUserNameUrl; }
   get currentUserUrl() { return this.configurations.baseUrl + this._currentUserUrl; }
   get currentUserPreferencesUrl() { return this.configurations.baseUrl + this._currentUserPreferencesUrl; }
@@ -57,6 +60,14 @@ export class AccountEndpoint extends EndpointFactory {
       }));
   }
 
+  getActiveUsersEndpoint<T>(page?: number, pageSize?: number): Observable<T> {
+    const endpointUrl = page && pageSize ? `${this.activeUsersUrl}/${page}/${pageSize}` : this.activeUsersUrl;
+
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders()).pipe<T>(
+      catchError(error => {
+        return this.handleError(error, () => this.getActiveUsersEndpoint(page, pageSize));
+      }));
+  }
 
   getUsersEndpoint<T>(page?: number, pageSize?: number): Observable<T> {
     const endpointUrl = page && pageSize ? `${this.usersUrl}/${page}/${pageSize}` : this.usersUrl;

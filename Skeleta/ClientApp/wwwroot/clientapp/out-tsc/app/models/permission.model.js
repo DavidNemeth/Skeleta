@@ -13,6 +13,7 @@ var Permission = /** @class */ (function () {
     Permission.manageRolesPermission = 'roles.manage';
     Permission.assignRolesPermission = 'roles.assign';
     Permission.viewTasksPermission = 'tasks.view';
+    Permission.setStatusTasksPremission = 'tasks.setStatus';
     return Permission;
 }());
 exports.Permission = Permission;

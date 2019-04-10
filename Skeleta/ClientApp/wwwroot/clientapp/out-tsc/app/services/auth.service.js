@@ -110,7 +110,7 @@ var AuthService = /** @class */ (function () {
             [decodedIdToken.permission];
         if (!this.isLoggedIn)
             this.configurations.import(decodedIdToken.configuration);
-        var user = new user_model_1.User(decodedIdToken.sub, decodedIdToken.name, decodedIdToken.fullname, decodedIdToken.email, decodedIdToken.jobtitle, decodedIdToken.job, decodedIdToken.phone, Array.isArray(decodedIdToken.role) ? decodedIdToken.role : [decodedIdToken.role]);
+        var user = new user_model_1.User(decodedIdToken.sub, decodedIdToken.name, decodedIdToken.fullname, decodedIdToken.email, decodedIdToken.jobtitle, decodedIdToken.phone, Array.isArray(decodedIdToken.role) ? decodedIdToken.role : [decodedIdToken.role]);
         user.isEnabled = true;
         this.saveUserDetails(user, permissions, accessToken, idToken, refreshToken, accessTokenExpiry, rememberMe);
         this.reevaluateLoginStatus(user);

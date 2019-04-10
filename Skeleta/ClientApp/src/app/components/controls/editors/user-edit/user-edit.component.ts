@@ -10,6 +10,7 @@ import { MustMatch } from '../../../../helpers/must-match.validator';
 import { forkJoin, Observable } from 'rxjs';
 import { AlertService, MessageSeverity } from '../../../../services/alert.service';
 import { AppTranslationService } from '../../../../services/app-translation.service';
+import { Job } from '../../../../models/enum';
 
 @Component({
   selector: 'app-user-edit',
@@ -30,6 +31,7 @@ export class UserEditComponent implements OnInit {
   private openModal;
   private emailError: string;
   private userError: string;
+  private allJobs = [...Object.keys(Job)];
 
   initialUser: User = new User();
   userEdit: UserEdit;
@@ -70,20 +72,21 @@ export class UserEditComponent implements OnInit {
   }
 
   private loadForm() {
-        this.userForm = this.formBuilder.group({
-            userName: ['', Validators.required],
-            jobTitle: [''],
-            fullName: ['', Validators.required],
-            email: ['', [Validators.required, Validators.email]],
-            phoneNumber: ['', Validators.required],
-            roles: [{ value: [], disabled: !this.canAssignRoles }, Validators.required],
-            currentPassword: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(6)]],
-            newPassword: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(6)]],
-            confirmPassword: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(6)]]
-        }, {
-                validator: MustMatch('newPassword', 'confirmPassword')
-            });
-    }
+    this.userForm = this.formBuilder.group({
+      userName: ['', Validators.required],
+      jobTitle: [Job.None],
+      fullName: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      phoneNumber: ['', Validators.required],
+      isEnabled: [true],
+      roles: [{ value: [], disabled: !this.canAssignRoles }, Validators.required],
+      currentPassword: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(6)]],
+      newPassword: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(6)]],
+      confirmPassword: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(6)]]
+    }, {
+        validator: MustMatch('newPassword', 'confirmPassword')
+      });
+  }
 
   private save() {
     for (let i in this.userForm.controls)
@@ -120,7 +123,7 @@ export class UserEditComponent implements OnInit {
     this.alertService.showStickyMessage(error, null, MessageSeverity.error);
     console.log(error.error);
     this.clrForm.markAsDirty();
-    
+
     if (error.error.Email) {
       this.emailError = error.error.Email[0];
     }
@@ -213,9 +216,9 @@ export class UserEditComponent implements OnInit {
   viewUser(user: User) {
     this.openModal = true;
     this.canChangePassword = false;
-    Object.assign(this.initialUser, user);    
+    Object.assign(this.initialUser, user);
     this.userForm.patchValue(this.initialUser);
-   
+
 
     this.userForm.controls['userName'].disable();
     this.userForm.controls['jobTitle'].disable();
@@ -224,7 +227,7 @@ export class UserEditComponent implements OnInit {
     this.userForm.controls['phoneNumber'].disable();
     this.userForm.controls['roles'].disable();
   }
-  
+
   deleteUsers(users: User[]) {
     this.deleteOpen = true;
     this.usersToDelete = users;

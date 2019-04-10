@@ -47,7 +47,7 @@ export class BugitemEditComponent implements OnInit {
     private bugService: BugItemService, private accountService: AccountService) { }
 
   ngOnInit() {
-    this.accountService.getUsers().subscribe(
+    this.accountService.getActiveUsers().subscribe(
       users => this.users = users
     );
     this.currentUser = this.accountService.currentUser;

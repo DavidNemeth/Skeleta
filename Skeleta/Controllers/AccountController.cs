@@ -87,6 +87,13 @@ namespace Skeleta.Controllers
 			return await GetUsers(-1, -1);
 		}
 
+		[HttpGet("users/active")]
+		[Authorize(Authorization.Policies.ViewAllUsersPolicy)]
+		[ProducesResponseType(200, Type = typeof(List<UserViewModel>))]
+		public async Task<IActionResult> GetActiveUsers()
+		{
+			return await GetActiveUsers(-1, -1);
+		}
 
 		[HttpGet("users/{pageNumber:int}/{pageSize:int}")]
 		[Authorize(Authorization.Policies.ViewAllUsersPolicy)]
@@ -108,6 +115,25 @@ namespace Skeleta.Controllers
 			return Ok(usersVM);
 		}
 
+		[HttpGet("users/{pageNumber:int}/{pageSize:int}")]
+		[Authorize(Authorization.Policies.ViewAllUsersPolicy)]
+		[ProducesResponseType(200, Type = typeof(List<UserViewModel>))]
+		public async Task<IActionResult> GetActiveUsers(int pageNumber, int pageSize)
+		{
+			var usersAndRoles = await _accountManager.GetActiveUsersAndRolesAsync(pageNumber, pageSize);
+
+			List<UserViewModel> usersVM = new List<UserViewModel>();
+
+			foreach (var item in usersAndRoles)
+			{
+				var userVM = Mapper.Map<UserViewModel>(item.Item1);
+				userVM.Roles = item.Item2;
+
+				usersVM.Add(userVM);
+			}
+
+			return Ok(usersVM);
+		}
 
 		[HttpPut("users/me")]
 		[ProducesResponseType(204)]

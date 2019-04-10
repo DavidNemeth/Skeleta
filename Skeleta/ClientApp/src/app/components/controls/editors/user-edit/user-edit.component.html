@@ -16,11 +16,12 @@
             <clr-control-error>{{userError}}</clr-control-error>
           </clr-input-container>
 
-          <clr-input-container>
+           <clr-select-container>
             <label class="clr-col-12 clr-col-md-5">{{'users.editor.JobTitle' | translate}}</label>
-            <input class="clr-col-12 clr-col-md-7" clrInput type="text" formControlName="jobTitle" />
-            <clr-control-error>Error message that appears after focus is lost and control is invalid</clr-control-error>
-          </clr-input-container>
+            <select class="clr-col-12 clr-col-md-7" clrSelect formControlName="jobTitle">
+              <option *ngFor="let job of allJobs" [value]="job">{{job}}</option>
+            </select>
+          </clr-select-container>
 
           <clr-input-container>
             <label class="clr-col-12 clr-col-md-5">{{'users.editor.FullName' | translate}}</label>
@@ -47,8 +48,14 @@
         </div>
 
         <div class="clr-col-sm-12 clr-col-md-6">
-          <button *ngIf="canChangePassword" class="btn btn-link" type="button" (click)="addChangePassword()">{{'users.editor.ChangePassword' | translate}}</button>
+          <clr-checkbox-container>
+            <clr-checkbox-wrapper>
+              <input type="checkbox" clrCheckbox class="clr-col-12 clr-col-md-7" formControlName="isEnabled" />
+              <label class="clr-col-12 clr-col-md-5">{{'users.editor.Enabled' | translate}}</label>
+            </clr-checkbox-wrapper>
+          </clr-checkbox-container>
 
+          <button *ngIf="canChangePassword" class="btn btn-link" type="button" (click)="addChangePassword()">{{'users.editor.ChangePassword' | translate}}</button>
           <div *ngIf="isCurrentPassowrd">
             <clr-password-container>
               <label class="clr-col-12 clr-col-md-5">{{'users.editor.Password' | translate}}</label>
@@ -74,7 +81,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" (click)="resetForm()" class="btn btn-info">Reset</button>
-        <button [clrLoading]="submitBtnState" type="submit" class="btn btn-primary">{{actionTitle}}</button>
+        <button [clrLoading]="submitBtnState" type="submit" class="btn btn-primary">Save</button>
       </div>
     </form>
   </div>

@@ -1,4 +1,5 @@
-﻿using Skeleta.Helpers;
+﻿using DAL.Core;
+using Skeleta.Helpers;
 using Skeleta.ViewModels.WorkItemViewModels;
 using System;
 using System.Collections.Generic;
@@ -23,8 +24,6 @@ namespace Skeleta.ViewModels.UserViewModels
 		public string Email { get; set; }
 
 		public string JobTitle { get; set; }
-
-		public string Job { get; set; }
 
 		public string PhoneNumber { get; set; }
 

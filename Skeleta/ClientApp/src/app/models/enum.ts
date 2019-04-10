@@ -12,9 +12,10 @@ export enum Gender {
 }
 
 export enum Job {
-  None,
-  Developer,
-  Tester
+  None = "None",
+  Developer = "Developer",
+  Tester = "Tester",
+  Manager = "Manager"
 }
 
 export enum Priority {

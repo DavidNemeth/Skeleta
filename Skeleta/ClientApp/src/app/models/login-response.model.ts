@@ -14,8 +14,7 @@ export interface IdToken {
 	sub: string;
 	name: string;
 	fullname: string;
-  jobtitle: string;
-  job: Job;
+  jobtitle: Job;
 	email: string;
 	phone: string;
 	role: string | string[];

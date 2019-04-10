@@ -33,18 +33,13 @@ namespace DAL
 			builder.Entity<ApplicationRole>().HasMany(r => r.Claims).WithOne().HasForeignKey(c => c.RoleId).IsRequired().OnDelete(DeleteBehavior.Cascade);
 			builder.Entity<ApplicationRole>().HasMany(r => r.Users).WithOne().HasForeignKey(r => r.RoleId).IsRequired().OnDelete(DeleteBehavior.Cascade);
 
-			//builder.Entity<ApplicationUser>().HasMany(u => u.DeveloperTaskItems).WithOne(t => t.Developer).HasForeignKey(r => r.DeveloperId).OnDelete(DeleteBehavior.SetNull);
-			//builder.Entity<ApplicationUser>().HasMany(u => u.TesterTaskItems).WithOne(t => t.Tester).HasForeignKey(r => r.TesterId).OnDelete(DeleteBehavior.SetNull);
-			//builder.Entity<ApplicationUser>().HasMany(u => u.DeveloperBugItems).WithOne(t => t.Developer).HasForeignKey(r => r.DeveloperId).OnDelete(DeleteBehavior.SetNull);
-			//builder.Entity<ApplicationUser>().HasMany(u => u.TesterBugItems).WithOne(t => t.Tester).HasForeignKey(r => r.TesterId).OnDelete(DeleteBehavior.SetNull);
-
-			builder.Entity<TaskItem>().HasMany(r => r.BugItems).WithOne(t => t.TaskItem).HasForeignKey(r => r.TaskItemId).IsRequired();
-			builder.Entity<TaskItem>().HasOne(r => r.Developer).WithMany(t => t.DeveloperTaskItems).HasForeignKey(r => r.DeveloperId);
-			builder.Entity<TaskItem>().HasOne(r => r.Tester).WithMany(t => t.TesterTaskItems).HasForeignKey(r => r.TesterId);
+			builder.Entity<TaskItem>().HasMany(r => r.BugItems).WithOne(t => t.TaskItem).HasForeignKey(r => r.TaskItemId).IsRequired().OnDelete(DeleteBehavior.Cascade);
+			builder.Entity<TaskItem>().HasOne(r => r.Developer).WithMany(t => t.DeveloperTaskItems).HasForeignKey(r => r.DeveloperId).IsRequired(false); ;
+			builder.Entity<TaskItem>().HasOne(r => r.Tester).WithMany(t => t.TesterTaskItems).HasForeignKey(r => r.TesterId).IsRequired(false); ;
 			builder.Entity<TaskItem>().HasIndex(x => x.UpdatedDate);
 
-			builder.Entity<BugItem>().HasOne(r => r.Developer).WithMany(t => t.DeveloperBugItems).HasForeignKey(r => r.DeveloperId);
-			builder.Entity<BugItem>().HasOne(r => r.Tester).WithMany(t => t.TesterBugItems).HasForeignKey(r => r.TesterId);
+			builder.Entity<BugItem>().HasOne(r => r.Developer).WithMany(t => t.DeveloperBugItems).HasForeignKey(r => r.DeveloperId).IsRequired(false); ;
+			builder.Entity<BugItem>().HasOne(r => r.Tester).WithMany(t => t.TesterBugItems).HasForeignKey(r => r.TesterId).IsRequired(false); ;
 			builder.Entity<BugItem>().HasOne(r => r.TaskItem).WithMany(t => t.BugItems).HasForeignKey(r => r.TaskItemId);
 			builder.Entity<BugItem>().HasIndex(x => x.UpdatedDate);
 

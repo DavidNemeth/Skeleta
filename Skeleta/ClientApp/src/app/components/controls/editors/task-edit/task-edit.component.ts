@@ -13,6 +13,7 @@ import { fadeInOut } from '../../../../services/animations';
 import { compare } from 'fast-json-patch';
 import { bounceIn } from 'ngx-animate';
 import { trigger, transition, useAnimation } from '@angular/animations';
+import { Permission } from '../../../../models/permission.model';
 
 @Component({
   selector: 'app-task-edit',
@@ -61,7 +62,7 @@ export class TaskEditComponent implements OnInit {
     private taskService: TaskService, private accountService: AccountService) { }
 
   ngOnInit() {
-    this.accountService.getUsers().subscribe(
+    this.accountService.getActiveUsers().subscribe(
       users => this.users = users
     );
     this.currentUser = this.accountService.currentUser;
@@ -72,7 +73,7 @@ export class TaskEditComponent implements OnInit {
       title: ['', Validators.required],
       description: [''],
       priority: ['High', Validators.required],
-      status: ['New', Validators.required],
+      status: [{ value: 'New', disabled: this.isEdit && !this.canSetStatus}, Validators.required],
       developerId: [this.currentUser.id],
       testerId: [this.currentUser.id]
     });
@@ -302,5 +303,9 @@ export class TaskEditComponent implements OnInit {
       },
         error => this.alertService.showMessage(error, null, MessageSeverity.error));
     }
+  }
+
+  get canSetStatus() {
+    return this.accountService.userHasPermission(Permission.setStatusTasksPremission);
   }
 }

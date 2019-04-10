@@ -15,9 +15,10 @@ var Gender;
 })(Gender = exports.Gender || (exports.Gender = {}));
 var Job;
 (function (Job) {
-    Job[Job["None"] = 0] = "None";
-    Job[Job["Developer"] = 1] = "Developer";
-    Job[Job["Tester"] = 2] = "Tester";
+    Job["None"] = "None";
+    Job["Developer"] = "Developer";
+    Job["Tester"] = "Tester";
+    Job["Manager"] = "Manager";
 })(Job = exports.Job || (exports.Job = {}));
 var Priority;
 (function (Priority) {

@@ -44,7 +44,7 @@ var BugitemEditComponent = /** @class */ (function () {
     }
     BugitemEditComponent.prototype.ngOnInit = function () {
         var _this = this;
-        this.accountService.getUsers().subscribe(function (users) { return _this.users = users; });
+        this.accountService.getActiveUsers().subscribe(function (users) { return _this.users = users; });
         this.currentUser = this.accountService.currentUser;
     };
     BugitemEditComponent.prototype.loadForm = function () {

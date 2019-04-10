@@ -196,7 +196,7 @@ export class TaskManagementComponent implements OnInit {
 
   onSearchChanged(value: string) {
     if (this.CompletedActive) {
-      this.pendingTasks = this.pendingTasksCache
+      this.completedTasks = this.completedTasksCache
         .filter(r => Utilities.searchArray(value, false, r.id, r.title, r.priority, r.status, r.developer.fullName, r.developer.fullName));
     }
     if (this.ResolvedActive) {
@@ -204,7 +204,7 @@ export class TaskManagementComponent implements OnInit {
         .filter(r => Utilities.searchArray(value, false, r.id, r.title, r.priority, r.status, r.developer.fullName, r.developer.fullName));
     }
     if (this.PendingActive) {
-      this.completedTasks = this.completedTasksCache
+      this.pendingTasks = this.pendingTasksCache
         .filter(r => Utilities.searchArray(value, false, r.id, r.title, r.priority, r.status, r.developer.fullName, r.developer.fullName));
     }
   }

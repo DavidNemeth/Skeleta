@@ -17,7 +17,8 @@ namespace DAL.Core
 	{
 		None,
 		Tester,
-		Developer
+		Developer,
+		Manager
 	}
 
 	public enum Priority

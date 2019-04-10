@@ -11,8 +11,7 @@ namespace DAL.Models
 {
 	public class ApplicationUser : IdentityUser, IAuditableEntity
 	{
-		public string JobTitle { get; set; }
-		public Job Job { get; set; }
+		public Job JobTitle { get; set; }
 		[StringLength(20, MinimumLength = 2, ErrorMessage = "Username must be between 2 and 20 characters")]
 		public string FullName { get; set; }
 		public string Configuration { get; set; }

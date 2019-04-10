@@ -22,6 +22,7 @@ var animations_1 = require("../../../../services/animations");
 var fast_json_patch_1 = require("fast-json-patch");
 var ngx_animate_1 = require("ngx-animate");
 var animations_2 = require("@angular/animations");
+var permission_model_1 = require("../../../../models/permission.model");
 var TaskEditComponent = /** @class */ (function () {
     function TaskEditComponent(translationService, alertService, formBuilder, taskService, accountService) {
         var _this = this;
@@ -55,7 +56,7 @@ var TaskEditComponent = /** @class */ (function () {
     }
     TaskEditComponent.prototype.ngOnInit = function () {
         var _this = this;
-        this.accountService.getUsers().subscribe(function (users) { return _this.users = users; });
+        this.accountService.getActiveUsers().subscribe(function (users) { return _this.users = users; });
         this.currentUser = this.accountService.currentUser;
     };
     TaskEditComponent.prototype.loadForm = function () {
@@ -63,10 +64,11 @@ var TaskEditComponent = /** @class */ (function () {
             title: ['', forms_1.Validators.required],
             description: [''],
             priority: ['High', forms_1.Validators.required],
-            status: ['New', forms_1.Validators.required],
+            status: [{ value: 'New', disabled: this.isEdit && !this.canSetStatus }, forms_1.Validators.required],
             developerId: [this.currentUser.id],
             testerId: [this.currentUser.id]
         });
+        console.log(this.canSetStatus);
         this.dataLoaded = true;
     };
     TaskEditComponent.prototype.cleanup = function () {
@@ -262,6 +264,13 @@ var TaskEditComponent = /** @class */ (function () {
             }, function (error) { return _this.alertService.showMessage(error, null, alert_service_1.MessageSeverity.error); });
         }
     };
+    Object.defineProperty(TaskEditComponent.prototype, "canSetStatus", {
+        get: function () {
+            return this.accountService.userHasPermission(permission_model_1.Permission.setStatusTasksPremission);
+        },
+        enumerable: true,
+        configurable: true
+    });
     __decorate([
         core_1.ViewChild(angular_1.ClrForm),
         __metadata("design:type", Object)

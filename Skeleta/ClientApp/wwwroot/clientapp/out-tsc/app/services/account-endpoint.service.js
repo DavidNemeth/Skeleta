@@ -32,6 +32,7 @@ var AccountEndpoint = /** @class */ (function (_super) {
     function AccountEndpoint(http, configurations, injector) {
         var _this = _super.call(this, http, configurations, injector) || this;
         _this._usersUrl = '/api/account/users';
+        _this._activeUsersUrl = '/api/account/users/active';
         _this._userByUserNameUrl = '/api/account/users/username';
         _this._currentUserUrl = '/api/account/users/me';
         _this._currentUserPreferencesUrl = '/api/account/users/me/preferences';
@@ -43,6 +44,11 @@ var AccountEndpoint = /** @class */ (function (_super) {
     }
     Object.defineProperty(AccountEndpoint.prototype, "usersUrl", {
         get: function () { return this.configurations.baseUrl + this._usersUrl; },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(AccountEndpoint.prototype, "activeUsersUrl", {
+        get: function () { return this.configurations.baseUrl + this._activeUsersUrl; },
         enumerable: true,
         configurable: true
     });
@@ -93,6 +99,13 @@ var AccountEndpoint = /** @class */ (function (_super) {
         var endpointUrl = this.userByUserNameUrl + "/" + userName;
         return this.http.get(endpointUrl, this.getRequestHeaders()).pipe(operators_1.catchError(function (error) {
             return _this.handleError(error, function () { return _this.getUserByUserNameEndpoint(userName); });
+        }));
+    };
+    AccountEndpoint.prototype.getActiveUsersEndpoint = function (page, pageSize) {
+        var _this = this;
+        var endpointUrl = page && pageSize ? this.activeUsersUrl + "/" + page + "/" + pageSize : this.usersUrl;
+        return this.http.get(endpointUrl, this.getRequestHeaders()).pipe(operators_1.catchError(function (error) {
+            return _this.handleError(error, function () { return _this.getActiveUsersEndpoint(page, pageSize); });
         }));
     };
     AccountEndpoint.prototype.getUsersEndpoint = function (page, pageSize) {
