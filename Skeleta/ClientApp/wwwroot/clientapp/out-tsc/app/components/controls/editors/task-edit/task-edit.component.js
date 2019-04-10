@@ -20,6 +20,8 @@ var enum_1 = require("../../../../models/enum");
 var account_service_1 = require("../../../../services/account.service");
 var animations_1 = require("../../../../services/animations");
 var fast_json_patch_1 = require("fast-json-patch");
+var ngx_animate_1 = require("ngx-animate");
+var animations_2 = require("@angular/animations");
 var TaskEditComponent = /** @class */ (function () {
     function TaskEditComponent(translationService, alertService, formBuilder, taskService, accountService) {
         var _this = this;
@@ -43,6 +45,7 @@ var TaskEditComponent = /** @class */ (function () {
         this.tasksToDelete = [];
         this.tasksToClose = [];
         this.taskToUpdate = new task_model_1.TaskEdit();
+        this.dataLoaded = false;
         this.users = [];
         this.popData = new core_1.EventEmitter();
         this.popSelected = new core_1.EventEmitter();
@@ -117,7 +120,7 @@ var TaskEditComponent = /** @class */ (function () {
     TaskEditComponent.prototype.Edit = function (taskid) {
         var _this = this;
         if (taskid) {
-            this.isOpen = true;
+            setTimeout(function () { return _this.isOpen = true; }, 500);
             this.isEdit = true;
             this.taskService.GetTask(taskid).subscribe(function (response) {
                 _this.initialTask = new task_model_1.TaskEdit();
@@ -288,7 +291,9 @@ var TaskEditComponent = /** @class */ (function () {
             selector: 'app-task-edit',
             templateUrl: './task-edit.component.html',
             styleUrls: ['./task-edit.component.css'],
-            animations: [animations_1.fadeInOut],
+            animations: [animations_1.fadeInOut,
+                animations_2.trigger('bounceIn', [animations_2.transition('void => *', animations_2.useAnimation(ngx_animate_1.bounceIn))])
+            ],
         }),
         __metadata("design:paramtypes", [app_translation_service_1.AppTranslationService,
             alert_service_1.AlertService, forms_1.FormBuilder,

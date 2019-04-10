@@ -14,12 +14,11 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var Task = /** @class */ (function () {
-    function Task(id, title, priority, status, tested) {
+    function Task(id, title, priority, status) {
         this.id = id;
         this.title = title;
         this.priority = priority;
         this.status = status;
-        this.tested = tested;
     }
     return Task;
 }());

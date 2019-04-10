@@ -15,7 +15,6 @@ namespace Skeleta.ViewModels.WorkItemViewModels
 		public string Status { get; set; }
 		public AssignUserViewModel Developer { get; set; }
 		public AssignUserViewModel Tester { get; set; }
-		public bool Tested { get; set; }
 
 		public int OpenBugcount { get; set; }
 		public int ResolvedBugcount { get; set; }

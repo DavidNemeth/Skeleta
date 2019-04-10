@@ -31,14 +31,12 @@ var BugitemsComponent = /** @class */ (function () {
         this.bugsCache = [];
         this.selected = [];
         this.gT = function (key) { return _this.translationService.getTranslation(key); };
-        this.isOpen = false;
     }
     BugitemsComponent.prototype.ngOnInit = function () {
         console.log(this.bugItems);
         this.bugs = [];
         this.bugsCache = [];
         this.onDataLoadSuccessful(this.bugItems);
-        this.isOpen = true;
     };
     BugitemsComponent.prototype.onSearchChanged = function (value) {
         this.bugs = this.bugsCache
@@ -47,19 +45,16 @@ var BugitemsComponent = /** @class */ (function () {
     BugitemsComponent.prototype.onAdd = function () {
         this.sourceBug = null;
         this.bugEdit.Create(this.taskId, this.developerId, this.testerId);
-        this.isOpen = false;
     };
     BugitemsComponent.prototype.onEdit = function (bug) {
         this.sourceBug = bug;
         this.bugEdit.Edit(bug.id);
-        this.isOpen = false;
     };
     BugitemsComponent.prototype.updateList = function (returnBug) {
         this.loadData(returnBug.taskItemId);
     };
     BugitemsComponent.prototype.loadData = function (taskid) {
         this.loadAll(taskid);
-        this.isOpen = true;
     };
     BugitemsComponent.prototype.loadAll = function (taskid) {
         var _this = this;
@@ -83,7 +78,6 @@ var BugitemsComponent = /** @class */ (function () {
         this.alertService.stopLoadingMessage();
         this.loadingIndicator = false;
         this.alertService.showStickyMessage('Load Error', "Unable to retrieve users from the server.\r\nErrors: \"" + utilities_1.Utilities.getHttpResponseMessage(error) + "\"", alert_service_1.MessageSeverity.error, error);
-        this.isOpen = true;
     };
     BugitemsComponent.prototype.removeItem = function (bug) {
         var itemIndex = this.bugs.indexOf(bug, 0);
@@ -94,10 +88,8 @@ var BugitemsComponent = /** @class */ (function () {
     BugitemsComponent.prototype.updateItem = function (bug) {
         var index = this.bugs.indexOf(bug);
         this.bugs[index] = bug;
-        this.isOpen = true;
     };
     BugitemsComponent.prototype.closeTab = function () {
-        this.isOpen = true;
     };
     __decorate([
         core_1.Input(),

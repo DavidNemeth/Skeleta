@@ -4,20 +4,18 @@ import { BugItem } from "../bugItems/bugItem.model";
 
 abstract class Task {
   constructor(id?: number, title?: string,
-    priority?: Priority, status?: Status, tested?: boolean) {
+    priority?: Priority, status?: Status) {
 
     this.id = id;
     this.title = title;
     this.priority = priority;
     this.status = status;
-    this.tested = tested;
   }
 
   public id: number;
   public title: string;
   public priority: Priority;
   public status: Status;
-  public tested: boolean;
 }
 
 export class TaskList extends Task {

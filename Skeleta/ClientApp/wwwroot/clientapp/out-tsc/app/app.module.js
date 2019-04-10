@@ -115,7 +115,7 @@ var AppModule = /** @class */ (function () {
                             [{ 'list': 'ordered' }, { 'list': 'bullet' }],
                             [{ 'color': [] }],
                             [{ 'align': [] }],
-                            ['link', 'image'],
+                            ['link', 'image', 'video'],
                         ]
                     }
                 })

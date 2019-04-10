@@ -33,6 +33,8 @@ var BugitemEditComponent = /** @class */ (function () {
         this.deleteOpen = false;
         this.isNewItem = false;
         this.allStatus = ["Active", "Resolved", "Completed"];
+        this.dataLoaded = false;
+        this.isOpen = false;
         this.initialItem = new bugItem_model_1.BugItem();
         this.users = [];
         this.popData = new core_1.EventEmitter();
@@ -59,6 +61,7 @@ var BugitemEditComponent = /** @class */ (function () {
         this.close();
     };
     BugitemEditComponent.prototype.close = function () {
+        this.isOpen = false;
         this.dataLoaded = false;
         this.bugForm.reset();
         this.openClose.emit();
@@ -92,6 +95,7 @@ var BugitemEditComponent = /** @class */ (function () {
         this.alertService.showStickyMessage(error, null, alert_service_1.MessageSeverity.error);
     };
     BugitemEditComponent.prototype.Create = function (taskId, devId, testerId) {
+        this.isOpen = true;
         this.submitBtnState = angular_1.ClrLoadingState.DEFAULT;
         this.isNewItem = true;
         this.actionTitle = "Add";
@@ -105,6 +109,7 @@ var BugitemEditComponent = /** @class */ (function () {
     BugitemEditComponent.prototype.Edit = function (itemid) {
         var _this = this;
         if (itemid) {
+            this.isOpen = true;
             this.bugService.GetItem(itemid).subscribe(function (response) {
                 _this.initialItem = new bugItem_model_1.BugItem();
                 Object.assign(_this.initialItem, response);
