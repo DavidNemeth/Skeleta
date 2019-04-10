@@ -28,7 +28,7 @@ var ConfigurationService = /** @class */ (function () {
         this._theme = null;
         this._showDashboardStatistics = null;
         this._showDashboardNotifications = null;
-        this._showDashboardTodo = null;
+        this._showDashboardTask = null;
         this._showDashboardBanner = null;
         this._showUserManagement = null;
         this._showRoleManagement = null;
@@ -101,10 +101,10 @@ var ConfigurationService = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(ConfigurationService.prototype, "showDashboardTodo", {
+    Object.defineProperty(ConfigurationService.prototype, "showDashboardTask", {
         set: function (value) {
-            this._showDashboardTodo = value;
-            this.saveToLocalStore(value, db_Keys_1.DBkeys.SHOW_DASHBOARD_TODO);
+            this._showDashboardTask = value;
+            this.saveToLocalStore(value, db_Keys_1.DBkeys.SHOW_DASHBOARD_TASK);
         },
         enumerable: true,
         configurable: true
@@ -164,8 +164,8 @@ var ConfigurationService = /** @class */ (function () {
             this._showDashboardStatistics = this.localStorage.getDataObject(db_Keys_1.DBkeys.SHOW_DASHBOARD_STATISTICS);
         if (this.localStorage.exists(db_Keys_1.DBkeys.SHOW_DASHBOARD_NOTIFICATIONS))
             this._showDashboardNotifications = this.localStorage.getDataObject(db_Keys_1.DBkeys.SHOW_DASHBOARD_NOTIFICATIONS);
-        if (this.localStorage.exists(db_Keys_1.DBkeys.SHOW_DASHBOARD_TODO))
-            this._showDashboardTodo = this.localStorage.getDataObject(db_Keys_1.DBkeys.SHOW_DASHBOARD_TODO);
+        if (this.localStorage.exists(db_Keys_1.DBkeys.SHOW_DASHBOARD_TASK))
+            this._showDashboardTask = this.localStorage.getDataObject(db_Keys_1.DBkeys.SHOW_DASHBOARD_TASK);
         if (this.localStorage.exists(db_Keys_1.DBkeys.SHOW_DASHBOARD_BANNER))
             this._showDashboardBanner = this.localStorage.getDataObject(db_Keys_1.DBkeys.SHOW_DASHBOARD_BANNER);
         if (this.localStorage.exists(db_Keys_1.DBkeys.SHOW_USER_MANAGEMENT))
@@ -192,8 +192,8 @@ var ConfigurationService = /** @class */ (function () {
             this.showDashboardStatistics = importValue.showDashboardStatistics;
         if (importValue.showDashboardNotifications != null)
             this.showDashboardNotifications = importValue.showDashboardNotifications;
-        if (importValue.showDashboardTodo != null)
-            this.showDashboardTodo = importValue.showDashboardTodo;
+        if (importValue.showDashboardTask != null)
+            this.showDashboardTask = importValue.showDashboardTask;
         if (importValue.showDashboardBanner != null)
             this.showDashboardBanner = importValue.showDashboardBanner;
         if (importValue.showRoleManagement != null)
@@ -209,7 +209,7 @@ var ConfigurationService = /** @class */ (function () {
             theme: changesOnly ? this._theme : this.theme,
             showDashboardStatistics: changesOnly ? this._showDashboardStatistics : this.showDashboardStatistics,
             showDashboardNotifications: changesOnly ? this._showDashboardNotifications : this.showDashboardNotifications,
-            showDashboardTodo: changesOnly ? this._showDashboardTodo : this.showDashboardTodo,
+            showDashboardTask: changesOnly ? this._showDashboardTask : this.showDashboardTask,
             showDashboardBanner: changesOnly ? this._showDashboardBanner : this.showDashboardBanner,
             showUserManagement: changesOnly ? this._showUserManagement : this.showUserManagement,
             showRoleManagement: changesOnly ? this._showRoleManagement : this.showRoleManagement
@@ -222,7 +222,7 @@ var ConfigurationService = /** @class */ (function () {
         this._theme = null;
         this._showDashboardStatistics = null;
         this._showDashboardNotifications = null;
-        this._showDashboardTodo = null;
+        this._showDashboardTask = null;
         this._showDashboardBanner = null;
         this._showUserManagement = null;
         this._showRoleManagement = null;
@@ -231,7 +231,7 @@ var ConfigurationService = /** @class */ (function () {
         this.localStorage.deleteData(db_Keys_1.DBkeys.THEME);
         this.localStorage.deleteData(db_Keys_1.DBkeys.SHOW_DASHBOARD_STATISTICS);
         this.localStorage.deleteData(db_Keys_1.DBkeys.SHOW_DASHBOARD_NOTIFICATIONS);
-        this.localStorage.deleteData(db_Keys_1.DBkeys.SHOW_DASHBOARD_TODO);
+        this.localStorage.deleteData(db_Keys_1.DBkeys.SHOW_DASHBOARD_TASK);
         this.localStorage.deleteData(db_Keys_1.DBkeys.SHOW_DASHBOARD_BANNER);
         this.localStorage.deleteData(db_Keys_1.DBkeys.SHOW_USER_MANAGEMENT);
         this.localStorage.deleteData(db_Keys_1.DBkeys.SHOW_ROLE_MANAGEMENT);
@@ -252,12 +252,12 @@ var ConfigurationService = /** @class */ (function () {
     ConfigurationService.defaultLanguage = 'en';
     ConfigurationService.defaultHomeUrl = '/';
     ConfigurationService.defaultTheme = 'Default';
-    ConfigurationService.defaultShowDashboardStatistics = true;
-    ConfigurationService.defaultShowDashboardNotifications = true;
-    ConfigurationService.defaultShowDashboardTodo = false;
-    ConfigurationService.defaultShowDashboardBanner = true;
-    ConfigurationService.defaultShowUserManagement = true;
-    ConfigurationService.defaultShowRoleManagement = true;
+    ConfigurationService.defaultShowDashboardStatistics = false;
+    ConfigurationService.defaultShowDashboardNotifications = false;
+    ConfigurationService.defaultShowDashboardBanner = false;
+    ConfigurationService.defaultShowUserManagement = false;
+    ConfigurationService.defaultShowRoleManagement = false;
+    ConfigurationService.defaultShowTaskManagement = true;
     ConfigurationService = ConfigurationService_1 = __decorate([
         core_1.Injectable(),
         __metadata("design:paramtypes", [local_store_manager_service_1.LocalStoreManager, app_translation_service_1.AppTranslationService])

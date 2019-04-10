@@ -19,6 +19,7 @@ var task_model_1 = require("../../../../services/tasks/task.model");
 var enum_1 = require("../../../../models/enum");
 var account_service_1 = require("../../../../services/account.service");
 var animations_1 = require("../../../../services/animations");
+var fast_json_patch_1 = require("fast-json-patch");
 var TaskEditComponent = /** @class */ (function () {
     function TaskEditComponent(translationService, alertService, formBuilder, taskService, accountService) {
         var _this = this;
@@ -32,17 +33,20 @@ var TaskEditComponent = /** @class */ (function () {
         this.gT = function (key) { return _this.translationService.getTranslation(key); };
         this.deleteOpen = false;
         this.archiveOpen = false;
+        this.resolveOpen = false;
+        this.completeOpen = false;
         this.isNewTask = false;
         this.allStatus = Object.keys(enum_1.Status).slice();
         this.allPriority = Object.keys(enum_1.Priority).slice();
-        this.initialTask = new task_model_1.Task();
+        this.initialTask = new task_model_1.TaskEdit();
+        this.taskEdit = new task_model_1.TaskEdit();
         this.tasksToDelete = [];
         this.tasksToClose = [];
+        this.taskToUpdate = new task_model_1.TaskEdit();
         this.users = [];
         this.popData = new core_1.EventEmitter();
         this.popSelected = new core_1.EventEmitter();
         this.updateData = new core_1.EventEmitter();
-        this.deleteData = new core_1.EventEmitter();
         this.cancel = new core_1.EventEmitter();
         this.refresh = new core_1.EventEmitter();
     }
@@ -78,14 +82,15 @@ var TaskEditComponent = /** @class */ (function () {
         var _this = this;
         this.submitBtnState = angular_1.ClrLoadingState.LOADING;
         Object.assign(this.taskEdit, this.taskForm.value);
+        var patchDocument = fast_json_patch_1.compare(this.initialTask, this.taskEdit);
         if (this.isNewTask) {
-            this.taskService.NewTask(this.taskEdit).subscribe(function (task) { return _this.saveSuccessHelper(task); }, function (error) { return _this.saveFailedHelper(error); });
+            this.taskService.NewTask(this.taskEdit).subscribe(function (task) { return _this.saveSuccessHelper(); }, function (error) { return _this.saveFailedHelper(error); });
         }
         else {
-            this.taskService.UpdateTask(this.taskEdit).subscribe(function (task) { return _this.saveSuccessHelper(task); }, function (error) { return _this.saveFailedHelper(error); });
+            this.taskService.UpdateTask(patchDocument, this.taskEdit.id).subscribe(function (task) { return _this.saveSuccessHelper(); }, function (error) { return _this.saveFailedHelper(error); });
         }
     };
-    TaskEditComponent.prototype.saveSuccessHelper = function (task) {
+    TaskEditComponent.prototype.saveSuccessHelper = function () {
         this.refresh.emit();
         Object.assign(this.initialTask, this.taskEdit);
         if (this.isNewTask)
@@ -105,8 +110,8 @@ var TaskEditComponent = /** @class */ (function () {
         this.isEdit = false;
         this.submitBtnState = angular_1.ClrLoadingState.DEFAULT;
         this.isNewTask = true;
-        this.initialTask = new task_model_1.Task();
-        this.taskEdit = new task_model_1.Task();
+        this.initialTask = new task_model_1.TaskEdit();
+        this.taskEdit = new task_model_1.TaskEdit();
         this.loadForm();
     };
     TaskEditComponent.prototype.Edit = function (taskid) {
@@ -115,12 +120,12 @@ var TaskEditComponent = /** @class */ (function () {
             this.isOpen = true;
             this.isEdit = true;
             this.taskService.GetTask(taskid).subscribe(function (response) {
-                _this.initialTask = new task_model_1.Task();
+                _this.initialTask = new task_model_1.TaskEdit();
+                _this.taskEdit = new task_model_1.TaskEdit();
                 Object.assign(_this.initialTask, response);
-                _this.initialTask.createdBy = _this.users.filter(function (x) { return x.id == _this.initialTask.createdBy; }).map(function (x) { return x.fullName; })[0];
-                _this.initialTask.updatedBy = _this.users.filter(function (x) { return x.id == _this.initialTask.updatedBy; }).map(function (x) { return x.fullName; })[0];
-                _this.taskEdit = new task_model_1.Task;
                 Object.assign(_this.taskEdit, response);
+                _this.createdBy = _this.users.filter(function (x) { return x.id == _this.taskEdit.createdBy; }).map(function (x) { return x.fullName; })[0];
+                _this.updatedBy = _this.users.filter(function (x) { return x.id == _this.taskEdit.updatedBy; }).map(function (x) { return x.fullName; })[0];
                 _this.submitBtnState = angular_1.ClrLoadingState.DEFAULT;
                 _this.isNewTask = false;
                 _this.loadForm();
@@ -138,52 +143,67 @@ var TaskEditComponent = /** @class */ (function () {
         var _this = this;
         if (task) {
             if (task.status == enum_1.Status.New) {
-                this.taskService.GetTask(task.id).subscribe(function (editTask) {
-                    editTask.status = enum_1.Status.Active;
-                    _this.taskService.UpdateTask(editTask).subscribe(function (response) {
-                        _this.alertService.showMessage(_this.gT('toasts.saved'), "Task set as Active!", alert_service_1.MessageSeverity.success);
-                        Object.assign(task, editTask);
-                        _this.updateData.emit(task);
-                    }, function (error) { return _this.alertService.showMessage(error, null, alert_service_1.MessageSeverity.error); });
-                });
+                var taskEdit_1 = new task_model_1.TaskEdit();
+                Object.assign(taskEdit_1, task);
+                taskEdit_1.status = enum_1.Status.Active;
+                var patchDocument = fast_json_patch_1.compare(task, taskEdit_1);
+                this.taskService.UpdateTask(patchDocument, task.id).subscribe(function (response) {
+                    _this.alertService.showMessage(_this.gT('toasts.saved'), "Task set as Active!", alert_service_1.MessageSeverity.success);
+                    _this.updateData.emit(taskEdit_1);
+                }, function (error) { return _this.alertService.showMessage(error, null, alert_service_1.MessageSeverity.error); });
             }
             else {
-                this.taskService.GetTask(task.id).subscribe(function (editTask) {
-                    editTask.status = enum_1.Status.Active;
-                    _this.taskService.UpdateTask(editTask).subscribe(function (response) {
-                        _this.alertService.showMessage(_this.gT('toasts.saved'), "Task set as Active!", alert_service_1.MessageSeverity.success);
-                        _this.popData.emit(task);
-                    }, function (error) { return _this.alertService.showMessage(error, null, alert_service_1.MessageSeverity.error); });
-                });
+                var taskEdit = new task_model_1.TaskEdit();
+                Object.assign(taskEdit, task);
+                taskEdit.status = enum_1.Status.Active;
+                var patchDocument = fast_json_patch_1.compare(task, taskEdit);
+                this.taskService.UpdateTask(patchDocument, task.id).subscribe(function (response) {
+                    _this.alertService.showMessage(_this.gT('toasts.saved'), "Task set as Active!", alert_service_1.MessageSeverity.success);
+                    _this.popData.emit(response.id);
+                }, function (error) { return _this.alertService.showMessage(error, null, alert_service_1.MessageSeverity.error); });
             }
         }
     };
-    TaskEditComponent.prototype.MarkResolved = function (task) {
+    TaskEditComponent.prototype.onResolved = function () {
         var _this = this;
-        if (task) {
-            this.taskService.GetTask(task.id).subscribe(function (editTask) {
-                editTask.status = enum_1.Status.Resolved;
-                _this.taskService.UpdateTask(editTask).subscribe(function (response) {
-                    _this.alertService.showMessage(_this.gT('toasts.saved'), "Task set as Resolved!", alert_service_1.MessageSeverity.success);
-                    _this.popData.emit(task);
-                }, function (error) { return _this.alertService.showMessage(error, null, alert_service_1.MessageSeverity.error); });
-            });
+        if (this.taskToUpdate) {
+            var taskEdit = new task_model_1.TaskEdit();
+            Object.assign(taskEdit, this.taskToUpdate);
+            taskEdit.status = enum_1.Status.Resolved;
+            var patchDocument = fast_json_patch_1.compare(this.taskToUpdate, taskEdit);
+            this.taskService.UpdateTask(patchDocument, this.taskToUpdate.id).subscribe(function (response) {
+                _this.alertService.showMessage(_this.gT('toasts.saved'), "Task " + response.id.toString() + " Resolved!", alert_service_1.MessageSeverity.success);
+                _this.popData.emit(response.id);
+            }, function (error) { return _this.alertService.showMessage(error, null, alert_service_1.MessageSeverity.error); });
         }
+        this.taskToUpdate = new task_model_1.TaskEdit();
+        this.resolveOpen = false;
+    };
+    TaskEditComponent.prototype.onCompleted = function () {
+        var _this = this;
+        if (this.taskToUpdate) {
+            var taskEdit = new task_model_1.TaskEdit();
+            Object.assign(taskEdit, this.taskToUpdate);
+            taskEdit.status = enum_1.Status.Completed;
+            var patchDocument = fast_json_patch_1.compare(this.taskToUpdate, taskEdit);
+            this.taskService.UpdateTask(patchDocument, this.taskToUpdate.id).subscribe(function (response) {
+                _this.alertService.showMessage(_this.gT('toasts.saved'), "Task " + response.id.toString() + " Completed!", alert_service_1.MessageSeverity.success);
+                _this.popData.emit(response.id);
+            }, function (error) { return _this.alertService.showMessage(error, null, alert_service_1.MessageSeverity.error); });
+        }
+        this.taskToUpdate = new task_model_1.TaskEdit();
+        this.completeOpen = false;
+    };
+    TaskEditComponent.prototype.MarkResolved = function (task) {
+        Object.assign(this.taskToUpdate, task);
+        this.resolveOpen = true;
     };
     TaskEditComponent.prototype.MarkCompleted = function (task) {
-        var _this = this;
-        if (task) {
-            this.taskService.GetTask(task.id).subscribe(function (editTask) {
-                editTask.status = enum_1.Status.Completed;
-                _this.taskService.UpdateTask(editTask).subscribe(function (response) {
-                    _this.alertService.showMessage(_this.gT('toasts.saved'), "Task set as Completed!", alert_service_1.MessageSeverity.success);
-                    _this.popData.emit(task);
-                }, function (error) { return _this.alertService.showMessage(error, null, alert_service_1.MessageSeverity.error); });
-            });
-        }
+        Object.assign(this.taskToUpdate, task);
+        this.completeOpen = true;
     };
     TaskEditComponent.prototype.MarkClosed = function (tasks) {
-        this.tasksToClose = tasks;
+        Object.assign(this.tasksToClose, tasks);
         this.archiveOpen = true;
     };
     TaskEditComponent.prototype.CloseTasks = function () {
@@ -192,8 +212,10 @@ var TaskEditComponent = /** @class */ (function () {
         if (this.tasksToClose) {
             for (var i = 0; i < this.tasksToClose.length; i++) {
                 this.taskService.GetTask(this.tasksToClose[i].id).subscribe(function (editTask) {
+                    Object.assign(_this.initialTask, editTask);
                     editTask.status = enum_1.Status.Closed;
-                    _this.taskService.UpdateTask(editTask).subscribe(function (response) {
+                    var patchDocument = fast_json_patch_1.compare(_this.initialTask, editTask);
+                    _this.taskService.UpdateTask(patchDocument, editTask.id).subscribe(function (response) {
                     }, function (error) { return _this.alertService.showMessage(error, null, alert_service_1.MessageSeverity.error); });
                 });
             }
@@ -205,12 +227,12 @@ var TaskEditComponent = /** @class */ (function () {
     };
     TaskEditComponent.prototype.DeleteRange = function (tasks) {
         this.deleteOpen = true;
-        this.tasksToDelete = tasks;
-        this.taskToDelete = null;
+        Object.assign(this.tasksToDelete, tasks);
+        this.taskToUpdate = null;
     };
     TaskEditComponent.prototype.DeleteSingle = function (task) {
         this.deleteOpen = true;
-        this.taskToDelete = task;
+        this.taskToUpdate = task;
         this.tasksToDelete = null;
     };
     TaskEditComponent.prototype.Delete = function () {
@@ -218,17 +240,20 @@ var TaskEditComponent = /** @class */ (function () {
         this.deleteBtnState = angular_1.ClrLoadingState.LOADING;
         if (this.tasksToDelete != null) {
             this.taskService.DeleteRangeTasks(this.tasksToDelete).subscribe(function (response) {
-                _this.deleteData.emit(_this.tasksToDelete);
+                _this.refresh.emit();
                 _this.deleteBtnState = angular_1.ClrLoadingState.SUCCESS;
                 _this.deleteOpen = false;
                 _this.alertService.showMessage(_this.gT('toasts.saved'), _this.tasksToDelete.length + " record Deleted!", alert_service_1.MessageSeverity.success);
             });
         }
-        if (this.taskToDelete != null) {
-            this.taskToDelete.status = enum_1.Status.Closed;
-            this.taskService.UpdateTask(this.taskToDelete).subscribe(function (response) {
+        if (this.taskToUpdate != null) {
+            this.taskToUpdate.status = enum_1.Status.Closed;
+            Object.assign(this.initialTask, this.taskToUpdate);
+            this.taskToUpdate.status = enum_1.Status.Active;
+            var patchDocument = fast_json_patch_1.compare(this.initialTask, this.taskToUpdate);
+            this.taskService.UpdateTask(patchDocument, this.taskToUpdate.id).subscribe(function (response) {
                 _this.alertService.showMessage(_this.gT('toasts.saved'), "Record Deleted!", alert_service_1.MessageSeverity.success);
-                _this.popData.emit(_this.taskToDelete);
+                _this.popData.emit(_this.taskToUpdate.id);
                 _this.deleteBtnState = angular_1.ClrLoadingState.SUCCESS;
                 _this.deleteOpen = false;
             }, function (error) { return _this.alertService.showMessage(error, null, alert_service_1.MessageSeverity.error); });
@@ -250,10 +275,6 @@ var TaskEditComponent = /** @class */ (function () {
         core_1.Output(),
         __metadata("design:type", Object)
     ], TaskEditComponent.prototype, "updateData", void 0);
-    __decorate([
-        core_1.Output(),
-        __metadata("design:type", Object)
-    ], TaskEditComponent.prototype, "deleteData", void 0);
     __decorate([
         core_1.Output(),
         __metadata("design:type", Object)

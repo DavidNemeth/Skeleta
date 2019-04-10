@@ -18,9 +18,9 @@ export class DBkeys {
   public static readonly THEME = 'theme';
   public static readonly SHOW_DASHBOARD_STATISTICS = 'show_dashboard_statistics';
   public static readonly SHOW_DASHBOARD_NOTIFICATIONS = 'show_dashboard_notifications';
-  public static readonly SHOW_DASHBOARD_TODO = 'show_dashboard_todo';
   public static readonly SHOW_DASHBOARD_BANNER = 'show_dashboard_banner';
   public static readonly SHOW_USER_MANAGEMENT = 'show_user_management';
   public static readonly SHOW_ROLE_MANAGEMENT = 'show_role_management';
+  public static readonly SHOW_DASHBOARD_TASK = 'show_dashboard_task';
 
 }

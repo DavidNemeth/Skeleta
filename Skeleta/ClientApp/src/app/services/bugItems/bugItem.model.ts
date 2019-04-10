@@ -1,6 +1,5 @@
 import { User } from "../../models/user.model";
-import { Priority, Status } from "../../models/enum";
-import { Task } from "../tasks/task.model";
+import { Status } from "../../models/enum";
 
 export class BugItem {
 

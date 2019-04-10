@@ -56,6 +56,7 @@ var task_edit_component_1 = require("./components/controls/editors/task-edit/tas
 var tasks_component_1 = require("./components/tasks/tasks.component");
 var bugitems_component_1 = require("./components/tasks/bugitems/bugitems.component");
 var bugitem_edit_component_1 = require("./components/controls/editors/bugitem-edit/bugitem-edit.component");
+var task_detail_component_1 = require("./components/tasks/task-detail/task-detail.component");
 var AppModule = /** @class */ (function () {
     function AppModule() {
     }
@@ -85,7 +86,8 @@ var AppModule = /** @class */ (function () {
                 task_edit_component_1.TaskEditComponent,
                 tasks_component_1.TasksComponent,
                 bugitems_component_1.BugitemsComponent,
-                bugitem_edit_component_1.BugitemEditComponent
+                bugitem_edit_component_1.BugitemEditComponent,
+                task_detail_component_1.TaskDetailComponent
             ],
             imports: [
                 platform_browser_1.BrowserModule,

@@ -10,7 +10,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
-var enum_1 = require("../../../../models/enum");
 var bugItem_model_1 = require("../../../../services/bugItems/bugItem.model");
 var forms_1 = require("@angular/forms");
 var angular_1 = require("@clr/angular");
@@ -119,45 +118,6 @@ var BugitemEditComponent = /** @class */ (function () {
         }
         else {
             this.alertService.showMessage("error no item found", null, alert_service_1.MessageSeverity.error);
-        }
-    };
-    BugitemEditComponent.prototype.MarkActive = function (item) {
-        var _this = this;
-        if (item) {
-            this.bugService.GetItem(item.id).subscribe(function (editItem) {
-                item.status = enum_1.Status.Active;
-                _this.bugService.UpdateItem(editItem).subscribe(function (response) {
-                    _this.alertService.showMessage(_this.gT('toasts.saved'), "Bug is now Active!", alert_service_1.MessageSeverity.success);
-                    Object.assign(item, editItem);
-                    _this.updateStatus.emit(item);
-                }, function (error) { return _this.alertService.showMessage(error, null, alert_service_1.MessageSeverity.error); });
-            }, function (error) { return _this.alertService.showMessage(error, null, alert_service_1.MessageSeverity.error); });
-        }
-    };
-    BugitemEditComponent.prototype.MarkResolved = function (item) {
-        var _this = this;
-        if (item) {
-            this.bugService.GetItem(item.id).subscribe(function (editItem) {
-                item.status = enum_1.Status.Resolved;
-                _this.bugService.UpdateItem(editItem).subscribe(function (response) {
-                    _this.alertService.showMessage(_this.gT('toasts.saved'), "Bug is now Active!", alert_service_1.MessageSeverity.success);
-                    Object.assign(item, editItem);
-                    _this.updateStatus.emit(item);
-                }, function (error) { return _this.alertService.showMessage(error, null, alert_service_1.MessageSeverity.error); });
-            }, function (error) { return _this.alertService.showMessage(error, null, alert_service_1.MessageSeverity.error); });
-        }
-    };
-    BugitemEditComponent.prototype.MarkClosed = function (item) {
-        var _this = this;
-        if (item) {
-            this.bugService.GetItem(item.id).subscribe(function (editItem) {
-                item.status = enum_1.Status.Closed;
-                _this.bugService.UpdateItem(editItem).subscribe(function (response) {
-                    _this.alertService.showMessage(_this.gT('toasts.saved'), "Bug is now Active!", alert_service_1.MessageSeverity.success);
-                    Object.assign(item, editItem);
-                    _this.updateStatus.emit(item);
-                }, function (error) { return _this.alertService.showMessage(error, null, alert_service_1.MessageSeverity.error); });
-            }, function (error) { return _this.alertService.showMessage(error, null, alert_service_1.MessageSeverity.error); });
         }
     };
     __decorate([

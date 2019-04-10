@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { Status } from '../../../../models/enum';
 import { BugItem } from '../../../../services/bugItems/bugItem.model';
-import { Task } from '../../../../services/tasks/task.model';
 import { User } from '../../../../models/user.model';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ClrLoadingState, ClrForm } from '@clr/angular';
@@ -26,7 +25,8 @@ export class BugitemEditComponent implements OnInit {
   private deleteOpen = false;
   private isNewItem = false;
   private allStatus: string[] = ["Active", "Resolved", "Completed"];
-  private dataLoaded: boolean;
+  private dataLoaded: boolean = false;
+  private isOpen: boolean = false;
 
   devId: string;
   testerId: string;
@@ -70,6 +70,7 @@ export class BugitemEditComponent implements OnInit {
 
 
   private close() {
+    this.isOpen = false;
     this.dataLoaded = false;
     this.bugForm.reset();
     this.openClose.emit();
@@ -109,6 +110,7 @@ export class BugitemEditComponent implements OnInit {
   }
 
   Create(taskId: number, devId: string, testerId: string) {
+    this.isOpen = true;
     this.submitBtnState = ClrLoadingState.DEFAULT;
     this.isNewItem = true;
     this.actionTitle = "Add";
@@ -122,6 +124,7 @@ export class BugitemEditComponent implements OnInit {
 
   Edit(itemid: number) {
     if (itemid) {
+      this.isOpen = true;
       this.bugService.GetItem(itemid).subscribe(response => {
         this.initialItem = new BugItem();
         Object.assign(this.initialItem, response);
@@ -136,50 +139,6 @@ export class BugitemEditComponent implements OnInit {
     }
     else {
       this.alertService.showMessage("error no item found", null, MessageSeverity.error);
-    }
-  }
-
-  MarkActive(item: BugItem) {
-    if (item) {
-      this.bugService.GetItem(item.id).subscribe(editItem => {
-        item.status = Status.Active;
-        this.bugService.UpdateItem(editItem).subscribe(response => {
-          this.alertService.showMessage(this.gT('toasts.saved'), `Bug is now Active!`, MessageSeverity.success);
-          Object.assign(item, editItem);
-          this.updateStatus.emit(item);
-        },
-          error => this.alertService.showMessage(error, null, MessageSeverity.error));
-      },
-        error => this.alertService.showMessage(error, null, MessageSeverity.error));
-    }
-  }
-
-  MarkResolved(item: BugItem) {
-    if (item) {
-      this.bugService.GetItem(item.id).subscribe(editItem => {
-        item.status = Status.Resolved;
-        this.bugService.UpdateItem(editItem).subscribe(response => {
-          this.alertService.showMessage(this.gT('toasts.saved'), `Bug is now Active!`, MessageSeverity.success);
-          Object.assign(item, editItem);
-          this.updateStatus.emit(item);
-        },
-          error => this.alertService.showMessage(error, null, MessageSeverity.error));
-      },
-        error => this.alertService.showMessage(error, null, MessageSeverity.error));
-    }
-  }
-  MarkClosed(item: BugItem) {
-    if (item) {
-      this.bugService.GetItem(item.id).subscribe(editItem => {
-        item.status = Status.Closed;
-        this.bugService.UpdateItem(editItem).subscribe(response => {
-          this.alertService.showMessage(this.gT('toasts.saved'), `Bug is now Active!`, MessageSeverity.success);
-          Object.assign(item, editItem);
-          this.updateStatus.emit(item);
-        },
-          error => this.alertService.showMessage(error, null, MessageSeverity.error));
-      },
-        error => this.alertService.showMessage(error, null, MessageSeverity.error));
     }
   }
 }

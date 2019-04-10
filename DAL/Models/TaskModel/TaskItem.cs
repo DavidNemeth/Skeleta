@@ -13,6 +13,7 @@ namespace DAL.Models.TaskModel
 		[MaxLength(100)]
 		public string Title { get; set; }
 		public string Description { get; set; }
+		public bool Tested { get; set; }
 		public Priority Priority { get; set; }
 		public Status Status { get; set; }
 

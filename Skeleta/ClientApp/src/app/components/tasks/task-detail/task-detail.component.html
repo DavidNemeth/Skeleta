@@ -1,0 +1,3 @@
+<div [clrLoading]="loading" style="padding: 1rem 5rem 1rem 2rem;">
+  <quill-editor placeholder="Description is empty" *ngIf="loading == false" [ngModel]="detail.description" [readOnly]="true" [modules]="{toolbar: false}" [style]="{height: '240px'}" style="width: 100%;"></quill-editor>
+</div>

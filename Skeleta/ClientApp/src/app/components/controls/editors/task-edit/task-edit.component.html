@@ -1,11 +1,15 @@
+<div class="progress loop" *ngIf="isOpen && dataLoaded === false">
+  <progress></progress>
+</div>
+
 <form *ngIf="dataLoaded" class="clr-form card" autocomplete="off" [formGroup]="taskForm" (ngSubmit)="save()">
   <div class="clr-row clr-justify-content-between rowwidthfix">
-    <div style="margin-top: 0.2rem;" class="p8" *ngIf="isEdit">Created By: {{initialTask.createdBy}} {{initialTask.createdDate | date}}</div>
-    <div style="margin-top: 0.2rem;" class="p8" *ngIf="isEdit">Updated By: {{initialTask.updatedBy}} {{initialTask.updatedDate | date}}</div>
+    <div style="margin-top: 0.2rem;" class="p8" *ngIf="isEdit">Created By: {{createdBy}} {{initialTask.createdDate | date}}</div>
+    <div style="margin-top: 0.2rem;" class="p8" *ngIf="isEdit">Updated By: {{updatedBy}} {{initialTask.updatedDate | date}}</div>
   </div>
   <div class="card-header clr-row clr-justify-content-between rowwidthfix">
     <div class="btn-group">
-      <div *ngFor="let priority of allPriority" class="radio btn">
+      <div *ngFor="let priority of allPriority" class="radio btn btn-sm">
         <input type="radio" formControlName="priority" [value]="priority" id="{{priority}}">
         <label for="{{priority}}">{{priority}}</label>
       </div>
@@ -21,10 +25,10 @@
     </div>
   </div>
   <div class="card-block">
-    <div style="box-shadow: inset 5px 0 0 #0079b8;">
+    <div style="box-shadow: inset 8px 0 0 #0079b8;">
       <div style="margin-left:2rem; margin-right:2rem;">
         <div class="clr-row clr-justify-content-between" style="margin-left:0rem; margin-right:0rem;">
-          <div class="clr-form-control">
+          <div style="margin-top: 0rem !important;" class="clr-form-control">
             <label class="clr-control-label">{{'tasks.editor.Developer' | translate}}</label>
             <div class="clr-select-wrapper">
               <select id="developer" class="clr-select" formControlName="developerId">
@@ -32,7 +36,7 @@
               </select>
             </div>
           </div>
-          <div class="clr-form-control">
+          <div style="margin-top: 0rem !important;" class="clr-form-control">
             <label class="clr-control-label">{{'tasks.editor.Tester' | translate}}</label>
             <div class="clr-select-wrapper">
               <select class="clr-select" formControlName="testerId">
@@ -48,19 +52,19 @@
             </div>
           </div>
         </div>
-        <div class="clr-form-control">
-          <quill-editor [style]="{height: '200px'}" style="width: 100%;" formControlName="description"></quill-editor>
-        </div>
       </div>
     </div>
-    <app-bugitems *ngIf="isEdit" [task]="taskEdit"></app-bugitems>
+    <div class="clr-form-control">
+      <quill-editor [style]="{height: '240px'}" style="width: 100%;" formControlName="description"></quill-editor>
+    </div>
+    <app-bugitems *ngIf="isEdit" [taskId]="taskEdit.id" [developerId]="taskEdit.developerId" [testerId]="taskEdit.testerId" [bugItems]="taskEdit.bugItems"></app-bugitems>
   </div>
   <div class="card-footer">
     <button [clrLoading]="submitBtnState" type="submit" [disabled]="taskForm.invalid" class="btn btn-primary">
       <clr-icon shape="floppy"></clr-icon>
       Save
     </button>
-    <button type="button" (click)="close()" class="btn btn btn-outline">Cancel</button>
+    <button [disabled]="submitBtnState" type="button" (click)="close()" class="btn btn btn-outline">Cancel</button>
   </div>
 </form>
 
@@ -72,5 +76,27 @@
   <div class="modal-footer">
     <button type="button" class="btn btn-outline" (click)="archiveOpen = false">Cancel</button>
     <button type="button" [clrLoading]="deleteBtnState" class="btn btn-danger" (click)="CloseTasks()">Archive</button>
+  </div>
+</clr-modal>
+
+<clr-modal [(clrModalOpen)]="completeOpen">
+  <h3 class="modal-title">Complete task</h3>
+  <div class="modal-body">
+    <p>Are you sure the task is properly tested, and ready to be released?</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline" (click)="completeOpen = false">No</button>
+    <button type="button" [clrLoading]="deleteBtnState" class="btn btn-primary" (click)="onCompleted(task)">Yes</button>
+  </div>
+</clr-modal>
+
+<clr-modal [(clrModalOpen)]="resolveOpen">
+  <h3 class="modal-title">Resolve task</h3>
+  <div class="modal-body">
+    <p>Are you sure the task is merged, and ready to be tested?</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline" (click)="resolveOpen = false">No</button>
+    <button type="button" [clrLoading]="deleteBtnState" class="btn btn-primary" (click)="onResolved(task)">Yes</button>
   </div>
 </clr-modal>

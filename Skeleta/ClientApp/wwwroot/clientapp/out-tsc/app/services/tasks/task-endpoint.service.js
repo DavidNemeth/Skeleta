@@ -76,6 +76,13 @@ var TaskEndpoint = /** @class */ (function (_super) {
             return _this.handleError(error, function () { return _this.getTaskEndpoint(taskId); });
         }));
     };
+    TaskEndpoint.prototype.getExpandedEndpoint = function (taskId) {
+        var _this = this;
+        var endpointUrl = this.baseUrl + "/expanded/" + taskId;
+        return this.http.get(endpointUrl, this.getRequestHeaders()).pipe(operators_1.catchError(function (error) {
+            return _this.handleError(error, function () { return _this.getTaskEndpoint(taskId); });
+        }));
+    };
     TaskEndpoint.prototype.getAllEndpoint = function () {
         var _this = this;
         var endpointUrl = this.allUrl;
@@ -117,11 +124,11 @@ var TaskEndpoint = /** @class */ (function (_super) {
             return _this.handleError(error, function () { return _this.getCreateEndpoint(taskObject); });
         }));
     };
-    TaskEndpoint.prototype.getUpdateEndpoint = function (taskObject, taskId) {
+    TaskEndpoint.prototype.getUpdateEndpoint = function (patchDocument, taskId) {
         var _this = this;
         var endpointUrl = this.baseUrl + "/" + taskId;
-        return this.http.put(endpointUrl, JSON.stringify(taskObject), this.getRequestHeaders()).pipe(operators_1.catchError(function (error) {
-            return _this.handleError(error, function () { return _this.getUpdateEndpoint(taskObject); });
+        return this.http.patch(endpointUrl, patchDocument, this.getRequestPatchHeaders()).pipe(operators_1.catchError(function (error) {
+            return _this.handleError(error, function () { return _this.getUpdateEndpoint(patchDocument); });
         }));
     };
     TaskEndpoint.prototype.getDeleteEndpoint = function (taskId) {

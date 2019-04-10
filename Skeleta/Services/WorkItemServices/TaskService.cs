@@ -89,7 +89,7 @@ namespace Skeleta.Services.WorkItemServices
 				.ProjectTo<TaskListViewModel>().ToListAsync();
 		}
 
-		public async Task<TaskItemViewModel> GetVMById(int id)
+		public async Task <TaskItemViewModel> GetVMById(int id)
 		{
 			var query = _context.TaskItems
 				.Where(x => x.Id == id);
@@ -102,6 +102,15 @@ namespace Skeleta.Services.WorkItemServices
 		{
 			return await _context.TaskItems
 				.Where(x => x.Id == id).FirstOrDefaultAsync();
+		}
+
+		public async Task<ExpandedItemViewModel> GetExpandItem(int id)
+		{
+			var query = _context.TaskItems
+				.Where(x => x.Id == id);
+
+			return await query
+				.ProjectTo<ExpandedItemViewModel>().FirstOrDefaultAsync();
 		}
 
 		public async Task SaveChangesAsync()

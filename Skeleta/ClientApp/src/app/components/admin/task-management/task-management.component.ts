@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef, Renderer2 } from '@angular/core';
-import { Task } from '../../../services/tasks/task.model';
+import { TaskList } from '../../../services/tasks/task.model';
 import { TaskEditComponent } from '../../controls/editors/task-edit/task-edit.component';
 import { AlertService, MessageSeverity } from '../../../services/alert.service';
 import { TaskService } from '../../../services/tasks/taskService';
@@ -19,20 +19,20 @@ import { ClrDatagrid } from "@clr/angular";
 export class TaskManagementComponent implements OnInit {
   columns: any[] = [];
 
-  pendingTasks: Task[] = [];
-  pendingTasksCache: Task[] = [];
+  pendingTasks: TaskList[] = [];
+  pendingTasksCache: TaskList[] = [];
 
-  resolvedTasks: Task[] = [];
-  resolvedTasksCache: Task[] = [];
+  resolvedTasks: TaskList[] = [];
+  resolvedTasksCache: TaskList[] = [];
 
-  completedTasks: Task[] = [];
-  completedTasksCache: Task[] = [];
+  completedTasks: TaskList[] = [];
+  completedTasksCache: TaskList[] = [];
 
-  archivedTasks: Task[] = [];
-  archivedTasksCache: Task[] = [];
+  archivedTasks: TaskList[] = [];
+  archivedTasksCache: TaskList[] = [];
 
   loadingIndicator: boolean;
-  selected: Task[] = [];
+  selected: TaskList[] = [];
   gT = (key: string) => this.translationService.getTranslation(key);
   CompletedActive;
   ResolvedActive;
@@ -58,28 +58,28 @@ export class TaskManagementComponent implements OnInit {
     this.taskEdit.Create();
     this.isOpen = false;
   }
-  onEdit(task: Task) {
+  onEdit(task: TaskList) {
     this.taskEdit.Edit(task.id);
     this.isOpen = false;
   }
 
-  onClose(tasks: Task[]) {
+  onClose(tasks: TaskList[]) {
     this.taskEdit.MarkClosed(tasks);
   }
 
-  onActive(task: Task) {
+  onActive(task: TaskList) {
     this.taskEdit.MarkActive(task);
   }
 
-  onResolved(task: Task) {
+  onResolved(task: TaskList) {
     this.taskEdit.MarkResolved(task);
   }
 
-  onCompleted(task: Task) {
+  onCompleted(task: TaskList) {
     this.taskEdit.MarkCompleted(task);
   }
 
-  onExportSelected(selected: Task[], exportOption: string) {
+  onExportSelected(selected: TaskList[], exportOption: string) {
     switch (exportOption) {
       case 'excel':
         const csv = this.selected.map(task => this.taskToFile(task)).join("\n");
@@ -102,10 +102,10 @@ export class TaskManagementComponent implements OnInit {
     }
   }
 
-  taskToFile(task: Task) {
+  taskToFile(task: TaskList) {
     return [task.id, task.title].join(';');
   }
-  excelToFile(task: Task) {
+  excelToFile(task: TaskList) {
     return ["Azonositó: " + task.id + " Fejlesztés: " + task.title];
   }
 
@@ -160,7 +160,7 @@ export class TaskManagementComponent implements OnInit {
       .subscribe(results => this.onDataLoadSuccessful(results, Status.Closed), error => this.onDataLoadFailed(error));
   }
 
-  onDataLoadSuccessful(tasks?: Task[], status?: Status) {
+  onDataLoadSuccessful(tasks?: TaskList[], status?: Status) {
     this.alertService.stopLoadingMessage();
     this.loadingIndicator = false;
     if (status == Status.Active) {
@@ -180,6 +180,8 @@ export class TaskManagementComponent implements OnInit {
       this.archivedTasksCache = tasks;
     }
     this.isOpen = true;
+    console.log("data loaded");
+    this.grid.refresh;
   }
 
   onDataLoadFailed(error: any) {
@@ -207,24 +209,25 @@ export class TaskManagementComponent implements OnInit {
     }
   }
 
-  deleteList(tasksToDelete: Task[]) {
+  deleteList(tasksToDelete: TaskList[]) {
     for (let task of tasksToDelete) {
-      this.removeItem(task)
+      this.removeItem(task.id)
     }
   }
 
-  popItem(task: Task) {
-    this.removeItem(task);
+  popItem(id: number) {
+    this.removeItem(id);
   }
 
-  popSelected(tasks: Task[]) {
+  popSelected(tasks: TaskList[]) {
     for (let task of tasks) {
-      this.removeItem(task);
+      this.removeItem(task.id);
     }
   }
 
-  private removeItem(task: Task) {
+  private removeItem(id: number) {
     if (this.CompletedActive) {
+      let task = this.completedTasks.filter(x => x.id == id)[0];
       let updateItem = this.completedTasks.find(this.findIndexToUpdate, task.id);
       const taskIndex = this.completedTasks.indexOf(task, 0);
       if (taskIndex > -1) {
@@ -232,6 +235,7 @@ export class TaskManagementComponent implements OnInit {
       }
     }
     if (this.ResolvedActive) {
+      let task = this.resolvedTasks.filter(x => x.id == id)[0];
       let updateItem = this.resolvedTasks.find(this.findIndexToUpdate, task.id);
       const taskIndex = this.resolvedTasks.indexOf(task, 0);
       if (taskIndex > -1) {
@@ -239,6 +243,7 @@ export class TaskManagementComponent implements OnInit {
       }
     }
     if (this.PendingActive) {
+      let task = this.pendingTasks.filter(x => x.id == id)[0];
       let updateItem = this.pendingTasks.find(this.findIndexToUpdate, task.id);
       const taskIndex = this.pendingTasks.indexOf(task, 0);
       if (taskIndex > -1) {
@@ -250,7 +255,7 @@ export class TaskManagementComponent implements OnInit {
     return newItem.id === this;
   }
 
-  private handleUpdate(task: Task) {
+  private handleUpdate(task: TaskList) {
     if (this.PendingActive) {
       if (task.status == Status.Active || task.status == Status.New) {
         let updateItem = this.pendingTasks.find(this.findIndexToUpdate, task.id);
@@ -258,7 +263,7 @@ export class TaskManagementComponent implements OnInit {
         this.pendingTasks[index] = task;
       }
       else {
-        this.removeItem(task);
+        this.removeItem(task.id);
       }
     }
     if (this.CompletedActive) {
@@ -268,7 +273,7 @@ export class TaskManagementComponent implements OnInit {
         this.completedTasks[index] = task;
       }
       else {
-        this.removeItem(task);
+        this.removeItem(task.id);
       }
     }
   }

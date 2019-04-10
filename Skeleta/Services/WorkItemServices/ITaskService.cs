@@ -1,6 +1,7 @@
 ﻿using DAL.Models.TaskModel;
 using Skeleta.ViewModels.WorkItemViewModels;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Skeleta.Services.WorkItemServices
@@ -15,6 +16,8 @@ namespace Skeleta.Services.WorkItemServices
 
 		Task<TaskItemViewModel> GetVMById(int id);
 		Task<TaskItem> GetById(int id);
+
+		Task<ExpandedItemViewModel> GetExpandItem(int id);
 
 		void Add(TaskItem taskItem);
 		void Update(TaskItem taskItem);

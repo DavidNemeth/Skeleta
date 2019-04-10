@@ -1,12 +1,10 @@
 ﻿using AutoMapper;
-using DAL;
-using DAL.Core.Interfaces;
 using DAL.Models;
 using DAL.Models.TaskModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using OpenIddict.Validation;
 using Skeleta.Authorization;
 using Skeleta.Services.WorkItemServices;
@@ -43,7 +41,7 @@ namespace Skeleta.Controllers
 		// GET: api/values
 		[HttpGet("pending")]
 		[Authorize(Authorization.Policies.ViewAllTasksPolicy)]
-		[ProducesResponseType(200, Type = typeof(IEnumerable<TaskListViewModel>))]
+		[ProducesResponseType(200, Type = typeof(IEnumerable<TaskListViewModel>))]		
 		public async Task<IActionResult> GetPending()
 		{
 			if (!(await authorizationService.AuthorizeAsync(this.User, "", TaskManagementOperations.Read)).Succeeded)
@@ -89,7 +87,14 @@ namespace Skeleta.Controllers
 			return Ok(viewmodel);
 		}
 
-
+		// GET api/values/expanded/5
+		[HttpGet("expanded/{id}")]
+		[ProducesResponseType(200)]
+		public async Task<IActionResult> GetExpanded(int id)
+		{
+			var expandTask = await _taskService.GetExpandItem(id);
+			return Ok(expandTask);
+		}
 
 		// POST api/values
 		[HttpPost()]
@@ -113,33 +118,40 @@ namespace Skeleta.Controllers
 
 
 
-
-
 		// PUT api/values/5
-		[HttpPut("{id}")]
+		[HttpPatch("{id}")]
 		[ProducesResponseType(204, Type = typeof(TaskItem))]
 		[ProducesResponseType(400)]
 		[ProducesResponseType(403)]
 		[ProducesResponseType(404)]
-		public async Task<IActionResult> UpdateAsync(int id, [FromBody] TaskItemViewModel viewmodel)
+		public async Task<IActionResult> UpdateAsync(int id, [FromBody] JsonPatchDocument<TaskItemViewModel> jsonPatchDocument)
 		{
 			if (ModelState.IsValid)
 			{
-				if (viewmodel == null)
-					return BadRequest($"{nameof(viewmodel)} cannot be null");
+				if (jsonPatchDocument == null)
+				{
+					return BadRequest();
+				}
 
 				TaskItem taskItem = await _taskService.GetById(id);
 
 				if (taskItem == null)
+				{
 					return NotFound(id);
+				}
 
-				Mapper.Map(viewmodel, taskItem);
+				var taskItemPatch = Mapper.Map<TaskItemViewModel>(taskItem);
+
+				jsonPatchDocument.ApplyTo(taskItemPatch);
+
+				Mapper.Map(taskItemPatch, taskItem);
 				AuditEntity(ref taskItem);
 				_taskService.Update(taskItem);
 				await _taskService.SaveChangesAsync();
+
 				return Ok(taskItem);
 			}
-
+		
 			return BadRequest(ModelState);
 		}
 

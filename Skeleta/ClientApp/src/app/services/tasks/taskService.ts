@@ -1,10 +1,11 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from '@angular/common/http';
-import { Task } from "./task.model";
+import { TaskList, TaskEdit, ExpandTask } from "./task.model";
 import { TaskEndpoint } from "./task-endpoint.service";
 import { AuthService } from "../auth.service";
 import { Router } from "@angular/router";
 import { PermissionValues } from "../../models/permission.model";
+import { Operation } from "fast-json-patch";
 
 @Injectable()
 export class TaskService {
@@ -13,47 +14,51 @@ export class TaskService {
     private taskEndpoint: TaskEndpoint, private authService: AuthService) { }
 
   GetTask(taskId: number) {
-    return this.taskEndpoint.getTaskEndpoint<Task>(taskId);
+    return this.taskEndpoint.getTaskEndpoint<TaskEdit>(taskId);
+  }
+
+  GetExpanded(taskId: number) {
+    return this.taskEndpoint.getExpandedEndpoint<ExpandTask>(taskId);
   }
 
   GetAllTask() {
-    return this.taskEndpoint.getAllEndpoint<Task[]>();
+    return this.taskEndpoint.getAllEndpoint<TaskList[]>();
   }
 
   GetPendingTask() {
-    return this.taskEndpoint.getPendingEndpoint<Task[]>();
+    return this.taskEndpoint.getPendingEndpoint<TaskList[]>();
   }
 
   GetClosedTask() {
-    return this.taskEndpoint.getClosedEndpoint<Task[]>();
+    return this.taskEndpoint.getClosedEndpoint<TaskList[]>();
   }
 
   GetCompletedTask() {
-    return this.taskEndpoint.getCompletedEndpoint<Task[]>();
+    return this.taskEndpoint.getCompletedEndpoint<TaskList[]>();
   }  
 
   GetResolvedTask() {
-    return this.taskEndpoint.getResolvedEndpoint<Task[]>();
+    return this.taskEndpoint.getResolvedEndpoint<TaskList[]>();
   }
 
-  NewTask(task: Task) {
-    return this.taskEndpoint.getCreateEndpoint<Task>(task);
+  NewTask(task: TaskEdit) {
+    return this.taskEndpoint.getCreateEndpoint<TaskEdit>(task);
   }
 
-  UpdateTask(task: Task) {    
-    return this.taskEndpoint.getUpdateEndpoint<Task>(task, task.id);   
+  UpdateTask(patchDocument: Operation[], taskId?: number) {    
+    return this.taskEndpoint.getUpdateEndpoint<TaskEdit>(patchDocument, taskId);   
   }
 
-  DeleteTask(task: Task) {
-    return this.taskEndpoint.getDeleteEndpoint<Task>(task.id);
+  DeleteTask(task: TaskEdit) {
+    return this.taskEndpoint.getDeleteEndpoint<TaskEdit>(task.id);
   }
 
-  DeleteRangeTasks(tasks: Task[]) {
+  DeleteRangeTasks(tasks: TaskEdit[]) {
     var ids: number[] = [];
     for (let task of tasks) {
       ids.push(task.id);
     }
-    return this.taskEndpoint.getDeleteRangeEndpoint<Task>(ids);
+    return this.taskEndpoint.getDeleteRangeEndpoint<TaskEdit>(ids);
   }
 
   get permissions(): PermissionValues[] {

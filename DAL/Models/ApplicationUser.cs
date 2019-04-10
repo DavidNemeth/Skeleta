@@ -5,6 +5,7 @@ using DAL.Models.TaskModel;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace DAL.Models
 {
@@ -12,6 +13,7 @@ namespace DAL.Models
 	{
 		public string JobTitle { get; set; }
 		public Job Job { get; set; }
+		[StringLength(20, MinimumLength = 2, ErrorMessage = "Username must be between 2 and 20 characters")]
 		public string FullName { get; set; }
 		public string Configuration { get; set; }
 		public bool IsEnabled { get; set; }

@@ -24,6 +24,9 @@ var TaskService = /** @class */ (function () {
     TaskService.prototype.GetTask = function (taskId) {
         return this.taskEndpoint.getTaskEndpoint(taskId);
     };
+    TaskService.prototype.GetExpanded = function (taskId) {
+        return this.taskEndpoint.getExpandedEndpoint(taskId);
+    };
     TaskService.prototype.GetAllTask = function () {
         return this.taskEndpoint.getAllEndpoint();
     };
@@ -42,8 +45,8 @@ var TaskService = /** @class */ (function () {
     TaskService.prototype.NewTask = function (task) {
         return this.taskEndpoint.getCreateEndpoint(task);
     };
-    TaskService.prototype.UpdateTask = function (task) {
-        return this.taskEndpoint.getUpdateEndpoint(task, task.id);
+    TaskService.prototype.UpdateTask = function (patchDocument, taskId) {
+        return this.taskEndpoint.getUpdateEndpoint(patchDocument, taskId);
     };
     TaskService.prototype.DeleteTask = function (task) {
         return this.taskEndpoint.getDeleteEndpoint(task.id);

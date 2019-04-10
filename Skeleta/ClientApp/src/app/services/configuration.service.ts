@@ -13,7 +13,7 @@ interface UserConfiguration {
   theme: string;
   showDashboardStatistics: boolean;
   showDashboardNotifications: boolean;
-  showDashboardTodo: boolean;
+  showDashboardTask: boolean;
   showDashboardBanner: boolean;
   showUserManagement: boolean;
   showRoleManagement: boolean;
@@ -29,12 +29,12 @@ export class ConfigurationService {
   public static readonly defaultLanguage: string = 'en';
   public static readonly defaultHomeUrl: string = '/';
   public static readonly defaultTheme: string = 'Default';
-  public static readonly defaultShowDashboardStatistics: boolean = true;
-  public static readonly defaultShowDashboardNotifications: boolean = true;
-  public static readonly defaultShowDashboardTodo: boolean = false;
-  public static readonly defaultShowDashboardBanner: boolean = true;
-  public static readonly defaultShowUserManagement: boolean = true;
-  public static readonly defaultShowRoleManagement: boolean = true;
+  public static readonly defaultShowDashboardStatistics: boolean = false;
+  public static readonly defaultShowDashboardNotifications: boolean = false;
+  public static readonly defaultShowDashboardBanner: boolean = false;
+  public static readonly defaultShowUserManagement: boolean = false;
+  public static readonly defaultShowRoleManagement: boolean = false;
+  public static readonly defaultShowTaskManagement: boolean = true;
 
 
   // ***End of defaults***
@@ -48,7 +48,7 @@ export class ConfigurationService {
   private _theme: string = null;
   private _showDashboardStatistics: boolean = null;
   private _showDashboardNotifications: boolean = null;
-  private _showDashboardTodo: boolean = null;
+  private _showDashboardTask: boolean = null;
   private _showDashboardBanner: boolean = null;
   private _showUserManagement: boolean = null;
   private _showRoleManagement: boolean = null;
@@ -119,9 +119,9 @@ export class ConfigurationService {
   }
 
 
-  set showDashboardTodo(value: boolean) {
-    this._showDashboardTodo = value;
-    this.saveToLocalStore(value, DBkeys.SHOW_DASHBOARD_TODO);
+  set showDashboardTask(value: boolean) {
+    this._showDashboardTask = value;
+    this.saveToLocalStore(value, DBkeys.SHOW_DASHBOARD_TASK);
   }
 
   get showUserManagement() {
@@ -185,8 +185,8 @@ export class ConfigurationService {
     if (this.localStorage.exists(DBkeys.SHOW_DASHBOARD_NOTIFICATIONS))
       this._showDashboardNotifications = this.localStorage.getDataObject<boolean>(DBkeys.SHOW_DASHBOARD_NOTIFICATIONS);
 
-    if (this.localStorage.exists(DBkeys.SHOW_DASHBOARD_TODO))
-      this._showDashboardTodo = this.localStorage.getDataObject<boolean>(DBkeys.SHOW_DASHBOARD_TODO);
+    if (this.localStorage.exists(DBkeys.SHOW_DASHBOARD_TASK))
+      this._showDashboardTask = this.localStorage.getDataObject<boolean>(DBkeys.SHOW_DASHBOARD_TASK);
 
     if (this.localStorage.exists(DBkeys.SHOW_DASHBOARD_BANNER))
       this._showDashboardBanner = this.localStorage.getDataObject<boolean>(DBkeys.SHOW_DASHBOARD_BANNER);
@@ -228,8 +228,8 @@ export class ConfigurationService {
     if (importValue.showDashboardNotifications != null)
       this.showDashboardNotifications = importValue.showDashboardNotifications;
 
-    if (importValue.showDashboardTodo != null)
-      this.showDashboardTodo = importValue.showDashboardTodo;
+    if (importValue.showDashboardTask != null)
+      this.showDashboardTask = importValue.showDashboardTask;
 
     if (importValue.showDashboardBanner != null)
       this.showDashboardBanner = importValue.showDashboardBanner;
@@ -250,7 +250,7 @@ export class ConfigurationService {
       theme: changesOnly ? this._theme : this.theme,
       showDashboardStatistics: changesOnly ? this._showDashboardStatistics : this.showDashboardStatistics,
       showDashboardNotifications: changesOnly ? this._showDashboardNotifications : this.showDashboardNotifications,
-      showDashboardTodo: changesOnly ? this._showDashboardTodo : this.showDashboardTodo,
+      showDashboardTask: changesOnly ? this._showDashboardTask : this.showDashboardTask,
       showDashboardBanner: changesOnly ? this._showDashboardBanner : this.showDashboardBanner,
 			showUserManagement: changesOnly ? this._showUserManagement : this.showUserManagement,
 			showRoleManagement: changesOnly ? this._showRoleManagement : this.showRoleManagement
@@ -266,7 +266,7 @@ export class ConfigurationService {
     this._theme = null;
     this._showDashboardStatistics = null;
     this._showDashboardNotifications = null;
-    this._showDashboardTodo = null;
+    this._showDashboardTask = null;
     this._showDashboardBanner = null;
     this._showUserManagement = null;
     this._showRoleManagement = null;
@@ -276,7 +276,7 @@ export class ConfigurationService {
     this.localStorage.deleteData(DBkeys.THEME);
     this.localStorage.deleteData(DBkeys.SHOW_DASHBOARD_STATISTICS);
     this.localStorage.deleteData(DBkeys.SHOW_DASHBOARD_NOTIFICATIONS);
-    this.localStorage.deleteData(DBkeys.SHOW_DASHBOARD_TODO);
+    this.localStorage.deleteData(DBkeys.SHOW_DASHBOARD_TASK);
     this.localStorage.deleteData(DBkeys.SHOW_DASHBOARD_BANNER);
     this.localStorage.deleteData(DBkeys.SHOW_USER_MANAGEMENT);
     this.localStorage.deleteData(DBkeys.SHOW_ROLE_MANAGEMENT);

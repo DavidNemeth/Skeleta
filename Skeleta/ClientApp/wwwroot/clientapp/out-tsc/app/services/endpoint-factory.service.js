@@ -68,6 +68,15 @@ var EndpointFactory = /** @class */ (function () {
         });
         return { headers: headers };
     };
+    EndpointFactory.prototype.getRequestPatchHeaders = function () {
+        var headers = new http_1.HttpHeaders({
+            'Authorization': 'Bearer ' + this.authService.accessToken,
+            'Content-Type': 'application/json-patch+json',
+            'Accept': "application/vnd.iman.v" + EndpointFactory_1.apiVersion + "+json, application/json-patch+json, text/plain, */*",
+            'App-Version': configuration_service_1.ConfigurationService.appVersion
+        });
+        return { headers: headers };
+    };
     EndpointFactory.prototype.handleError = function (error, continuation) {
         var _this = this;
         if (error.status == 401) {

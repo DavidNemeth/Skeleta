@@ -52,6 +52,7 @@ import { TaskEditComponent } from './components/controls/editors/task-edit/task-
 import { TasksComponent } from './components/tasks/tasks.component';
 import { BugitemsComponent } from './components/tasks/bugitems/bugitems.component';
 import { BugitemEditComponent } from './components/controls/editors/bugitem-edit/bugitem-edit.component';
+import { TaskDetailComponent } from './components/tasks/task-detail/task-detail.component';
 
 @NgModule({
   declarations: [
@@ -78,7 +79,8 @@ import { BugitemEditComponent } from './components/controls/editors/bugitem-edit
     TaskEditComponent,
     TasksComponent,
     BugitemsComponent,
-    BugitemEditComponent
+    BugitemEditComponent,
+    TaskDetailComponent
   ],
   imports: [
     BrowserModule,
@@ -97,17 +99,17 @@ import { BugitemEditComponent } from './components/controls/editors/bugitem-edit
     ToastaModule.forRoot(),
     ClarityModule,    
     QuillModule.forRoot({
-      modules: {
+      modules: {    
         toolbar: [
-          [{ 'size': ['small', false, 'large', 'huge'] }], 
+          [{ 'size': ['small', false, 'large', 'huge'] }],
           ['bold', 'italic', 'strike'],
           ['blockquote', 'code-block'],
           [{ 'header': 1 }, { 'header': 2 }],
           [{ 'list': 'ordered' }, { 'list': 'bullet' }],
           [{ 'color': [] }],
           [{ 'align': [] }],
-          ['link', 'image'],
-        ]       
+          ['link', 'image', 'video'],
+        ]
       }
     })
   ],

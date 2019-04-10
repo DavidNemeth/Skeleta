@@ -1,87 +1,58 @@
 <app-bugitem-edit (openClose)="closeTab($event)" (updateData)="updateList($event)" (popData)="popItem($event)" (updateStatus)="updateStatus($event)" (deleteData)="deleteList($event)"></app-bugitem-edit>
 <br />
-  <div class="clr-row clr-justify-content-end">
-    <button type="button" (click)="onAdd()" class="btn btn btn-icon btn-outline-warning">
-      <clr-icon shape="bug"></clr-icon>
-    </button>
+<div class="btn-group btn-primary btn-sm">
+  <button type="button" (click)="onAdd()" class="btn">
+    <clr-icon shape="plus"></clr-icon>
+    New Bug
+  </button>
+</div>
+<div class="clr-row">
+  <div class="clr-col-12 clr-col-lg-4">
+    <table *ngIf="ActiveBugs.length > 0" class="table table-compact" style="margin-top: 0.3rem">
+      <tbody>
+        <tr *ngFor="let bug of ActiveBugs">
+          <td class="left">
+            <clr-icon shape="bug" class="is-solid is-error"></clr-icon>
+            <a href="javascript:void(0)" (click)="onEdit(bug)">{{bug.title}}</a>
+          </td>
+          <td class="right">
+            <clr-icon shape="circle" size="12" class="is-solid is-highlight"></clr-icon>
+            {{bug.status}}
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
-  <div class="clr-row">
-    <div class="clr-col-12 clr-col-lg-4">
-      <table class="table" style="margin-top: 0.3rem">
-        <thead>
-          <tr>
-            <th class="left">{{'general.management.Bug' | translate}}</th>
-            <th> {{'general.management.Status' | translate}}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let bug of ActiveBugs">
-            <td class="left">
-              <clr-icon shape="bug" class="is-solid is-error"></clr-icon>
-              <a href="javascript:void(0)" (click)="onEdit(bug)">{{bug.title}}</a>
-            </td>
-            <td class="right">
-              <clr-icon *ngIf="bug.status == 'New'" shape="circle" size="12" class="is-inverse is-solid"></clr-icon>
-              <clr-icon *ngIf="bug.status == 'Active'" shape="circle" size="12" class="is-solid is-highlight"></clr-icon>
-              <clr-icon *ngIf="bug.status == 'Resolved'" shape="circle" size="12" class="is-solid is-warning"></clr-icon>
-              <clr-icon *ngIf="bug.status == 'Completed'" shape="circle" size="12" class="is-solid is-success"></clr-icon>
-              <clr-icon *ngIf="bug.status == 'Closed'" shape="circle" size="12" class="is-solid is-error"></clr-icon>
-              {{bug.status}}
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="clr-col-12 clr-col-lg-4">
-      <table class="table" style="margin-top: 0.3rem">
-        <thead>
-          <tr>
-            <th class="left">{{'general.management.Bug' | translate}}</th>
-            <th> {{'general.management.Status' | translate}}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let bug of ResolvedBugs">
-            <td class="left">
-              <clr-icon shape="bug" class="is-solid is-error"></clr-icon>
-              <a href="javascript:void(0)" (click)="onEdit(bug)">{{bug.title}}</a>
-            </td>
-            <td class="right">
-              <clr-icon *ngIf="bug.status == 'New'" shape="circle" size="12" class="is-inverse is-solid"></clr-icon>
-              <clr-icon *ngIf="bug.status == 'Active'" shape="circle" size="12" class="is-solid is-highlight"></clr-icon>
-              <clr-icon *ngIf="bug.status == 'Resolved'" shape="circle" size="12" class="is-solid is-warning"></clr-icon>
-              <clr-icon *ngIf="bug.status == 'Completed'" shape="circle" size="12" class="is-solid is-success"></clr-icon>
-              <clr-icon *ngIf="bug.status == 'Closed'" shape="circle" size="12" class="is-solid is-error"></clr-icon>
-              {{bug.status}}
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="clr-col-12 clr-col-lg-4">
-      <table class="table" style="margin-top: 0.3rem">
-        <thead>
-          <tr>
-            <th class="left">{{'general.management.Bug' | translate}}</th>
-            <th> {{'general.management.Status' | translate}}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let bug of CompletedBugs">
-            <td class="left">
-              <clr-icon shape="bug" class="is-solid is-error"></clr-icon>
-              <a href="javascript:void(0)" (click)="onEdit(bug)">{{bug.title}}</a>
-            </td>
-            <td class="right">
-              <clr-icon *ngIf="bug.status == 'New'" shape="circle" size="12" class="is-inverse is-solid"></clr-icon>
-              <clr-icon *ngIf="bug.status == 'Active'" shape="circle" size="12" class="is-solid is-highlight"></clr-icon>
-              <clr-icon *ngIf="bug.status == 'Resolved'" shape="circle" size="12" class="is-solid is-warning"></clr-icon>
-              <clr-icon *ngIf="bug.status == 'Completed'" shape="circle" size="12" class="is-solid is-success"></clr-icon>
-              <clr-icon *ngIf="bug.status == 'Closed'" shape="circle" size="12" class="is-solid is-error"></clr-icon>
-              {{bug.status}}
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+  <div class="clr-col-12 clr-col-lg-4">
+    <table *ngIf="ResolvedBugs.length > 0" class="table table-compact" style="margin-top: 0.3rem">
+      <tbody>
+        <tr *ngFor="let bug of ResolvedBugs">
+          <td class="left">
+            <clr-icon shape="bug" class="is-solid is-error"></clr-icon>
+            <a href="javascript:void(0)" (click)="onEdit(bug)">{{bug.title}}</a>
+          </td>
+          <td class="right">
+            <clr-icon shape="circle" size="12" class="is-solid is-warning"></clr-icon>
+            {{bug.status}}
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
+  <div class="clr-col-12 clr-col-lg-4">
+    <table *ngIf="CompletedBugs.length > 0" class="table table-compact" style="margin-top: 0.3rem">
+      <tbody>
+        <tr *ngFor="let bug of CompletedBugs">
+          <td class="left">
+            <clr-icon shape="bug" class="is-solid is-error"></clr-icon>
+            <a href="javascript:void(0)" (click)="onEdit(bug)">{{bug.title}}</a>
+          </td>
+          <td class="right">
+            <clr-icon shape="circle" size="12" class="is-solid is-success"></clr-icon>
+            {{bug.status}}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

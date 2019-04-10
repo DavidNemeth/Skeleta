@@ -1,4 +1,4 @@
-﻿import { Injectable, Injector } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, Subject, throwError } from 'rxjs';
 import { mergeMap, switchMap, catchError } from 'rxjs/operators';
@@ -79,7 +79,16 @@ export class EndpointFactory {
     return { headers: headers };
   }
 
+  protected getRequestPatchHeaders(): { headers: HttpHeaders | { [header: string]: string | string[]; } } {
+    const headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + this.authService.accessToken,
+      'Content-Type': 'application/json-patch+json',
+      'Accept': `application/vnd.iman.v${EndpointFactory.apiVersion}+json, application/json-patch+json, text/plain, */*`,
+      'App-Version': ConfigurationService.appVersion
+    });
 
+    return { headers: headers };
+  }
 
   protected handleError(error, continuation: () => Observable<any>) {
 

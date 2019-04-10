@@ -10,19 +10,16 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
-var account_service_1 = require("../../../services/account.service");
 var alert_service_1 = require("../../../services/alert.service");
 var app_translation_service_1 = require("../../../services/app-translation.service");
 var bugitem_edit_component_1 = require("../../controls/editors/bugitem-edit/bugitem-edit.component");
 var bugitemService_1 = require("../../../services/bugItems/bugitemService");
 var utilities_1 = require("../../../services/utilities");
-var task_model_1 = require("../../../services/tasks/task.model");
 var animations_1 = require("../../../services/animations");
 var enum_1 = require("../../../models/enum");
 var BugitemsComponent = /** @class */ (function () {
-    function BugitemsComponent(accountService, alertService, translationService, bugitemService) {
+    function BugitemsComponent(alertService, translationService, bugitemService) {
         var _this = this;
-        this.accountService = accountService;
         this.alertService = alertService;
         this.translationService = translationService;
         this.bugitemService = bugitemService;
@@ -37,10 +34,10 @@ var BugitemsComponent = /** @class */ (function () {
         this.isOpen = false;
     }
     BugitemsComponent.prototype.ngOnInit = function () {
+        console.log(this.bugItems);
         this.bugs = [];
         this.bugsCache = [];
-        this.taskCache = this.task;
-        this.onDataLoadSuccessful(this.task.bugItems);
+        this.onDataLoadSuccessful(this.bugItems);
         this.isOpen = true;
     };
     BugitemsComponent.prototype.onSearchChanged = function (value) {
@@ -49,7 +46,7 @@ var BugitemsComponent = /** @class */ (function () {
     };
     BugitemsComponent.prototype.onAdd = function () {
         this.sourceBug = null;
-        this.bugEdit.Create(this.task.id, this.task.developerId, this.task.testerId);
+        this.bugEdit.Create(this.taskId, this.developerId, this.testerId);
         this.isOpen = false;
     };
     BugitemsComponent.prototype.onEdit = function (bug) {
@@ -104,8 +101,20 @@ var BugitemsComponent = /** @class */ (function () {
     };
     __decorate([
         core_1.Input(),
-        __metadata("design:type", task_model_1.Task)
-    ], BugitemsComponent.prototype, "task", void 0);
+        __metadata("design:type", Number)
+    ], BugitemsComponent.prototype, "taskId", void 0);
+    __decorate([
+        core_1.Input(),
+        __metadata("design:type", String)
+    ], BugitemsComponent.prototype, "developerId", void 0);
+    __decorate([
+        core_1.Input(),
+        __metadata("design:type", String)
+    ], BugitemsComponent.prototype, "testerId", void 0);
+    __decorate([
+        core_1.Input(),
+        __metadata("design:type", Array)
+    ], BugitemsComponent.prototype, "bugItems", void 0);
     __decorate([
         core_1.ViewChild(bugitem_edit_component_1.BugitemEditComponent),
         __metadata("design:type", Object)
@@ -117,8 +126,7 @@ var BugitemsComponent = /** @class */ (function () {
             styleUrls: ['./bugitems.component.css'],
             animations: [animations_1.fadeInOut]
         }),
-        __metadata("design:paramtypes", [account_service_1.AccountService, alert_service_1.AlertService,
-            app_translation_service_1.AppTranslationService, bugitemService_1.BugItemService])
+        __metadata("design:paramtypes", [alert_service_1.AlertService, app_translation_service_1.AppTranslationService, bugitemService_1.BugItemService])
     ], BugitemsComponent);
     return BugitemsComponent;
 }());

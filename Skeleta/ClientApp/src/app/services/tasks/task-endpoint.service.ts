@@ -5,6 +5,7 @@ import { catchError, map, retry } from 'rxjs/operators';
 
 import { EndpointFactory } from '../endpoint-factory.service';
 import { ConfigurationService } from '../configuration.service';
+import { Operation } from 'fast-json-patch';
 
 @Injectable()
 export class TaskEndpoint extends EndpointFactory {
@@ -31,6 +32,15 @@ export class TaskEndpoint extends EndpointFactory {
 
   getTaskEndpoint<T>(taskId: number): Observable<T> {
     const endpointUrl = `${this.baseUrl}/${taskId}`;
+
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders()).pipe<T>(
+      catchError(error => {
+        return this.handleError(error, () => this.getTaskEndpoint(taskId));
+      }));
+  }
+
+  getExpandedEndpoint<T>(taskId: number): Observable<T> {
+    const endpointUrl = `${this.baseUrl}/expanded/${taskId}`;
 
     return this.http.get<T>(endpointUrl, this.getRequestHeaders()).pipe<T>(
       catchError(error => {
@@ -90,12 +100,12 @@ export class TaskEndpoint extends EndpointFactory {
       }));
   }
 
-  getUpdateEndpoint<T>(taskObject: any, taskId?: number): Observable<T> {
+  getUpdateEndpoint<T>(patchDocument: Operation[], taskId?: number): Observable<T> {
     const endpointUrl = `${this.baseUrl}/${taskId}`;
 
-    return this.http.put<T>(endpointUrl, JSON.stringify(taskObject), this.getRequestHeaders()).pipe<T>(
+    return this.http.patch<T>(endpointUrl, patchDocument, this.getRequestPatchHeaders()).pipe<T>(
       catchError(error => {
-        return this.handleError(error, () => this.getUpdateEndpoint(taskObject));
+        return this.handleError(error, () => this.getUpdateEndpoint(patchDocument));
       }));
   }
 

@@ -1,5 +1,5 @@
 <div class="contentWrapper">
-  <app-task-edit (cancel)="open($event)" (refresh)="loadData($event)" (popSelected)="popSelected($event)" (popData)="popItem($event)" (updateData)="handleUpdate($event)" (deleteData)="loadData($event)"></app-task-edit>
+  <app-task-edit (cancel)="open($event)" (refresh)="loadData($event)" (popSelected)="popSelected($event)" (popData)="popItem($event)" (updateData)="handleUpdate($event)"></app-task-edit>
   <clr-tabs [hidden]="!isOpen">
     <!-- Active Tab -->
     <clr-tab>
@@ -30,23 +30,24 @@
                 {{'tasks.management.Task' | translate}}
               </ng-container>
             </clr-dg-column>
-            <clr-dg-column [clrDgField]="'priority'">
-              <ng-container *clrDgHideableColumn="{hidden: false}">
-                {{'tasks.management.Priority' | translate}}
-              </ng-container>
-            </clr-dg-column>
-            <clr-dg-column [clrDgField]="'status'">
-              <ng-container>
-                {{'tasks.management.Status' | translate}}
-              </ng-container>
-            </clr-dg-column>
-            <clr-dg-column [clrDgField]="'developer.fullName'">
+            <clr-dg-column [style.width.px]="192" [clrDgField]="'developer.fullName'">
               <ng-container *clrDgHideableColumn="{hidden: false}">
                 {{'tasks.management.Developer' | translate}}
               </ng-container>
             </clr-dg-column>
-            <clr-dg-column [style.width.px]="132">
+            <clr-dg-column [style.width.px]="84" [clrDgField]="'priority'">
               <ng-container *clrDgHideableColumn="{hidden: false}">
+                {{'tasks.management.Priority' | translate}}
+              </ng-container>
+            </clr-dg-column>
+            <clr-dg-column [style.width.px]="108" [clrDgField]="'status'">
+              <ng-container>
+                {{'tasks.management.Status' | translate}}
+              </ng-container>
+            </clr-dg-column>
+
+            <clr-dg-column [style.width.px]="120">
+              <ng-container>
 
               </ng-container>
             </clr-dg-column>
@@ -59,30 +60,12 @@
                 <span *ngIf="task.openBugcount > 0" class="badge badge-danger">{{task.openBugcount}}</span>
               </clr-dg-cell>
               <clr-dg-cell>
-                <a href="javascript:void(0)" (click)="onEdit(task)">{{task.title}} </a>
-              </clr-dg-cell>
-
-              <clr-dg-cell>
-                <clr-icon *ngIf="task.priority == 'Critical'" shape="exclamation-triangle" size="15" class="is-error"></clr-icon>
-                <clr-icon *ngIf="task.priority == 'High'" shape="exclamation-triangle" size="15" class="is-warning"></clr-icon>
-                <clr-icon *ngIf="task.priority == 'Medium'" shape="exclamation-triangle" size="15" class="is-highlight"></clr-icon>
-                <clr-icon *ngIf="task.priority == 'Low'" shape="exclamation-triangle" size="15" class="is-success"></clr-icon>
-                {{task.priority}}
-
-              </clr-dg-cell>
-
-              <clr-dg-cell>
-                <clr-icon *ngIf="task.status == 'New'" shape="circle" size="12" class="is-inverse is-solid"></clr-icon>
-                <clr-icon *ngIf="task.status == 'Active'" shape="circle" size="12" class="is-solid is-highlight"></clr-icon>
-                <clr-icon *ngIf="task.status == 'Resolved'" shape="circle" size="12" class="is-solid is-warning"></clr-icon>
-                <clr-icon *ngIf="task.status == 'Completed'" shape="circle" size="12" class="is-solid is-success"></clr-icon>
-                <clr-icon *ngIf="task.status == 'Closed'" shape="circle" size="12" class="is-solid is-error"></clr-icon>
-                {{task.status}}
+                <a href="javascript:void(0)" (click)="onEdit(task)">{{task.title}}</a>
               </clr-dg-cell>
 
               <clr-dg-cell>
                 <clr-signpost>
-                  <clr-icon size="15" shape="avatar" clrSignpostTrigger>
+                  <clr-icon size="15" shape="avatar" class="is-info" clrSignpostTrigger>
                   </clr-icon>
                   <clr-signpost-content [clrPosition]="'left-middle'" *clrIfOpen>
                     {{task.developer.fullName}}
@@ -94,6 +77,25 @@
                 </clr-signpost>
                 {{task.developer.fullName}}
               </clr-dg-cell>
+
+              <clr-dg-cell>
+                <clr-icon *ngIf="task.priority == 'Critical'" shape="exclamation-triangle" size="15" class="is-error"></clr-icon>
+                <clr-icon *ngIf="task.priority == 'High'" shape="exclamation-triangle" size="15" class="is-warning"></clr-icon>
+                <clr-icon *ngIf="task.priority == 'Medium'" shape="exclamation-triangle" size="15" class="is-highlight"></clr-icon>
+                <clr-icon *ngIf="task.priority == 'Low'" shape="exclamation-triangle" size="15" class="is-success"></clr-icon>
+                {{task.priority}}
+              </clr-dg-cell>
+
+              <clr-dg-cell>
+                <clr-icon *ngIf="task.status == 'New'" shape="circle" size="12" class="is-inverse is-solid"></clr-icon>
+                <clr-icon *ngIf="task.status == 'Active'" shape="circle" size="12" class="is-solid is-highlight"></clr-icon>
+                <clr-icon *ngIf="task.status == 'Resolved'" shape="circle" size="12" class="is-solid is-warning"></clr-icon>
+                <clr-icon *ngIf="task.status == 'Completed'" shape="circle" size="12" class="is-solid is-success"></clr-icon>
+                <clr-icon *ngIf="task.status == 'Closed'" shape="circle" size="12" class="is-solid is-error"></clr-icon>
+                {{task.status}}
+              </clr-dg-cell>
+
+
 
               <clr-dg-cell style="text-align: right; padding-top: 2px; padding-bottom: 2px;">
                 <div style="margin: 0rem 0rem 0rem 0;" class="btn-group btn-primary">
@@ -109,7 +111,7 @@
                   </button>
                 </div>
               </clr-dg-cell>
-
+              <app-task-detail *clrIfExpanded [taskId]="task.id" ngProjectAs="clr-dg-row-detail"></app-task-detail>
             </clr-dg-row>
             <clr-dg-footer>
               <clr-dg-column-toggle>
@@ -153,22 +155,22 @@
                 {{'tasks.management.Title' | translate}}
               </ng-container>
             </clr-dg-column>
-            <clr-dg-column [clrDgField]="'priority'">
-              <ng-container *clrDgHideableColumn="{hidden: false}">
-                {{'tasks.management.Priority' | translate}}
-              </ng-container>
-            </clr-dg-column>
-            <clr-dg-column [clrDgField]="'status'">
-              <ng-container *clrDgHideableColumn="{hidden: false}">
-                {{'tasks.management.Status' | translate}}
-              </ng-container>
-            </clr-dg-column>
-            <clr-dg-column [clrDgField]="'developer.fullName'">
+            <clr-dg-column [style.width.px]="192" [clrDgField]="'developer.fullName'">
               <ng-container *clrDgHideableColumn="{hidden: false}">
                 {{'tasks.management.Tester' | translate}}
               </ng-container>
             </clr-dg-column>
-            <clr-dg-column [style.width.px]="216">
+            <clr-dg-column [style.width.px]="84" [clrDgField]="'priority'">
+              <ng-container *clrDgHideableColumn="{hidden: false}">
+                {{'tasks.management.Priority' | translate}}
+              </ng-container>
+            </clr-dg-column>
+            <clr-dg-column [style.width.px]="108" [clrDgField]="'status'">
+              <ng-container *clrDgHideableColumn="{hidden: false}">
+                {{'tasks.management.Status' | translate}}
+              </ng-container>
+            </clr-dg-column>
+            <clr-dg-column [style.width.px]="130">
               <ng-container *clrDgHideableColumn="{hidden: false}">
 
               </ng-container>
@@ -184,6 +186,22 @@
               </clr-dg-cell>
               <clr-dg-cell>
                 <a href="javascript:void(0)" (click)="onEdit(task)">{{task.title}} </a>
+              </clr-dg-cell>
+
+              <clr-dg-cell>
+                <clr-signpost>
+                  <clr-icon size="15" shape="avatar"
+                            clrSignpostTrigger>
+                  </clr-icon>
+                  <clr-signpost-content [clrPosition]="'left-middle'" *clrIfOpen>
+                    {{task.tester.fullName}}
+                    <br />
+                    Phone: {{task.tester.phoneNumber}}
+                    <br />
+                    Email: {{task.tester.email}}
+                  </clr-signpost-content>
+                </clr-signpost>
+                {{task.tester.fullName}}
               </clr-dg-cell>
 
               <clr-dg-cell>
@@ -203,37 +221,23 @@
                 {{task.status}}
               </clr-dg-cell>
 
-              <clr-dg-cell>
-                <clr-signpost>
-                  <clr-icon size="15" shape="avatar"
-                            clrSignpostTrigger>
-                  </clr-icon>
-                  <clr-signpost-content [clrPosition]="'left-middle'" *clrIfOpen>
-                    {{task.tester.fullName}}
-                    <br />
-                    Phone: {{task.tester.phoneNumber}}
-                    <br />
-                    Email: {{task.tester.email}}
-                  </clr-signpost-content>
-                </clr-signpost>
-                {{task.tester.fullName}}
-              </clr-dg-cell>
+
 
               <clr-dg-cell style="text-align: right; padding-top: 2px; padding-bottom: 2px;">
                 <div style="margin: 0rem 0rem 0rem 0;" class="btn-group btn-primary" *ngIf="task.status === 'Resolved'">
-                  <button style="margin: 0rem 0rem 0rem 0;" title="{{task.openBugcount > 0 ? 'Return the task for the developer' : 'There are no active bugs'}}"
-                          [disabled]="task.openBugcount == 0" class="btn btn-sm xs btn-warning" (click)="onActive(task)">
+                  <button style="margin: 0rem 0rem 0rem 0;" title="{{task.openBugcount > 0 ? 'Return the task for bugfixing' : 'There are no active bugs'}}"
+                          *ngIf="task.openBugcount > 0" class="btn btn-sm xs btn-warning" (click)="onActive(task)">
                     <clr-icon shape="ban"></clr-icon>
                     Decline
                   </button>
-                  <button style="margin: 0rem 0rem 0rem 0;" title="{{task.openBugcount == 0 && task.resolvedBugcount == 0 ? 'Task will be marked for release' : 'There are pending Bugs.'}}"
-                          [disabled]="task.openBugcount > 0 || task.resolvedBugcount > 0" class="btn btn-sm xs btn-primary" (click)="onCompleted(task)">
+                  <button style="margin: 0rem 0rem 0rem 0;" title="{{task.openBugcount == 0 && task.resolvedBugcount == 0 ? 'Task will be marked for release' : 'Please review resolved Bugs.'}}"
+                          *ngIf="task.openBugcount == 0" [disabled]="task.resolvedBugcount > 0" class="btn btn-sm xs btn-primary" (click)="onCompleted(task)">
                     <clr-icon shape="check"></clr-icon>
-                    Accept
+                    Complete
                   </button>
                 </div>
               </clr-dg-cell>
-
+              <app-task-detail *clrIfExpanded [taskId]="task.id" ngProjectAs="clr-dg-row-detail"></app-task-detail>
             </clr-dg-row>
             <clr-dg-footer>
               <clr-dg-column-toggle>
@@ -315,8 +319,8 @@
                 <clr-icon *ngIf="task.status == 'Closed'" shape="circle" size="12" class="is-solid is-error"></clr-icon>
                 {{task.status}}
               </clr-dg-cell>
+              <app-task-detail *clrIfExpanded [taskId]="task.id" ngProjectAs="clr-dg-row-detail"></app-task-detail>
             </clr-dg-row>
-
             <clr-dg-footer>
               <clr-dg-column-toggle>
               </clr-dg-column-toggle>
@@ -333,82 +337,104 @@
 
     <clr-tab>
       <button clrTabLink (click)="loadData()" [clrTabLinkInOverflow]=true>
-      Archived
+        Archived
       </button>
-        <ng-template [(clrIfActive)]="ArchivedActive">
-          <clr-tab-content>
-            <clr-datagrid [@fadeInOut] [(clrDgSelected)]="selected" style="height:672px;" class="datagrid-compact">
-              <clr-dg-action-bar>
-                <div style="margin-right: 0rem; margin-left: 0rem;" class="clr-row clr-justify-content-between">
-                  <div class="btn-group btn-primary btn-sm">
-                    <button type="button" class="btn" (click)="onAdd()"><clr-icon shape="plus"></clr-icon>{{'tasks.management.NewTask' | translate}}</button>
-                    <clr-dropdown>
-                      <button type="button" [disabled]="selected.length === 0" class="btn btn-success" clrDropdownTrigger>
-                        <clr-icon shape="note"></clr-icon>Generate Releasenote
-                        <clr-icon shape="caret down"></clr-icon>
-                      </button>
-                      <clr-dropdown-menu clrPosition="bottom-left" *clrIfOpen>
-                        <a (click)="onExportSelected(selected, 'excel')" href="" #excel download="Releasenote_{{curDate | date:'yyyy_MM_dd'}}.csv" clrDropdownItem>Excel</a>
-                        <a (click)="onExportSelected(selected, 'word')" href="" #word download="Releasenote_{{curDate | date:'yyyy_MM_dd'}}.doc" clrDropdownItem>Word</a>
-                        <a (click)="onExportSelected(selected, 'pdf')" href="" #pdf download="Releasenote_{{curDate | date:'yyyy_MM_dd'}}.pdf" clrDropdownItem>Pdf</a>
-                      </clr-dropdown-menu>
-                    </clr-dropdown>
+      <ng-template [(clrIfActive)]="ArchivedActive">
+        <clr-tab-content>
+          <clr-datagrid [@fadeInOut] [(clrDgSelected)]="selected" style="height:672px;" class="datagrid-compact">
+            <clr-dg-action-bar>
+              <div style="margin-right: 0rem; margin-left: 0rem;" class="clr-row clr-justify-content-between">
+                <div class="btn-group btn-primary btn-sm">
+                  <button type="button" class="btn" (click)="onAdd()"><clr-icon shape="plus"></clr-icon>{{'tasks.management.NewTask' | translate}}</button>
+                  <clr-dropdown>
+                    <button type="button" [disabled]="selected.length === 0" class="btn btn-success" clrDropdownTrigger>
+                      <clr-icon shape="note"></clr-icon>Export
+                      <clr-icon shape="caret down"></clr-icon>
+                    </button>
+                    <clr-dropdown-menu clrPosition="bottom-left" *clrIfOpen>
+                      <a (click)="onExportSelected(selected, 'excel')" href="" #excel download="Releasenote_{{curDate | date:'yyyy_MM_dd'}}.csv" clrDropdownItem>Excel</a>
+                      <a (click)="onExportSelected(selected, 'word')" href="" #word download="Releasenote_{{curDate | date:'yyyy_MM_dd'}}.doc" clrDropdownItem>Word</a>
+                      <a (click)="onExportSelected(selected, 'pdf')" href="" #pdf download="Releasenote_{{curDate | date:'yyyy_MM_dd'}}.pdf" clrDropdownItem>Pdf</a>
+                    </clr-dropdown-menu>
+                  </clr-dropdown>
 
-                  </div>
-                  <div class="btn-group">
-                    <app-search-box (searchChange)="onSearchChanged($event)" placeholder="{{'tasks.management.Search' | translate}}"></app-search-box>
-                  </div>
                 </div>
-              </clr-dg-action-bar>
-              <clr-dg-column [style.width.px]="120">
-                <ng-container *clrDgHideableColumn="{hidden: false}">
-                  Id
-                </ng-container>
-              </clr-dg-column>
-              <clr-dg-column [clrDgField]="'title'">
-                <ng-container *clrDgHideableColumn="{hidden: false}">
-                  {{'tasks.management.Task' | translate}}
-                </ng-container>
-              </clr-dg-column>
+                <div class="btn-group">
+                  <app-search-box (searchChange)="onSearchChanged($event)" placeholder="{{'tasks.management.Search' | translate}}"></app-search-box>
+                </div>
+              </div>
+            </clr-dg-action-bar>
+            <clr-dg-column [style.width.px]="120">
+              <ng-container *clrDgHideableColumn="{hidden: false}">
+                Id
+              </ng-container>
+            </clr-dg-column>
+            <clr-dg-column [clrDgField]="'title'">
+              <ng-container *clrDgHideableColumn="{hidden: false}">
+                {{'tasks.management.Task' | translate}}
+              </ng-container>
+            </clr-dg-column>
 
-              <clr-dg-column [clrDgField]="'status'">
-                <ng-container *clrDgHideableColumn="{hidden: false}">
-                  {{'tasks.management.Status' | translate}}
-                </ng-container>
-              </clr-dg-column>
-              <clr-dg-placeholder>Skeleta Task Sysyem</clr-dg-placeholder>
+            <clr-dg-column [clrDgField]="'status'">
+              <ng-container *clrDgHideableColumn="{hidden: false}">
+                {{'tasks.management.Status' | translate}}
+              </ng-container>
+            </clr-dg-column>
+            <clr-dg-placeholder>Skeleta Task Sysyem</clr-dg-placeholder>
 
-              <clr-dg-row *clrDgItems="let task of archivedTasks" [clrDgItem]="task">
-                <clr-dg-cell>
-                  <clr-icon shape="tasks" class="is-highlight is-solid"></clr-icon>
-                  <a href="javascript:void(0)" (click)="onEdit(task)">{{task.id}}</a>
-                </clr-dg-cell>
-                <clr-dg-cell>
-                  <a href="javascript:void(0)" (click)="onEdit(task)">{{task.title}} </a>
-                </clr-dg-cell>
+            <clr-dg-row *clrDgItems="let task of archivedTasks" [clrDgItem]="task">
+              <clr-dg-cell>
+                <clr-icon shape="tasks" class="is-highlight is-solid"></clr-icon>
+                <a href="javascript:void(0)" (click)="onEdit(task)">{{task.id}}</a>
+              </clr-dg-cell>
+              <clr-dg-cell>
+                <a href="javascript:void(0)" (click)="onEdit(task)">{{task.title}} </a>
+              </clr-dg-cell>
 
-                <clr-dg-cell>
-                  <clr-icon *ngIf="task.status == 'New'" shape="circle" size="12" class="is-inverse is-solid"></clr-icon>
-                  <clr-icon *ngIf="task.status == 'Active'" shape="circle" size="12" class="is-solid is-highlight"></clr-icon>
-                  <clr-icon *ngIf="task.status == 'Resolved'" shape="circle" size="12" class="is-solid is-warning"></clr-icon>
-                  <clr-icon *ngIf="task.status == 'Completed'" shape="circle" size="12" class="is-solid is-success"></clr-icon>
-                  <clr-icon *ngIf="task.status == 'Closed'" shape="circle" size="12" class="is-solid is-error"></clr-icon>
-                  {{task.status}}
-                </clr-dg-cell>
-              </clr-dg-row>
-
-              <clr-dg-footer>
-                <clr-dg-column-toggle>
-                </clr-dg-column-toggle>
-                <clr-dg-pagination #pagination [clrDgPageSize]="20">
-                  <clr-dg-page-size [clrPageSizeOptions]="[10,20,50]">{{'tasks.management.TasksPerPage' | translate}}</clr-dg-page-size>
-                  {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
-                  {{pagination.totalItems}} {{'tasks.management.Tasks' | translate}}
-                </clr-dg-pagination>
-              </clr-dg-footer>
-            </clr-datagrid>
-          </clr-tab-content>
-        </ng-template>
+              <clr-dg-cell>
+                <clr-icon *ngIf="task.status == 'New'" shape="circle" size="12" class="is-inverse is-solid"></clr-icon>
+                <clr-icon *ngIf="task.status == 'Active'" shape="circle" size="12" class="is-solid is-highlight"></clr-icon>
+                <clr-icon *ngIf="task.status == 'Resolved'" shape="circle" size="12" class="is-solid is-warning"></clr-icon>
+                <clr-icon *ngIf="task.status == 'Completed'" shape="circle" size="12" class="is-solid is-success"></clr-icon>
+                <clr-icon *ngIf="task.status == 'Closed'" shape="circle" size="12" class="is-solid is-error"></clr-icon>
+                {{task.status}}
+              </clr-dg-cell>
+              <app-task-detail *clrIfExpanded [taskId]="task.id" ngProjectAs="clr-dg-row-detail"></app-task-detail>
+            </clr-dg-row>
+            <clr-dg-footer>
+              <clr-dg-column-toggle>
+              </clr-dg-column-toggle>
+              <clr-dg-pagination #pagination [clrDgPageSize]="20">
+                <clr-dg-page-size [clrPageSizeOptions]="[10,20,50]">{{'tasks.management.TasksPerPage' | translate}}</clr-dg-page-size>
+                {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+                {{pagination.totalItems}} {{'tasks.management.Tasks' | translate}}
+              </clr-dg-pagination>
+            </clr-dg-footer>
+          </clr-datagrid>
+        </clr-tab-content>
+      </ng-template>
     </clr-tab>
   </clr-tabs>
 </div>
+
+<clr-modal [(clrModalOpen)]="completeOpen">
+  <h3 class="modal-title">Complete task</h3>
+  <div class="modal-body">
+    <p>Are you sure the task is properly tested, and ready to be released?</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline" (click)="completeOpen = false">No</button>
+    <button type="button" [clrLoading]="deleteBtnState" class="btn btn-danger" (click)="onCompleted(task)">Yes</button>
+  </div>
+</clr-modal>
+
+<clr-modal [(clrModalOpen)]="resolvedOpen">
+  <h3 class="modal-title">Resolve task</h3>
+  <div class="modal-body">
+    <p>Are you sure the task is merged, and ready to be tested?</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline" (click)="resolvedOpen = false">No</button>
+    <button type="button" [clrLoading]="deleteBtnState" class="btn btn-danger" (click)="onResolved(task)">Yes</button>
+  </div>
+</clr-modal>

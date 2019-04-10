@@ -34,6 +34,8 @@ var TaskManagementComponent = /** @class */ (function () {
         this.resolvedTasksCache = [];
         this.completedTasks = [];
         this.completedTasksCache = [];
+        this.archivedTasks = [];
+        this.archivedTasksCache = [];
         this.selected = [];
         this.gT = function (key) { return _this.translationService.getTranslation(key); };
         this.curDate = new Date();
@@ -97,6 +99,9 @@ var TaskManagementComponent = /** @class */ (function () {
         if (this.PendingActive) {
             this.loadPending();
         }
+        if (this.ArchivedActive) {
+            this.loadClosed();
+        }
     };
     TaskManagementComponent.prototype.loadPending = function () {
         var _this = this;
@@ -105,7 +110,7 @@ var TaskManagementComponent = /** @class */ (function () {
         this.alertService.startLoadingMessage();
         this.loadingIndicator = true;
         this.taskService.GetPendingTask()
-            .subscribe(function (results) { return _this.onDataLoadSuccessful(results, null, null); }, function (error) { return _this.onDataLoadFailed(error); });
+            .subscribe(function (results) { return _this.onDataLoadSuccessful(results, enum_1.Status.Active); }, function (error) { return _this.onDataLoadFailed(error); });
     };
     TaskManagementComponent.prototype.loadResolved = function () {
         var _this = this;
@@ -114,7 +119,7 @@ var TaskManagementComponent = /** @class */ (function () {
         this.alertService.startLoadingMessage();
         this.loadingIndicator = true;
         this.taskService.GetResolvedTask()
-            .subscribe(function (results) { return _this.onDataLoadSuccessful(null, results, null); }, function (error) { return _this.onDataLoadFailed(error); });
+            .subscribe(function (results) { return _this.onDataLoadSuccessful(results, enum_1.Status.Resolved); }, function (error) { return _this.onDataLoadFailed(error); });
     };
     TaskManagementComponent.prototype.loadCompleted = function () {
         var _this = this;
@@ -123,28 +128,44 @@ var TaskManagementComponent = /** @class */ (function () {
         this.alertService.startLoadingMessage();
         this.loadingIndicator = true;
         this.taskService.GetCompletedTask()
-            .subscribe(function (results) { return _this.onDataLoadSuccessful(null, null, results); }, function (error) { return _this.onDataLoadFailed(error); });
+            .subscribe(function (results) { return _this.onDataLoadSuccessful(results, enum_1.Status.Completed); }, function (error) { return _this.onDataLoadFailed(error); });
     };
-    TaskManagementComponent.prototype.onDataLoadSuccessful = function (pending, resolved, completed) {
+    TaskManagementComponent.prototype.loadClosed = function () {
+        var _this = this;
+        this.archivedTasks = [];
+        this.archivedTasksCache = [];
+        this.alertService.startLoadingMessage();
+        this.loadingIndicator = true;
+        this.taskService.GetClosedTask()
+            .subscribe(function (results) { return _this.onDataLoadSuccessful(results, enum_1.Status.Closed); }, function (error) { return _this.onDataLoadFailed(error); });
+    };
+    TaskManagementComponent.prototype.onDataLoadSuccessful = function (tasks, status) {
         this.alertService.stopLoadingMessage();
         this.loadingIndicator = false;
-        if (pending) {
-            this.pendingTasks = pending;
-            this.pendingTasksCache = pending;
+        if (status == enum_1.Status.Active) {
+            this.pendingTasks = tasks;
+            this.pendingTasksCache = tasks;
         }
-        if (resolved) {
-            this.resolvedTasks = resolved;
-            this.resolvedTasksCache = resolved;
+        if (status == enum_1.Status.Resolved) {
+            this.resolvedTasks = tasks;
+            this.resolvedTasksCache = tasks;
         }
-        if (completed) {
-            this.completedTasks = completed;
-            this.completedTasksCache = completed;
+        if (status == enum_1.Status.Completed) {
+            this.completedTasks = tasks;
+            this.completedTasksCache = tasks;
+        }
+        if (status == enum_1.Status.Closed) {
+            this.archivedTasks = tasks;
+            this.archivedTasksCache = tasks;
         }
         this.isOpen = true;
+        console.log("data loaded");
+        this.grid.refresh;
     };
     TaskManagementComponent.prototype.onDataLoadFailed = function (error) {
         this.alertService.stopLoadingMessage();
         this.loadingIndicator = false;
+        console.log("Error while fetching list: ", error);
         this.alertService.showStickyMessage('Load Error', "Unable to retrieve users from the server.\r\nErrors: \"" + utilities_1.Utilities.getHttpResponseMessage(error) + "\"", alert_service_1.MessageSeverity.error, error);
         this.isOpen = true;
     };
@@ -165,20 +186,21 @@ var TaskManagementComponent = /** @class */ (function () {
     TaskManagementComponent.prototype.deleteList = function (tasksToDelete) {
         for (var _i = 0, tasksToDelete_1 = tasksToDelete; _i < tasksToDelete_1.length; _i++) {
             var task = tasksToDelete_1[_i];
-            this.removeItem(task);
+            this.removeItem(task.id);
         }
     };
-    TaskManagementComponent.prototype.popItem = function (task) {
-        this.removeItem(task);
+    TaskManagementComponent.prototype.popItem = function (id) {
+        this.removeItem(id);
     };
     TaskManagementComponent.prototype.popSelected = function (tasks) {
         for (var _i = 0, tasks_1 = tasks; _i < tasks_1.length; _i++) {
             var task = tasks_1[_i];
-            this.removeItem(task);
+            this.removeItem(task.id);
         }
     };
-    TaskManagementComponent.prototype.removeItem = function (task) {
+    TaskManagementComponent.prototype.removeItem = function (id) {
         if (this.CompletedActive) {
+            var task = this.completedTasks.filter(function (x) { return x.id == id; })[0];
             var updateItem = this.completedTasks.find(this.findIndexToUpdate, task.id);
             var taskIndex = this.completedTasks.indexOf(task, 0);
             if (taskIndex > -1) {
@@ -186,6 +208,7 @@ var TaskManagementComponent = /** @class */ (function () {
             }
         }
         if (this.ResolvedActive) {
+            var task = this.resolvedTasks.filter(function (x) { return x.id == id; })[0];
             var updateItem = this.resolvedTasks.find(this.findIndexToUpdate, task.id);
             var taskIndex = this.resolvedTasks.indexOf(task, 0);
             if (taskIndex > -1) {
@@ -193,6 +216,7 @@ var TaskManagementComponent = /** @class */ (function () {
             }
         }
         if (this.PendingActive) {
+            var task = this.pendingTasks.filter(function (x) { return x.id == id; })[0];
             var updateItem = this.pendingTasks.find(this.findIndexToUpdate, task.id);
             var taskIndex = this.pendingTasks.indexOf(task, 0);
             if (taskIndex > -1) {
@@ -211,7 +235,7 @@ var TaskManagementComponent = /** @class */ (function () {
                 this.pendingTasks[index] = task;
             }
             else {
-                this.removeItem(task);
+                this.removeItem(task.id);
             }
         }
         if (this.CompletedActive) {
@@ -221,7 +245,7 @@ var TaskManagementComponent = /** @class */ (function () {
                 this.completedTasks[index] = task;
             }
             else {
-                this.removeItem(task);
+                this.removeItem(task.id);
             }
         }
     };

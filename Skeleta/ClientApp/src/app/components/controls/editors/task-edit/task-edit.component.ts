@@ -4,18 +4,23 @@ import { AppTranslationService } from '../../../../services/app-translation.serv
 import { AlertService, MessageSeverity } from '../../../../services/alert.service';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { TaskService } from '../../../../services/tasks/taskService';
-import { Task } from '../../../../services/tasks/task.model';
+import { TaskList, TaskEdit } from '../../../../services/tasks/task.model';
 import { Status, Priority } from '../../../../models/enum';
 import { Observable, forkJoin } from 'rxjs';
 import { AccountService } from '../../../../services/account.service';
 import { User } from '../../../../models/user.model';
 import { fadeInOut } from '../../../../services/animations';
+import { compare } from 'fast-json-patch';
+import { bounceIn } from 'ngx-animate';
+import { trigger, transition, useAnimation } from '@angular/animations';
 
 @Component({
   selector: 'app-task-edit',
   templateUrl: './task-edit.component.html',
   styleUrls: ['./task-edit.component.css'],
-  animations: [fadeInOut],
+  animations: [fadeInOut,
+    trigger('bounceIn', [transition('void => *', useAnimation(bounceIn))])
+  ],
 })
 
 export class TaskEditComponent implements OnInit {
@@ -25,25 +30,29 @@ export class TaskEditComponent implements OnInit {
 
   private deleteOpen = false;
   private archiveOpen = false;
+  private resolveOpen = false;
+  private completeOpen = false;
+
   private isNewTask = false;
   private allStatus = [...Object.keys(Status)];
   private allPriority = [...Object.keys(Priority)];
-  initialTask: Task = new Task();
-  taskEdit: Task;
-  private tasksToDelete: Task[] = [];
-  private tasksToClose: Task[] = [];
-  private taskToDelete: Task;
-  private dataLoaded: boolean;
+  initialTask: TaskEdit = new TaskEdit();
+  taskEdit: TaskEdit = new TaskEdit();
+  private tasksToDelete: TaskEdit[] = [];
+  private tasksToClose: TaskEdit[] = [];
+  private taskToUpdate: TaskEdit = new TaskEdit();
+  private dataLoaded: boolean = false;
   private isOpen: boolean;
+  createdBy: string;
+  updatedBy: string;
   taskForm: FormGroup;
   users: User[] = [];
   currentUser: User;
   isEdit: boolean;
   @ViewChild(ClrForm) clrForm;
-  @Output() popData = new EventEmitter<Task>();
-  @Output() popSelected = new EventEmitter<Task[]>();
-  @Output() updateData = new EventEmitter<Task>();
-  @Output() deleteData = new EventEmitter<Task[]>();
+  @Output() popData = new EventEmitter<number>();
+  @Output() popSelected = new EventEmitter<TaskEdit[]>();
+  @Output() updateData = new EventEmitter<TaskEdit>();
   @Output() cancel = new EventEmitter();
   @Output() refresh = new EventEmitter();
 
@@ -86,17 +95,17 @@ export class TaskEditComponent implements OnInit {
   private save() {
     this.submitBtnState = ClrLoadingState.LOADING;
     Object.assign(this.taskEdit, this.taskForm.value);
-
+    let patchDocument = compare(this.initialTask, this.taskEdit);
     if (this.isNewTask) {
-      this.taskService.NewTask(this.taskEdit).subscribe(task => this.saveSuccessHelper(task), error => this.saveFailedHelper(error));
+      this.taskService.NewTask(this.taskEdit).subscribe(task => this.saveSuccessHelper(), error => this.saveFailedHelper(error));
     }
     else {
-      this.taskService.UpdateTask(this.taskEdit).subscribe(task => this.saveSuccessHelper(task), error => this.saveFailedHelper(error));
+      this.taskService.UpdateTask(patchDocument, this.taskEdit.id).subscribe(task => this.saveSuccessHelper(), error => this.saveFailedHelper(error));
     }
 
   }
 
-  private saveSuccessHelper(task: Task): void {
+  private saveSuccessHelper(): void {
     this.refresh.emit();
     Object.assign(this.initialTask, this.taskEdit);
     if (this.isNewTask)
@@ -120,23 +129,23 @@ export class TaskEditComponent implements OnInit {
     this.isEdit = false;
     this.submitBtnState = ClrLoadingState.DEFAULT;
     this.isNewTask = true;
-    this.initialTask = new Task();
-    this.taskEdit = new Task();
+    this.initialTask = new TaskEdit();
+    this.taskEdit = new TaskEdit();
     this.loadForm();
   }
 
 
   Edit(taskid: number) {
     if (taskid) {
-      this.isOpen = true;
+      setTimeout(() => this.isOpen = true, 500);
       this.isEdit = true;
       this.taskService.GetTask(taskid).subscribe(response => {
-        this.initialTask = new Task();
+        this.initialTask = new TaskEdit();
+        this.taskEdit = new TaskEdit();
         Object.assign(this.initialTask, response);
-        this.initialTask.createdBy = this.users.filter(x => x.id == this.initialTask.createdBy).map(x => x.fullName)[0];
-        this.initialTask.updatedBy = this.users.filter(x => x.id == this.initialTask.updatedBy).map(x => x.fullName)[0];
-        this.taskEdit = new Task;
         Object.assign(this.taskEdit, response);
+        this.createdBy = this.users.filter(x => x.id == this.taskEdit.createdBy).map(x => x.fullName)[0];
+        this.updatedBy = this.users.filter(x => x.id == this.taskEdit.updatedBy).map(x => x.fullName)[0];
         this.submitBtnState = ClrLoadingState.DEFAULT;
         this.isNewTask = false;
         this.loadForm();
@@ -153,67 +162,84 @@ export class TaskEditComponent implements OnInit {
     }
   }
 
-  MarkActive(task: Task) {
+  MarkActive(task: TaskEdit) {
     if (task) {
       if (task.status == Status.New) {
-        this.taskService.GetTask(task.id).subscribe(
-          editTask => {
-            editTask.status = Status.Active;
-            this.taskService.UpdateTask(editTask).subscribe(response => {
-              this.alertService.showMessage(this.gT('toasts.saved'), `Task set as Active!`, MessageSeverity.success);
-              Object.assign(task, editTask);
-              this.updateData.emit(task);
-            },
-              error => this.alertService.showMessage(error, null, MessageSeverity.error));
-          })
+        let taskEdit: TaskEdit = new TaskEdit();
+        Object.assign(taskEdit, task);
+        taskEdit.status = Status.Active;
+        let patchDocument = compare(task, taskEdit);
+        this.taskService.UpdateTask(patchDocument, task.id).subscribe(
+          response => {
+            this.alertService.showMessage(this.gT('toasts.saved'), `Task set as Active!`, MessageSeverity.success);
+            this.updateData.emit(taskEdit);
+          },
+          error => this.alertService.showMessage(error, null, MessageSeverity.error));
       }
       else {
-        this.taskService.GetTask(task.id).subscribe(
-          editTask => {
-            editTask.status = Status.Active;
-            this.taskService.UpdateTask(editTask).subscribe(response => {
-              this.alertService.showMessage(this.gT('toasts.saved'), `Task set as Active!`, MessageSeverity.success);
-              this.popData.emit(task);
-            },
-              error => this.alertService.showMessage(error, null, MessageSeverity.error));
-          })
+        let taskEdit: TaskEdit = new TaskEdit();
+        Object.assign(taskEdit, task);
+        taskEdit.status = Status.Active;
+        let patchDocument = compare(task, taskEdit);
+        this.taskService.UpdateTask(patchDocument, task.id).subscribe(
+          response => {
+            this.alertService.showMessage(this.gT('toasts.saved'), `Task set as Active!`, MessageSeverity.success);
+            this.popData.emit(response.id);
+          },
+          error => this.alertService.showMessage(error, null, MessageSeverity.error));
       }
     }
   }
 
 
-  MarkResolved(task: Task) {
-    if (task) {
-      this.taskService.GetTask(task.id).subscribe(
-        editTask => {
-          editTask.status = Status.Resolved;
-          this.taskService.UpdateTask(editTask).subscribe(response => {
-            this.alertService.showMessage(this.gT('toasts.saved'), `Task set as Resolved!`, MessageSeverity.success);
-            this.popData.emit(task);
-          },
-            error => this.alertService.showMessage(error, null, MessageSeverity.error));
-        })
+  onResolved() {
+    if (this.taskToUpdate) {
+      let taskEdit: TaskEdit = new TaskEdit();
+      Object.assign(taskEdit, this.taskToUpdate);
+      taskEdit.status = Status.Resolved;
+      let patchDocument = compare(this.taskToUpdate, taskEdit);
+      this.taskService.UpdateTask(patchDocument, this.taskToUpdate.id).subscribe(
+        response => {
+          this.alertService.showMessage(this.gT('toasts.saved'), `Task ` + response.id.toString() + ` Resolved!`, MessageSeverity.success);
+          this.popData.emit(response.id);
+        },
+        error => this.alertService.showMessage(error, null, MessageSeverity.error));
     }
+    this.taskToUpdate = new TaskEdit();
+    this.resolveOpen = false;
   }
 
-  MarkCompleted(task: Task) {
-    if (task) {
-      this.taskService.GetTask(task.id).subscribe(
-        editTask => {
-          editTask.status = Status.Completed;
-          this.taskService.UpdateTask(editTask).subscribe(response => {
-            this.alertService.showMessage(this.gT('toasts.saved'), `Task set as Completed!`, MessageSeverity.success);
-            this.popData.emit(task);
-          },
-            error => this.alertService.showMessage(error, null, MessageSeverity.error));
-        })
+  onCompleted() {
+    if (this.taskToUpdate) {
+      let taskEdit: TaskEdit = new TaskEdit();
+      Object.assign(taskEdit, this.taskToUpdate);
+      taskEdit.status = Status.Completed;
+      let patchDocument = compare(this.taskToUpdate, taskEdit);
+      this.taskService.UpdateTask(patchDocument, this.taskToUpdate.id).subscribe(
+        response => {
+          this.alertService.showMessage(this.gT('toasts.saved'), `Task ` + response.id.toString() + ` Completed!`, MessageSeverity.success);
+          this.popData.emit(response.id);
+        },
+        error => this.alertService.showMessage(error, null, MessageSeverity.error));
     }
+    this.taskToUpdate = new TaskEdit();
+    this.completeOpen = false;
   }
 
-  MarkClosed(tasks: Task[]) {
-    this.tasksToClose = tasks;
+
+  MarkResolved(task: TaskEdit) {
+    Object.assign(this.taskToUpdate, task);
+    this.resolveOpen = true;
+  }
+
+  MarkCompleted(task: TaskEdit) {
+    Object.assign(this.taskToUpdate, task);
+    this.completeOpen = true;
+  }
+
+  MarkClosed(tasks: TaskEdit[]) {
+    Object.assign(this.tasksToClose, tasks);
     this.archiveOpen = true;
-
   }
 
   private CloseTasks() {
@@ -223,8 +249,10 @@ export class TaskEditComponent implements OnInit {
       for (var i = 0; i < this.tasksToClose.length; i++) {
         this.taskService.GetTask(this.tasksToClose[i].id).subscribe(
           editTask => {
+            Object.assign(this.initialTask, editTask);
             editTask.status = Status.Closed;
-            this.taskService.UpdateTask(editTask).subscribe(response => {
+            let patchDocument = compare(this.initialTask, editTask);
+            this.taskService.UpdateTask(patchDocument, editTask.id).subscribe(response => {
             },
               error => this.alertService.showMessage(error, null, MessageSeverity.error));
           })
@@ -236,15 +264,15 @@ export class TaskEditComponent implements OnInit {
     }
   }
 
-  DeleteRange(tasks: Task[]) {
+  DeleteRange(tasks: TaskEdit[]) {
     this.deleteOpen = true;
-    this.tasksToDelete = tasks;
-    this.taskToDelete = null;
+    Object.assign(this.tasksToDelete, tasks);
+    this.taskToUpdate = null;
   }
 
-  DeleteSingle(task: Task) {
+  DeleteSingle(task: TaskEdit) {
     this.deleteOpen = true;
-    this.taskToDelete = task;
+    this.taskToUpdate = task;
     this.tasksToDelete = null;
   }
 
@@ -254,18 +282,21 @@ export class TaskEditComponent implements OnInit {
     if (this.tasksToDelete != null) {
       this.taskService.DeleteRangeTasks(this.tasksToDelete).subscribe(
         response => {
-          this.deleteData.emit(this.tasksToDelete);
+          this.refresh.emit();
           this.deleteBtnState = ClrLoadingState.SUCCESS;
           this.deleteOpen = false;
           this.alertService.showMessage(this.gT('toasts.saved'), `${this.tasksToDelete.length} record Deleted!`, MessageSeverity.success);
         });
     }
 
-    if (this.taskToDelete != null) {
-      this.taskToDelete.status = Status.Closed;
-      this.taskService.UpdateTask(this.taskToDelete).subscribe(response => {
+    if (this.taskToUpdate != null) {
+      this.taskToUpdate.status = Status.Closed;
+      Object.assign(this.initialTask, this.taskToUpdate);
+      this.taskToUpdate.status = Status.Active;
+      let patchDocument = compare(this.initialTask, this.taskToUpdate);
+      this.taskService.UpdateTask(patchDocument, this.taskToUpdate.id).subscribe(response => {
         this.alertService.showMessage(this.gT('toasts.saved'), `Record Deleted!`, MessageSeverity.success);
-        this.popData.emit(this.taskToDelete);
+        this.popData.emit(this.taskToUpdate.id);
         this.deleteBtnState = ClrLoadingState.SUCCESS;
         this.deleteOpen = false;
       },
