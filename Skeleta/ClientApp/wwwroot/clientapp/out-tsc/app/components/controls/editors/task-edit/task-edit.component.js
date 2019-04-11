@@ -45,6 +45,7 @@ var TaskEditComponent = /** @class */ (function () {
         this.taskEdit = new task_model_1.TaskEdit();
         this.tasksToDelete = [];
         this.tasksToClose = [];
+        this.tasksToRelease = [];
         this.taskToUpdate = new task_model_1.TaskEdit();
         this.dataLoaded = false;
         this.users = [];
@@ -68,7 +69,6 @@ var TaskEditComponent = /** @class */ (function () {
             developerId: [this.currentUser.id],
             testerId: [this.currentUser.id]
         });
-        console.log(this.canSetStatus);
         this.dataLoaded = true;
     };
     TaskEditComponent.prototype.cleanup = function () {
@@ -211,18 +211,42 @@ var TaskEditComponent = /** @class */ (function () {
         Object.assign(this.tasksToClose, tasks);
         this.archiveOpen = true;
     };
+    TaskEditComponent.prototype.MarkRelease = function (tasks) {
+        Object.assign(this.tasksToRelease, tasks);
+        this.completeOpen = true;
+    };
+    TaskEditComponent.prototype.onRelease = function (releaseId) {
+        var _this = this;
+        releaseId = "test release";
+        this.deleteBtnState = angular_1.ClrLoadingState.LOADING;
+        if (this.tasksToRelease) {
+            for (var i = 0; i < this.tasksToRelease.length; i++) {
+                var taskEdit = new task_model_1.TaskEdit();
+                Object.assign(taskEdit, this.tasksToRelease[i]);
+                taskEdit.status = enum_1.Status.Closed;
+                taskEdit.releaseId = releaseId;
+                var patchDocument = fast_json_patch_1.compare(this.tasksToRelease[i], taskEdit);
+                this.taskService.UpdateTask(patchDocument, taskEdit.id).subscribe(function (response) {
+                }, function (error) { return _this.alertService.showMessage(error, null, alert_service_1.MessageSeverity.error); });
+            }
+        }
+        this.alertService.showMessage(this.gT('toasts.saved'), "Release Note Generated, Tasks Archived!", alert_service_1.MessageSeverity.success);
+        this.deleteBtnState = angular_1.ClrLoadingState.SUCCESS;
+        this.popSelected.emit(this.tasksToRelease);
+        this.completeOpen = false;
+    };
     TaskEditComponent.prototype.CloseTasks = function () {
         var _this = this;
         this.deleteBtnState = angular_1.ClrLoadingState.LOADING;
         if (this.tasksToClose) {
             for (var i = 0; i < this.tasksToClose.length; i++) {
-                this.taskService.GetTask(this.tasksToClose[i].id).subscribe(function (editTask) {
-                    Object.assign(_this.initialTask, editTask);
-                    editTask.status = enum_1.Status.Closed;
-                    var patchDocument = fast_json_patch_1.compare(_this.initialTask, editTask);
-                    _this.taskService.UpdateTask(patchDocument, editTask.id).subscribe(function (response) {
-                    }, function (error) { return _this.alertService.showMessage(error, null, alert_service_1.MessageSeverity.error); });
-                });
+                var taskEdit = new task_model_1.TaskEdit();
+                Object.assign(taskEdit, this.tasksToClose[i]);
+                taskEdit.releaseId = "test release";
+                taskEdit.status = enum_1.Status.Closed;
+                var patchDocument = fast_json_patch_1.compare(this.tasksToClose[i], taskEdit);
+                this.taskService.UpdateTask(patchDocument, this.tasksToClose[i].id).subscribe(function (response) {
+                }, function (error) { return _this.alertService.showMessage(error, null, alert_service_1.MessageSeverity.error); });
             }
             this.alertService.showMessage(this.gT('toasts.saved'), "Task(s) Archived!", alert_service_1.MessageSeverity.success);
             this.deleteBtnState = angular_1.ClrLoadingState.SUCCESS;

@@ -8,7 +8,8 @@ import { Utilities } from '../../../services/utilities';
 import { AccountService } from '../../../services/account.service';
 import { fadeInOut } from '../../../services/animations';
 import { Status } from '../../../models/enum';
-import { ClrDatagrid } from "@clr/angular";
+import { ClrDatagrid, ClrLoadingState } from "@clr/angular";
+import { compare } from 'fast-json-patch';
 
 @Component({
   selector: 'app-task-management',
@@ -17,6 +18,8 @@ import { ClrDatagrid } from "@clr/angular";
   animations: [fadeInOut]
 })
 export class TaskManagementComponent implements OnInit {
+  submitBtnState: ClrLoadingState = ClrLoadingState.DEFAULT;
+  deleteBtnState: ClrLoadingState = ClrLoadingState.DEFAULT;
   columns: any[] = [];
 
   pendingTasks: TaskList[] = [];
@@ -33,6 +36,7 @@ export class TaskManagementComponent implements OnInit {
 
   loadingIndicator: boolean;
   selected: TaskList[] = [];
+  tasksToRelease: TaskList[] = [];
   gT = (key: string) => this.translationService.getTranslation(key);
   CompletedActive;
   ResolvedActive;
@@ -45,7 +49,9 @@ export class TaskManagementComponent implements OnInit {
   @ViewChild("word") wordLink: ElementRef;
   @ViewChild("pdf") pdfLink: ElementRef;
   private isOpen = true;
-
+  private releaseOpen = false;
+  releaseGroupname: string;
+  shouldArchive: boolean;
   constructor(private accountService: AccountService, private alertService: AlertService,
     private translationService: AppTranslationService, private taskService: TaskService, private renderer: Renderer2) { }
 
@@ -79,33 +85,21 @@ export class TaskManagementComponent implements OnInit {
     this.taskEdit.MarkCompleted(task);
   }
 
-  onExportSelected(selected: TaskList[], exportOption: string) {
-    switch (exportOption) {
-      case 'excel':
-        const csv = this.selected.map(task => this.taskToFile(task)).join("\n");
-        let titlecsv = "Releasenote;" + this.curDate.toLocaleDateString() + "\n" + "Id;Title" + "\n";
-        this.renderer.setAttribute(this.excelLink.nativeElement, "href",
-          "data:text/plain;charset=utf-8," + titlecsv + csv);
-
-      case 'word':
-        const docx = this.selected.map(task => this.excelToFile(task)).join("\n\n");
-        let titleDoc = "Releasenote: " + this.curDate.toLocaleDateString() + "\n" + "\n" + "\n" + "\n" + "Az alkalmazás az alábbi fejlesztésekkel bővült: " + "\n" + "\n" + "\n";
-        this.renderer.setAttribute(this.wordLink.nativeElement, "href",
-          "data:text/plain;charset=utf-8," + titleDoc + docx);
-
-      case 'pdf':
-        const pdf = this.selected.map(task => this.taskToFile(task)).join("\n");
-        let titlePdf = "Releasenote" + this.curDate.toLocaleDateString() + "\n" + "Id;Title" + "\n";
-        this.renderer.setAttribute(this.pdfLink.nativeElement, "href",
-          "data:text/plain;charset=utf-8," + titlePdf + pdf);
-      default:
+  onExportSelected(selected: TaskList[]) {
+    if (selected.length > 0) {
+      Object.assign(this.tasksToRelease, selected);
+      this.releaseOpen = true;
     }
   }
 
-  taskToFile(task: TaskList) {
-    return [task.id, task.title].join(';');
+  download(selected: TaskList[]) {
+    console.log(selected);
+    const docx = this.selected.map(task => this.taskToFile(task)).join("\n\n");
+    let titleDoc = "Releasenote: " + this.curDate.toLocaleDateString() + "\n" + "\n" + "\n" + "\n" + "Az alkalmazás az alábbi fejlesztésekkel bővült: " + "\n" + "\n" + "\n";
+    this.renderer.setAttribute(this.wordLink.nativeElement, "href",
+      "data:text/plain;charset=utf-8," + titleDoc + docx);
   }
-  excelToFile(task: TaskList) {
+  taskToFile(task: TaskList) {
     return ["Azonositó: " + task.id + " Fejlesztés: " + task.title];
   }
 
@@ -276,6 +270,31 @@ export class TaskManagementComponent implements OnInit {
         this.removeItem(task.id);
       }
     }
+  }
+
+  private onRelease() {
+    this.download(this.tasksToRelease);
+    this.deleteBtnState = ClrLoadingState.LOADING;
+    if (this.tasksToRelease) {
+      for (var i = 0; i < this.tasksToRelease.length; i++) {
+        let taskEdit = new TaskList();
+        Object.assign(taskEdit, this.tasksToRelease[i]);
+        if (this.shouldArchive) {
+          taskEdit.status = Status.Closed;
+        }
+        taskEdit.releaseId = this.releaseGroupname;
+        let patchDocument = compare(this.tasksToRelease[i], taskEdit);
+        this.taskService.UpdateTask(patchDocument, taskEdit.id).subscribe(response => {
+        },
+          error => this.alertService.showMessage(error, null, MessageSeverity.error));
+      }
+    }
+    this.alertService.showMessage(this.gT('toasts.saved'), `Release Note Generated, Tasks Archived!`, MessageSeverity.success);
+    this.deleteBtnState = ClrLoadingState.SUCCESS;
+    if (this.shouldArchive) {
+      this.popSelected(this.tasksToRelease);
+    }
+    this.releaseOpen = false;
   }
 
   private open() {

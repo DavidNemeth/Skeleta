@@ -2,7 +2,7 @@
   <progress></progress>
 </div>
 
-<form *ngIf="dataLoaded" class="clr-form card" autocomplete="off" [formGroup]="taskForm" (ngSubmit)="save()">
+<form *ngIf="dataLoaded" clrForm clrLayout="vertical" class="card" autocomplete="off" [formGroup]="taskForm" (ngSubmit)="save()">
   <div class="clr-row clr-justify-content-between rowwidthfix">
     <div style="margin-top: 0.2rem;" class="p8" *ngIf="isEdit">Created By: {{createdBy}} {{initialTask.createdDate | date}}</div>
     <div style="margin-top: 0.2rem;" class="p8" *ngIf="isEdit">Updated By: {{updatedBy}} {{initialTask.updatedDate | date}}</div>
@@ -68,16 +68,7 @@
   </div>
 </form>
 
-<clr-modal [(clrModalOpen)]="archiveOpen">
-  <h3 class="modal-title">Archive tasks</h3>
-  <div class="modal-body">
-    <p>Are you sure you want to archive all selected Tasks?</p>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-outline" (click)="archiveOpen = false">Cancel</button>
-    <button type="button" [clrLoading]="deleteBtnState" class="btn btn-danger" (click)="CloseTasks()">Archive</button>
-  </div>
-</clr-modal>
+
 
 <clr-modal [(clrModalOpen)]="completeOpen">
   <h3 class="modal-title">Complete task</h3>
@@ -101,14 +92,40 @@
   </div>
 </clr-modal>
 
-<clr-modal [(clrModalOpen)]="completeOpen">
-  <h3 class="modal-title">Generate Release note</h3>
+<clr-modal [(clrModalOpen)]="archiveOpen">
+  <h3 class="modal-title">Archive tasks</h3>
   <div class="modal-body">
-    <p>Please enter release note identification</p>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-outline" (click)="completeOpen = false">Cancel</button>
-    <button type="button" [clrLoading]="deleteBtnState" class="btn btn-primary" (click)="onRelease()">Save</button>
+    <form clrForm clrLayout="vertical">
+      <clr-input-container>
+        <label>Release Group</label>
+        <input name="releaseGroupname" type="text" clrInput placeholder="Release group name" [(ngModel)]="releaseGroupname" />
+      </clr-input-container>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" (click)="archiveOpen = false">Cancel</button>
+        <button type="button" [clrLoading]="deleteBtnState" class="btn btn-danger" (click)="CloseTasks()">Archive</button>
+      </div>
+    </form>
   </div>
 </clr-modal>
 
+<clr-modal [(clrModalOpen)]="releaseOpen">
+  <h3 class="modal-title">Generate Release note</h3>
+  <div class="modal-body">
+    <form clrForm clrLayout="vertical">
+      <clr-input-container>
+        <label>Release Group</label>
+        <input name="releaseGroupname" type="text" clrInput placeholder="Release group name" [(ngModel)]="releaseGroupname" />
+      </clr-input-container>
+      <clr-checkbox-container>
+        <clr-checkbox-wrapper>
+          <label>Archive Exported</label>
+          <input type="checkbox" name="shouldArchive" [checked]=true clrCheckbox [(ngModel)]="shouldArchive" />
+        </clr-checkbox-wrapper>
+      </clr-checkbox-container>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" (click)="releaseOpen = false">Cancel</button>
+        <button type="button" [clrLoading]="deleteBtnState" class="btn btn-primary" (click)="onRelease()">Release</button>
+      </div>
+    </form>
+  </div>
+</clr-modal>

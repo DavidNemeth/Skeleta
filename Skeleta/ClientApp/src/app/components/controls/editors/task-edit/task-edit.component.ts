@@ -33,7 +33,6 @@ export class TaskEditComponent implements OnInit {
   private archiveOpen = false;
   private resolveOpen = false;
   private completeOpen = false;
-
   private isNewTask = false;
   private allStatus = [...Object.keys(Status)];
   private allPriority = [...Object.keys(Priority)];
@@ -47,6 +46,8 @@ export class TaskEditComponent implements OnInit {
   private isOpen: boolean;
   createdBy: string;
   updatedBy: string;
+  releaseGroupname: string;
+  shouldArchive: boolean;
   taskForm: FormGroup;
   users: User[] = [];
   currentUser: User;
@@ -74,7 +75,7 @@ export class TaskEditComponent implements OnInit {
       title: ['', Validators.required],
       description: [''],
       priority: ['High', Validators.required],
-      status: [{ value: 'New', disabled: this.isEdit && !this.canSetStatus}, Validators.required],
+      status: [{ value: 'New', disabled: this.isEdit && !this.canSetStatus }, Validators.required],
       developerId: [this.currentUser.id],
       testerId: [this.currentUser.id]
     });
@@ -244,46 +245,38 @@ export class TaskEditComponent implements OnInit {
     this.archiveOpen = true;
   }
 
-  MarkRelease(tasks: TaskEdit[]) {
-    Object.assign(this.tasksToRelease, tasks);
-    this.completeOpen = true;
-  }
-
-  private onRelease(releaseId: string) {
+   private onRelease() {
     this.deleteBtnState = ClrLoadingState.LOADING;
     if (this.tasksToRelease) {
       for (var i = 0; i < this.tasksToRelease.length; i++) {
-        this.taskService.GetTask(this.tasksToRelease[i].id).subscribe(
-          editTask => {
-            Object.assign(this.initialTask, editTask);
-            editTask.status = Status.Closed;
-            editTask.releaseId = releaseId;
-            let patchDocument = compare(this.initialTask, editTask);
-            this.taskService.UpdateTask(patchDocument, editTask.id).subscribe(response => {
-            },
-              error => this.alertService.showMessage(error, null, MessageSeverity.error));
-          })
+        let taskEdit = new TaskEdit();
+        Object.assign(taskEdit, this.tasksToRelease[i]);
+        if (this.shouldArchive) {
+          taskEdit.status = Status.Closed;
+        }
+        taskEdit.releaseId = this.releaseGroupname;
+        let patchDocument = compare(this.tasksToRelease[i], taskEdit);
+        this.taskService.UpdateTask(patchDocument, taskEdit.id).subscribe(response => {
+        },
+          error => this.alertService.showMessage(error, null, MessageSeverity.error));
       }
-      this.alertService.showMessage(this.gT('toasts.saved'), `Release Note Generated, Tasks Archived!`, MessageSeverity.success);
-      this.deleteBtnState = ClrLoadingState.SUCCESS;
-      this.popSelected.emit(this.tasksToClose);
-      this.completeOpen = false;
     }
+    this.alertService.showMessage(this.gT('toasts.saved'), `Release Note Generated, Tasks Archived!`, MessageSeverity.success);
+    this.deleteBtnState = ClrLoadingState.SUCCESS;
   }
+
   private CloseTasks() {
     this.deleteBtnState = ClrLoadingState.LOADING;
-
     if (this.tasksToClose) {
       for (var i = 0; i < this.tasksToClose.length; i++) {
-        this.taskService.GetTask(this.tasksToClose[i].id).subscribe(
-          editTask => {
-            Object.assign(this.initialTask, editTask);
-            editTask.status = Status.Closed;
-            let patchDocument = compare(this.initialTask, editTask);
-            this.taskService.UpdateTask(patchDocument, editTask.id).subscribe(response => {
-            },
-              error => this.alertService.showMessage(error, null, MessageSeverity.error));
-          })
+        let taskEdit = new TaskEdit();
+        Object.assign(taskEdit, this.tasksToClose[i]);
+        taskEdit.releaseId = this.releaseGroupname;
+        taskEdit.status = Status.Closed;
+        let patchDocument = compare(this.tasksToClose[i], taskEdit);
+        this.taskService.UpdateTask(patchDocument, this.tasksToClose[i].id).subscribe(response => {
+        },
+          error => this.alertService.showMessage(error, null, MessageSeverity.error));
       }
       this.alertService.showMessage(this.gT('toasts.saved'), `Task(s) Archived!`, MessageSeverity.success);
       this.deleteBtnState = ClrLoadingState.SUCCESS;

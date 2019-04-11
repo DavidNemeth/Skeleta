@@ -16,6 +16,7 @@ namespace Skeleta.ViewModels.WorkItemViewModels
 		public string Priority { get; set; }
 		[Required(ErrorMessage = "Status is required")]
 		public string Status { get; set; }
+		public string ReleaseId { get; set; }
 
 		public string DeveloperId { get; set; }
 		public string TesterId { get; set; }

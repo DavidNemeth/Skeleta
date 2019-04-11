@@ -4,7 +4,7 @@
     <progress></progress>
   </div>
   <div class="modal-body">
-    <form *ngIf="dataLoaded" class="clr-form" autocomplete="off" [formGroup]="bugForm" (ngSubmit)="save()">
+    <form clrForm clrLayout="vertical" *ngIf="dataLoaded" autocomplete="off" [formGroup]="bugForm" (ngSubmit)="save()">
       <div style="box-shadow: inset 8px 0 0 #e12200;">
         <div style="margin-left:2rem; margin-right:2rem;">
           <div class="clr-row">
@@ -42,7 +42,6 @@
           </div>
         </div>
       </div>
-
       <div class="clr-form-control">
         <quill-editor [style]="{height: '240px'}" style="width: 100%;" formControlName="description"></quill-editor>
         <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>

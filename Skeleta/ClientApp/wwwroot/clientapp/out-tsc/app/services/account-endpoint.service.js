@@ -103,7 +103,7 @@ var AccountEndpoint = /** @class */ (function (_super) {
     };
     AccountEndpoint.prototype.getActiveUsersEndpoint = function (page, pageSize) {
         var _this = this;
-        var endpointUrl = page && pageSize ? this.activeUsersUrl + "/" + page + "/" + pageSize : this.usersUrl;
+        var endpointUrl = page && pageSize ? this.activeUsersUrl + "/" + page + "/" + pageSize : this.activeUsersUrl;
         return this.http.get(endpointUrl, this.getRequestHeaders()).pipe(operators_1.catchError(function (error) {
             return _this.handleError(error, function () { return _this.getActiveUsersEndpoint(page, pageSize); });
         }));

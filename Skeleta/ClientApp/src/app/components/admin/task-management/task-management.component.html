@@ -265,19 +265,11 @@
               <div style="margin-right: 0rem; margin-left: 0rem;" class="clr-row clr-justify-content-between">
                 <div class="btn-group btn-primary btn-sm">
                   <button type="button" class="btn" (click)="onAdd()"><clr-icon shape="plus"></clr-icon>{{'tasks.management.NewTask' | translate}}</button>
-                  <button type="button" class="btn" (click)="onClose(selected)" [disabled]="selected.length == 0"><clr-icon shape="archive" class="is-solid"></clr-icon>Archive Selected</button>
-                  <clr-dropdown>
-                    <button type="button" [disabled]="selected.length === 0" class="btn btn-success" clrDropdownTrigger>
-                      <clr-icon shape="note"></clr-icon>Generate Releasenote
-                      <clr-icon shape="caret down"></clr-icon>
-                    </button>
-                    <clr-dropdown-menu clrPosition="bottom-left" *clrIfOpen>
-                      <a (click)="onExportSelected(selected, 'excel')" href="" #excel download="Releasenote_{{curDate | date:'yyyy_MM_dd'}}.csv" clrDropdownItem>Excel</a>
-                      <a (click)="onExportSelected(selected, 'word')" href="" #word download="Releasenote_{{curDate | date:'yyyy_MM_dd'}}.doc" clrDropdownItem>Word</a>
-                      <a (click)="onExportSelected(selected, 'pdf')" href="" #pdf download="Releasenote_{{curDate | date:'yyyy_MM_dd'}}.pdf" clrDropdownItem>Pdf</a>
-                    </clr-dropdown-menu>
-                  </clr-dropdown>
-
+                  <button type="button" class="btn" (click)="onClose(selected)"><clr-icon shape="archive" class="is-solid"></clr-icon>Archive Selected</button>
+                  <a (click)="onExportSelected(selected)" #word download="Releasenote_{{curDate | date:'yyyy_MM_dd'}}.doc" class="btn btn-primary">
+                    <clr-icon shape="note"></clr-icon>
+                    Generate Releasenote
+                  </a>
                 </div>
                 <div class="btn-group">
                   <app-search-box (searchChange)="onSearchChanged($event)" placeholder="{{'tasks.management.Search' | translate}}"></app-search-box>
@@ -375,12 +367,18 @@
               </ng-container>
             </clr-dg-column>
 
+            <clr-dg-column [clrDgField]="'releaseId'">
+              <ng-container *clrDgHideableColumn="{hidden: false}">
+                Release Group
+              </ng-container>
+            </clr-dg-column>
+            <clr-dg-placeholder>Skeleta Task Sysyem</clr-dg-placeholder>
+
             <clr-dg-column [clrDgField]="'status'">
               <ng-container *clrDgHideableColumn="{hidden: false}">
                 {{'tasks.management.Status' | translate}}
               </ng-container>
             </clr-dg-column>
-            <clr-dg-placeholder>Skeleta Task Sysyem</clr-dg-placeholder>
 
             <clr-dg-row *clrDgItems="let task of archivedTasks" [clrDgItem]="task">
               <clr-dg-cell>
@@ -390,7 +388,9 @@
               <clr-dg-cell>
                 <a href="javascript:void(0)" (click)="onEdit(task)">{{task.title}} </a>
               </clr-dg-cell>
-
+              <clr-dg-cell>
+                <a href="javascript:void(0)" (click)="onEdit(task)">{{task.releaseId}} </a>
+              </clr-dg-cell>
               <clr-dg-cell>
                 <clr-icon *ngIf="task.status == 'New'" shape="circle" size="12" class="is-inverse is-solid"></clr-icon>
                 <clr-icon *ngIf="task.status == 'Active'" shape="circle" size="12" class="is-solid is-highlight"></clr-icon>
@@ -417,24 +417,24 @@
   </clr-tabs>
 </div>
 
-<clr-modal [(clrModalOpen)]="completeOpen">
-  <h3 class="modal-title">Complete task</h3>
+<clr-modal [(clrModalOpen)]="releaseOpen">
+  <h3 class="modal-title">Generate Release note</h3>
   <div class="modal-body">
-    <p>Are you sure the task is properly tested, and ready to be released?</p>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-outline" (click)="completeOpen = false">No</button>
-    <button type="button" [clrLoading]="deleteBtnState" class="btn btn-danger" (click)="onCompleted(task)">Yes</button>
-  </div>
-</clr-modal>
-
-<clr-modal [(clrModalOpen)]="resolvedOpen">
-  <h3 class="modal-title">Resolve task</h3>
-  <div class="modal-body">
-    <p>Are you sure the task is merged, and ready to be tested?</p>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-outline" (click)="resolvedOpen = false">No</button>
-    <button type="button" [clrLoading]="deleteBtnState" class="btn btn-danger" (click)="onResolved(task)">Yes</button>
+    <form clrForm clrLayout="vertical">
+      <clr-input-container>
+        <label>Release Group</label>
+        <input name="releaseGroupname" type="text" clrInput placeholder="Release group name" [(ngModel)]="releaseGroupname" />
+      </clr-input-container>
+      <clr-checkbox-container>
+        <clr-checkbox-wrapper>
+          <label>Archive Exported</label>
+          <input type="checkbox" name="shouldArchive" [checked]=true clrCheckbox [(ngModel)]="shouldArchive" />
+        </clr-checkbox-wrapper>
+      </clr-checkbox-container>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" (click)="releaseOpen = false">Cancel</button>
+        <button type="button" [clrLoading]="deleteBtnState" class="btn btn-primary" (click)="onRelease()">Release</button>
+      </div>
+    </form>
   </div>
 </clr-modal>
