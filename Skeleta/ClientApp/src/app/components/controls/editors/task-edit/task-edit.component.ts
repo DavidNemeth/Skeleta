@@ -41,6 +41,7 @@ export class TaskEditComponent implements OnInit {
   taskEdit: TaskEdit = new TaskEdit();
   private tasksToDelete: TaskEdit[] = [];
   private tasksToClose: TaskEdit[] = [];
+  private tasksToRelease: TaskEdit[] = [];
   private taskToUpdate: TaskEdit = new TaskEdit();
   private dataLoaded: boolean = false;
   private isOpen: boolean;
@@ -243,6 +244,32 @@ export class TaskEditComponent implements OnInit {
     this.archiveOpen = true;
   }
 
+  MarkRelease(tasks: TaskEdit[]) {
+    Object.assign(this.tasksToRelease, tasks);
+    this.completeOpen = true;
+  }
+
+  private onRelease(releaseId: string) {
+    this.deleteBtnState = ClrLoadingState.LOADING;
+    if (this.tasksToRelease) {
+      for (var i = 0; i < this.tasksToRelease.length; i++) {
+        this.taskService.GetTask(this.tasksToRelease[i].id).subscribe(
+          editTask => {
+            Object.assign(this.initialTask, editTask);
+            editTask.status = Status.Closed;
+            editTask.releaseId = releaseId;
+            let patchDocument = compare(this.initialTask, editTask);
+            this.taskService.UpdateTask(patchDocument, editTask.id).subscribe(response => {
+            },
+              error => this.alertService.showMessage(error, null, MessageSeverity.error));
+          })
+      }
+      this.alertService.showMessage(this.gT('toasts.saved'), `Release Note Generated, Tasks Archived!`, MessageSeverity.success);
+      this.deleteBtnState = ClrLoadingState.SUCCESS;
+      this.popSelected.emit(this.tasksToClose);
+      this.completeOpen = false;
+    }
+  }
   private CloseTasks() {
     this.deleteBtnState = ClrLoadingState.LOADING;
 

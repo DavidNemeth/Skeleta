@@ -100,3 +100,15 @@
     <button type="button" [clrLoading]="deleteBtnState" class="btn btn-primary" (click)="onResolved(task)">Yes</button>
   </div>
 </clr-modal>
+
+<clr-modal [(clrModalOpen)]="completeOpen">
+  <h3 class="modal-title">Generate Release note</h3>
+  <div class="modal-body">
+    <p>Please enter release note identification</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline" (click)="completeOpen = false">Cancel</button>
+    <button type="button" [clrLoading]="deleteBtnState" class="btn btn-primary" (click)="onRelease()">Save</button>
+  </div>
+</clr-modal>
+

@@ -3,17 +3,19 @@ import { Priority, Status } from "../../models/enum";
 import { BugItem } from "../bugItems/bugItem.model";
 
 abstract class Task {
-  constructor(id?: number, title?: string,
+  constructor(id?: number, title?: string, releaseId?,
     priority?: Priority, status?: Status) {
 
     this.id = id;
     this.title = title;
+    this.releaseId = releaseId;
     this.priority = priority;
     this.status = status;
   }
 
   public id: number;
   public title: string;
+  public releaseId: string;
   public priority: Priority;
   public status: Status;
 }
