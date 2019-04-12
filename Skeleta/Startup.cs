@@ -17,7 +17,6 @@ using Microsoft.Extensions.Logging;
 using OpenIddict.Abstractions;
 using Skeleta.Authorization;
 using Skeleta.Helpers;
-using Skeleta.Services;
 using Skeleta.Services.WorkItemServices;
 using Skeleta.ViewModels;
 using Swashbuckle.AspNetCore.Swagger;

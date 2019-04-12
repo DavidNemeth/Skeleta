@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
-using DAL;
+﻿using AutoMapper;
 using DAL.Core;
 using DAL.Models;
 using DAL.Models.TaskModel;
 using Microsoft.AspNetCore.Identity;
 using Skeleta.ViewModels.UserViewModels;
 using Skeleta.ViewModels.WorkItemViewModels;
+using System.Linq;
 
 namespace Skeleta.ViewModels
 {
@@ -48,12 +43,12 @@ namespace Skeleta.ViewModels
 				.ConvertUsing(s => Mapper.Map<PermissionViewModel>(ApplicationPermissions.GetPermissionByValue(s.ClaimValue)));
 
 			CreateMap<TaskItem, TaskListViewModel>()
-				.ForMember(t => t.OpenBugcount, map => map.MapFrom(t => t.BugItems.Where(b=>b.Status == Status.New || b.Status == Status.Active).Count()))
+				.ForMember(t => t.OpenBugcount, map => map.MapFrom(t => t.BugItems.Where(b => b.Status == Status.New || b.Status == Status.Active).Count()))
 				.ForMember(t => t.ResolvedBugcount, map => map.MapFrom(t => t.BugItems.Where(b => b.Status == Status.Resolved).Count()));
 
 
 			CreateMap<TaskItem, TaskItemViewModel>()
-				.ForMember(d => d.BugItems, map => map.MapFrom(s => s.BugItems.Where(x=>x.Status != Status.Closed)));
+				.ForMember(d => d.BugItems, map => map.MapFrom(s => s.BugItems.Where(x => x.Status != Status.Closed)));
 
 			CreateMap<TaskItem, ExpandedItemViewModel>();
 

@@ -1,18 +1,15 @@
 ﻿using AspNet.Security.OpenIdConnect.Primitives;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Skeleta.Helpers
 {
 	public class Utilities
 	{
-		static ILoggerFactory _loggerFactory;
+		private static ILoggerFactory _loggerFactory;
 
 
 		public static void ConfigureLogger(ILoggerFactory loggerFactory)
@@ -38,7 +35,9 @@ namespace Skeleta.Helpers
 			string dirPath = Path.GetDirectoryName(filename);
 
 			if (!Directory.Exists(dirPath))
+			{
 				Directory.CreateDirectory(dirPath);
+			}
 
 			using (StreamWriter writer = File.AppendText(filename))
 			{

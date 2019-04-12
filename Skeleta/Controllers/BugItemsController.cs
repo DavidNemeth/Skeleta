@@ -1,30 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using DAL;
+﻿using AutoMapper;
+using DAL.Models;
 using DAL.Models.TaskModel;
-using Skeleta.Services.WorkItemServices;
-using DAL.Core.Interfaces;
-using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authorization;
-using Skeleta.ViewModels.WorkItemViewModels;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using OpenIddict.Validation;
 using Skeleta.Authorization;
-using AutoMapper;
-using Microsoft.AspNetCore.Identity;
-using DAL.Models;
+using Skeleta.Services.WorkItemServices;
+using Skeleta.ViewModels.WorkItemViewModels;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Skeleta.Controllers
 {
 	[Authorize(AuthenticationSchemes = OpenIddictValidationDefaults.AuthenticationScheme)]
 	[Route("api/[controller]")]
-    public class BugItemsController : Controller
+	public class BugItemsController : Controller
 	{
-		private IBugItemService _bugitemService;
+		private readonly IBugItemService _bugitemService;
 		private readonly UserManager<ApplicationUser> _userManager;
 		private readonly IAuthorizationService _authorizationService;
 
@@ -49,8 +43,10 @@ namespace Skeleta.Controllers
 		[ProducesResponseType(200, Type = typeof(IEnumerable<BugitemListViewModel>))]
 		public async Task<IActionResult> GetPending(int? taskid)
 		{
-			if (!(await _authorizationService.AuthorizeAsync(this.User, "", TaskManagementOperations.Read)).Succeeded)
+			if (!(await _authorizationService.AuthorizeAsync(User, "", TaskManagementOperations.Read)).Succeeded)
+			{
 				return new ChallengeResult();
+			}
 
 			return Ok(await _bugitemService.GetAllPendingBug(taskid));
 		}
@@ -76,7 +72,7 @@ namespace Skeleta.Controllers
 		[ProducesResponseType(200, Type = typeof(BugItemViewModel))]
 		public async Task<IActionResult> Get(int id)
 		{
-			var bugitemVM = await _bugitemService.GetVMById(id);
+			BugItemViewModel bugitemVM = await _bugitemService.GetVMById(id);
 			return Ok(bugitemVM);
 		}
 
@@ -90,9 +86,11 @@ namespace Skeleta.Controllers
 			if (ModelState.IsValid)
 			{
 				if (bugitemVM == null)
+				{
 					return BadRequest($"{nameof(bugitemVM)} cannot be null");
+				}
 
-				var bugItem = Mapper.Map<BugItem>(bugitemVM);
+				BugItem bugItem = Mapper.Map<BugItem>(bugitemVM);
 				AuditEntity(ref bugItem);
 				_bugitemService.Add(bugItem);
 				await _bugitemService.SaveChangesAsync();
@@ -115,12 +113,16 @@ namespace Skeleta.Controllers
 			if (ModelState.IsValid)
 			{
 				if (viewmodel == null)
+				{
 					return BadRequest($"{nameof(viewmodel)} cannot be null");
+				}
 
-				BugItem bugItem =await _bugitemService.GetById(id);
+				BugItem bugItem = await _bugitemService.GetById(id);
 
 				if (bugItem == null)
+				{
 					return NotFound(id);
+				}
 
 				Mapper.Map(viewmodel, bugItem);
 				AuditEntity(ref bugItem);
@@ -144,7 +146,9 @@ namespace Skeleta.Controllers
 		{
 			BugItem bugItem = await _bugitemService.GetById(id);
 			if (bugItem == null)
+			{
 				return NotFound(id);
+			}
 
 			_bugitemService.Remove(bugItem);
 			await _bugitemService.SaveChangesAsync();
@@ -165,7 +169,7 @@ namespace Skeleta.Controllers
 
 		private void AuditEntity(ref BugItem item)
 		{
-			var date = DateTime.Now;
+			DateTime date = DateTime.Now;
 			if (item.CreatedBy == null)
 			{
 				item.CreatedBy = _userManager.GetUserId(User);

@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Skeleta.ViewModels.WorkItemViewModels
+﻿namespace Skeleta.ViewModels.WorkItemViewModels
 {
-    public class ExpandedItemViewModel
-    {
+	public class ExpandedItemViewModel
+	{
 		public int Id { get; set; }
 		public string Description { get; set; }
 	}

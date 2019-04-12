@@ -12,7 +12,7 @@ namespace Skeleta.Services.WorkItemServices
 {
 	public class BugItemService : IBugItemService
 	{
-		private ApplicationDbContext _context;
+		private readonly ApplicationDbContext _context;
 		public BugItemService(ApplicationDbContext context)
 		{
 			_context = context;
@@ -35,15 +35,15 @@ namespace Skeleta.Services.WorkItemServices
 
 		public void RemoveRange(int[] ids)
 		{
-			var bugItemIds = _context.BugItems.Select(b => b.Id);
-			var bugitems = _context.BugItems.Where(t => bugItemIds.Contains(t.Id));
+			IQueryable<int> bugItemIds = _context.BugItems.Select(b => b.Id);
+			IQueryable<BugItem> bugitems = _context.BugItems.Where(t => bugItemIds.Contains(t.Id));
 			_context.BugItems.RemoveRange(bugitems);
 		}
 
 		public async Task<IEnumerable<BugitemListViewModel>> GetAllBug(int? taskid)
 		{
 
-			var query = _context.BugItems
+			IQueryable<BugItem> query = _context.BugItems
 				.Where(b => b.Status != Status.Closed);
 
 			query = taskid != null ? query.Where(x => x.TaskItemId == taskid) : query;
@@ -54,7 +54,7 @@ namespace Skeleta.Services.WorkItemServices
 
 		public async Task<IEnumerable<BugitemListViewModel>> GetAllClosedBug(int? taskid)
 		{
-			var query = _context.BugItems
+			IQueryable<BugItem> query = _context.BugItems
 				.Where(b => b.Status == Status.Closed);
 
 			query = taskid != null ? query.Where(x => x.TaskItemId == taskid) : query;
@@ -65,7 +65,7 @@ namespace Skeleta.Services.WorkItemServices
 
 		public async Task<IEnumerable<BugitemListViewModel>> GetAllPendingBug(int? taskid)
 		{
-			var query = _context.BugItems
+			IQueryable<BugItem> query = _context.BugItems
 					.Where(t => t.Status == Status.New || t.Status == Status.Active);
 
 			query = taskid != null ? query.Where(x => x.TaskItemId == taskid) : query;
@@ -76,7 +76,7 @@ namespace Skeleta.Services.WorkItemServices
 
 		public async Task<IEnumerable<BugitemListViewModel>> GetAllResolvedBug(int? taskid)
 		{
-			var query = _context.BugItems
+			IQueryable<BugItem> query = _context.BugItems
 				.Where(t => t.Status == Status.Resolved);
 
 			query = taskid != null ? query.Where(x => x.TaskItemId == taskid) : query;
@@ -87,7 +87,7 @@ namespace Skeleta.Services.WorkItemServices
 
 		public async Task<BugItemViewModel> GetVMById(int id)
 		{
-			var query = _context.BugItems
+			IQueryable<BugItem> query = _context.BugItems
 			.Where(x => x.Id == id);
 
 			return await query

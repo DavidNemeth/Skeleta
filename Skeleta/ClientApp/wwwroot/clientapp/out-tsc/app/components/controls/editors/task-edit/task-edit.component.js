@@ -211,20 +211,17 @@ var TaskEditComponent = /** @class */ (function () {
         Object.assign(this.tasksToClose, tasks);
         this.archiveOpen = true;
     };
-    TaskEditComponent.prototype.MarkRelease = function (tasks) {
-        Object.assign(this.tasksToRelease, tasks);
-        this.completeOpen = true;
-    };
-    TaskEditComponent.prototype.onRelease = function (releaseId) {
+    TaskEditComponent.prototype.onRelease = function () {
         var _this = this;
-        releaseId = "test release";
         this.deleteBtnState = angular_1.ClrLoadingState.LOADING;
         if (this.tasksToRelease) {
             for (var i = 0; i < this.tasksToRelease.length; i++) {
                 var taskEdit = new task_model_1.TaskEdit();
                 Object.assign(taskEdit, this.tasksToRelease[i]);
-                taskEdit.status = enum_1.Status.Closed;
-                taskEdit.releaseId = releaseId;
+                if (this.shouldArchive) {
+                    taskEdit.status = enum_1.Status.Closed;
+                }
+                taskEdit.releaseId = this.releaseGroupname;
                 var patchDocument = fast_json_patch_1.compare(this.tasksToRelease[i], taskEdit);
                 this.taskService.UpdateTask(patchDocument, taskEdit.id).subscribe(function (response) {
                 }, function (error) { return _this.alertService.showMessage(error, null, alert_service_1.MessageSeverity.error); });
@@ -232,8 +229,6 @@ var TaskEditComponent = /** @class */ (function () {
         }
         this.alertService.showMessage(this.gT('toasts.saved'), "Release Note Generated, Tasks Archived!", alert_service_1.MessageSeverity.success);
         this.deleteBtnState = angular_1.ClrLoadingState.SUCCESS;
-        this.popSelected.emit(this.tasksToRelease);
-        this.completeOpen = false;
     };
     TaskEditComponent.prototype.CloseTasks = function () {
         var _this = this;
@@ -242,7 +237,7 @@ var TaskEditComponent = /** @class */ (function () {
             for (var i = 0; i < this.tasksToClose.length; i++) {
                 var taskEdit = new task_model_1.TaskEdit();
                 Object.assign(taskEdit, this.tasksToClose[i]);
-                taskEdit.releaseId = "test release";
+                taskEdit.releaseId = this.releaseGroupname;
                 taskEdit.status = enum_1.Status.Closed;
                 var patchDocument = fast_json_patch_1.compare(this.tasksToClose[i], taskEdit);
                 this.taskService.UpdateTask(patchDocument, this.tasksToClose[i].id).subscribe(function (response) {

@@ -1,15 +1,10 @@
 ﻿using Skeleta.ViewModels.UserViewModels;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Skeleta.ViewModels.WorkItemViewModels
 {
-    public class BugItemViewModel
-    {
+	public class BugItemViewModel
+	{
 		public int Id { get; set; }
 
 		[Required(ErrorMessage = "Title is required"), StringLength(200, MinimumLength = 2, ErrorMessage = "Title must be between 2 and 200 characters")]

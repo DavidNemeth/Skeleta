@@ -19,7 +19,7 @@ namespace Skeleta.Controllers
 	[Route("api/[controller]")]
 	public class TasksController : Controller
 	{
-		private ITaskService _taskService;
+		private readonly ITaskService _taskService;
 		private readonly IAuthorizationService authorizationService;
 		private readonly UserManager<ApplicationUser> _userManager;
 
@@ -41,13 +41,15 @@ namespace Skeleta.Controllers
 		// GET: api/values
 		[HttpGet("pending")]
 		[Authorize(Authorization.Policies.ViewAllTasksPolicy)]
-		[ProducesResponseType(200, Type = typeof(IEnumerable<TaskListViewModel>))]		
+		[ProducesResponseType(200, Type = typeof(IEnumerable<TaskListViewModel>))]
 		public async Task<IActionResult> GetPending()
 		{
-			if (!(await authorizationService.AuthorizeAsync(this.User, "", TaskManagementOperations.Read)).Succeeded)
+			if (!(await authorizationService.AuthorizeAsync(User, "", TaskManagementOperations.Read)).Succeeded)
+			{
 				return new ChallengeResult();
+			}
 
-			var pendingTasks = await _taskService.GetAllPendingTask();
+			IEnumerable<TaskListViewModel> pendingTasks = await _taskService.GetAllPendingTask();
 			return Ok(pendingTasks);
 		}
 
@@ -56,7 +58,7 @@ namespace Skeleta.Controllers
 		[ProducesResponseType(200, Type = typeof(IEnumerable<TaskListViewModel>))]
 		public async Task<IActionResult> GetClosed()
 		{
-			var closedTasks = await _taskService.GetAllClosedTask();
+			IEnumerable<TaskListViewModel> closedTasks = await _taskService.GetAllClosedTask();
 			return Ok(closedTasks);
 		}
 
@@ -65,7 +67,7 @@ namespace Skeleta.Controllers
 		[ProducesResponseType(200, Type = typeof(IEnumerable<TaskListViewModel>))]
 		public async Task<IActionResult> GetCompleted()
 		{
-			var completedTasks = await _taskService.GetAllCompletedTask();
+			IEnumerable<TaskListViewModel> completedTasks = await _taskService.GetAllCompletedTask();
 			return Ok(completedTasks);
 		}
 
@@ -74,7 +76,7 @@ namespace Skeleta.Controllers
 		[ProducesResponseType(200, Type = typeof(IEnumerable<TaskListViewModel>))]
 		public async Task<IActionResult> GetResolved()
 		{
-			var resolvedTasks = await _taskService.GetAllResolvedTask();
+			IEnumerable<TaskListViewModel> resolvedTasks = await _taskService.GetAllResolvedTask();
 			return Ok(resolvedTasks);
 		}
 
@@ -83,7 +85,7 @@ namespace Skeleta.Controllers
 		[ProducesResponseType(200, Type = typeof(TaskItemViewModel))]
 		public async Task<IActionResult> Get(int id)
 		{
-			var viewmodel = await _taskService.GetVMById(id);
+			TaskItemViewModel viewmodel = await _taskService.GetVMById(id);
 			return Ok(viewmodel);
 		}
 
@@ -92,7 +94,7 @@ namespace Skeleta.Controllers
 		[ProducesResponseType(200)]
 		public async Task<IActionResult> GetExpanded(int id)
 		{
-			var expandTask = await _taskService.GetExpandItem(id);
+			ExpandedItemViewModel expandTask = await _taskService.GetExpandItem(id);
 			return Ok(expandTask);
 		}
 
@@ -104,9 +106,11 @@ namespace Skeleta.Controllers
 			if (ModelState.IsValid)
 			{
 				if (viewmodel == null)
+				{
 					return BadRequest($"{nameof(viewmodel)} cannot be null");
+				}
 
-				var taskItem = Mapper.Map<TaskItem>(viewmodel);
+				TaskItem taskItem = Mapper.Map<TaskItem>(viewmodel);
 				AuditEntity(ref taskItem);
 				_taskService.Add(taskItem);
 				await _taskService.SaveChangesAsync();
@@ -140,7 +144,7 @@ namespace Skeleta.Controllers
 					return NotFound(id);
 				}
 
-				var taskItemPatch = Mapper.Map<TaskItemViewModel>(taskItem);
+				TaskItemViewModel taskItemPatch = Mapper.Map<TaskItemViewModel>(taskItem);
 
 				jsonPatchDocument.ApplyTo(taskItemPatch);
 
@@ -151,7 +155,7 @@ namespace Skeleta.Controllers
 
 				return Ok(taskItem);
 			}
-		
+
 			return BadRequest(ModelState);
 		}
 
@@ -166,7 +170,9 @@ namespace Skeleta.Controllers
 		{
 			TaskItem taskItem = await _taskService.GetById(id);
 			if (taskItem == null)
+			{
 				return NotFound(id);
+			}
 
 			_taskService.Remove(taskItem);
 			await _taskService.SaveChangesAsync();
@@ -188,7 +194,7 @@ namespace Skeleta.Controllers
 
 		private void AuditEntity(ref TaskItem item)
 		{
-			var date = DateTime.Now;
+			DateTime date = DateTime.Now;
 			if (item.CreatedBy == null)
 			{
 				item.CreatedBy = _userManager.GetUserId(User);

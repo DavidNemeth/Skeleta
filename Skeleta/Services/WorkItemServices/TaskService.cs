@@ -1,21 +1,19 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using AutoMapper.QueryableExtensions;
 using DAL;
-using System.Linq;
 using DAL.Core;
-using AutoMapper.QueryableExtensions;
+using DAL.Models.TaskModel;
 using Microsoft.EntityFrameworkCore;
 using Skeleta.ViewModels.WorkItemViewModels;
-using DAL.Models.TaskModel;
 using System;
-using Microsoft.AspNetCore.Identity;
-using DAL.Models;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Skeleta.Services.WorkItemServices
 {
 	public class TaskService : ITaskService
 	{
-		private ApplicationDbContext _context;
+		private readonly ApplicationDbContext _context;
 
 		public TaskService(ApplicationDbContext context)
 		{
@@ -39,15 +37,15 @@ namespace Skeleta.Services.WorkItemServices
 
 		public void RemoveRange(int[] ids)
 		{
-			var taskItemIds = _context.TaskItems.Select(t => t.Id);
-			var taskitems = _context.TaskItems.Where(t => taskItemIds.Contains(t.Id));
+			IQueryable<int> taskItemIds = _context.TaskItems.Select(t => t.Id);
+			IQueryable<TaskItem> taskitems = _context.TaskItems.Where(t => taskItemIds.Contains(t.Id));
 			_context.TaskItems.RemoveRange(taskitems);
 		}
 
 		public async Task<IEnumerable<TaskListViewModel>> GetAllClosedTask()
 		{
-			var query = _context.TaskItems
-				.Where(t => t.Status == Status.Closed).OrderByDescending(x=>x.UpdatedDate);
+			IOrderedQueryable<TaskItem> query = _context.TaskItems
+				.Where(t => t.Status == Status.Closed).OrderByDescending(x => x.UpdatedDate);
 
 			return await query
 				.ProjectTo<TaskListViewModel>().ToListAsync();
@@ -55,7 +53,7 @@ namespace Skeleta.Services.WorkItemServices
 
 		public async Task<IEnumerable<TaskListViewModel>> GetAllCompletedTask()
 		{
-			var query = _context.TaskItems
+			IOrderedQueryable<TaskItem> query = _context.TaskItems
 				.Where(t => t.Status == Status.Completed).OrderByDescending(x => x.UpdatedDate);
 
 			return await query
@@ -64,7 +62,7 @@ namespace Skeleta.Services.WorkItemServices
 
 		public async Task<IEnumerable<TaskListViewModel>> GetAllPendingTask()
 		{
-			var query = _context.TaskItems
+			IOrderedQueryable<TaskItem> query = _context.TaskItems
 				.Where(t => t.Status == Status.New || t.Status == Status.Active).OrderByDescending(x => x.UpdatedDate);
 
 			return await query
@@ -73,7 +71,7 @@ namespace Skeleta.Services.WorkItemServices
 
 		public async Task<IEnumerable<TaskListViewModel>> GetAllResolvedTask()
 		{
-			var query = _context.TaskItems
+			IOrderedQueryable<TaskItem> query = _context.TaskItems
 				.Where(t => t.Status == Status.Resolved).OrderByDescending(x => x.UpdatedDate);
 
 			return await query
@@ -82,16 +80,16 @@ namespace Skeleta.Services.WorkItemServices
 
 		public async Task<IEnumerable<TaskListViewModel>> GetAllTask()
 		{
-			var query = _context.TaskItems
+			IOrderedQueryable<TaskItem> query = _context.TaskItems
 				.Where(t => t.Status != Status.Closed).OrderByDescending(x => x.UpdatedDate);
 
 			return await query
 				.ProjectTo<TaskListViewModel>().ToListAsync();
 		}
 
-		public async Task <TaskItemViewModel> GetVMById(int id)
+		public async Task<TaskItemViewModel> GetVMById(int id)
 		{
-			var query = _context.TaskItems
+			IQueryable<TaskItem> query = _context.TaskItems
 				.Where(x => x.Id == id);
 
 			return await query
@@ -106,7 +104,7 @@ namespace Skeleta.Services.WorkItemServices
 
 		public async Task<ExpandedItemViewModel> GetExpandItem(int id)
 		{
-			var query = _context.TaskItems
+			IQueryable<TaskItem> query = _context.TaskItems
 				.Where(x => x.Id == id);
 
 			return await query

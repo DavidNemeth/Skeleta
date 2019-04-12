@@ -19,7 +19,7 @@ namespace Skeleta
 				.AddJsonFile("appsettings.Development.json", optional: true)
 				.Build();
 
-			var builder = new DbContextOptionsBuilder<ApplicationDbContext>();
+			DbContextOptionsBuilder<ApplicationDbContext> builder = new DbContextOptionsBuilder<ApplicationDbContext>();
 
 			builder.UseSqlServer(configuration["ConnectionStrings:DefaultConnection"], b => b.MigrationsAssembly("Skeleta"));
 			builder.UseOpenIddict();

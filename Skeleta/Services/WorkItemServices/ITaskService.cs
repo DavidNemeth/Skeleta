@@ -1,13 +1,12 @@
 ﻿using DAL.Models.TaskModel;
 using Skeleta.ViewModels.WorkItemViewModels;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Skeleta.Services.WorkItemServices
 {
 	public interface ITaskService
-    {
+	{
 		Task<IEnumerable<TaskListViewModel>> GetAllTask();
 		Task<IEnumerable<TaskListViewModel>> GetAllPendingTask();
 		Task<IEnumerable<TaskListViewModel>> GetAllResolvedTask();

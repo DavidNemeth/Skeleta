@@ -29,18 +29,21 @@ namespace Skeleta.Helpers
 		public override bool IsValid(object value)
 		{
 			if (value == null)
+			{
 				return !_required;
+			}
 
-
-			var stringList = value as ICollection<string>;
+			ICollection<string> stringList = value as ICollection<string>;
 			if (!_allowEmptyStringValues && stringList != null)
+			{
 				return stringList.Count(s => !string.IsNullOrWhiteSpace(s)) >= _minCount;
+			}
 
-
-			var list = value as ICollection;
+			ICollection list = value as ICollection;
 			if (list != null)
+			{
 				return list.Count >= _minCount;
-
+			}
 
 			return false;
 		}
@@ -48,7 +51,7 @@ namespace Skeleta.Helpers
 
 		public override string FormatErrorMessage(string name)
 		{
-			return String.Format(this.ErrorMessageString, name, _minCount);
+			return string.Format(ErrorMessageString, name, _minCount);
 		}
 	}
 }

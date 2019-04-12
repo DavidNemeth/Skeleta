@@ -267,7 +267,7 @@
                   <button type="button" class="btn" (click)="onAdd()"><clr-icon shape="plus"></clr-icon>{{'tasks.management.NewTask' | translate}}</button>
                   <button type="button" class="btn" (click)="onClose(selected)"><clr-icon shape="archive" class="is-solid"></clr-icon>Archive Selected</button>
                   <a (click)="onExportSelected(selected)" class="btn btn-primary">
-                    <clr-icon shape="note"></clr-icon>
+                    <clr-icon shape="download"></clr-icon>
                     Generate Releasenote
                   </a>
                 </div>
@@ -292,7 +292,7 @@
                 {{'tasks.management.Status' | translate}}
               </ng-container>
             </clr-dg-column>
-            <clr-dg-placeholder>Skeleta Task Sysyem</clr-dg-placeholder>
+            <clr-dg-placeholder>Skeleta System</clr-dg-placeholder>
 
             <clr-dg-row *clrDgItems="let task of completedTasks" [clrDgItem]="task">
               <clr-dg-cell>
@@ -361,7 +361,7 @@
             </clr-dg-column>
 
 
-            <clr-dg-placeholder>Skeleta Task Sysyem</clr-dg-placeholder>
+            <clr-dg-placeholder>Skeleta System</clr-dg-placeholder>
 
             <clr-dg-column [clrDgField]="'status'">
               <ng-container *clrDgHideableColumn="{hidden: false}">

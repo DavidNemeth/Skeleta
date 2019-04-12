@@ -1,11 +1,11 @@
 ﻿using MailKit.Net.Smtp;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using MimeKit;
 using System;
-using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
-using System.Security.Cryptography.X509Certificates;
 using System.Net.Security;
-using Microsoft.Extensions.Options;
+using System.Security.Cryptography.X509Certificates;
+using System.Threading.Tasks;
 
 namespace Skeleta.Helpers
 {
@@ -18,7 +18,7 @@ namespace Skeleta.Helpers
 
 	public class EmailSender : IEmailSender
 	{
-		private SmtpConfig _config;
+		private readonly SmtpConfig _config;
 
 
 		public EmailSender(IOptions<SmtpConfig> config)
@@ -35,8 +35,8 @@ namespace Skeleta.Helpers
 			SmtpConfig config = null,
 			bool isHtml = true)
 		{
-			var from = new MailboxAddress(_config.Name, _config.EmailAddress);
-			var to = new MailboxAddress(recepientName, recepientEmail);
+			MailboxAddress from = new MailboxAddress(_config.Name, _config.EmailAddress);
+			MailboxAddress to = new MailboxAddress(recepientName, recepientEmail);
 
 			return await SendEmailAsync(from, new MailboxAddress[] { to }, subject, body, config, isHtml);
 		}
@@ -53,8 +53,8 @@ namespace Skeleta.Helpers
 			SmtpConfig config = null,
 			bool isHtml = true)
 		{
-			var from = new MailboxAddress(senderName, senderEmail);
-			var to = new MailboxAddress(recepientName, recepientEmail);
+			MailboxAddress from = new MailboxAddress(senderName, senderEmail);
+			MailboxAddress to = new MailboxAddress(recepientName, recepientEmail);
 
 			return await SendEmailAsync(from, new MailboxAddress[] { to }, subject, body, config, isHtml);
 		}
@@ -79,18 +79,24 @@ namespace Skeleta.Helpers
 			try
 			{
 				if (config == null)
+				{
 					config = _config;
+				}
 
-				using (var client = new SmtpClient())
+				using (SmtpClient client = new SmtpClient())
 				{
 					if (!config.UseSSL)
+					{
 						client.ServerCertificateValidationCallback = (object sender2, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) => true;
+					}
 
 					await client.ConnectAsync(config.Host, config.Port, config.UseSSL).ConfigureAwait(false);
 					client.AuthenticationMechanisms.Remove("XOAUTH2");
 
 					if (!string.IsNullOrWhiteSpace(config.Username))
+					{
 						await client.AuthenticateAsync(config.Username, config.Password).ConfigureAwait(false);
+					}
 
 					await client.SendAsync(message).ConfigureAwait(false);
 					await client.DisconnectAsync(true).ConfigureAwait(false);
