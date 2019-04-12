@@ -405,25 +405,3 @@
     </clr-tab>
   </clr-tabs>
 </div>
-
-<clr-modal [(clrModalOpen)]="releaseOpen">
-  <h3 class="modal-title">Generate Release note</h3>
-  <div class="modal-body">
-    <form clrForm clrLayout="vertical">
-      <clr-input-container>
-        <label>Release Id</label>
-        <input name="releaseGroupname" type="text" clrInput placeholder="Release Id name" [(ngModel)]="releaseGroupname" />
-      </clr-input-container>
-      <clr-checkbox-container>
-        <clr-checkbox-wrapper>
-          <label>Archive Exported</label>
-          <input type="checkbox" name="shouldArchive" [checked]="shouldArchive" clrCheckbox [(ngModel)]="shouldArchive" />
-        </clr-checkbox-wrapper>
-      </clr-checkbox-container>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outline" (click)="releaseOpen = false">Cancel</button>
-        <button type="button" [clrLoading]="deleteBtnState" class="btn btn-primary" (click)="onRelease()">Release</button>
-      </div>
-    </form>
-  </div>
-</clr-modal>

@@ -14,6 +14,9 @@ import { compare } from 'fast-json-patch';
 import { bounceIn } from 'ngx-animate';
 import { trigger, transition, useAnimation } from '@angular/animations';
 import { Permission } from '../../../../models/permission.model';
+import * as docx from "docx";
+import { TextRun, Packer } from 'docx';
+import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'app-task-edit',
@@ -33,6 +36,9 @@ export class TaskEditComponent implements OnInit {
   private archiveOpen = false;
   private resolveOpen = false;
   private completeOpen = false;
+  private releaseOpen = false;
+  releaseGroupname: string;
+  shouldArchive: boolean = true;
   private isNewTask = false;
   private allStatus = [...Object.keys(Status)];
   private allPriority = [...Object.keys(Priority)];
@@ -46,8 +52,7 @@ export class TaskEditComponent implements OnInit {
   private isOpen: boolean;
   createdBy: string;
   updatedBy: string;
-  releaseGroupname: string;
-  shouldArchive: boolean;
+  curDate = new Date();
   taskForm: FormGroup;
   users: User[] = [];
   currentUser: User;
@@ -245,11 +250,17 @@ export class TaskEditComponent implements OnInit {
     this.archiveOpen = true;
   }
 
-   private onRelease() {
+  MarkExport(tasks: TaskEdit[]) {
+    Object.assign(this.tasksToRelease, tasks);
+    this.releaseOpen = true;
+  }
+
+  private onRelease() {
+    this.download(this.tasksToRelease);
     this.deleteBtnState = ClrLoadingState.LOADING;
     if (this.tasksToRelease) {
       for (var i = 0; i < this.tasksToRelease.length; i++) {
-        let taskEdit = new TaskEdit();
+        let taskEdit = new TaskList();
         Object.assign(taskEdit, this.tasksToRelease[i]);
         if (this.shouldArchive) {
           taskEdit.status = Status.Closed;
@@ -263,6 +274,35 @@ export class TaskEditComponent implements OnInit {
     }
     this.alertService.showMessage(this.gT('toasts.saved'), `Release Note Generated, Tasks Archived!`, MessageSeverity.success);
     this.deleteBtnState = ClrLoadingState.SUCCESS;
+    if (this.shouldArchive) {
+      this.popSelected.emit(this.tasksToRelease);
+    }
+    else {
+      this.tasksToRelease = [];
+    }
+    this.releaseOpen = false;
+  }
+
+  private download(selected: TaskEdit[]) {
+    let doc = new docx.Document();
+    let titleDoc = "Releasenote: " + this.curDate.toLocaleDateString() + "\n" + "\n" + "\n" + "\n" + "Az alkalmazás az alábbi fejlesztésekkel bővült: " + "\n" + "\n" + "\n";
+    var maintitle = new docx.Paragraph(titleDoc);
+    doc.addParagraph(maintitle);
+
+    for (let task of selected) {
+      var paragraph = new docx.Paragraph(task.id.toString());
+      var mainTitle = new TextRun(task.title).tab().bold();
+      paragraph.addRun(mainTitle);
+      doc.addParagraph(paragraph);
+    }
+    var packer = new Packer();
+    let title = this.curDate.toLocaleDateString() + "_releasenote.docx";
+    packer.toBlob(doc).then(blob => {
+      console.log(blob);
+      saveAs(blob, title);
+      console.log("Document created successfully");
+    });
+    selected = [];
   }
 
   private CloseTasks() {

@@ -5,14 +5,10 @@ import { AlertService, MessageSeverity } from '../../../services/alert.service';
 import { TaskService } from '../../../services/tasks/taskService';
 import { AppTranslationService } from '../../../services/app-translation.service';
 import { Utilities } from '../../../services/utilities';
-import { AccountService } from '../../../services/account.service';
 import { fadeInOut } from '../../../services/animations';
 import { Status } from '../../../models/enum';
 import { ClrDatagrid, ClrLoadingState } from "@clr/angular";
-import { compare } from 'fast-json-patch';
-import * as docx from "docx";
-import { TextRun, Packer } from 'docx';
-import { saveAs } from 'file-saver';
+
 
 @Component({
   selector: 'app-task-management',
@@ -39,7 +35,7 @@ export class TaskManagementComponent implements OnInit {
 
   loadingIndicator: boolean;
   selected: TaskList[] = [];
-  tasksToRelease: TaskList[] = [];
+  
   gT = (key: string) => this.translationService.getTranslation(key);
   CompletedActive;
   ResolvedActive;
@@ -52,10 +48,7 @@ export class TaskManagementComponent implements OnInit {
   @ViewChild("word") wordLink: ElementRef;
   @ViewChild("pdf") pdfLink: ElementRef;
   private isOpen = true;
-  private releaseOpen = false;
-  releaseGroupname: string;
-  shouldArchive: boolean = true;
-  constructor(private accountService: AccountService, private alertService: AlertService,
+  constructor(private alertService: AlertService,
     private translationService: AppTranslationService, private taskService: TaskService) { }
 
   ngOnInit() {
@@ -90,34 +83,11 @@ export class TaskManagementComponent implements OnInit {
 
   onExportSelected(selected: TaskList[]) {
     if (selected.length > 0) {
-      Object.assign(this.tasksToRelease, selected);
-      console.log(this.tasksToRelease);
-      this.releaseOpen = true;
+      this.taskEdit.MarkExport(selected);
     }
   }
 
-  download(selected: TaskList[]) {
-    let doc = new docx.Document();
-    let titleDoc = "Releasenote: " + this.curDate.toLocaleDateString() + "\n" + "\n" + "\n" + "\n" + "Az alkalmazás az alábbi fejlesztésekkel bővült: " + "\n" + "\n" + "\n";
-    var maintitle = new docx.Paragraph(titleDoc);
-    doc.addParagraph(maintitle);
-
-    for (let task of selected) {
-      var paragraph = new docx.Paragraph(task.id.toString());
-      var mainTitle = new TextRun(task.title).tab().bold();
-      paragraph.addRun(mainTitle);
-      doc.addParagraph(paragraph);
-    }
-    // Used to export the file into a .docx file
-    var packer = new Packer();
-    let title = this.curDate.toLocaleDateString() + "_releasenote.docx";
-    packer.toBlob(doc).then(blob => {
-      console.log(blob);
-      saveAs(blob, title);
-      console.log("Document created successfully");
-    });
-    selected = [];
-  }
+  
 
   loadData() {
     if (this.CompletedActive) {
@@ -233,7 +203,6 @@ export class TaskManagementComponent implements OnInit {
     for (let task of tasks) {
       this.removeItem(task.id);
     }
-    this.tasksToRelease = [];
   }
 
   private removeItem(id: number) {
@@ -289,33 +258,7 @@ export class TaskManagementComponent implements OnInit {
     }
   }
 
-  private onRelease() {
-    this.download(this.tasksToRelease);
-    this.deleteBtnState = ClrLoadingState.LOADING;
-    if (this.tasksToRelease) {
-      for (var i = 0; i < this.tasksToRelease.length; i++) {
-        let taskEdit = new TaskList();
-        Object.assign(taskEdit, this.tasksToRelease[i]);
-        if (this.shouldArchive) {
-          taskEdit.status = Status.Closed;
-        }
-        taskEdit.releaseId = this.releaseGroupname;
-        let patchDocument = compare(this.tasksToRelease[i], taskEdit);
-        this.taskService.UpdateTask(patchDocument, taskEdit.id).subscribe(response => {
-        },
-          error => this.alertService.showMessage(error, null, MessageSeverity.error));
-      }
-    }
-    this.alertService.showMessage(this.gT('toasts.saved'), `Release Note Generated, Tasks Archived!`, MessageSeverity.success);
-    this.deleteBtnState = ClrLoadingState.SUCCESS;
-    if (this.shouldArchive) {
-      this.popSelected(this.tasksToRelease);
-    }
-    else {
-      this.tasksToRelease = [];
-    }
-    this.releaseOpen = false;
-  }
+ 
 
   private open() {
     this.isOpen = true;
