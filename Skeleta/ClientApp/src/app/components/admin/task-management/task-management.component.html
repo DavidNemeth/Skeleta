@@ -266,7 +266,7 @@
                 <div class="btn-group btn-primary btn-sm">
                   <button type="button" class="btn" (click)="onAdd()"><clr-icon shape="plus"></clr-icon>{{'tasks.management.NewTask' | translate}}</button>
                   <button type="button" class="btn" (click)="onClose(selected)"><clr-icon shape="archive" class="is-solid"></clr-icon>Archive Selected</button>
-                  <a (click)="onExportSelected(selected)" #word download="Releasenote_{{curDate | date:'yyyy_MM_dd'}}.doc" class="btn btn-primary">
+                  <a (click)="onExportSelected(selected)" class="btn btn-primary">
                     <clr-icon shape="note"></clr-icon>
                     Generate Releasenote
                   </a>
@@ -338,18 +338,6 @@
               <div style="margin-right: 0rem; margin-left: 0rem;" class="clr-row clr-justify-content-between">
                 <div class="btn-group btn-primary btn-sm">
                   <button type="button" class="btn" (click)="onAdd()"><clr-icon shape="plus"></clr-icon>{{'tasks.management.NewTask' | translate}}</button>
-                  <clr-dropdown>
-                    <button type="button" [disabled]="selected.length === 0" class="btn btn-success" clrDropdownTrigger>
-                      <clr-icon shape="note"></clr-icon>Export
-                      <clr-icon shape="caret down"></clr-icon>
-                    </button>
-                    <clr-dropdown-menu clrPosition="bottom-left" *clrIfOpen>
-                      <a (click)="onExportSelected(selected, 'excel')" href="" #excel download="Releasenote_{{curDate | date:'yyyy_MM_dd'}}.csv" clrDropdownItem>Excel</a>
-                      <a (click)="onExportSelected(selected, 'word')" href="" #word download="Releasenote_{{curDate | date:'yyyy_MM_dd'}}.doc" clrDropdownItem>Word</a>
-                      <a (click)="onExportSelected(selected, 'pdf')" href="" #pdf download="Releasenote_{{curDate | date:'yyyy_MM_dd'}}.pdf" clrDropdownItem>Pdf</a>
-                    </clr-dropdown-menu>
-                  </clr-dropdown>
-
                 </div>
                 <div class="btn-group">
                   <app-search-box (searchChange)="onSearchChanged($event)" placeholder="{{'tasks.management.Search' | translate}}"></app-search-box>
@@ -361,17 +349,18 @@
                 Id
               </ng-container>
             </clr-dg-column>
+            <clr-dg-column [style.width.px]="200" [clrDgField]="'releaseId'">
+              <ng-container *clrDgHideableColumn="{hidden: false}">
+                Release Id
+              </ng-container>
+            </clr-dg-column>
             <clr-dg-column [clrDgField]="'title'">
               <ng-container *clrDgHideableColumn="{hidden: false}">
                 {{'tasks.management.Task' | translate}}
               </ng-container>
             </clr-dg-column>
 
-            <clr-dg-column [clrDgField]="'releaseId'">
-              <ng-container *clrDgHideableColumn="{hidden: false}">
-                Release Group
-              </ng-container>
-            </clr-dg-column>
+
             <clr-dg-placeholder>Skeleta Task Sysyem</clr-dg-placeholder>
 
             <clr-dg-column [clrDgField]="'status'">
@@ -386,10 +375,10 @@
                 <a href="javascript:void(0)" (click)="onEdit(task)">{{task.id}}</a>
               </clr-dg-cell>
               <clr-dg-cell>
-                <a href="javascript:void(0)" (click)="onEdit(task)">{{task.title}} </a>
+                <a href="javascript:void(0)" (click)="onEdit(task)">{{task.releaseId}} </a>
               </clr-dg-cell>
               <clr-dg-cell>
-                <a href="javascript:void(0)" (click)="onEdit(task)">{{task.releaseId}} </a>
+                <a href="javascript:void(0)" (click)="onEdit(task)">{{task.title}} </a>
               </clr-dg-cell>
               <clr-dg-cell>
                 <clr-icon *ngIf="task.status == 'New'" shape="circle" size="12" class="is-inverse is-solid"></clr-icon>
@@ -422,13 +411,13 @@
   <div class="modal-body">
     <form clrForm clrLayout="vertical">
       <clr-input-container>
-        <label>Release Group</label>
-        <input name="releaseGroupname" type="text" clrInput placeholder="Release group name" [(ngModel)]="releaseGroupname" />
+        <label>Release Id</label>
+        <input name="releaseGroupname" type="text" clrInput placeholder="Release Id name" [(ngModel)]="releaseGroupname" />
       </clr-input-container>
       <clr-checkbox-container>
         <clr-checkbox-wrapper>
           <label>Archive Exported</label>
-          <input type="checkbox" name="shouldArchive" [checked]=true clrCheckbox [(ngModel)]="shouldArchive" />
+          <input type="checkbox" name="shouldArchive" [checked]="shouldArchive" clrCheckbox [(ngModel)]="shouldArchive" />
         </clr-checkbox-wrapper>
       </clr-checkbox-container>
       <div class="modal-footer">

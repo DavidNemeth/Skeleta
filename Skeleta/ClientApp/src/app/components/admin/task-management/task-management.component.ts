@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, Renderer2 } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { TaskList } from '../../../services/tasks/task.model';
 import { TaskEditComponent } from '../../controls/editors/task-edit/task-edit.component';
 import { AlertService, MessageSeverity } from '../../../services/alert.service';
@@ -10,6 +10,9 @@ import { fadeInOut } from '../../../services/animations';
 import { Status } from '../../../models/enum';
 import { ClrDatagrid, ClrLoadingState } from "@clr/angular";
 import { compare } from 'fast-json-patch';
+import * as docx from "docx";
+import { TextRun, Packer } from 'docx';
+import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'app-task-management',
@@ -51,9 +54,9 @@ export class TaskManagementComponent implements OnInit {
   private isOpen = true;
   private releaseOpen = false;
   releaseGroupname: string;
-  shouldArchive: boolean;
+  shouldArchive: boolean = true;
   constructor(private accountService: AccountService, private alertService: AlertService,
-    private translationService: AppTranslationService, private taskService: TaskService, private renderer: Renderer2) { }
+    private translationService: AppTranslationService, private taskService: TaskService) { }
 
   ngOnInit() {
     this.PendingActive = true;
@@ -88,19 +91,32 @@ export class TaskManagementComponent implements OnInit {
   onExportSelected(selected: TaskList[]) {
     if (selected.length > 0) {
       Object.assign(this.tasksToRelease, selected);
+      console.log(this.tasksToRelease);
       this.releaseOpen = true;
     }
   }
 
   download(selected: TaskList[]) {
-    console.log(selected);
-    const docx = this.selected.map(task => this.taskToFile(task)).join("\n\n");
+    let doc = new docx.Document();
     let titleDoc = "Releasenote: " + this.curDate.toLocaleDateString() + "\n" + "\n" + "\n" + "\n" + "Az alkalmazás az alábbi fejlesztésekkel bővült: " + "\n" + "\n" + "\n";
-    this.renderer.setAttribute(this.wordLink.nativeElement, "href",
-      "data:text/plain;charset=utf-8," + titleDoc + docx);
-  }
-  taskToFile(task: TaskList) {
-    return ["Azonositó: " + task.id + " Fejlesztés: " + task.title];
+    var maintitle = new docx.Paragraph(titleDoc);
+    doc.addParagraph(maintitle);
+
+    for (let task of selected) {
+      var paragraph = new docx.Paragraph(task.id.toString());
+      var mainTitle = new TextRun(task.title).tab().bold();
+      paragraph.addRun(mainTitle);
+      doc.addParagraph(paragraph);
+    }
+    // Used to export the file into a .docx file
+    var packer = new Packer();
+    let title = this.curDate.toLocaleDateString() + "_releasenote.docx";
+    packer.toBlob(doc).then(blob => {
+      console.log(blob);
+      saveAs(blob, title);
+      console.log("Document created successfully");
+    });
+    selected = [];
   }
 
   loadData() {
@@ -217,6 +233,7 @@ export class TaskManagementComponent implements OnInit {
     for (let task of tasks) {
       this.removeItem(task.id);
     }
+    this.tasksToRelease = [];
   }
 
   private removeItem(id: number) {
@@ -293,6 +310,9 @@ export class TaskManagementComponent implements OnInit {
     this.deleteBtnState = ClrLoadingState.SUCCESS;
     if (this.shouldArchive) {
       this.popSelected(this.tasksToRelease);
+    }
+    else {
+      this.tasksToRelease = [];
     }
     this.releaseOpen = false;
   }
