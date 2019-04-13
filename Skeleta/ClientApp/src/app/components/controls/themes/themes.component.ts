@@ -12,8 +12,8 @@ export class ThemesComponent {
   linkRef: HTMLLinkElement;
 
   themes = [
-    { name: 'Light', href: "https://unpkg.com/clarity-ui/clarity-ui.min.css" },
-    { name: 'Dark', href: "https://unpkg.com/clarity-ui/clarity-ui-dark.min.css" }
+    { name: 'Light', href: 'https://unpkg.com/clarity-ui/clarity-ui.min.css' },
+    { name: 'Dark', href: 'https://unpkg.com/clarity-ui/clarity-ui-dark.min.css' }
   ];
 
   constructor(private translationService: AppTranslationService,
@@ -32,7 +32,7 @@ export class ThemesComponent {
       this.linkRef.rel = 'stylesheet';
       this.linkRef.href = theme.href;
       this.document.querySelector('head').appendChild(this.linkRef);
-    }    
+    }
   }
 
   setTheme(theme) {
@@ -53,6 +53,6 @@ export class ThemesComponent {
         break;
       default:
         this.translationService.changeLanguage('en');
-    }    
+    }
   }
 }

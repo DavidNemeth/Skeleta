@@ -39,7 +39,7 @@ var NotificationEndpoint = /** @class */ (function () {
         ];
     }
     NotificationEndpoint.prototype.getNotificationEndpoint = function (notificationId) {
-        var notification = this.demoNotifications.find(function (val) { return val.id == notificationId; });
+        var notification = this.demoNotifications.find(function (val) { return val.id === notificationId; });
         var response;
         if (notification) {
             response = this.createResponse(notification, 200);
@@ -65,12 +65,13 @@ var NotificationEndpoint = /** @class */ (function () {
         return rxjs_1.of(response.body);
     };
     NotificationEndpoint.prototype.getPinUnpinNotificationEndpoint = function (notificationId, isPinned) {
-        var notification = this.demoNotifications.find(function (val) { return val.id == notificationId; });
+        var notification = this.demoNotifications.find(function (val) { return val.id === notificationId; });
         var response;
         if (notification) {
             response = this.createResponse(null, 204);
-            if (isPinned == null)
+            if (isPinned === null) {
                 isPinned = !notification.isPinned;
+            }
             notification.isPinned = isPinned;
             notification.isRead = true;
         }
@@ -81,7 +82,7 @@ var NotificationEndpoint = /** @class */ (function () {
     };
     NotificationEndpoint.prototype.getReadUnreadNotificationEndpoint = function (notificationIds, isRead) {
         var _loop_1 = function (notificationId) {
-            var notification = this_1.demoNotifications.find(function (val) { return val.id == notificationId; });
+            var notification = this_1.demoNotifications.find(function (val) { return val.id === notificationId; });
             if (notification) {
                 notification.isRead = isRead;
             }
@@ -95,10 +96,10 @@ var NotificationEndpoint = /** @class */ (function () {
         return rxjs_1.of(response.body);
     };
     NotificationEndpoint.prototype.getDeleteNotificationEndpoint = function (notificationId) {
-        var notification = this.demoNotifications.find(function (val) { return val.id == notificationId; });
+        var notification = this.demoNotifications.find(function (val) { return val.id === notificationId; });
         var response;
         if (notification) {
-            this.demoNotifications = this.demoNotifications.filter(function (val) { return val.id != notificationId; });
+            this.demoNotifications = this.demoNotifications.filter(function (val) { return val.id !== notificationId; });
             response = this.createResponse(notification, 200);
         }
         else {

@@ -1,4 +1,4 @@
-<clr-modal [(clrModalOpen)]="isOpen" (clrModalOpenChange)=onOpen($event) [clrModalStaticBackdrop]="false" [clrModalSize]="'lg'">
+<clr-modal [(clrModalOpen)]="isOpen" (clrModalOpenChange)=onOpen() [clrModalStaticBackdrop]="false" [clrModalSize]="'lg'">
   <h3 class="modal-title">Manage Bug</h3>
   <div class="progress loop modal-body" *ngIf="isOpen && dataLoaded === false">
     <progress></progress>
@@ -60,6 +60,6 @@
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-outline" (click)="deleteOpen = false">{{'general.management.Cancel' | translate}}</button>
-    <button type="button" [clrLoading]="deleteBtnState" class="btn btn-danger" (click)="Delete()">{{'general.management.Delete' | translate}}</button>
+    <button type="button" [clrLoading]="deleteBtnState" class="btn btn-danger">{{'general.management.Delete' | translate}}</button>
   </div>
 </clr-modal>

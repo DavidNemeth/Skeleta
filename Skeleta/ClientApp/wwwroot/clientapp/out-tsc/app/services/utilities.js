@@ -22,20 +22,25 @@ var Utilities = /** @class */ (function () {
                 var responseObject = this.getResponseBody(data);
                 if (responseObject && (typeof responseObject === 'object' || responseObject instanceof Object)) {
                     for (var key in responseObject) {
-                        if (key)
+                        if (key) {
                             responses.push("" + key + this.captionAndMessageSeparator + " " + responseObject[key]);
-                        else if (responseObject[key])
+                        }
+                        else if (responseObject[key]) {
                             responses.push(responseObject[key].toString());
+                        }
                     }
                 }
             }
-            if (!responses.length && this.getResponseBody(data))
+            if (!responses.length && this.getResponseBody(data)) {
                 responses.push(data.statusText + ": " + this.getResponseBody(data).toString());
+            }
         }
-        if (!responses.length)
+        if (!responses.length) {
             responses.push(data.toString());
-        if (this.checkAccessDenied(data))
+        }
+        if (this.checkAccessDenied(data)) {
             responses.splice(0, 0, "" + this.accessDeniedMessageCaption + this.captionAndMessageSeparator + " " + this.accessDeniedMessageDetail);
+        }
         return responses;
     };
     Utilities.findHttpResponseMessage = function (messageToFind, data, seachInCaptionOnly, includeCaptionInResult) {
@@ -46,14 +51,14 @@ var Utilities = /** @class */ (function () {
         for (var _i = 0, httpMessages_1 = httpMessages; _i < httpMessages_1.length; _i++) {
             var message = httpMessages_1[_i];
             var fullMessage = Utilities_1.splitInTwo(message, this.captionAndMessageSeparator);
-            if (fullMessage.firstPart && fullMessage.firstPart.toLowerCase().indexOf(searchString) != -1) {
+            if (fullMessage.firstPart && fullMessage.firstPart.toLowerCase().indexOf(searchString) !== -1) {
                 return includeCaptionInResult ? message : fullMessage.secondPart || fullMessage.firstPart;
             }
         }
         if (!seachInCaptionOnly) {
             for (var _a = 0, httpMessages_2 = httpMessages; _a < httpMessages_2.length; _a++) {
                 var message = httpMessages_2[_a];
-                if (message.toLowerCase().indexOf(searchString) != -1) {
+                if (message.toLowerCase().indexOf(searchString) !== -1) {
                     if (includeCaptionInResult) {
                         return message;
                     }
@@ -67,26 +72,28 @@ var Utilities = /** @class */ (function () {
         return null;
     };
     Utilities.getResponseBody = function (response) {
-        if (response instanceof http_1.HttpResponse)
+        if (response instanceof http_1.HttpResponse) {
             return response.body;
-        if (response instanceof http_1.HttpErrorResponse)
+        }
+        if (response instanceof http_1.HttpErrorResponse) {
             return response.error || response.message || response.statusText;
+        }
     };
     Utilities.checkNoNetwork = function (response) {
         if (response instanceof http_1.HttpResponseBase) {
-            return response.status == 0;
+            return response.status === 0;
         }
         return false;
     };
     Utilities.checkAccessDenied = function (response) {
         if (response instanceof http_1.HttpResponseBase) {
-            return response.status == 403;
+            return response.status === 403;
         }
         return false;
     };
     Utilities.checkNotFound = function (response) {
         if (response instanceof http_1.HttpResponseBase) {
-            return response.status == 404;
+            return response.status === 404;
         }
         return false;
     };
@@ -98,8 +105,9 @@ var Utilities = /** @class */ (function () {
         return false;
     };
     Utilities.getQueryParamsFromString = function (paramString) {
-        if (!paramString)
+        if (!paramString) {
             return null;
+        }
         var params = {};
         for (var _i = 0, _a = paramString.split('&'); _i < _a.length; _i++) {
             var param = _a[_i];
@@ -110,8 +118,9 @@ var Utilities = /** @class */ (function () {
     };
     Utilities.splitInTwo = function (text, separator) {
         var separatorIndex = text.indexOf(separator);
-        if (separatorIndex == -1)
+        if (separatorIndex === -1) {
             return { firstPart: text, secondPart: null };
+        }
         var part1 = text.substr(0, separatorIndex).trim();
         var part2 = text.substr(separatorIndex + 1).trim();
         return { firstPart: part1, secondPart: part2 };
@@ -129,10 +138,10 @@ var Utilities = /** @class */ (function () {
             if (!object.hasOwnProperty(prop)) {
                 continue;
             }
-            if (typeof (object[prop]) == 'object') {
+            if (typeof (object[prop]) === 'object') {
                 continue;
             }
-            if (typeof (object[prop]) == 'function') {
+            if (typeof (object[prop]) === 'function') {
                 continue;
             }
             simpleObject[prop] = object[prop];
@@ -145,8 +154,9 @@ var Utilities = /** @class */ (function () {
             return JSON.parse(value);
         }
         catch (e) {
-            if (value === 'undefined')
+            if (value === 'undefined') {
                 return void 0;
+            }
             return value;
         }
     };
@@ -166,10 +176,12 @@ var Utilities = /** @class */ (function () {
         return typeof value === 'string' || value instanceof String;
     };
     Utilities.capitalizeFirstLetter = function (text) {
-        if (text)
+        if (text) {
             return text.charAt(0).toUpperCase() + text.slice(1);
-        else
+        }
+        else {
             return text;
+        }
     };
     Utilities.toTitleCase = function (text) {
         return text.replace(/\w\S*/g, function (subString) {
@@ -196,10 +208,12 @@ var Utilities = /** @class */ (function () {
     };
     Utilities.baseUrl = function () {
         var base = '';
-        if (window.location.origin)
+        if (window.location.origin) {
             base = window.location.origin;
-        else
+        }
+        else {
             base = window.location.protocol + '//' + window.location.hostname + (window.location.port ? ':' + window.location.port : '');
+        }
         return base.replace(/\/$/, '');
     };
     Utilities.printDateOnly = function (date) {
@@ -211,13 +225,13 @@ var Utilities = /** @class */ (function () {
         var sup = '';
         var month = date.getMonth();
         var year = date.getFullYear();
-        if (dayOfMonth == 1 || dayOfMonth == 21 || dayOfMonth == 31) {
+        if (dayOfMonth === 1 || dayOfMonth === 21 || dayOfMonth === 31) {
             sup = 'st';
         }
-        else if (dayOfMonth == 2 || dayOfMonth == 22) {
+        else if (dayOfMonth === 2 || dayOfMonth === 22) {
             sup = 'nd';
         }
-        else if (dayOfMonth == 3 || dayOfMonth == 23) {
+        else if (dayOfMonth === 3 || dayOfMonth === 23) {
             sup = 'rd';
         }
         else {
@@ -232,13 +246,13 @@ var Utilities = /** @class */ (function () {
         var minute = date.getMinutes().toString();
         var hour = date.getHours();
         period = hour < 12 ? 'AM' : 'PM';
-        if (hour == 0) {
+        if (hour === 0) {
             hour = 12;
         }
         if (hour > 12) {
             hour = hour - 12;
         }
-        if (minute.length == 1) {
+        if (minute.length === 1) {
             minute = '0' + minute;
         }
         var timeString = hour + ':' + minute + ' ' + period;
@@ -255,12 +269,15 @@ var Utilities = /** @class */ (function () {
         var yesterday = new Date(today);
         yesterday.setDate(yesterday.getDate() - 1);
         var test = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-        if (test.toDateString() == today.toDateString())
+        if (test.toDateString() === today.toDateString()) {
             return "Today " + separator + " " + Utilities_1.printTimeOnly(date);
-        if (test.toDateString() == yesterday.toDateString())
+        }
+        if (test.toDateString() === yesterday.toDateString()) {
             return "Yesterday " + separator + " " + Utilities_1.printTimeOnly(date);
-        else
+        }
+        else {
             return Utilities_1.printDate(date, separator);
+        }
     };
     Utilities.printShortDate = function (date, separator, dateTimeSeparator) {
         if (separator === void 0) { separator = '/'; }
@@ -268,10 +285,12 @@ var Utilities = /** @class */ (function () {
         var day = date.getDate().toString();
         var month = (date.getMonth() + 1).toString();
         var year = date.getFullYear();
-        if (day.length == 1)
+        if (day.length === 1) {
             day = '0' + day;
-        if (month.length == 1)
+        }
+        if (month.length === 1) {
             month = '0' + month;
+        }
         return "" + month + separator + day + separator + year + " " + dateTimeSeparator + " " + Utilities_1.printTimeOnly(date);
     };
     Utilities.parseDate = function (date) {
@@ -280,8 +299,9 @@ var Utilities = /** @class */ (function () {
                 return date;
             }
             if (typeof date === 'string' || date instanceof String) {
-                if (date.search(/[a-su-z+]/i) == -1)
+                if (date.search(/[a-su-z+]/i) === -1) {
                     date = date + 'Z';
+                }
                 return new Date(date);
             }
             if (typeof date === 'number' || date instanceof Number) {
@@ -306,16 +326,21 @@ var Utilities = /** @class */ (function () {
         // what's left is seconds
         var seconds = delta % 60; // in theory the modulus is not required
         var printedDays = '';
-        if (days)
+        if (days) {
             printedDays = days + " days";
-        if (hours)
+        }
+        if (hours) {
             printedDays += printedDays ? ", " + hours + " hours" : hours + " hours";
-        if (minutes)
+        }
+        if (minutes) {
             printedDays += printedDays ? ", " + minutes + " minutes" : minutes + " minutes";
-        if (seconds)
+        }
+        if (seconds) {
             printedDays += printedDays ? " and " + seconds + " seconds" : seconds + " seconds";
-        if (!printedDays)
+        }
+        if (!printedDays) {
             printedDays = '0';
+        }
         return printedDays;
     };
     Utilities.getAge = function (birthDate, otherDate) {
@@ -323,7 +348,7 @@ var Utilities = /** @class */ (function () {
         otherDate = new Date(otherDate);
         var years = (otherDate.getFullYear() - birthDate.getFullYear());
         if (otherDate.getMonth() < birthDate.getMonth() ||
-            otherDate.getMonth() == birthDate.getMonth() && otherDate.getDate() < birthDate.getDate()) {
+            otherDate.getMonth() === birthDate.getMonth() && otherDate.getDate() < birthDate.getDate()) {
             years--;
         }
         return years;
@@ -333,18 +358,22 @@ var Utilities = /** @class */ (function () {
         for (var _i = 2; _i < arguments.length; _i++) {
             values[_i - 2] = arguments[_i];
         }
-        if (!searchTerm)
+        if (!searchTerm) {
             return true;
-        if (!caseSensitive)
+        }
+        if (!caseSensitive) {
             searchTerm = searchTerm.toLowerCase();
+        }
         for (var _a = 0, values_1 = values; _a < values_1.length; _a++) {
             var value = values_1[_a];
             if (value != null) {
                 var strValue = value.toString();
-                if (!caseSensitive)
+                if (!caseSensitive) {
                     strValue = strValue.toLowerCase();
-                if (strValue.indexOf(searchTerm) !== -1)
+                }
+                if (strValue.indexOf(searchTerm) !== -1) {
                     return true;
+                }
             }
         }
         return false;
@@ -365,8 +394,9 @@ var Utilities = /** @class */ (function () {
         array.splice(newIndex, 0, array.splice(oldIndex, 1)[0]);
     };
     Utilities.expandCamelCase = function (text) {
-        if (!text)
+        if (!text) {
             return text;
+        }
         return text.replace(/([A-Z][a-z]+)/g, ' $1')
             .replace(/([A-Z][A-Z]+)/g, ' $1')
             .replace(/([^A-Za-z ]+)/g, ' $1');
@@ -385,10 +415,10 @@ var Utilities = /** @class */ (function () {
                 if (obj[k] === null) {
                     isArray ? obj.splice(k, 1) : delete obj[k];
                 }
-                else if (typeof obj[k] == 'object') {
+                else if (typeof obj[k] === 'object') {
                     Utilities_1.removeNulls(obj[k]);
                 }
-                if (isArray && obj.length == k) {
+                if (isArray && obj.length === k) {
                     Utilities_1.removeNulls(obj);
                 }
             }
@@ -402,14 +432,16 @@ var Utilities = /** @class */ (function () {
             var args_ = arguments;
             var later = function () {
                 timeout = null;
-                if (!immediate)
+                if (!immediate) {
                     func.apply(context, args_);
+                }
             };
             var callNow = immediate && !timeout;
             clearTimeout(timeout);
             timeout = setTimeout(later, wait);
-            if (callNow)
+            if (callNow) {
                 func.apply(context, args_);
+            }
         };
     };
     var Utilities_1;

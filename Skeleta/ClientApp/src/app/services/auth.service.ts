@@ -53,7 +53,8 @@ export class AuthService {
 
 
   redirectLoginUser() {
-    const redirect = this.loginRedirectUrl && this.loginRedirectUrl != '/' && this.loginRedirectUrl != ConfigurationService.defaultHomeUrl ?
+    const redirect = this.loginRedirectUrl &&
+      this.loginRedirectUrl !== '/' && this.loginRedirectUrl !== ConfigurationService.defaultHomeUrl ?
       this.loginRedirectUrl : this.homeUrl;
     this.loginRedirectUrl = null;
 
@@ -91,8 +92,7 @@ export class AuthService {
 
     if (this.reLoginDelegate) {
       this.reLoginDelegate();
-    }
-    else {
+    } else {
       this.redirectForLogin();
     }
   }
@@ -106,8 +106,9 @@ export class AuthService {
 
   login(userName: string, password: string, rememberMe?: boolean) {
 
-    if (this.isLoggedIn)
+    if (this.isLoggedIn) {
       this.logout();
+    }
 
     return this.endpointFactory.getLoginEndpoint<LoginResponse>(userName, password).pipe(
       map(response => this.processLoginResponse(response, rememberMe)));
@@ -118,8 +119,9 @@ export class AuthService {
 
     const accessToken = response.access_token;
 
-    if (accessToken == null)
+    if (accessToken == null) {
       throw new Error('Received accessToken was empty');
+    }
 
     const idToken = response.id_token;
     const refreshToken = response.refresh_token || this.refreshToken;
@@ -136,8 +138,9 @@ export class AuthService {
     const permissions: PermissionValues[] = Array.isArray(decodedIdToken.permission) ? decodedIdToken.permission :
       [decodedIdToken.permission];
 
-    if (!this.isLoggedIn)
+    if (!this.isLoggedIn) {
       this.configurations.import(decodedIdToken.configuration);
+    }
 
     const user = new User(
       decodedIdToken.sub,
@@ -167,8 +170,7 @@ export class AuthService {
       this.localStorage.savePermanentData(expiresIn, DBkeys.TOKEN_EXPIRES_IN);
       this.localStorage.savePermanentData(permissions, DBkeys.USER_PERMISSIONS);
       this.localStorage.savePermanentData(user, DBkeys.CURRENT_USER);
-    }
-    else {
+    } else {
       this.localStorage.saveSyncedSessionData(accessToken, DBkeys.ACCESS_TOKEN);
       this.localStorage.saveSyncedSessionData(idToken, DBkeys.ID_TOKEN);
       this.localStorage.saveSyncedSessionData(refreshToken, DBkeys.REFRESH_TOKEN);
@@ -199,9 +201,9 @@ export class AuthService {
   private reevaluateLoginStatus(currentUser?: User) {
 
     const user = currentUser || this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
-    const isLoggedIn = user != null;
+    const isLoggedIn = user !== null;
 
-    if (this.previousIsLoggedInCheck != isLoggedIn) {
+    if (this.previousIsLoggedInCheck !== isLoggedIn) {
       setTimeout(() => {
         this._loginStatus.next(isLoggedIn);
       });
@@ -267,6 +269,6 @@ export class AuthService {
   }
 
   get rememberMe(): boolean {
-    return this.localStorage.getDataObject<boolean>(DBkeys.REMEMBER_ME) == true;
+    return this.localStorage.getDataObject<boolean>(DBkeys.REMEMBER_ME) === true;
   }
 }

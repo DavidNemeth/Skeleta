@@ -30,8 +30,7 @@ var UserEditComponent = /** @class */ (function () {
         this.accountService = accountService;
         this.submitBtnState = angular_1.ClrLoadingState.DEFAULT;
         this.deleteBtnState = angular_1.ClrLoadingState.DEFAULT;
-        this.gT = function (key) { return _this.translationService.getTranslation(key); };
-        this.actionTitle = "";
+        this.actionTitle = '';
         this.deleteOpen = false;
         this.canChangePassword = false;
         this.isNewUser = false;
@@ -43,7 +42,22 @@ var UserEditComponent = /** @class */ (function () {
         this.usersToDelete = [];
         this.updateData = new core_1.EventEmitter();
         this.deleteData = new core_1.EventEmitter();
+        this.gT = function (key) { return _this.translationService.getTranslation(key); };
     }
+    Object.defineProperty(UserEditComponent.prototype, "canViewAllRoles", {
+        get: function () {
+            return this.accountService.userHasPermission(permission_model_1.Permission.viewRolesPermission);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(UserEditComponent.prototype, "canAssignRoles", {
+        get: function () {
+            return this.accountService.userHasPermission(permission_model_1.Permission.assignRolesPermission);
+        },
+        enumerable: true,
+        configurable: true
+    });
     UserEditComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.loadForm();
@@ -83,8 +97,11 @@ var UserEditComponent = /** @class */ (function () {
     };
     UserEditComponent.prototype.save = function () {
         var _this = this;
-        for (var i in this.userForm.controls)
-            this.userForm.controls[i].markAsTouched();
+        for (var i in this.userForm.controls) {
+            if (this.userForm.controls.hasOwnProperty(i)) {
+                this.userForm.controls[i].markAsTouched();
+            }
+        }
         this.submitBtnState = angular_1.ClrLoadingState.LOADING;
         Object.assign(this.userEdit, this.userForm.value);
         if (this.isNewUser) {
@@ -98,10 +115,12 @@ var UserEditComponent = /** @class */ (function () {
         this.accountService.refreshLoggedInUser().subscribe();
         Object.assign(this.initialUser, this.userEdit);
         this.updateData.emit(this.initialUser);
-        if (this.isNewUser)
+        if (this.isNewUser) {
             this.alertService.showMessage(this.gT('toasts.saved'), "User " + this.userEdit.userName + " added!", alert_service_1.MessageSeverity.success);
-        else
+        }
+        else {
             this.alertService.showMessage(this.gT('toasts.saved'), "User " + this.userEdit.userName + " changes saved!", alert_service_1.MessageSeverity.success);
+        }
         this.submitBtnState = angular_1.ClrLoadingState.SUCCESS;
         this.openModal = false;
     };
@@ -121,7 +140,7 @@ var UserEditComponent = /** @class */ (function () {
         this.isConfirmPassword = true;
     };
     UserEditComponent.prototype.addChangePassword = function () {
-        if (this.isCurrentPassowrd == true) {
+        if (this.isCurrentPassowrd === true) {
             this.userForm.controls['currentPassword'].disable();
             this.userForm.controls['newPassword'].disable();
             this.userForm.controls['confirmPassword'].disable();
@@ -147,8 +166,9 @@ var UserEditComponent = /** @class */ (function () {
         this.userForm.reset();
         this.alertService.resetStickyMessage();
         this.userForm.patchValue(this.initialUser);
-        if (!this.isNewUser)
+        if (!this.isNewUser) {
             this.removeChangePassword();
+        }
     };
     UserEditComponent.prototype.deletePasswordFromUser = function (user) {
         var userEdit = user;
@@ -161,7 +181,7 @@ var UserEditComponent = /** @class */ (function () {
         this.openModal = true;
         this.canChangePassword = false;
         this.isNewUser = true;
-        this.actionTitle = "Add";
+        this.actionTitle = 'Add';
         this.initialUser = new user_model_1.User();
         this.userEdit = new user_edit_model_1.UserEdit();
         this.userEdit.isEnabled = true;
@@ -174,7 +194,7 @@ var UserEditComponent = /** @class */ (function () {
             this.canChangePassword = true;
             this.userForm.controls['userName'].disable();
             this.isNewUser = false;
-            this.actionTitle = "Edit";
+            this.actionTitle = 'Edit';
             this.userForm.patchValue(user);
             this.initialUser = new user_model_1.User();
             Object.assign(this.initialUser, user);
@@ -218,20 +238,6 @@ var UserEditComponent = /** @class */ (function () {
             _this.deleteBtnState = angular_1.ClrLoadingState.SUCCESS;
         });
     };
-    Object.defineProperty(UserEditComponent.prototype, "canViewAllRoles", {
-        get: function () {
-            return this.accountService.userHasPermission(permission_model_1.Permission.viewRolesPermission);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(UserEditComponent.prototype, "canAssignRoles", {
-        get: function () {
-            return this.accountService.userHasPermission(permission_model_1.Permission.assignRolesPermission);
-        },
-        enumerable: true,
-        configurable: true
-    });
     __decorate([
         core_1.ViewChild(angular_1.ClrForm),
         __metadata("design:type", Object)

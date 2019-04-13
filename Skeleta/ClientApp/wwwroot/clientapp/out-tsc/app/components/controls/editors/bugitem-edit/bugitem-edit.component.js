@@ -28,11 +28,10 @@ var BugitemEditComponent = /** @class */ (function () {
         this.accountService = accountService;
         this.submitBtnState = angular_1.ClrLoadingState.DEFAULT;
         this.deleteBtnState = angular_1.ClrLoadingState.DEFAULT;
-        this.gT = function (key) { return _this.translationService.getTranslation(key); };
-        this.actionTitle = "";
+        this.actionTitle = '';
         this.deleteOpen = false;
         this.isNewItem = false;
-        this.allStatus = ["Active", "Resolved", "Completed"];
+        this.allStatus = ['Active', 'Resolved', 'Completed'];
         this.dataLoaded = false;
         this.isOpen = false;
         this.initialItem = new bugItem_model_1.BugItem();
@@ -41,6 +40,7 @@ var BugitemEditComponent = /** @class */ (function () {
         this.updateData = new core_1.EventEmitter();
         this.updateStatus = new core_1.EventEmitter();
         this.openClose = new core_1.EventEmitter();
+        this.gT = function (key) { return _this.translationService.getTranslation(key); };
     }
     BugitemEditComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -57,7 +57,7 @@ var BugitemEditComponent = /** @class */ (function () {
         });
         this.dataLoaded = true;
     };
-    BugitemEditComponent.prototype.onOpen = function (event) {
+    BugitemEditComponent.prototype.onOpen = function () {
         this.close();
     };
     BugitemEditComponent.prototype.close = function () {
@@ -82,10 +82,12 @@ var BugitemEditComponent = /** @class */ (function () {
     BugitemEditComponent.prototype.saveSuccessHelper = function () {
         Object.assign(this.initialItem, this.itemEdit);
         this.updateData.emit(this.initialItem);
-        if (this.isNewItem)
+        if (this.isNewItem) {
             this.alertService.showMessage(this.gT('toasts.saved'), "Bug added!", alert_service_1.MessageSeverity.success);
-        else
+        }
+        else {
             this.alertService.showMessage(this.gT('toasts.saved'), "Bug modified!", alert_service_1.MessageSeverity.success);
+        }
         this.submitBtnState = angular_1.ClrLoadingState.SUCCESS;
         this.close();
     };
@@ -98,7 +100,7 @@ var BugitemEditComponent = /** @class */ (function () {
         this.isOpen = true;
         this.submitBtnState = angular_1.ClrLoadingState.DEFAULT;
         this.isNewItem = true;
-        this.actionTitle = "Add";
+        this.actionTitle = 'Add';
         this.testerId = testerId;
         this.devId = devId;
         this.initialItem = new bugItem_model_1.BugItem();
@@ -122,7 +124,7 @@ var BugitemEditComponent = /** @class */ (function () {
             }, function (error) { return _this.alertService.showMessage(error, null, alert_service_1.MessageSeverity.error); });
         }
         else {
-            this.alertService.showMessage("error no item found", null, alert_service_1.MessageSeverity.error);
+            this.alertService.showMessage('error no item found', null, alert_service_1.MessageSeverity.error);
         }
     };
     __decorate([

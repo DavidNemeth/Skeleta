@@ -79,7 +79,7 @@ var AccountService = /** @class */ (function () {
         return this.accountEndpoint.getUnblockUserEndpoint(userId);
     };
     AccountService.prototype.userHasPermission = function (permissionValue) {
-        return this.permissions.some(function (p) { return p == permissionValue; });
+        return this.permissions.some(function (p) { return p === permissionValue; });
     };
     AccountService.prototype.refreshLoggedInUser = function () {
         return this.authService.refreshLogin();

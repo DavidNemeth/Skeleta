@@ -1,5 +1,5 @@
-import { User } from "../../models/user.model";
-import { Status } from "../../models/enum";
+import { User } from '../../models/user.model';
+import { Status } from '../../models/enum';
 
 export class BugItem {
 
@@ -29,7 +29,7 @@ export class BugItem {
   public description: string;
   public status: Status;
 
-  public developer: User
+  public developer: User;
   public developerId: number;
 
   public tester: User;

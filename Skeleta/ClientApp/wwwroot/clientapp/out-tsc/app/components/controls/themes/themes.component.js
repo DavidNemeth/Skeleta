@@ -21,8 +21,8 @@ var ThemesComponent = /** @class */ (function () {
         this.document = document;
         this.platformId = platformId;
         this.themes = [
-            { name: 'Light', href: "https://unpkg.com/clarity-ui/clarity-ui.min.css" },
-            { name: 'Dark', href: "https://unpkg.com/clarity-ui/clarity-ui-dark.min.css" }
+            { name: 'Light', href: 'https://unpkg.com/clarity-ui/clarity-ui.min.css' },
+            { name: 'Dark', href: 'https://unpkg.com/clarity-ui/clarity-ui-dark.min.css' }
         ];
         if (common_1.isPlatformBrowser(this.platformId)) {
             var theme = this.themes[0];

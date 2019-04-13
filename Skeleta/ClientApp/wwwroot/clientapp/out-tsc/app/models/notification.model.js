@@ -7,8 +7,9 @@ var Notification = /** @class */ (function () {
     Notification.Create = function (data) {
         var n = new Notification();
         Object.assign(n, data);
-        if (n.date)
+        if (n.date) {
             n.date = utilities_1.Utilities.parseDate(n.date);
+        }
         return n;
     };
     return Notification;

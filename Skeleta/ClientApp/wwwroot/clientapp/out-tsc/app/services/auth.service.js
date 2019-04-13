@@ -54,7 +54,8 @@ var AuthService = /** @class */ (function () {
         this.router.navigate([page], navigationExtras);
     };
     AuthService.prototype.redirectLoginUser = function () {
-        var redirect = this.loginRedirectUrl && this.loginRedirectUrl != '/' && this.loginRedirectUrl != configuration_service_1.ConfigurationService.defaultHomeUrl ?
+        var redirect = this.loginRedirectUrl &&
+            this.loginRedirectUrl !== '/' && this.loginRedirectUrl !== configuration_service_1.ConfigurationService.defaultHomeUrl ?
             this.loginRedirectUrl : this.homeUrl;
         this.loginRedirectUrl = null;
         var urlParamsAndFragment = utilities_1.Utilities.splitInTwo(redirect, '#');
@@ -90,14 +91,16 @@ var AuthService = /** @class */ (function () {
     };
     AuthService.prototype.login = function (userName, password, rememberMe) {
         var _this = this;
-        if (this.isLoggedIn)
+        if (this.isLoggedIn) {
             this.logout();
+        }
         return this.endpointFactory.getLoginEndpoint(userName, password).pipe(operators_1.map(function (response) { return _this.processLoginResponse(response, rememberMe); }));
     };
     AuthService.prototype.processLoginResponse = function (response, rememberMe) {
         var accessToken = response.access_token;
-        if (accessToken == null)
+        if (accessToken == null) {
             throw new Error('Received accessToken was empty');
+        }
         var idToken = response.id_token;
         var refreshToken = response.refresh_token || this.refreshToken;
         var expiresIn = response.expires_in;
@@ -108,8 +111,9 @@ var AuthService = /** @class */ (function () {
         var decodedIdToken = jwtHelper.decodeToken(response.id_token);
         var permissions = Array.isArray(decodedIdToken.permission) ? decodedIdToken.permission :
             [decodedIdToken.permission];
-        if (!this.isLoggedIn)
+        if (!this.isLoggedIn) {
             this.configurations.import(decodedIdToken.configuration);
+        }
         var user = new user_model_1.User(decodedIdToken.sub, decodedIdToken.name, decodedIdToken.fullname, decodedIdToken.email, decodedIdToken.jobtitle, decodedIdToken.phone, Array.isArray(decodedIdToken.role) ? decodedIdToken.role : [decodedIdToken.role]);
         user.isEnabled = true;
         this.saveUserDetails(user, permissions, accessToken, idToken, refreshToken, accessTokenExpiry, rememberMe);
@@ -148,8 +152,8 @@ var AuthService = /** @class */ (function () {
     AuthService.prototype.reevaluateLoginStatus = function (currentUser) {
         var _this = this;
         var user = currentUser || this.localStorage.getDataObject(db_Keys_1.DBkeys.CURRENT_USER);
-        var isLoggedIn = user != null;
-        if (this.previousIsLoggedInCheck != isLoggedIn) {
+        var isLoggedIn = user !== null;
+        if (this.previousIsLoggedInCheck !== isLoggedIn) {
             setTimeout(function () {
                 _this._loginStatus.next(isLoggedIn);
             });
@@ -226,7 +230,7 @@ var AuthService = /** @class */ (function () {
     });
     Object.defineProperty(AuthService.prototype, "rememberMe", {
         get: function () {
-            return this.localStorage.getDataObject(db_Keys_1.DBkeys.REMEMBER_ME) == true;
+            return this.localStorage.getDataObject(db_Keys_1.DBkeys.REMEMBER_ME) === true;
         },
         enumerable: true,
         configurable: true

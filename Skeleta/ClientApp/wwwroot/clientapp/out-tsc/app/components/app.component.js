@@ -94,8 +94,9 @@ var AppComponent = /** @class */ (function () {
         this.unsubscribeNotifications();
     };
     AppComponent.prototype.unsubscribeNotifications = function () {
-        if (this.notificationsLoadingSubscription)
+        if (this.notificationsLoadingSubscription) {
             this.notificationsLoadingSubscription.unsubscribe();
+        }
     };
     AppComponent.prototype.initNotificationsLoading = function () {
         var _this = this;
@@ -105,10 +106,12 @@ var AppComponent = /** @class */ (function () {
             _this.newNotificationCount = notifications.filter(function (n) { return !n.isRead; }).length;
         }, function (error) {
             _this.alertService.logError(error);
-            if (_this.dataLoadingConsecutiveFailurs++ < 20)
+            if (_this.dataLoadingConsecutiveFailurs++ < 20) {
                 setTimeout(function () { return _this.initNotificationsLoading(); }, 5000);
-            else
+            }
+            else {
                 _this.alertService.showStickyMessage('Load Error', 'Loading new notifications from the server failed!', alert_service_1.MessageSeverity.error);
+            }
         });
     };
     AppComponent.prototype.markNotificationsAsRead = function () {
@@ -146,8 +149,9 @@ var AppComponent = /** @class */ (function () {
                         dialog.okCallback();
                     }
                     else {
-                        if (dialog.cancelCallback)
+                        if (dialog.cancelCallback) {
                             dialog.cancelCallback();
+                        }
                     }
                 });
                 break;
@@ -158,8 +162,9 @@ var AppComponent = /** @class */ (function () {
                         dialog.okCallback(val);
                     }
                     else {
-                        if (dialog.cancelCallback)
+                        if (dialog.cancelCallback) {
                             dialog.cancelCallback();
+                        }
                     }
                 }, dialog.defaultValue);
                 break;

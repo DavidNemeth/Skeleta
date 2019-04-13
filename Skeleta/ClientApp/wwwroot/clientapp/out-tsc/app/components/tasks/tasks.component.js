@@ -30,8 +30,6 @@ var TasksComponent = /** @class */ (function () {
     TasksComponent.prototype.arrPop = function (arr) {
         arr.pop();
     };
-    TasksComponent.prototype.ngOnDestroy = function () {
-    };
     Object.defineProperty(TasksComponent.prototype, "canViewUsers", {
         get: function () {
             return this.accountService.userHasPermission(permission_model_1.Permission.viewUsersPermission);

@@ -25,48 +25,52 @@ var LocalStoreManager = /** @class */ (function () {
             'clearAllSessionsStorage'
         ];
         this.sessionStorageTransferHandler = function (event) {
-            if (!event.newValue)
+            if (!event.newValue) {
                 return;
-            if (event.key == 'getSessionStorage') {
+            }
+            if (event.key === 'getSessionStorage') {
                 if (sessionStorage.length) {
                     _this.localStorageSetItem('setSessionStorage', sessionStorage);
                     localStorage.removeItem('setSessionStorage');
                 }
             }
-            else if (event.key == 'setSessionStorage') {
-                if (!_this.syncKeys.length)
+            else if (event.key === 'setSessionStorage') {
+                if (!_this.syncKeys.length) {
                     _this.loadSyncKeys();
+                }
                 var data = JSON.parse(event.newValue);
                 // console.info("Set => Key: Transfer setSessionStorage" + ",  data: " + JSON.stringify(data));
                 for (var key in data) {
-                    if (_this.syncKeysContains(key))
+                    if (_this.syncKeysContains(key)) {
                         _this.sessionStorageSetItem(key, JSON.parse(data[key]));
+                    }
                 }
                 _this.onInit();
             }
-            else if (event.key == 'addToSessionStorage') {
+            else if (event.key === 'addToSessionStorage') {
                 var data = JSON.parse(event.newValue);
                 // console.warn("Set => Key: Transfer addToSessionStorage" + ",  data: " + JSON.stringify(data));
                 _this.addToSessionStorageHelper(data['data'], data['key']);
             }
-            else if (event.key == 'removeFromSessionStorage') {
+            else if (event.key === 'removeFromSessionStorage') {
                 _this.removeFromSessionStorageHelper(event.newValue);
             }
-            else if (event.key == 'clearAllSessionsStorage' && sessionStorage.length) {
+            else if (event.key === 'clearAllSessionsStorage' && sessionStorage.length) {
                 _this.clearInstanceSessionStorage();
             }
-            else if (event.key == 'addToSyncKeys') {
+            else if (event.key === 'addToSyncKeys') {
                 _this.addToSyncKeysHelper(event.newValue);
             }
-            else if (event.key == 'removeFromSyncKeys') {
+            else if (event.key === 'removeFromSyncKeys') {
                 _this.removeFromSyncKeysHelper(event.newValue);
             }
         };
     }
     LocalStoreManager_1 = LocalStoreManager;
     LocalStoreManager.prototype.initialiseStorageSyncListener = function () {
-        if (LocalStoreManager_1.syncListenerInitialised == true)
+        if (LocalStoreManager_1.syncListenerInitialised === true) {
             return;
+        }
         LocalStoreManager_1.syncListenerInitialised = true;
         window.addEventListener('storage', this.sessionStorageTransferHandler, false);
         this.syncSessionStorage();
@@ -117,26 +121,31 @@ var LocalStoreManager = /** @class */ (function () {
         this.removeFromSyncKeysHelper(keyToRemove);
     };
     LocalStoreManager.prototype.testForInvalidKeys = function (key) {
-        if (!key)
+        if (!key) {
             throw new Error('key cannot be empty');
-        if (this.reservedKeys.some(function (x) { return x == key; }))
+        }
+        if (this.reservedKeys.some(function (x) { return x === key; })) {
             throw new Error("The storage key \"" + key + "\" is reserved and cannot be used. Please use a different key");
+        }
     };
     LocalStoreManager.prototype.syncKeysContains = function (key) {
-        return this.syncKeys.some(function (x) { return x == key; });
+        return this.syncKeys.some(function (x) { return x === key; });
     };
     LocalStoreManager.prototype.loadSyncKeys = function () {
-        if (this.syncKeys.length)
+        if (this.syncKeys.length) {
             return;
+        }
         this.syncKeys = this.getSyncKeysFromStorage();
     };
     LocalStoreManager.prototype.getSyncKeysFromStorage = function (defaultValue) {
         if (defaultValue === void 0) { defaultValue = []; }
         var data = this.localStorageGetItem(LocalStoreManager_1.DBKEY_SYNC_KEYS);
-        if (data == null)
+        if (data === null) {
             return defaultValue;
-        else
+        }
+        else {
             return data;
+        }
     };
     LocalStoreManager.prototype.addToSyncKeys = function (key) {
         this.addToSyncKeysHelper(key);
@@ -146,7 +155,7 @@ var LocalStoreManager = /** @class */ (function () {
     };
     LocalStoreManager.prototype.addToSyncKeysBackup = function (key) {
         var storedSyncKeys = this.getSyncKeysFromStorage();
-        if (!storedSyncKeys.some(function (x) { return x == key; })) {
+        if (!storedSyncKeys.some(function (x) { return x === key; })) {
             storedSyncKeys.push(key);
             this.localStorageSetItem(LocalStoreManager_1.DBKEY_SYNC_KEYS, storedSyncKeys);
         }
@@ -160,8 +169,9 @@ var LocalStoreManager = /** @class */ (function () {
         }
     };
     LocalStoreManager.prototype.addToSyncKeysHelper = function (key) {
-        if (!this.syncKeysContains(key))
+        if (!this.syncKeysContains(key)) {
             this.syncKeys.push(key);
+        }
     };
     LocalStoreManager.prototype.removeFromSyncKeys = function (key) {
         this.removeFromSyncKeysHelper(key);
@@ -198,39 +208,44 @@ var LocalStoreManager = /** @class */ (function () {
         if (key === void 0) { key = LocalStoreManager_1.DBKEY_USER_DATA; }
         this.testForInvalidKeys(key);
         var data = this.getData(key);
-        if (data == null)
+        if (data === null) {
             return;
+        }
         this.saveSessionData(data, key);
     };
     LocalStoreManager.prototype.moveDataToSyncedSessionStorage = function (key) {
         if (key === void 0) { key = LocalStoreManager_1.DBKEY_USER_DATA; }
         this.testForInvalidKeys(key);
         var data = this.getData(key);
-        if (data == null)
+        if (data === null) {
             return;
+        }
         this.saveSyncedSessionData(data, key);
     };
     LocalStoreManager.prototype.moveDataToPermanentStorage = function (key) {
         if (key === void 0) { key = LocalStoreManager_1.DBKEY_USER_DATA; }
         this.testForInvalidKeys(key);
         var data = this.getData(key);
-        if (data == null)
+        if (data === null) {
             return;
+        }
         this.savePermanentData(data, key);
     };
     LocalStoreManager.prototype.exists = function (key) {
         if (key === void 0) { key = LocalStoreManager_1.DBKEY_USER_DATA; }
         var data = sessionStorage.getItem(key);
-        if (data == null)
+        if (data === null) {
             data = localStorage.getItem(key);
+        }
         return data != null;
     };
     LocalStoreManager.prototype.getData = function (key) {
         if (key === void 0) { key = LocalStoreManager_1.DBKEY_USER_DATA; }
         this.testForInvalidKeys(key);
         var data = this.sessionStorageGetItem(key);
-        if (data == null)
+        if (data === null) {
             data = this.localStorageGetItem(key);
+        }
         return data;
     };
     LocalStoreManager.prototype.getDataObject = function (key, isDateType) {
@@ -238,8 +253,9 @@ var LocalStoreManager = /** @class */ (function () {
         if (isDateType === void 0) { isDateType = false; }
         var data = this.getData(key);
         if (data != null) {
-            if (isDateType)
+            if (isDateType) {
                 data = new Date(data);
+            }
             return data;
         }
         else {

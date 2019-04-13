@@ -53,7 +53,7 @@ export class AppComponent implements OnInit, OnDestroy {
     translationService.addLanguages(['en', 'hu']);
     translationService.setDefaultLanguage('en');
     translationService.changeLanguage();
-    
+
     this.toastaConfig.theme = 'default';
     this.toastaConfig.position = 'top-right';
     this.toastaConfig.limit = 1;
@@ -92,8 +92,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
       if (this.isUserLoggedIn) {
         this.initNotificationsLoading();
-      }
-      else {
+      } else {
         this.unsubscribeNotifications();
       }
 
@@ -120,8 +119,9 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   private unsubscribeNotifications() {
-    if (this.notificationsLoadingSubscription)
+    if (this.notificationsLoadingSubscription) {
       this.notificationsLoadingSubscription.unsubscribe();
+    }
   }
 
   initNotificationsLoading() {
@@ -134,10 +134,11 @@ export class AppComponent implements OnInit, OnDestroy {
         error => {
           this.alertService.logError(error);
 
-          if (this.dataLoadingConsecutiveFailurs++ < 20)
+          if (this.dataLoadingConsecutiveFailurs++ < 20) {
             setTimeout(() => this.initNotificationsLoading(), 5000);
-          else
+          } else {
             this.alertService.showStickyMessage('Load Error', 'Loading new notifications from the server failed!', MessageSeverity.error);
+          }
         });
   }
 
@@ -181,10 +182,10 @@ export class AppComponent implements OnInit, OnDestroy {
           .confirm(dialog.message, (e) => {
             if (e) {
               dialog.okCallback();
-            }
-            else {
-              if (dialog.cancelCallback)
+            } else {
+              if (dialog.cancelCallback) {
                 dialog.cancelCallback();
+              }
             }
           });
 
@@ -194,10 +195,10 @@ export class AppComponent implements OnInit, OnDestroy {
           .prompt(dialog.message, (e, val) => {
             if (e) {
               dialog.okCallback(val);
-            }
-            else {
-              if (dialog.cancelCallback)
+            } else {
+              if (dialog.cancelCallback) {
                 dialog.cancelCallback();
+              }
             }
           }, dialog.defaultValue);
 

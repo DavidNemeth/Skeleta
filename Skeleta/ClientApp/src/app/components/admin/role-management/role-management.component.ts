@@ -57,20 +57,19 @@ export class RoleManagementComponent implements OnInit {
 
   updateList(returnRole: Role) {
     if (this.sourceRole) {
-      let index = this.roles.indexOf(this.sourceRole);
-      let cacheIndex = this.rolesCache.indexOf(this.sourceRole);
+      const index = this.roles.indexOf(this.sourceRole);
+      const cacheIndex = this.rolesCache.indexOf(this.sourceRole);
       this.roles[index] = returnRole;
       this.rolesCache[cacheIndex] = returnRole;
-      this.sourceRole == null;
-    }
-    else {
+      this.sourceRole = new Role();
+    } else {
       this.roles.unshift(returnRole);
       this.rolesCache.unshift(returnRole);
     }
   }
 
   deleteList(rolestoDelete: Role[]) {
-    for (let role of rolestoDelete) {
+    for (const role of rolestoDelete) {
       this.roles = this.roles.filter(obj => obj !== role);
       this.rolesCache = this.rolesCache.filter(obj => obj !== role);
     }

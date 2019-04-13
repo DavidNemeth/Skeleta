@@ -7,7 +7,7 @@ import { AppTranslationService } from '../../../services/app-translation.service
 import { Utilities } from '../../../services/utilities';
 import { fadeInOut } from '../../../services/animations';
 import { Status } from '../../../models/enum';
-import { ClrDatagrid, ClrLoadingState } from "@clr/angular";
+import { ClrDatagrid, ClrLoadingState } from '@clr/angular';
 
 
 @Component({
@@ -17,6 +17,8 @@ import { ClrDatagrid, ClrLoadingState } from "@clr/angular";
   animations: [fadeInOut]
 })
 export class TaskManagementComponent implements OnInit {
+  constructor(private alertService: AlertService,
+    private translationService: AppTranslationService, private taskService: TaskService) { }
   submitBtnState: ClrLoadingState = ClrLoadingState.DEFAULT;
   deleteBtnState: ClrLoadingState = ClrLoadingState.DEFAULT;
   columns: any[] = [];
@@ -35,8 +37,6 @@ export class TaskManagementComponent implements OnInit {
 
   loadingIndicator: boolean;
   selected: TaskList[] = [];
-  
-  gT = (key: string) => this.translationService.getTranslation(key);
   CompletedActive;
   ResolvedActive;
   PendingActive;
@@ -44,12 +44,12 @@ export class TaskManagementComponent implements OnInit {
   curDate = new Date();
   @ViewChild(ClrDatagrid) grid: ClrDatagrid;
   @ViewChild(TaskEditComponent) taskEdit;
-  @ViewChild("excel") excelLink: ElementRef;
-  @ViewChild("word") wordLink: ElementRef;
-  @ViewChild("pdf") pdfLink: ElementRef;
-  private isOpen = true;
-  constructor(private alertService: AlertService,
-    private translationService: AppTranslationService, private taskService: TaskService) { }
+  @ViewChild('excel') excelLink: ElementRef;
+  @ViewChild('word') wordLink: ElementRef;
+  @ViewChild('pdf') pdfLink: ElementRef;
+  isOpen = true;
+
+  gT = (key: string) => this.translationService.getTranslation(key);
 
   ngOnInit() {
     this.PendingActive = true;
@@ -87,7 +87,7 @@ export class TaskManagementComponent implements OnInit {
     }
   }
 
-  
+
 
   loadData() {
     if (this.CompletedActive) {
@@ -143,31 +143,29 @@ export class TaskManagementComponent implements OnInit {
   onDataLoadSuccessful(tasks?: TaskList[], status?: Status) {
     this.alertService.stopLoadingMessage();
     this.loadingIndicator = false;
-    if (status == Status.Active) {
+    if (status === Status.Active) {
       this.pendingTasks = tasks;
       this.pendingTasksCache = tasks;
     }
-    if (status == Status.Resolved) {
+    if (status === Status.Resolved) {
       this.resolvedTasks = tasks;
       this.resolvedTasksCache = tasks;
     }
-    if (status == Status.Completed) {
+    if (status === Status.Completed) {
       this.completedTasks = tasks;
       this.completedTasksCache = tasks;
     }
-    if (status == Status.Closed) {
+    if (status === Status.Closed) {
       this.archivedTasks = tasks;
       this.archivedTasksCache = tasks;
     }
     this.isOpen = true;
-    console.log("data loaded");
-    this.grid.refresh;
   }
 
   onDataLoadFailed(error: any) {
     this.alertService.stopLoadingMessage();
     this.loadingIndicator = false;
-    console.log("Error while fetching list: ",error);
+    console.log('Error while fetching list: ', error);
     this.alertService.showStickyMessage('Load Error',
       `Unable to retrieve users from the server.\r\nErrors: "${Utilities.getHttpResponseMessage(error)}"`,
       MessageSeverity.error, error);
@@ -190,8 +188,8 @@ export class TaskManagementComponent implements OnInit {
   }
 
   deleteList(tasksToDelete: TaskList[]) {
-    for (let task of tasksToDelete) {
-      this.removeItem(task.id)
+    for (const task of tasksToDelete) {
+      this.removeItem(task.id);
     }
   }
 
@@ -200,31 +198,31 @@ export class TaskManagementComponent implements OnInit {
   }
 
   popSelected(tasks: TaskList[]) {
-    for (let task of tasks) {
+    for (const task of tasks) {
       this.removeItem(task.id);
     }
   }
 
   private removeItem(id: number) {
     if (this.CompletedActive) {
-      let task = this.completedTasks.filter(x => x.id == id)[0];
-      let updateItem = this.completedTasks.find(this.findIndexToUpdate, task.id);
+      const task = this.completedTasks.filter(x => x.id === id)[0];
+      const updateItem = this.completedTasks.find(this.findIndexToUpdate, task.id);
       const taskIndex = this.completedTasks.indexOf(task, 0);
       if (taskIndex > -1) {
         this.completedTasks.splice(taskIndex, 1);
       }
     }
     if (this.ResolvedActive) {
-      let task = this.resolvedTasks.filter(x => x.id == id)[0];
-      let updateItem = this.resolvedTasks.find(this.findIndexToUpdate, task.id);
+      const task = this.resolvedTasks.filter(x => x.id === id)[0];
+      const updateItem = this.resolvedTasks.find(this.findIndexToUpdate, task.id);
       const taskIndex = this.resolvedTasks.indexOf(task, 0);
       if (taskIndex > -1) {
         this.resolvedTasks.splice(taskIndex, 1);
       }
     }
     if (this.PendingActive) {
-      let task = this.pendingTasks.filter(x => x.id == id)[0];
-      let updateItem = this.pendingTasks.find(this.findIndexToUpdate, task.id);
+      const task = this.pendingTasks.filter(x => x.id === id)[0];
+      const updateItem = this.pendingTasks.find(this.findIndexToUpdate, task.id);
       const taskIndex = this.pendingTasks.indexOf(task, 0);
       if (taskIndex > -1) {
         this.pendingTasks.splice(taskIndex, 1);
@@ -235,32 +233,30 @@ export class TaskManagementComponent implements OnInit {
     return newItem.id === this;
   }
 
-  private handleUpdate(task: TaskList) {
+  handleUpdate(task: TaskList) {
     if (this.PendingActive) {
-      if (task.status == Status.Active || task.status == Status.New) {
-        let updateItem = this.pendingTasks.find(this.findIndexToUpdate, task.id);
-        let index = this.pendingTasks.indexOf(updateItem);
+      if (task.status === Status.Active || task.status === Status.New) {
+        const updateItem = this.pendingTasks.find(this.findIndexToUpdate, task.id);
+        const index = this.pendingTasks.indexOf(updateItem);
         this.pendingTasks[index] = task;
-      }
-      else {
+      } else {
         this.removeItem(task.id);
       }
     }
     if (this.CompletedActive) {
-      if (task.status == Status.Completed) {
-        let updateItem = this.completedTasks.find(this.findIndexToUpdate, task.id);
-        let index = this.completedTasks.indexOf(updateItem);
+      if (task.status === Status.Completed) {
+        const updateItem = this.completedTasks.find(this.findIndexToUpdate, task.id);
+        const index = this.completedTasks.indexOf(updateItem);
         this.completedTasks[index] = task;
-      }
-      else {
+      } else {
         this.removeItem(task.id);
       }
     }
   }
 
- 
 
-  private open() {
+
+  open() {
     this.isOpen = true;
   }
 }

@@ -1,4 +1,4 @@
-﻿
+
 import { Injectable } from '@angular/core';
 import { HttpResponseBase } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
@@ -57,8 +57,9 @@ export class AlertService {
   showDialog(message: string, type?: DialogType, okCallback?: (val?: any) => any, cancelCallback?: () => any, okLabel?: string,
     cancelLabel?: string, defaultValue?: string) {
 
-    if (!type)
+    if (!type) {
       type = DialogType.alert;
+    }
 
     this.dialogs.next({
       message: message, type: type, okCallback: okCallback, cancelCallback: cancelCallback, okLabel: okLabel,
@@ -69,13 +70,14 @@ export class AlertService {
 
 
   showMessage(summary: string);
-  showMessage(summary: string, detail: string, severity: MessageSeverity);
+  showMessage(summary: string | string[], detail: string, severity: MessageSeverity);
   showMessage(summaryAndDetails: string[], summaryAndDetailsSeparator: string, severity: MessageSeverity);
   showMessage(response: HttpResponseBase, ignoreValue_useNull: string, severity: MessageSeverity);
   showMessage(data: any, separatorOrDetail?: string, severity?: MessageSeverity) {
 
-    if (!severity)
+    if (!severity) {
       severity = MessageSeverity.default;
+    }
 
     if (data instanceof HttpResponseBase) {
       data = Utilities.getHttpResponseMessage(data);
@@ -88,8 +90,7 @@ export class AlertService {
 
         this.showMessageHelper(msgObject.firstPart, msgObject.secondPart, severity, false);
       }
-    }
-    else {
+    } else {
       this.showMessageHelper(data, separatorOrDetail, severity, false);
     }
   }
@@ -101,8 +102,9 @@ export class AlertService {
   showStickyMessage(response: HttpResponseBase, ignoreValue_useNull: string, severity: MessageSeverity);
   showStickyMessage(data: string | string[] | HttpResponseBase, separatorOrDetail?: string, severity?: MessageSeverity, error?: any) {
 
-    if (!severity)
+    if (!severity) {
       severity = MessageSeverity.default;
+    }
 
     if (data instanceof HttpResponseBase) {
       data = Utilities.getHttpResponseMessage(data);
@@ -116,8 +118,7 @@ export class AlertService {
 
         this.showMessageHelper(msgObject.firstPart, msgObject.secondPart, severity, true);
       }
-    }
-    else {
+    } else {
 
       if (error) {
 
@@ -154,10 +155,11 @@ export class AlertService {
 
   private showMessageHelper(summary: string, detail: string, severity: MessageSeverity, isSticky: boolean) {
 
-    if (isSticky)
+    if (isSticky) {
       this.stickyMessages.next({ severity: severity, summary: summary, detail: detail });
-    else
+    } else {
       this.messages.next({ severity: severity, summary: summary, detail: detail });
+    }
   }
 
 

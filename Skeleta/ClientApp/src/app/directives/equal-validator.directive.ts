@@ -17,8 +17,9 @@ export class EqualValidator implements Validator {
   validate(c: AbstractControl): { [key: string]: any } {
     const other = c.root.get(this.validateEqual);
 
-    if (!other)
+    if (!other) {
       return null;
+    }
 
     return this.reverse === 'true' ? this.validateReverse(c, other) : this.validateNoReverse(c, other);
   }
@@ -32,7 +33,7 @@ export class EqualValidator implements Validator {
       if (other.errors) {
         delete other.errors['validateEqual'];
 
-        if (Object.keys(other.errors).length == 0) {
+        if (Object.keys(other.errors).length === 0) {
           other.setErrors(null);
         }
       }

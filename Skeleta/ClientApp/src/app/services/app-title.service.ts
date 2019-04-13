@@ -1,4 +1,4 @@
-﻿import { Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Router, NavigationEnd, PRIMARY_OUTLET } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { filter, map, flatMap } from 'rxjs/operators';
@@ -18,8 +18,9 @@ export class AppTitleService {
       filter(event => event instanceof NavigationEnd),
       map(_ => this.router.routerState.root),
       map(route => {
-        while (route.firstChild)
+        while (route.firstChild) {
           route = route.firstChild;
+        }
 
         return route;
       }),
@@ -30,17 +31,20 @@ export class AppTitleService {
         if (title) {
           const fragment = this.router.url.split('#')[1];
 
-          if (fragment)
+          if (fragment) {
             title += ' | ' + Utilities.toTitleCase(fragment);
+          }
         }
 
-        if (title && this.appName)
+        if (title && this.appName) {
           title += ' - ' + this.appName;
-        else if (this.appName)
+        } else if (this.appName) {
           title = this.appName;
+ }
 
-        if (title)
+        if (title) {
           this.titleService.setTitle(title);
+        }
       });
   }
 

@@ -23,6 +23,6 @@ export class TaskDetailComponent implements OnInit {
         Object.assign(this.detail, response);
         this.loading = false;
       }
-    )
+    );
   }
 }

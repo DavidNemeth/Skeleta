@@ -20,8 +20,9 @@ export class EndpointFactory {
   private _authService: AuthService;
 
   private get authService() {
-    if (!this._authService)
+    if (!this._authService) {
       this._authService = this.injector.get(AuthService);
+    }
 
     return this._authService;
   }
@@ -92,7 +93,7 @@ export class EndpointFactory {
 
   protected handleError(error, continuation: () => Observable<any>) {
 
-    if (error.status == 401) {
+    if (error.status === 401) {
       if (this.isRefreshingLogin) {
         return this.pauseTask(continuation);
       }
@@ -110,12 +111,11 @@ export class EndpointFactory {
           this.isRefreshingLogin = false;
           this.resumeTasks(false);
 
-          if (refreshLoginError.status == 401 || (refreshLoginError.url && refreshLoginError.url.toLowerCase()
+          if (refreshLoginError.status === 401 || (refreshLoginError.url && refreshLoginError.url.toLowerCase()
             .includes(this.loginUrl.toLowerCase()))) {
             this.authService.reLogin();
             return throwError('session expired');
-          }
-          else {
+          } else {
             return throwError(refreshLoginError || 'server error');
           }
         }));
@@ -126,8 +126,7 @@ export class EndpointFactory {
 
       return throwError((error.error && error.error.error_description) ? `session expired (${error.error.error_description})` :
         'session expired');
-    }
-    else {
+    } else {
       return throwError(error);
     }
   }
@@ -135,8 +134,9 @@ export class EndpointFactory {
 
 
   private pauseTask(continuation: () => Observable<any>) {
-    if (!this.taskPauser)
+    if (!this.taskPauser) {
       this.taskPauser = new Subject();
+    }
 
     return this.taskPauser.pipe(switchMap(continueOp => {
       return continueOp ? continuation() : throwError('session expired');

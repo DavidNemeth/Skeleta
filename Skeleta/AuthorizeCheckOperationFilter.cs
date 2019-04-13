@@ -3,7 +3,7 @@ using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Collections.Generic;
 using System.Linq;
-
+ 
 namespace Skeleta
 {
 	// Swagger IOperationFilter implementation that will validate whether an action has an applicable Authorize attribute.

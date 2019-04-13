@@ -1,6 +1,6 @@
-import { User } from "../../models/user.model";
-import { Priority, Status } from "../../models/enum";
-import { BugItem } from "../bugItems/bugItem.model";
+import { User } from '../../models/user.model';
+import { Priority, Status } from '../../models/enum';
+import { BugItem } from '../bugItems/bugItem.model';
 
 abstract class Task {
   constructor(id?: number, title?: string, releaseId?,

@@ -30,7 +30,7 @@ var Priority;
 var Status;
 (function (Status) {
     Status["New"] = "New";
-    //Rejected = "Rejected",
+    // Rejected = "Rejected",
     Status["Active"] = "Active";
     Status["Resolved"] = "Resolved";
     Status["Completed"] = "Completed";

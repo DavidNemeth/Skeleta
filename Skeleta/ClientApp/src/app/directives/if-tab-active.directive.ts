@@ -1,9 +1,9 @@
 import {
   Directive, OnInit, OnDestroy, Self, Host, EventEmitter, Output, Renderer2, Input,
   ElementRef
-} from "@angular/core";
-import { Subscription } from "rxjs";
-import { ClrTab } from "@clr/angular";
+} from '@angular/core';
+import { Subscription } from 'rxjs';
+import { ClrTab } from '@clr/angular';
 
 @Directive({
   selector: '[vscIfTabActive]'

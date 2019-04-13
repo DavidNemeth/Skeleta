@@ -10,24 +10,17 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
-var task_model_1 = require("../../../services/tasks/task.model");
 var task_edit_component_1 = require("../../controls/editors/task-edit/task-edit.component");
 var alert_service_1 = require("../../../services/alert.service");
 var taskService_1 = require("../../../services/tasks/taskService");
 var app_translation_service_1 = require("../../../services/app-translation.service");
 var utilities_1 = require("../../../services/utilities");
-var account_service_1 = require("../../../services/account.service");
 var animations_1 = require("../../../services/animations");
 var enum_1 = require("../../../models/enum");
 var angular_1 = require("@clr/angular");
-var fast_json_patch_1 = require("fast-json-patch");
-var docx = require("docx");
-var docx_1 = require("docx");
-var file_saver_1 = require("file-saver");
 var TaskManagementComponent = /** @class */ (function () {
-    function TaskManagementComponent(accountService, alertService, translationService, taskService) {
+    function TaskManagementComponent(alertService, translationService, taskService) {
         var _this = this;
-        this.accountService = accountService;
         this.alertService = alertService;
         this.translationService = translationService;
         this.taskService = taskService;
@@ -43,12 +36,9 @@ var TaskManagementComponent = /** @class */ (function () {
         this.archivedTasks = [];
         this.archivedTasksCache = [];
         this.selected = [];
-        this.tasksToRelease = [];
-        this.gT = function (key) { return _this.translationService.getTranslation(key); };
         this.curDate = new Date();
         this.isOpen = true;
-        this.releaseOpen = false;
-        this.shouldArchive = true;
+        this.gT = function (key) { return _this.translationService.getTranslation(key); };
     }
     TaskManagementComponent.prototype.ngOnInit = function () {
         this.PendingActive = true;
@@ -76,32 +66,8 @@ var TaskManagementComponent = /** @class */ (function () {
     };
     TaskManagementComponent.prototype.onExportSelected = function (selected) {
         if (selected.length > 0) {
-            Object.assign(this.tasksToRelease, selected);
-            console.log(this.tasksToRelease);
-            this.releaseOpen = true;
+            this.taskEdit.MarkExport(selected);
         }
-    };
-    TaskManagementComponent.prototype.download = function (selected) {
-        var doc = new docx.Document();
-        var titleDoc = "Releasenote: " + this.curDate.toLocaleDateString() + "\n" + "\n" + "\n" + "\n" + "Az alkalmazás az alábbi fejlesztésekkel bővült: " + "\n" + "\n" + "\n";
-        var maintitle = new docx.Paragraph(titleDoc);
-        doc.addParagraph(maintitle);
-        for (var _i = 0, selected_1 = selected; _i < selected_1.length; _i++) {
-            var task = selected_1[_i];
-            var paragraph = new docx.Paragraph(task.id.toString());
-            var mainTitle = new docx_1.TextRun(task.title).tab().bold();
-            paragraph.addRun(mainTitle);
-            doc.addParagraph(paragraph);
-        }
-        // Used to export the file into a .docx file
-        var packer = new docx_1.Packer();
-        var title = this.curDate.toLocaleDateString() + "_releasenote.docx";
-        packer.toBlob(doc).then(function (blob) {
-            console.log(blob);
-            file_saver_1.saveAs(blob, title);
-            console.log("Document created successfully");
-        });
-        selected = [];
     };
     TaskManagementComponent.prototype.loadData = function () {
         if (this.CompletedActive) {
@@ -156,30 +122,28 @@ var TaskManagementComponent = /** @class */ (function () {
     TaskManagementComponent.prototype.onDataLoadSuccessful = function (tasks, status) {
         this.alertService.stopLoadingMessage();
         this.loadingIndicator = false;
-        if (status == enum_1.Status.Active) {
+        if (status === enum_1.Status.Active) {
             this.pendingTasks = tasks;
             this.pendingTasksCache = tasks;
         }
-        if (status == enum_1.Status.Resolved) {
+        if (status === enum_1.Status.Resolved) {
             this.resolvedTasks = tasks;
             this.resolvedTasksCache = tasks;
         }
-        if (status == enum_1.Status.Completed) {
+        if (status === enum_1.Status.Completed) {
             this.completedTasks = tasks;
             this.completedTasksCache = tasks;
         }
-        if (status == enum_1.Status.Closed) {
+        if (status === enum_1.Status.Closed) {
             this.archivedTasks = tasks;
             this.archivedTasksCache = tasks;
         }
         this.isOpen = true;
-        console.log("data loaded");
-        this.grid.refresh;
     };
     TaskManagementComponent.prototype.onDataLoadFailed = function (error) {
         this.alertService.stopLoadingMessage();
         this.loadingIndicator = false;
-        console.log("Error while fetching list: ", error);
+        console.log('Error while fetching list: ', error);
         this.alertService.showStickyMessage('Load Error', "Unable to retrieve users from the server.\r\nErrors: \"" + utilities_1.Utilities.getHttpResponseMessage(error) + "\"", alert_service_1.MessageSeverity.error, error);
         this.isOpen = true;
     };
@@ -211,11 +175,10 @@ var TaskManagementComponent = /** @class */ (function () {
             var task = tasks_1[_i];
             this.removeItem(task.id);
         }
-        this.tasksToRelease = [];
     };
     TaskManagementComponent.prototype.removeItem = function (id) {
         if (this.CompletedActive) {
-            var task = this.completedTasks.filter(function (x) { return x.id == id; })[0];
+            var task = this.completedTasks.filter(function (x) { return x.id === id; })[0];
             var updateItem = this.completedTasks.find(this.findIndexToUpdate, task.id);
             var taskIndex = this.completedTasks.indexOf(task, 0);
             if (taskIndex > -1) {
@@ -223,7 +186,7 @@ var TaskManagementComponent = /** @class */ (function () {
             }
         }
         if (this.ResolvedActive) {
-            var task = this.resolvedTasks.filter(function (x) { return x.id == id; })[0];
+            var task = this.resolvedTasks.filter(function (x) { return x.id === id; })[0];
             var updateItem = this.resolvedTasks.find(this.findIndexToUpdate, task.id);
             var taskIndex = this.resolvedTasks.indexOf(task, 0);
             if (taskIndex > -1) {
@@ -231,7 +194,7 @@ var TaskManagementComponent = /** @class */ (function () {
             }
         }
         if (this.PendingActive) {
-            var task = this.pendingTasks.filter(function (x) { return x.id == id; })[0];
+            var task = this.pendingTasks.filter(function (x) { return x.id === id; })[0];
             var updateItem = this.pendingTasks.find(this.findIndexToUpdate, task.id);
             var taskIndex = this.pendingTasks.indexOf(task, 0);
             if (taskIndex > -1) {
@@ -244,7 +207,7 @@ var TaskManagementComponent = /** @class */ (function () {
     };
     TaskManagementComponent.prototype.handleUpdate = function (task) {
         if (this.PendingActive) {
-            if (task.status == enum_1.Status.Active || task.status == enum_1.Status.New) {
+            if (task.status === enum_1.Status.Active || task.status === enum_1.Status.New) {
                 var updateItem = this.pendingTasks.find(this.findIndexToUpdate, task.id);
                 var index = this.pendingTasks.indexOf(updateItem);
                 this.pendingTasks[index] = task;
@@ -254,7 +217,7 @@ var TaskManagementComponent = /** @class */ (function () {
             }
         }
         if (this.CompletedActive) {
-            if (task.status == enum_1.Status.Completed) {
+            if (task.status === enum_1.Status.Completed) {
                 var updateItem = this.completedTasks.find(this.findIndexToUpdate, task.id);
                 var index = this.completedTasks.indexOf(updateItem);
                 this.completedTasks[index] = task;
@@ -263,33 +226,6 @@ var TaskManagementComponent = /** @class */ (function () {
                 this.removeItem(task.id);
             }
         }
-    };
-    TaskManagementComponent.prototype.onRelease = function () {
-        var _this = this;
-        this.download(this.tasksToRelease);
-        this.deleteBtnState = angular_1.ClrLoadingState.LOADING;
-        if (this.tasksToRelease) {
-            for (var i = 0; i < this.tasksToRelease.length; i++) {
-                var taskEdit = new task_model_1.TaskList();
-                Object.assign(taskEdit, this.tasksToRelease[i]);
-                if (this.shouldArchive) {
-                    taskEdit.status = enum_1.Status.Closed;
-                }
-                taskEdit.releaseId = this.releaseGroupname;
-                var patchDocument = fast_json_patch_1.compare(this.tasksToRelease[i], taskEdit);
-                this.taskService.UpdateTask(patchDocument, taskEdit.id).subscribe(function (response) {
-                }, function (error) { return _this.alertService.showMessage(error, null, alert_service_1.MessageSeverity.error); });
-            }
-        }
-        this.alertService.showMessage(this.gT('toasts.saved'), "Release Note Generated, Tasks Archived!", alert_service_1.MessageSeverity.success);
-        this.deleteBtnState = angular_1.ClrLoadingState.SUCCESS;
-        if (this.shouldArchive) {
-            this.popSelected(this.tasksToRelease);
-        }
-        else {
-            this.tasksToRelease = [];
-        }
-        this.releaseOpen = false;
     };
     TaskManagementComponent.prototype.open = function () {
         this.isOpen = true;
@@ -303,15 +239,15 @@ var TaskManagementComponent = /** @class */ (function () {
         __metadata("design:type", Object)
     ], TaskManagementComponent.prototype, "taskEdit", void 0);
     __decorate([
-        core_1.ViewChild("excel"),
+        core_1.ViewChild('excel'),
         __metadata("design:type", core_1.ElementRef)
     ], TaskManagementComponent.prototype, "excelLink", void 0);
     __decorate([
-        core_1.ViewChild("word"),
+        core_1.ViewChild('word'),
         __metadata("design:type", core_1.ElementRef)
     ], TaskManagementComponent.prototype, "wordLink", void 0);
     __decorate([
-        core_1.ViewChild("pdf"),
+        core_1.ViewChild('pdf'),
         __metadata("design:type", core_1.ElementRef)
     ], TaskManagementComponent.prototype, "pdfLink", void 0);
     TaskManagementComponent = __decorate([
@@ -321,7 +257,7 @@ var TaskManagementComponent = /** @class */ (function () {
             styleUrls: ['./task-management.component.css'],
             animations: [animations_1.fadeInOut]
         }),
-        __metadata("design:paramtypes", [account_service_1.AccountService, alert_service_1.AlertService,
+        __metadata("design:paramtypes", [alert_service_1.AlertService,
             app_translation_service_1.AppTranslationService, taskService_1.TaskService])
     ], TaskManagementComponent);
     return TaskManagementComponent;

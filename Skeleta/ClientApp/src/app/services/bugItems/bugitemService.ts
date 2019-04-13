@@ -1,10 +1,10 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { AuthService } from "../auth.service";
-import { Router } from "@angular/router";
-import { PermissionValues } from "../../models/permission.model";
-import { BugItem } from "./bugItem.model";
-import { BugItemEndpoint } from "./bugItem-endpoint.service";
+import { AuthService } from '../auth.service';
+import { Router } from '@angular/router';
+import { PermissionValues } from '../../models/permission.model';
+import { BugItem } from './bugItem.model';
+import { BugItemEndpoint } from './bugItem-endpoint.service';
 
 @Injectable()
 export class BugItemService {

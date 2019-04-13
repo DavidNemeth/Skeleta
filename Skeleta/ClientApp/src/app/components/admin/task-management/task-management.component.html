@@ -1,5 +1,5 @@
 <div class="contentWrapper">
-  <app-task-edit (cancel)="open($event)" (refresh)="loadData($event)" (popSelected)="popSelected($event)" (popData)="popItem($event)" (updateData)="handleUpdate($event)"></app-task-edit>
+  <app-task-edit (cancel)="open()" (refresh)="loadData()" (popSelected)="popSelected($event)" (popData)="popItem($event)" (updateData)="handleUpdate($event)"></app-task-edit>
   <clr-tabs [hidden]="!isOpen">
     <!-- Active Tab -->
     <clr-tab>
@@ -403,6 +403,5 @@
         </clr-tab-content>
       </ng-template>
     </clr-tab>
-
   </clr-tabs>
 </div>

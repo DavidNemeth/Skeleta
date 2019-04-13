@@ -1,4 +1,4 @@
-﻿import { Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Observable, interval } from 'rxjs';
 import { map, flatMap, startWith } from 'rxjs/operators';
 
@@ -74,8 +74,7 @@ export class NotificationService {
 
     if (typeof notificationOrNotificationId === 'number' || notificationOrNotificationId instanceof Number) {
       return this.notificationEndpoint.getPinUnpinNotificationEndpoint(<number>notificationOrNotificationId, isPinned);
-    }
-    else {
+    } else {
       return this.pinUnpinNotification(notificationOrNotificationId.id);
     }
   }
@@ -94,11 +93,10 @@ export class NotificationService {
     if (typeof notificationOrNotificationId === 'number' || notificationOrNotificationId instanceof Number) {
       return this.notificationEndpoint.getDeleteNotificationEndpoint(<number>notificationOrNotificationId).pipe(
         map(response => {
-          this.recentNotifications = this.recentNotifications.filter(n => n.id != notificationOrNotificationId);
+          this.recentNotifications = this.recentNotifications.filter(n => n.id !== notificationOrNotificationId);
           return Notification.Create(response);
         }));
-    }
-    else {
+    } else {
       return this.deleteNotification(notificationOrNotificationId.id);
     }
   }
@@ -110,8 +108,9 @@ export class NotificationService {
     const notifications = this.getNotificationsFromResponse(response);
 
     for (const n of notifications) {
-      if (n.date > this.lastNotificationDate)
+      if (n.date > this.lastNotificationDate) {
         this.lastNotificationDate = n.date;
+      }
     }
 
     return notifications;
@@ -122,8 +121,9 @@ export class NotificationService {
     const notifications: Notification[] = [];
 
     for (const i in response) {
-      if (response.hasOwnProperty(i))
+      if (response.hasOwnProperty(i)) {
         notifications[i] = Notification.Create(response[i]);
+      }
     }
 
     notifications.sort((a, b) => b.date.valueOf() - a.date.valueOf());

@@ -13,7 +13,9 @@ var KeysPipe = /** @class */ (function () {
     KeysPipe.prototype.transform = function (value, args) {
         var keys = [];
         for (var key in value) {
-            keys.push(key);
+            if (value.hasOwnProperty(key)) {
+                keys.push(key);
+            }
         }
         return keys;
     };

@@ -1,11 +1,11 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { TaskList, TaskEdit, ExpandTask } from "./task.model";
-import { TaskEndpoint } from "./task-endpoint.service";
-import { AuthService } from "../auth.service";
-import { Router } from "@angular/router";
-import { PermissionValues } from "../../models/permission.model";
-import { Operation } from "fast-json-patch";
+import { TaskList, TaskEdit, ExpandTask } from './task.model';
+import { TaskEndpoint } from './task-endpoint.service';
+import { AuthService } from '../auth.service';
+import { Router } from '@angular/router';
+import { PermissionValues } from '../../models/permission.model';
+import { Operation } from 'fast-json-patch';
 
 @Injectable()
 export class TaskService {
@@ -35,7 +35,7 @@ export class TaskService {
 
   GetCompletedTask() {
     return this.taskEndpoint.getCompletedEndpoint<TaskList[]>();
-  }  
+  }
 
   GetResolvedTask() {
     return this.taskEndpoint.getResolvedEndpoint<TaskList[]>();
@@ -45,8 +45,8 @@ export class TaskService {
     return this.taskEndpoint.getCreateEndpoint<TaskEdit>(task);
   }
 
-  UpdateTask(patchDocument: Operation[], taskId?: number) {    
-    return this.taskEndpoint.getUpdateEndpoint<TaskEdit>(patchDocument, taskId);   
+  UpdateTask(patchDocument: Operation[], taskId?: number) {
+    return this.taskEndpoint.getUpdateEndpoint<TaskEdit>(patchDocument, taskId);
   }
 
   DeleteTask(task: TaskEdit) {
@@ -54,8 +54,8 @@ export class TaskService {
   }
 
   DeleteRangeTasks(tasks: TaskEdit[]) {
-    var ids: number[] = [];
-    for (let task of tasks) {
+    const ids: number[] = [];
+    for (const task of tasks) {
       ids.push(task.id);
     }
     return this.taskEndpoint.getDeleteRangeEndpoint<TaskEdit>(ids);

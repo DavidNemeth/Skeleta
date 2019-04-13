@@ -42,9 +42,10 @@ var AppTranslationService = /** @class */ (function () {
     AppTranslationService.prototype.changeLanguage = function (language) {
         var _this = this;
         if (language === void 0) { language = 'en'; }
-        if (!language)
+        if (!language) {
             language = this.translate.defaultLang;
-        if (language != this.translate.currentLang) {
+        }
+        if (language !== this.translate.currentLang) {
             setTimeout(function () {
                 _this.translate.use(language);
                 _this.onLanguageChanged.next(language);
@@ -73,14 +74,14 @@ var TranslateLanguageLoader = /** @class */ (function () {
         switch (lang) {
             case 'en':
                 return rxjs_1.of(require('../assets/locale/en.json'));
-            //case 'fr':
-            //	return of(require('../assets/locale/fr.json'));
-            //case 'de':
-            //	return of(require('../assets/locale/de.json'));
-            //case 'pt':
-            //	return of(require('../assets/locale/pt.json'));
-            //case 'ar':
-            //	return of(require('../assets/locale/ar.json'));
+            // case 'fr':
+            // 	return of(require('../assets/locale/fr.json'));
+            // case 'de':
+            // 	return of(require('../assets/locale/de.json'));
+            // case 'pt':
+            // 	return of(require('../assets/locale/pt.json'));
+            // case 'ar':
+            // 	return of(require('../assets/locale/ar.json'));
             case 'hu':
                 return rxjs_1.of(require('../assets/locale/hu.json'));
             default:

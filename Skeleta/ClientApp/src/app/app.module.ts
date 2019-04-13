@@ -7,7 +7,7 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { ToastaModule } from 'ngx-toasta';
-import { ClarityModule } from "@clr/angular";
+import { ClarityModule } from '@clr/angular';
 
 import { NgSelectModule } from '@ng-select/ng-select';
 import { QuillModule } from 'ngx-quill';
@@ -30,6 +30,8 @@ import { TaskEndpoint } from './services/tasks/task-endpoint.service';
 import { BugItemService } from './services/bugItems/bugitemService';
 import { BugItemEndpoint } from './services/bugItems/bugItem-endpoint.service';
 
+import { EqualValidator } from './directives/equal-validator.directive';
+import { ThemesComponent } from './components/controls/themes/themes.component';
 import { AppComponent } from './components/app.component';
 import { HomeComponent } from './components/home/home.component';
 import { LoginComponent } from './components/login/login.component';
@@ -67,6 +69,7 @@ import { TaskDetailComponent } from './components/tasks/task-detail/task-detail.
     SearchBoxComponent,
     UserInfoComponent,
     IfTabActive,
+    EqualValidator,
     SmartDashboardComponent,
     SmartSettingsComponent,
     AdminComponent,
@@ -80,7 +83,8 @@ import { TaskDetailComponent } from './components/tasks/task-detail/task-detail.
     TasksComponent,
     BugitemsComponent,
     BugitemEditComponent,
-    TaskDetailComponent
+    TaskDetailComponent,
+    ThemesComponent
   ],
   imports: [
     BrowserModule,
@@ -89,7 +93,7 @@ import { TaskDetailComponent } from './components/tasks/task-detail/task-detail.
     FormsModule,
     NgSelectModule,
     ReactiveFormsModule,
-    AppRoutingModule,    
+    AppRoutingModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -97,9 +101,9 @@ import { TaskDetailComponent } from './components/tasks/task-detail/task-detail.
       }
     }),
     ToastaModule.forRoot(),
-    ClarityModule,    
+    ClarityModule,
     QuillModule.forRoot({
-      modules: {    
+      modules: {
         toolbar: [
           [{ 'size': ['small', false, 'large', 'huge'] }],
           ['bold', 'italic', 'strike'],
@@ -124,7 +128,7 @@ import { TaskDetailComponent } from './components/tasks/task-detail/task-detail.
     AccountEndpoint,
     AlertService,
     AccountService,
-    ConfigurationService,  
+    ConfigurationService,
     EndpointFactory,
     TaskService,
     TaskEndpoint,
@@ -132,7 +136,8 @@ import { TaskDetailComponent } from './components/tasks/task-detail/task-detail.
     BugItemEndpoint
   ],
   exports: [
-    IfTabActive
+    IfTabActive,
+    EqualValidator
   ],
   bootstrap: [AppComponent]
 })

@@ -14,6 +14,7 @@ var alert_service_1 = require("../../../services/alert.service");
 var app_translation_service_1 = require("../../../services/app-translation.service");
 var account_service_1 = require("../../../services/account.service");
 var utilities_1 = require("../../../services/utilities");
+var user_model_1 = require("../../../models/user.model");
 var role_model_1 = require("../../../models/role.model");
 var permission_model_1 = require("../../../models/permission.model");
 var user_edit_component_1 = require("../../controls/editors/user-edit/user-edit.component");
@@ -30,6 +31,27 @@ var UserManagementComponent = /** @class */ (function () {
         this.allRoles = [];
         this.gT = function (key) { return _this.translationService.getTranslation(key); };
     }
+    Object.defineProperty(UserManagementComponent.prototype, "canAssignRoles", {
+        get: function () {
+            return this.accountService.userHasPermission(permission_model_1.Permission.assignRolesPermission);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(UserManagementComponent.prototype, "canViewRoles", {
+        get: function () {
+            return this.accountService.userHasPermission(permission_model_1.Permission.viewRolesPermission);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(UserManagementComponent.prototype, "canManageUsers", {
+        get: function () {
+            return this.accountService.userHasPermission(permission_model_1.Permission.manageUsersPermission);
+        },
+        enumerable: true,
+        configurable: true
+    });
     UserManagementComponent.prototype.ngOnInit = function () {
         this.loadData();
     };
@@ -65,7 +87,7 @@ var UserManagementComponent = /** @class */ (function () {
             var cacheIndex = this.usersCache.indexOf(this.sourceUser);
             this.users[index] = returnUserEdit;
             this.usersCache[cacheIndex] = returnUserEdit;
-            this.sourceUser == null;
+            this.sourceUser = new user_model_1.User();
         }
         else {
             this.users.unshift(returnUserEdit);
@@ -117,27 +139,6 @@ var UserManagementComponent = /** @class */ (function () {
         this.users = this.usersCache
             .filter(function (r) { return utilities_1.Utilities.searchArray(value, false, r.id, r.userName, r.fullName, r.email, r.phoneNumber, r.jobTitle, r.roles); });
     };
-    Object.defineProperty(UserManagementComponent.prototype, "canAssignRoles", {
-        get: function () {
-            return this.accountService.userHasPermission(permission_model_1.Permission.assignRolesPermission);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(UserManagementComponent.prototype, "canViewRoles", {
-        get: function () {
-            return this.accountService.userHasPermission(permission_model_1.Permission.viewRolesPermission);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(UserManagementComponent.prototype, "canManageUsers", {
-        get: function () {
-            return this.accountService.userHasPermission(permission_model_1.Permission.manageUsersPermission);
-        },
-        enumerable: true,
-        configurable: true
-    });
     __decorate([
         core_1.ViewChild(user_edit_component_1.UserEditComponent),
         __metadata("design:type", Object)

@@ -12,7 +12,7 @@ import { fadeInOutRoute, fadeInOut } from '../../services/animations';
 })
 export class TasksComponent implements OnInit {
   @HostBinding('class.content-container')
-  public showContainerClass = true; 
+  public showContainerClass = true;
 
   constructor(private route: ActivatedRoute, private accountService: AccountService) { }
   public getTabIndex() {
@@ -26,10 +26,6 @@ export class TasksComponent implements OnInit {
   }
   arrPop(arr: any[]) {
     arr.pop();
-  }
-
-  ngOnDestroy() {
-
   }
 
   get canViewUsers() {

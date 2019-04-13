@@ -40,8 +40,9 @@ var LoginComponent = /** @class */ (function () {
         }
     };
     LoginComponent.prototype.ngOnDestroy = function () {
-        if (this.loginStatusSubscription)
+        if (this.loginStatusSubscription) {
             this.loginStatusSubscription.unsubscribe();
+        }
     };
     LoginComponent.prototype.getShouldRedirect = function () {
         return this.authService.isLoggedIn && !this.authService.isSessionExpired;
@@ -69,10 +70,12 @@ var LoginComponent = /** @class */ (function () {
             }
             else {
                 var errorMessage = utilities_1.Utilities.findHttpResponseMessage('error_description', error);
-                if (errorMessage)
+                if (errorMessage) {
                     _this.alertService.showStickyMessage('Unable to login', errorMessage, alert_service_1.MessageSeverity.error, error);
-                else
+                }
+                else {
                     _this.alertService.showStickyMessage('Unable to login', 'An error occured whilst logging in, please try again later.\nError: ' + utilities_1.Utilities.getResponseBody(error), alert_service_1.MessageSeverity.error, error);
+                }
             }
             setTimeout(function () {
                 _this.isLoading = false;

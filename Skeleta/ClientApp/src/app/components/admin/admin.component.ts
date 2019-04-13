@@ -13,7 +13,7 @@ import { Permission } from '../../models/permission.model';
 })
 export class AdminComponent implements OnInit, OnDestroy {
   @HostBinding('class.content-container')
-  public showContainerClass = true; 
+  public showContainerClass = true;
 
   constructor(private route: ActivatedRoute, private accountService: AccountService) { }
 
@@ -40,5 +40,5 @@ export class AdminComponent implements OnInit, OnDestroy {
 
   get canViewRoles() {
     return this.accountService.userHasPermission(Permission.viewRolesPermission);
-  } 
+  }
 }

@@ -1,4 +1,4 @@
-﻿import { Utilities } from '../services/utilities';
+import { Utilities } from '../services/utilities';
 
 
 export class Notification {
@@ -14,8 +14,9 @@ export class Notification {
     const n = new Notification();
     Object.assign(n, data);
 
-    if (n.date)
+    if (n.date) {
       n.date = Utilities.parseDate(n.date);
+    }
 
     return n;
   }

@@ -70,9 +70,9 @@ var BugitemsComponent = /** @class */ (function () {
         this.loadingIndicator = false;
         this.bugsCache = bugs;
         this.bugs = bugs;
-        this.ActiveBugs = bugs.filter(function (x) { return x.status == enum_1.Status.New || x.status == enum_1.Status.Active; });
-        this.ResolvedBugs = bugs.filter(function (x) { return x.status == enum_1.Status.Resolved; });
-        this.CompletedBugs = bugs.filter(function (x) { return x.status == enum_1.Status.Completed; });
+        this.ActiveBugs = bugs.filter(function (x) { return x.status === enum_1.Status.New || x.status === enum_1.Status.Active; });
+        this.ResolvedBugs = bugs.filter(function (x) { return x.status === enum_1.Status.Resolved; });
+        this.CompletedBugs = bugs.filter(function (x) { return x.status === enum_1.Status.Completed; });
     };
     BugitemsComponent.prototype.onDataLoadFailed = function (error) {
         this.alertService.stopLoadingMessage();
@@ -118,7 +118,8 @@ var BugitemsComponent = /** @class */ (function () {
             styleUrls: ['./bugitems.component.css'],
             animations: [animations_1.fadeInOut]
         }),
-        __metadata("design:paramtypes", [alert_service_1.AlertService, app_translation_service_1.AppTranslationService, bugitemService_1.BugItemService])
+        __metadata("design:paramtypes", [alert_service_1.AlertService, app_translation_service_1.AppTranslationService,
+            bugitemService_1.BugItemService])
     ], BugitemsComponent);
     return BugitemsComponent;
 }());

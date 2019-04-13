@@ -3,7 +3,7 @@ import { User } from '../../../models/user.model';
 import { AccountService } from '../../../services/account.service';
 import { AlertService } from '../../../services/alert.service';
 import { Role } from '../../../models/role.model';
-import { FormBuilder } from "@angular/forms";
+import { FormBuilder } from '@angular/forms';
 import { Permission } from '../../../models/permission.model';
 import { UserEditComponent } from '../../controls/editors/user-edit/user-edit.component';
 
@@ -33,8 +33,8 @@ export class UserInfoComponent implements OnInit {
   updateUser(returnUserEdit: User) {
     if (this.sourceUser && returnUserEdit) {
       this.user = returnUserEdit;
-      this.sourceUser == null;  
-    }           
+      this.sourceUser = new User();
+    }
   }
 
   get canViewAllRoles() {

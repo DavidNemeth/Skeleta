@@ -68,7 +68,7 @@ var NotificationService = /** @class */ (function () {
         var _this = this;
         if (typeof notificationOrNotificationId === 'number' || notificationOrNotificationId instanceof Number) {
             return this.notificationEndpoint.getDeleteNotificationEndpoint(notificationOrNotificationId).pipe(operators_1.map(function (response) {
-                _this.recentNotifications = _this.recentNotifications.filter(function (n) { return n.id != notificationOrNotificationId; });
+                _this.recentNotifications = _this.recentNotifications.filter(function (n) { return n.id !== notificationOrNotificationId; });
                 return notification_model_1.Notification.Create(response);
             }));
         }
@@ -80,16 +80,18 @@ var NotificationService = /** @class */ (function () {
         var notifications = this.getNotificationsFromResponse(response);
         for (var _i = 0, notifications_1 = notifications; _i < notifications_1.length; _i++) {
             var n = notifications_1[_i];
-            if (n.date > this.lastNotificationDate)
+            if (n.date > this.lastNotificationDate) {
                 this.lastNotificationDate = n.date;
+            }
         }
         return notifications;
     };
     NotificationService.prototype.getNotificationsFromResponse = function (response) {
         var notifications = [];
         for (var i in response) {
-            if (response.hasOwnProperty(i))
+            if (response.hasOwnProperty(i)) {
                 notifications[i] = notification_model_1.Notification.Create(response[i]);
+            }
         }
         notifications.sort(function (a, b) { return b.date.valueOf() - a.date.valueOf(); });
         notifications.sort(function (a, b) { return (a.isPinned === b.isPinned) ? 0 : a.isPinned ? -1 : 1; });

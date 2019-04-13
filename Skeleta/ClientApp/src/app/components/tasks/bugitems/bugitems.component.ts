@@ -18,6 +18,9 @@ import { Status } from '../../../models/enum';
   animations: [fadeInOut]
 })
 export class BugitemsComponent implements OnInit {
+
+  constructor(private alertService: AlertService, private translationService: AppTranslationService,
+    private bugitemService: BugItemService) { }
   columns: any[] = [];
   bugs: BugItem[] = [];
   ActiveBugs: BugItem[] = [];
@@ -28,7 +31,6 @@ export class BugitemsComponent implements OnInit {
   sourceBug: BugItem;
   loadingIndicator: boolean;
   selected: BugItem[] = [];
-  gT = (key: string) => this.translationService.getTranslation(key);
   ResolvedActive;
   PendingActive;
   @Input()
@@ -40,8 +42,7 @@ export class BugitemsComponent implements OnInit {
   @Input()
   bugItems: BugItem[];
   @ViewChild(BugitemEditComponent) bugEdit;
-
-  constructor(private alertService: AlertService, private translationService: AppTranslationService, private bugitemService: BugItemService) { }
+  gT = (key: string) => this.translationService.getTranslation(key);
 
   ngOnInit() {
     console.log(this.bugItems);
@@ -87,9 +88,9 @@ export class BugitemsComponent implements OnInit {
     this.loadingIndicator = false;
     this.bugsCache = bugs;
     this.bugs = bugs;
-    this.ActiveBugs = bugs.filter(x => x.status == Status.New || x.status == Status.Active);
-    this.ResolvedBugs = bugs.filter(x => x.status == Status.Resolved);
-    this.CompletedBugs = bugs.filter(x => x.status == Status.Completed);
+    this.ActiveBugs = bugs.filter(x => x.status === Status.New || x.status === Status.Active);
+    this.ResolvedBugs = bugs.filter(x => x.status === Status.Resolved);
+    this.CompletedBugs = bugs.filter(x => x.status === Status.Completed);
 
   }
 
@@ -102,18 +103,18 @@ export class BugitemsComponent implements OnInit {
       MessageSeverity.error, error);
   }
 
-  private removeItem(bug: BugItem) {
+  removeItem(bug: BugItem) {
     const itemIndex = this.bugs.indexOf(bug, 0);
     if (itemIndex > -1) {
       this.bugs.splice(itemIndex, 1);
     }
   }
 
-  private updateItem(bug: BugItem) {
-    let index = this.bugs.indexOf(bug);
+  updateItem(bug: BugItem) {
+    const index = this.bugs.indexOf(bug);
     this.bugs[index] = bug;
   }
 
-  private closeTab() {
+  closeTab() {
   }
 }

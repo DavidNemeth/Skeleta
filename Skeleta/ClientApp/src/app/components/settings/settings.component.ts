@@ -13,7 +13,7 @@ import { Permission } from '../../models/permission.model';
 })
 export class SettingsComponent implements OnInit, OnDestroy {
   @HostBinding('class.content-container')
-  public showContainerClass = true;  
+  public showContainerClass = true;
 
   constructor(private route: ActivatedRoute, private accountService: AccountService) { }
 
@@ -31,7 +31,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    
+
   }
 
   get canViewUsers() {
@@ -40,5 +40,5 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   get canViewRoles() {
     return this.accountService.userHasPermission(Permission.viewRolesPermission);
-  }  
+  }
 }

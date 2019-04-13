@@ -18,34 +18,42 @@ import { Job } from '../../../../models/enum';
   styleUrls: ['./user-edit.component.css']
 })
 export class UserEditComponent implements OnInit {
+
+  constructor(private translationService: AppTranslationService,
+    private alertService: AlertService, private formBuilder: FormBuilder,
+    private accountService: AccountService) { }
+
+  get canViewAllRoles() {
+    return this.accountService.userHasPermission(Permission.viewRolesPermission);
+  }
+
+  get canAssignRoles() {
+    return this.accountService.userHasPermission(Permission.assignRolesPermission);
+  }
   submitBtnState: ClrLoadingState = ClrLoadingState.DEFAULT;
   deleteBtnState: ClrLoadingState = ClrLoadingState.DEFAULT;
-  gT = (key: string) => this.translationService.getTranslation(key);
 
-  private actionTitle = "";
-  private deleteOpen = false;
-  private canChangePassword = false;
-  private isNewUser = false;
-  private isCurrentPassowrd = false;
-  private isConfirmPassword = false;
-  private openModal;
-  private emailError: string;
-  private userError: string;
-  private allJobs = [...Object.keys(Job)];
+  actionTitle = '';
+  deleteOpen = false;
+  canChangePassword = false;
+  isNewUser = false;
+  isCurrentPassowrd = false;
+  isConfirmPassword = false;
+  openModal;
+  emailError: string;
+  userError: string;
+  allJobs = [...Object.keys(Job)];
 
   initialUser: User = new User();
   userEdit: UserEdit;
-  private allRoles: Role[] = [];
+  allRoles: Role[] = [];
   private usersToDelete: User[] = [];
   userForm: FormGroup;
 
   @ViewChild(ClrForm) clrForm;
   @Output() updateData = new EventEmitter<User>();
   @Output() deleteData = new EventEmitter<User[]>();
-
-  constructor(private translationService: AppTranslationService,
-    private alertService: AlertService, private formBuilder: FormBuilder,
-    private accountService: AccountService) { }
+  gT = (key: string) => this.translationService.getTranslation(key);
 
   ngOnInit() {
     this.loadForm();
@@ -56,10 +64,9 @@ export class UserEditComponent implements OnInit {
     }
   }
 
-  private openChange(value: boolean) {
+  openChange(value: boolean) {
     if (value) {
-    }
-    else {
+    } else {
       this.canChangePassword = false;
       this.isNewUser = false;
       this.openModal = false;
@@ -88,17 +95,19 @@ export class UserEditComponent implements OnInit {
       });
   }
 
-  private save() {
-    for (let i in this.userForm.controls)
-      this.userForm.controls[i].markAsTouched();
+  save() {
+    for (const i in this.userForm.controls) {
+      if (this.userForm.controls.hasOwnProperty(i)) {
+        this.userForm.controls[i].markAsTouched();
+      }
+    }
     this.submitBtnState = ClrLoadingState.LOADING;
 
     Object.assign(this.userEdit, this.userForm.value);
 
     if (this.isNewUser) {
       this.accountService.newUser(this.userEdit).subscribe(user => this.saveSuccessHelper(), error => this.saveFailedHelper(error));
-    }
-    else {
+    } else {
       this.accountService.updateUser(this.userEdit).subscribe(response => this.saveSuccessHelper(), error => this.saveFailedHelper(error));
     }
   }
@@ -108,10 +117,11 @@ export class UserEditComponent implements OnInit {
     Object.assign(this.initialUser, this.userEdit);
     this.updateData.emit(this.initialUser);
 
-    if (this.isNewUser)
+    if (this.isNewUser) {
       this.alertService.showMessage(this.gT('toasts.saved'), `User ${this.userEdit.userName} added!`, MessageSeverity.success);
-    else
+    } else {
       this.alertService.showMessage(this.gT('toasts.saved'), `User ${this.userEdit.userName} changes saved!`, MessageSeverity.success);
+    }
 
     this.submitBtnState = ClrLoadingState.SUCCESS;
     this.openModal = false;
@@ -135,15 +145,14 @@ export class UserEditComponent implements OnInit {
     this.isConfirmPassword = true;
   }
 
-  private addChangePassword() {
-    if (this.isCurrentPassowrd == true) {
+  addChangePassword() {
+    if (this.isCurrentPassowrd === true) {
       this.userForm.controls['currentPassword'].disable();
       this.userForm.controls['newPassword'].disable();
       this.userForm.controls['confirmPassword'].disable();
       this.isCurrentPassowrd = false;
       this.isConfirmPassword = false;
-    }
-    else {
+    } else {
       this.userForm.controls['currentPassword'].enable();
       this.userForm.controls['newPassword'].enable();
       this.userForm.controls['confirmPassword'].enable();
@@ -160,12 +169,13 @@ export class UserEditComponent implements OnInit {
     this.isConfirmPassword = false;
   }
 
-  private resetForm() {
+  resetForm() {
     this.userForm.reset();
     this.alertService.resetStickyMessage();
     this.userForm.patchValue(this.initialUser);
-    if (!this.isNewUser)
+    if (!this.isNewUser) {
       this.removeChangePassword();
+    }
   }
 
   private deletePasswordFromUser(user: UserEdit | User) {
@@ -181,11 +191,11 @@ export class UserEditComponent implements OnInit {
     this.openModal = true;
     this.canChangePassword = false;
     this.isNewUser = true;
-    this.actionTitle = "Add";
+    this.actionTitle = 'Add';
     this.initialUser = new User();
     this.userEdit = new UserEdit();
     this.userEdit.isEnabled = true;
-    this.addNewPassword()
+    this.addNewPassword();
 
     return this.userEdit;
   }
@@ -196,7 +206,7 @@ export class UserEditComponent implements OnInit {
       this.canChangePassword = true;
       this.userForm.controls['userName'].disable();
       this.isNewUser = false;
-      this.actionTitle = "Edit";
+      this.actionTitle = 'Edit';
 
       this.userForm.patchValue(user);
 
@@ -207,8 +217,7 @@ export class UserEditComponent implements OnInit {
       Object.assign(this.userEdit, user);
 
       return this.userEdit;
-    }
-    else {
+    } else {
       return this.newUser();
     }
   }
@@ -233,11 +242,11 @@ export class UserEditComponent implements OnInit {
     this.usersToDelete = users;
   }
 
-  private Delete() {
+  Delete() {
     this.deleteBtnState = ClrLoadingState.LOADING;
 
-    let observables: Observable<any>[] = [];
-    for (let user of this.usersToDelete) {
+    const observables: Observable<any>[] = [];
+    for (const user of this.usersToDelete) {
       observables.push(this.accountService.deleteUser(<UserEdit>user));
     }
 
@@ -248,13 +257,5 @@ export class UserEditComponent implements OnInit {
         this.alertService.showMessage(this.gT('toasts.saved'), `${this.usersToDelete.length} record Deleted!`, MessageSeverity.success);
         this.deleteBtnState = ClrLoadingState.SUCCESS;
       });
-  }
-
-  get canViewAllRoles() {
-    return this.accountService.userHasPermission(Permission.viewRolesPermission);
-  }
-
-  get canAssignRoles() {
-    return this.accountService.userHasPermission(Permission.assignRolesPermission);
   }
 }

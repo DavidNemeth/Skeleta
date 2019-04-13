@@ -37,8 +37,9 @@ var ConfigurationService = /** @class */ (function () {
     ConfigurationService_1 = ConfigurationService;
     Object.defineProperty(ConfigurationService.prototype, "language", {
         get: function () {
-            if (this._language != null)
+            if (this._language != null) {
                 return this._language;
+            }
             return ConfigurationService_1.defaultLanguage;
         },
         set: function (value) {
@@ -51,8 +52,9 @@ var ConfigurationService = /** @class */ (function () {
     });
     Object.defineProperty(ConfigurationService.prototype, "homeUrl", {
         get: function () {
-            if (this._homeUrl != null)
+            if (this._homeUrl != null) {
                 return this._homeUrl;
+            }
             return ConfigurationService_1.defaultHomeUrl;
         },
         set: function (value) {
@@ -64,8 +66,9 @@ var ConfigurationService = /** @class */ (function () {
     });
     Object.defineProperty(ConfigurationService.prototype, "theme", {
         get: function () {
-            if (this._theme != null)
+            if (this._theme != null) {
                 return this._theme;
+            }
             return ConfigurationService_1.defaultTheme;
         },
         set: function (value) {
@@ -77,8 +80,9 @@ var ConfigurationService = /** @class */ (function () {
     });
     Object.defineProperty(ConfigurationService.prototype, "showDashboardStatistics", {
         get: function () {
-            if (this._showDashboardStatistics != null)
+            if (this._showDashboardStatistics != null) {
                 return this._showDashboardStatistics;
+            }
             return ConfigurationService_1.defaultShowDashboardStatistics;
         },
         set: function (value) {
@@ -90,8 +94,9 @@ var ConfigurationService = /** @class */ (function () {
     });
     Object.defineProperty(ConfigurationService.prototype, "showDashboardNotifications", {
         get: function () {
-            if (this._showDashboardNotifications != null)
+            if (this._showDashboardNotifications != null) {
                 return this._showDashboardNotifications;
+            }
             return ConfigurationService_1.defaultShowDashboardNotifications;
         },
         set: function (value) {
@@ -111,8 +116,9 @@ var ConfigurationService = /** @class */ (function () {
     });
     Object.defineProperty(ConfigurationService.prototype, "showUserManagement", {
         get: function () {
-            if (this._showUserManagement != null)
+            if (this._showUserManagement != null) {
                 return this._showUserManagement;
+            }
             return ConfigurationService_1.defaultShowUserManagement;
         },
         set: function (value) {
@@ -124,8 +130,9 @@ var ConfigurationService = /** @class */ (function () {
     });
     Object.defineProperty(ConfigurationService.prototype, "showRoleManagement", {
         get: function () {
-            if (this._showRoleManagement != null)
+            if (this._showRoleManagement != null) {
                 return this._showRoleManagement;
+            }
             return ConfigurationService_1.defaultShowRoleManagement;
         },
         set: function (value) {
@@ -137,8 +144,9 @@ var ConfigurationService = /** @class */ (function () {
     });
     Object.defineProperty(ConfigurationService.prototype, "showDashboardBanner", {
         get: function () {
-            if (this._showDashboardBanner != null)
+            if (this._showDashboardBanner != null) {
                 return this._showDashboardBanner;
+            }
             return ConfigurationService_1.defaultShowDashboardBanner;
         },
         set: function (value) {
@@ -156,22 +164,30 @@ var ConfigurationService = /** @class */ (function () {
         else {
             this.resetLanguage();
         }
-        if (this.localStorage.exists(db_Keys_1.DBkeys.HOME_URL))
+        if (this.localStorage.exists(db_Keys_1.DBkeys.HOME_URL)) {
             this._homeUrl = this.localStorage.getDataObject(db_Keys_1.DBkeys.HOME_URL);
-        if (this.localStorage.exists(db_Keys_1.DBkeys.THEME))
+        }
+        if (this.localStorage.exists(db_Keys_1.DBkeys.THEME)) {
             this._theme = this.localStorage.getDataObject(db_Keys_1.DBkeys.THEME);
-        if (this.localStorage.exists(db_Keys_1.DBkeys.SHOW_DASHBOARD_STATISTICS))
+        }
+        if (this.localStorage.exists(db_Keys_1.DBkeys.SHOW_DASHBOARD_STATISTICS)) {
             this._showDashboardStatistics = this.localStorage.getDataObject(db_Keys_1.DBkeys.SHOW_DASHBOARD_STATISTICS);
-        if (this.localStorage.exists(db_Keys_1.DBkeys.SHOW_DASHBOARD_NOTIFICATIONS))
+        }
+        if (this.localStorage.exists(db_Keys_1.DBkeys.SHOW_DASHBOARD_NOTIFICATIONS)) {
             this._showDashboardNotifications = this.localStorage.getDataObject(db_Keys_1.DBkeys.SHOW_DASHBOARD_NOTIFICATIONS);
-        if (this.localStorage.exists(db_Keys_1.DBkeys.SHOW_DASHBOARD_TASK))
+        }
+        if (this.localStorage.exists(db_Keys_1.DBkeys.SHOW_DASHBOARD_TASK)) {
             this._showDashboardTask = this.localStorage.getDataObject(db_Keys_1.DBkeys.SHOW_DASHBOARD_TASK);
-        if (this.localStorage.exists(db_Keys_1.DBkeys.SHOW_DASHBOARD_BANNER))
+        }
+        if (this.localStorage.exists(db_Keys_1.DBkeys.SHOW_DASHBOARD_BANNER)) {
             this._showDashboardBanner = this.localStorage.getDataObject(db_Keys_1.DBkeys.SHOW_DASHBOARD_BANNER);
-        if (this.localStorage.exists(db_Keys_1.DBkeys.SHOW_USER_MANAGEMENT))
+        }
+        if (this.localStorage.exists(db_Keys_1.DBkeys.SHOW_USER_MANAGEMENT)) {
             this._showUserManagement = this.localStorage.getDataObject(db_Keys_1.DBkeys.SHOW_USER_MANAGEMENT);
-        if (this.localStorage.exists(db_Keys_1.DBkeys.SHOW_ROLE_MANAGEMENT))
+        }
+        if (this.localStorage.exists(db_Keys_1.DBkeys.SHOW_ROLE_MANAGEMENT)) {
             this._showRoleManagement = this.localStorage.getDataObject(db_Keys_1.DBkeys.SHOW_ROLE_MANAGEMENT);
+        }
     };
     ConfigurationService.prototype.saveToLocalStore = function (data, key) {
         var _this = this;
@@ -179,27 +195,37 @@ var ConfigurationService = /** @class */ (function () {
     };
     ConfigurationService.prototype.import = function (jsonValue) {
         this.clearLocalChanges();
-        if (!jsonValue)
+        if (!jsonValue) {
             return;
+        }
         var importValue = utilities_1.Utilities.JSonTryParse(jsonValue);
-        if (importValue.language != null)
+        if (importValue.language != null) {
             this.language = importValue.language;
-        if (importValue.homeUrl != null)
+        }
+        if (importValue.homeUrl != null) {
             this.homeUrl = importValue.homeUrl;
-        if (importValue.theme != null)
+        }
+        if (importValue.theme != null) {
             this.theme = importValue.theme;
-        if (importValue.showDashboardStatistics != null)
+        }
+        if (importValue.showDashboardStatistics != null) {
             this.showDashboardStatistics = importValue.showDashboardStatistics;
-        if (importValue.showDashboardNotifications != null)
+        }
+        if (importValue.showDashboardNotifications != null) {
             this.showDashboardNotifications = importValue.showDashboardNotifications;
-        if (importValue.showDashboardTask != null)
+        }
+        if (importValue.showDashboardTask != null) {
             this.showDashboardTask = importValue.showDashboardTask;
-        if (importValue.showDashboardBanner != null)
+        }
+        if (importValue.showDashboardBanner != null) {
             this.showDashboardBanner = importValue.showDashboardBanner;
-        if (importValue.showRoleManagement != null)
+        }
+        if (importValue.showRoleManagement != null) {
             this.showUserManagement = importValue.showUserManagement;
-        if (importValue.showUserManagement != null)
+        }
+        if (importValue.showUserManagement != null) {
             this.showRoleManagement = importValue.showRoleManagement;
+        }
     };
     ConfigurationService.prototype.export = function (changesOnly) {
         if (changesOnly === void 0) { changesOnly = true; }

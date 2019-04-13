@@ -34,6 +34,8 @@ var taskService_1 = require("./services/tasks/taskService");
 var task_endpoint_service_1 = require("./services/tasks/task-endpoint.service");
 var bugitemService_1 = require("./services/bugItems/bugitemService");
 var bugItem_endpoint_service_1 = require("./services/bugItems/bugItem-endpoint.service");
+var equal_validator_directive_1 = require("./directives/equal-validator.directive");
+var themes_component_1 = require("./components/controls/themes/themes.component");
 var app_component_1 = require("./components/app.component");
 var home_component_1 = require("./components/home/home.component");
 var login_component_1 = require("./components/login/login.component");
@@ -74,6 +76,7 @@ var AppModule = /** @class */ (function () {
                 search_box_component_1.SearchBoxComponent,
                 user_info_component_1.UserInfoComponent,
                 if_tab_active_directive_1.IfTabActive,
+                equal_validator_directive_1.EqualValidator,
                 smart_dashboard_component_1.SmartDashboardComponent,
                 smart_settings_component_1.SmartSettingsComponent,
                 admin_component_1.AdminComponent,
@@ -87,7 +90,8 @@ var AppModule = /** @class */ (function () {
                 tasks_component_1.TasksComponent,
                 bugitems_component_1.BugitemsComponent,
                 bugitem_edit_component_1.BugitemEditComponent,
-                task_detail_component_1.TaskDetailComponent
+                task_detail_component_1.TaskDetailComponent,
+                themes_component_1.ThemesComponent
             ],
             imports: [
                 platform_browser_1.BrowserModule,
@@ -139,7 +143,8 @@ var AppModule = /** @class */ (function () {
                 bugItem_endpoint_service_1.BugItemEndpoint
             ],
             exports: [
-                if_tab_active_directive_1.IfTabActive
+                if_tab_active_directive_1.IfTabActive,
+                equal_validator_directive_1.EqualValidator
             ],
             bootstrap: [app_component_1.AppComponent]
         })

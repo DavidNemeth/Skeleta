@@ -107,8 +107,7 @@ export class AccountEndpoint extends EndpointFactory {
       patchDocument = from ?
         [{ 'value': valueOrPatch, 'path': path, 'op': opOrUserId, 'from': from }] :
         [{ 'value': valueOrPatch, 'path': path, 'op': opOrUserId }];
-    }
-    else {
+    } else {
       endpointUrl = opOrUserId ? `${this.usersUrl}/${opOrUserId}` : this.currentUserUrl;
       patchDocument = valueOrPatch;
     }

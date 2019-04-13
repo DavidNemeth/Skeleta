@@ -22,8 +22,9 @@ var EqualValidator = /** @class */ (function () {
     EqualValidator_1 = EqualValidator;
     EqualValidator.prototype.validate = function (c) {
         var other = c.root.get(this.validateEqual);
-        if (!other)
+        if (!other) {
             return null;
+        }
         return this.reverse === 'true' ? this.validateReverse(c, other) : this.validateNoReverse(c, other);
     };
     EqualValidator.prototype.validateNoReverse = function (c, other) {
@@ -33,7 +34,7 @@ var EqualValidator = /** @class */ (function () {
         if (c.value === other.value) {
             if (other.errors) {
                 delete other.errors['validateEqual'];
-                if (Object.keys(other.errors).length == 0) {
+                if (Object.keys(other.errors).length === 0) {
                     other.setErrors(null);
                 }
             }

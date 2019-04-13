@@ -34,7 +34,7 @@ var UserInfoComponent = /** @class */ (function () {
     UserInfoComponent.prototype.updateUser = function (returnUserEdit) {
         if (this.sourceUser && returnUserEdit) {
             this.user = returnUserEdit;
-            this.sourceUser == null;
+            this.sourceUser = new user_model_1.User();
         }
     };
     Object.defineProperty(UserInfoComponent.prototype, "canViewAllRoles", {

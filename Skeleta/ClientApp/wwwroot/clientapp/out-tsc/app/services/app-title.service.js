@@ -20,23 +20,28 @@ var AppTitleService = /** @class */ (function () {
         this.titleService = titleService;
         this.router = router;
         this.sub = this.router.events.pipe(operators_1.filter(function (event) { return event instanceof router_1.NavigationEnd; }), operators_1.map(function (_) { return _this.router.routerState.root; }), operators_1.map(function (route) {
-            while (route.firstChild)
+            while (route.firstChild) {
                 route = route.firstChild;
+            }
             return route;
         }), operators_1.flatMap(function (route) { return route.data; }))
             .subscribe(function (data) {
             var title = data['title'];
             if (title) {
                 var fragment = _this.router.url.split('#')[1];
-                if (fragment)
+                if (fragment) {
                     title += ' | ' + utilities_1.Utilities.toTitleCase(fragment);
+                }
             }
-            if (title && _this.appName)
+            if (title && _this.appName) {
                 title += ' - ' + _this.appName;
-            else if (_this.appName)
+            }
+            else if (_this.appName) {
                 title = _this.appName;
-            if (title)
+            }
+            if (title) {
                 _this.titleService.setTitle(title);
+            }
         });
     }
     AppTitleService = __decorate([

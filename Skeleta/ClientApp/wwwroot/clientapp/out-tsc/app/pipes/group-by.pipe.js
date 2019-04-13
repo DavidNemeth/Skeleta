@@ -11,8 +11,9 @@ var GroupByPipe = /** @class */ (function () {
     function GroupByPipe() {
     }
     GroupByPipe.prototype.transform = function (value, field) {
-        if (!value)
+        if (!value) {
             return value;
+        }
         var groupedObj = value.reduce(function (prev, cur) {
             if (!prev[cur[field]]) {
                 prev[cur[field]] = [cur];

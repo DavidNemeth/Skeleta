@@ -17,16 +17,19 @@ import { fadeInOut } from '../../../../services/animations';
   animations: [fadeInOut]
 })
 export class BugitemEditComponent implements OnInit {
+
+  constructor(private translationService: AppTranslationService,
+    private alertService: AlertService, private formBuilder: FormBuilder,
+    private bugService: BugItemService, private accountService: AccountService) { }
   submitBtnState: ClrLoadingState = ClrLoadingState.DEFAULT;
   deleteBtnState: ClrLoadingState = ClrLoadingState.DEFAULT;
-  gT = (key: string) => this.translationService.getTranslation(key);
 
-  private actionTitle = "";
-  private deleteOpen = false;
+  actionTitle = '';
+  deleteOpen = false;
   private isNewItem = false;
-  private allStatus: string[] = ["Active", "Resolved", "Completed"];
-  private dataLoaded: boolean = false;
-  private isOpen: boolean = false;
+  allStatus: string[] = ['Active', 'Resolved', 'Completed'];
+  dataLoaded = false;
+  isOpen = false;
 
   devId: string;
   testerId: string;
@@ -41,10 +44,7 @@ export class BugitemEditComponent implements OnInit {
   @Output() updateData = new EventEmitter<BugItem>();
   @Output() updateStatus = new EventEmitter<BugItem>();
   @Output() openClose = new EventEmitter();
-
-  constructor(private translationService: AppTranslationService,
-    private alertService: AlertService, private formBuilder: FormBuilder,
-    private bugService: BugItemService, private accountService: AccountService) { }
+  gT = (key: string) => this.translationService.getTranslation(key);
 
   ngOnInit() {
     this.accountService.getActiveUsers().subscribe(
@@ -64,7 +64,7 @@ export class BugitemEditComponent implements OnInit {
     this.dataLoaded = true;
   }
 
-  onOpen(event) {
+  onOpen() {
     this.close();
   }
 
@@ -78,14 +78,13 @@ export class BugitemEditComponent implements OnInit {
     this.alertService.resetStickyMessage();
   }
 
-  private save() {
+  save() {
     this.submitBtnState = ClrLoadingState.LOADING;
     Object.assign(this.itemEdit, this.bugForm.value);
 
     if (this.isNewItem) {
       this.bugService.NewItem(this.itemEdit).subscribe(bug => this.saveSuccessHelper(), error => this.saveFailedHelper(error));
-    }
-    else {
+    } else {
       this.bugService.UpdateItem(this.itemEdit).subscribe(response => this.saveSuccessHelper(), error => this.saveFailedHelper(error));
     }
   }
@@ -94,10 +93,11 @@ export class BugitemEditComponent implements OnInit {
     Object.assign(this.initialItem, this.itemEdit);
     this.updateData.emit(this.initialItem);
 
-    if (this.isNewItem)
+    if (this.isNewItem) {
       this.alertService.showMessage(this.gT('toasts.saved'), `Bug added!`, MessageSeverity.success);
-    else
+    } else {
       this.alertService.showMessage(this.gT('toasts.saved'), `Bug modified!`, MessageSeverity.success);
+    }
 
     this.submitBtnState = ClrLoadingState.SUCCESS;
     this.close();
@@ -113,9 +113,9 @@ export class BugitemEditComponent implements OnInit {
     this.isOpen = true;
     this.submitBtnState = ClrLoadingState.DEFAULT;
     this.isNewItem = true;
-    this.actionTitle = "Add";
+    this.actionTitle = 'Add';
     this.testerId = testerId;
-    this.devId = devId ;
+    this.devId = devId;
     this.initialItem = new BugItem();
     this.itemEdit = new BugItem();
     this.itemEdit.taskItemId = taskId;
@@ -136,9 +136,8 @@ export class BugitemEditComponent implements OnInit {
         this.bugForm.patchValue(this.itemEdit);
       },
         error => this.alertService.showMessage(error, null, MessageSeverity.error));
-    }
-    else {
-      this.alertService.showMessage("error no item found", null, MessageSeverity.error);
+    } else {
+      this.alertService.showMessage('error no item found', null, MessageSeverity.error);
     }
   }
 }

@@ -77,7 +77,7 @@
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-outline" (click)="completeOpen = false">No</button>
-    <button type="button" [clrLoading]="deleteBtnState" class="btn btn-primary" (click)="onCompleted(task)">Yes</button>
+    <button type="button" [clrLoading]="deleteBtnState" class="btn btn-primary" (click)="onCompleted()">Yes</button>
   </div>
 </clr-modal>
 
@@ -88,7 +88,7 @@
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-outline" (click)="resolveOpen = false">No</button>
-    <button type="button" [clrLoading]="deleteBtnState" class="btn btn-primary" (click)="onResolved(task)">Yes</button>
+    <button type="button" [clrLoading]="deleteBtnState" class="btn btn-primary" (click)="onResolved()">Yes</button>
   </div>
 </clr-modal>
 

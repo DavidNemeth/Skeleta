@@ -16,6 +16,21 @@ import { UserEditComponent } from '../../controls/editors/user-edit/user-edit.co
   styleUrls: ['./user-management.component.css']
 })
 export class UserManagementComponent implements OnInit, AfterViewInit {
+
+  constructor(private alertService: AlertService, private translationService: AppTranslationService,
+    private accountService: AccountService) { }
+
+  get canAssignRoles() {
+    return this.accountService.userHasPermission(Permission.assignRolesPermission);
+  }
+
+  get canViewRoles() {
+    return this.accountService.userHasPermission(Permission.viewRolesPermission);
+  }
+
+  get canManageUsers() {
+    return this.accountService.userHasPermission(Permission.manageUsersPermission);
+  }
   columns: any[] = [];
   users: User[] = [];
   usersCache: User[] = [];
@@ -24,12 +39,9 @@ export class UserManagementComponent implements OnInit, AfterViewInit {
   loadingIndicator: boolean;
   selected: User[] = [];
   allRoles: Role[] = [];
-  gT = (key: string) => this.translationService.getTranslation(key);
 
   @ViewChild(UserEditComponent) userEdit;
-
-  constructor(private alertService: AlertService, private translationService: AppTranslationService,
-    private accountService: AccountService) { }
+  gT = (key: string) => this.translationService.getTranslation(key);
 
   ngOnInit() {
     this.loadData();
@@ -51,11 +63,10 @@ export class UserManagementComponent implements OnInit, AfterViewInit {
 
   onDelete(user?: User) {
     if (user) {
-      let users: User[] = [];
+      const users: User[] = [];
       users.push(user);
       this.userEdit.deleteUsers(users);
-    }
-    else {   
+    } else {
     if (this.selected.length > 0) {
       this.userEdit.deleteUsers(this.selected);
       }
@@ -72,20 +83,19 @@ export class UserManagementComponent implements OnInit, AfterViewInit {
 
   updateList(returnUserEdit: User) {
     if (this.sourceUser) {
-      let index = this.users.indexOf(this.sourceUser);
-      let cacheIndex = this.usersCache.indexOf(this.sourceUser);
+      const index = this.users.indexOf(this.sourceUser);
+      const cacheIndex = this.usersCache.indexOf(this.sourceUser);
       this.users[index] = returnUserEdit;
       this.usersCache[cacheIndex] = returnUserEdit;
-      this.sourceUser == null;
-    }
-    else {
+      this.sourceUser = new User();
+    } else {
       this.users.unshift(returnUserEdit);
       this.usersCache.unshift(returnUserEdit);
     }
   }
 
   deleteList(userToDelete: User[]) {
-    for (let user of userToDelete) {
+    for (const user of userToDelete) {
       this.users = this.users.filter(obj => obj !== user);
       this.usersCache = this.usersCache.filter(obj => obj !== user);
     }
@@ -100,8 +110,7 @@ export class UserManagementComponent implements OnInit, AfterViewInit {
     if (this.canViewRoles) {
       this.accountService.getUsersAndRoles()
         .subscribe(results => this.onDataLoadSuccessful(results[0], results[1]), error => this.onDataLoadFailed(error));
-    }
-    else {
+    } else {
       this.accountService.getUsers()
         .subscribe(users => this.onDataLoadSuccessful(users, this.accountService.currentUser.roles.map(x => new Role(x))),
           error => this.onDataLoadFailed(error));
@@ -134,17 +143,5 @@ export class UserManagementComponent implements OnInit, AfterViewInit {
   onSearchChanged(value: string) {
     this.users = this.usersCache
       .filter(r => Utilities.searchArray(value, false, r.id, r.userName, r.fullName, r.email, r.phoneNumber, r.jobTitle, r.roles));
-  }
-
-  get canAssignRoles() {
-    return this.accountService.userHasPermission(Permission.assignRolesPermission);
-  }
-
-  get canViewRoles() {
-    return this.accountService.userHasPermission(Permission.viewRolesPermission);
-  }
-
-  get canManageUsers() {
-    return this.accountService.userHasPermission(Permission.manageUsersPermission);
   }
 }

@@ -30,8 +30,9 @@ var EndpointFactory = /** @class */ (function () {
     });
     Object.defineProperty(EndpointFactory.prototype, "authService", {
         get: function () {
-            if (!this._authService)
+            if (!this._authService) {
                 this._authService = this.injector.get(auth_service_1.AuthService);
+            }
             return this._authService;
         },
         enumerable: true,
@@ -79,7 +80,7 @@ var EndpointFactory = /** @class */ (function () {
     };
     EndpointFactory.prototype.handleError = function (error, continuation) {
         var _this = this;
-        if (error.status == 401) {
+        if (error.status === 401) {
             if (this.isRefreshingLogin) {
                 return this.pauseTask(continuation);
             }
@@ -91,7 +92,7 @@ var EndpointFactory = /** @class */ (function () {
             }), operators_1.catchError(function (refreshLoginError) {
                 _this.isRefreshingLogin = false;
                 _this.resumeTasks(false);
-                if (refreshLoginError.status == 401 || (refreshLoginError.url && refreshLoginError.url.toLowerCase()
+                if (refreshLoginError.status === 401 || (refreshLoginError.url && refreshLoginError.url.toLowerCase()
                     .includes(_this.loginUrl.toLowerCase()))) {
                     _this.authService.reLogin();
                     return rxjs_1.throwError('session expired');
@@ -111,8 +112,9 @@ var EndpointFactory = /** @class */ (function () {
         }
     };
     EndpointFactory.prototype.pauseTask = function (continuation) {
-        if (!this.taskPauser)
+        if (!this.taskPauser) {
             this.taskPauser = new rxjs_1.Subject();
+        }
         return this.taskPauser.pipe(operators_1.switchMap(function (continueOp) {
             return continueOp ? continuation() : rxjs_1.throwError('session expired');
         }));

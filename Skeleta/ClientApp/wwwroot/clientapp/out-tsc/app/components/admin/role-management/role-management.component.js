@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
+var role_model_1 = require("../../../models/role.model");
 var permission_model_1 = require("../../../models/permission.model");
 var alert_service_1 = require("../../../services/alert.service");
 var app_translation_service_1 = require("../../../services/app-translation.service");
@@ -55,7 +56,7 @@ var RoleManagementComponent = /** @class */ (function () {
             var cacheIndex = this.rolesCache.indexOf(this.sourceRole);
             this.roles[index] = returnRole;
             this.rolesCache[cacheIndex] = returnRole;
-            this.sourceRole == null;
+            this.sourceRole = new role_model_1.Role();
         }
         else {
             this.roles.unshift(returnRole);

@@ -64,8 +64,9 @@ export class ConfigurationService {
     this.translationService.changeLanguage(value);
   }
   get language() {
-    if (this._language != null)
+    if (this._language != null) {
       return this._language;
+    }
 
     return ConfigurationService.defaultLanguage;
   }
@@ -76,8 +77,9 @@ export class ConfigurationService {
     this.saveToLocalStore(value, DBkeys.HOME_URL);
   }
   get homeUrl() {
-    if (this._homeUrl != null)
+    if (this._homeUrl != null) {
       return this._homeUrl;
+    }
 
     return ConfigurationService.defaultHomeUrl;
   }
@@ -88,8 +90,9 @@ export class ConfigurationService {
     this.saveToLocalStore(value, DBkeys.THEME);
   }
   get theme() {
-    if (this._theme != null)
+    if (this._theme != null) {
       return this._theme;
+    }
 
     return ConfigurationService.defaultTheme;
   }
@@ -100,8 +103,9 @@ export class ConfigurationService {
     this.saveToLocalStore(value, DBkeys.SHOW_DASHBOARD_STATISTICS);
   }
   get showDashboardStatistics() {
-    if (this._showDashboardStatistics != null)
+    if (this._showDashboardStatistics != null) {
       return this._showDashboardStatistics;
+    }
 
     return ConfigurationService.defaultShowDashboardStatistics;
   }
@@ -112,8 +116,9 @@ export class ConfigurationService {
     this.saveToLocalStore(value, DBkeys.SHOW_DASHBOARD_NOTIFICATIONS);
   }
   get showDashboardNotifications() {
-    if (this._showDashboardNotifications != null)
+    if (this._showDashboardNotifications != null) {
       return this._showDashboardNotifications;
+    }
 
     return ConfigurationService.defaultShowDashboardNotifications;
   }
@@ -125,15 +130,17 @@ export class ConfigurationService {
   }
 
   get showUserManagement() {
-    if (this._showUserManagement != null)
+    if (this._showUserManagement != null) {
       return this._showUserManagement;
+    }
 
     return ConfigurationService.defaultShowUserManagement;
   }
 
   get showRoleManagement() {
-    if (this._showRoleManagement != null)
+    if (this._showRoleManagement != null) {
       return this._showRoleManagement;
+    }
 
     return ConfigurationService.defaultShowRoleManagement;
   }
@@ -155,8 +162,9 @@ export class ConfigurationService {
   }
 
   get showDashboardBanner() {
-    if (this._showDashboardBanner != null)
+    if (this._showDashboardBanner != null) {
       return this._showDashboardBanner;
+    }
 
     return ConfigurationService.defaultShowDashboardBanner;
   }
@@ -168,34 +176,41 @@ export class ConfigurationService {
     if (this.localStorage.exists(DBkeys.LANGUAGE)) {
       this._language = this.localStorage.getDataObject<string>(DBkeys.LANGUAGE);
       this.translationService.changeLanguage(this._language);
-    }
-    else {
+    } else {
       this.resetLanguage();
     }
 
-    if (this.localStorage.exists(DBkeys.HOME_URL))
+    if (this.localStorage.exists(DBkeys.HOME_URL)) {
       this._homeUrl = this.localStorage.getDataObject<string>(DBkeys.HOME_URL);
+    }
 
-    if (this.localStorage.exists(DBkeys.THEME))
+    if (this.localStorage.exists(DBkeys.THEME)) {
       this._theme = this.localStorage.getDataObject<string>(DBkeys.THEME);
+    }
 
-    if (this.localStorage.exists(DBkeys.SHOW_DASHBOARD_STATISTICS))
+    if (this.localStorage.exists(DBkeys.SHOW_DASHBOARD_STATISTICS)) {
       this._showDashboardStatistics = this.localStorage.getDataObject<boolean>(DBkeys.SHOW_DASHBOARD_STATISTICS);
+    }
 
-    if (this.localStorage.exists(DBkeys.SHOW_DASHBOARD_NOTIFICATIONS))
+    if (this.localStorage.exists(DBkeys.SHOW_DASHBOARD_NOTIFICATIONS)) {
       this._showDashboardNotifications = this.localStorage.getDataObject<boolean>(DBkeys.SHOW_DASHBOARD_NOTIFICATIONS);
+    }
 
-    if (this.localStorage.exists(DBkeys.SHOW_DASHBOARD_TASK))
+    if (this.localStorage.exists(DBkeys.SHOW_DASHBOARD_TASK)) {
       this._showDashboardTask = this.localStorage.getDataObject<boolean>(DBkeys.SHOW_DASHBOARD_TASK);
+    }
 
-    if (this.localStorage.exists(DBkeys.SHOW_DASHBOARD_BANNER))
+    if (this.localStorage.exists(DBkeys.SHOW_DASHBOARD_BANNER)) {
       this._showDashboardBanner = this.localStorage.getDataObject<boolean>(DBkeys.SHOW_DASHBOARD_BANNER);
+    }
 
-    if (this.localStorage.exists(DBkeys.SHOW_USER_MANAGEMENT))
+    if (this.localStorage.exists(DBkeys.SHOW_USER_MANAGEMENT)) {
       this._showUserManagement = this.localStorage.getDataObject<boolean>(DBkeys.SHOW_USER_MANAGEMENT);
+    }
 
-    if (this.localStorage.exists(DBkeys.SHOW_ROLE_MANAGEMENT))
+    if (this.localStorage.exists(DBkeys.SHOW_ROLE_MANAGEMENT)) {
       this._showRoleManagement = this.localStorage.getDataObject<boolean>(DBkeys.SHOW_ROLE_MANAGEMENT);
+    }
   }
 
 
@@ -208,37 +223,47 @@ export class ConfigurationService {
 
     this.clearLocalChanges();
 
-    if (!jsonValue)
+    if (!jsonValue) {
       return;
+    }
 
     const importValue: UserConfiguration = Utilities.JSonTryParse(jsonValue);
 
-    if (importValue.language != null)
+    if (importValue.language != null) {
       this.language = importValue.language;
+    }
 
-    if (importValue.homeUrl != null)
+    if (importValue.homeUrl != null) {
       this.homeUrl = importValue.homeUrl;
+    }
 
-    if (importValue.theme != null)
+    if (importValue.theme != null) {
       this.theme = importValue.theme;
+    }
 
-    if (importValue.showDashboardStatistics != null)
+    if (importValue.showDashboardStatistics != null) {
       this.showDashboardStatistics = importValue.showDashboardStatistics;
+    }
 
-    if (importValue.showDashboardNotifications != null)
+    if (importValue.showDashboardNotifications != null) {
       this.showDashboardNotifications = importValue.showDashboardNotifications;
+    }
 
-    if (importValue.showDashboardTask != null)
+    if (importValue.showDashboardTask != null) {
       this.showDashboardTask = importValue.showDashboardTask;
+    }
 
-    if (importValue.showDashboardBanner != null)
+    if (importValue.showDashboardBanner != null) {
       this.showDashboardBanner = importValue.showDashboardBanner;
+    }
 
-    if (importValue.showRoleManagement != null)
+    if (importValue.showRoleManagement != null) {
       this.showUserManagement = importValue.showUserManagement;
+    }
 
-    if (importValue.showUserManagement != null)
+    if (importValue.showUserManagement != null) {
       this.showRoleManagement = importValue.showRoleManagement;
+    }
   }
 
 
@@ -252,8 +277,8 @@ export class ConfigurationService {
       showDashboardNotifications: changesOnly ? this._showDashboardNotifications : this.showDashboardNotifications,
       showDashboardTask: changesOnly ? this._showDashboardTask : this.showDashboardTask,
       showDashboardBanner: changesOnly ? this._showDashboardBanner : this.showDashboardBanner,
-			showUserManagement: changesOnly ? this._showUserManagement : this.showUserManagement,
-			showRoleManagement: changesOnly ? this._showRoleManagement : this.showRoleManagement
+      showUserManagement: changesOnly ? this._showUserManagement : this.showUserManagement,
+      showRoleManagement: changesOnly ? this._showRoleManagement : this.showRoleManagement
     };
 
     return JSON.stringify(exportValue);
@@ -290,8 +315,7 @@ export class ConfigurationService {
 
     if (language) {
       this._language = language;
-    }
-    else {
+    } else {
       this._language = this.translationService.changeLanguage();
     }
   }

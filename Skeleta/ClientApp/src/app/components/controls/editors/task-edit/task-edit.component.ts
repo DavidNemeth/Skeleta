@@ -14,7 +14,7 @@ import { compare } from 'fast-json-patch';
 import { bounceIn } from 'ngx-animate';
 import { trigger, transition, useAnimation } from '@angular/animations';
 import { Permission } from '../../../../models/permission.model';
-import * as docx from "docx";
+import * as docx from 'docx';
 import { TextRun, Packer } from 'docx';
 import { saveAs } from 'file-saver';
 
@@ -28,28 +28,35 @@ import { saveAs } from 'file-saver';
 })
 
 export class TaskEditComponent implements OnInit {
+
+  constructor(private translationService: AppTranslationService,
+    private alertService: AlertService, private formBuilder: FormBuilder,
+    private taskService: TaskService, private accountService: AccountService) { }
+
+  get canSetStatus() {
+    return this.accountService.userHasPermission(Permission.setStatusTasksPremission);
+  }
   submitBtnState: ClrLoadingState = ClrLoadingState.DEFAULT;
   deleteBtnState: ClrLoadingState = ClrLoadingState.DEFAULT;
-  gT = (key: string) => this.translationService.getTranslation(key);
 
-  private deleteOpen = false;
-  private archiveOpen = false;
-  private resolveOpen = false;
-  private completeOpen = false;
-  private releaseOpen = false;
+  deleteOpen = false;
+  archiveOpen = false;
+  resolveOpen = false;
+  completeOpen = false;
+  releaseOpen = false;
   releaseGroupname: string;
-  shouldArchive: boolean = true;
+  shouldArchive = true;
   private isNewTask = false;
-  private allStatus = [...Object.keys(Status)];
-  private allPriority = [...Object.keys(Priority)];
+  allStatus = [...Object.keys(Status)];
+  allPriority = [...Object.keys(Priority)];
   initialTask: TaskEdit = new TaskEdit();
   taskEdit: TaskEdit = new TaskEdit();
   private tasksToDelete: TaskEdit[] = [];
   private tasksToClose: TaskEdit[] = [];
   private tasksToRelease: TaskEdit[] = [];
   private taskToUpdate: TaskEdit = new TaskEdit();
-  private dataLoaded: boolean = false;
-  private isOpen: boolean;
+  dataLoaded = false;
+  isOpen: boolean;
   createdBy: string;
   updatedBy: string;
   curDate = new Date();
@@ -63,10 +70,7 @@ export class TaskEditComponent implements OnInit {
   @Output() updateData = new EventEmitter<TaskEdit>();
   @Output() cancel = new EventEmitter();
   @Output() refresh = new EventEmitter();
-
-  constructor(private translationService: AppTranslationService,
-    private alertService: AlertService, private formBuilder: FormBuilder,
-    private taskService: TaskService, private accountService: AccountService) { }
+  gT = (key: string) => this.translationService.getTranslation(key);
 
   ngOnInit() {
     this.accountService.getActiveUsers().subscribe(
@@ -100,15 +104,16 @@ export class TaskEditComponent implements OnInit {
     this.cleanup();
   }
 
-  private save() {
+  save() {
     this.submitBtnState = ClrLoadingState.LOADING;
     Object.assign(this.taskEdit, this.taskForm.value);
-    let patchDocument = compare(this.initialTask, this.taskEdit);
+    const patchDocument = compare(this.initialTask, this.taskEdit);
     if (this.isNewTask) {
-      this.taskService.NewTask(this.taskEdit).subscribe(task => this.saveSuccessHelper(), error => this.saveFailedHelper(error));
-    }
-    else {
-      this.taskService.UpdateTask(patchDocument, this.taskEdit.id).subscribe(task => this.saveSuccessHelper(), error => this.saveFailedHelper(error));
+      this.taskService.NewTask(this.taskEdit).subscribe(task => this.saveSuccessHelper(),
+        error => this.saveFailedHelper(error));
+    } else {
+      this.taskService.UpdateTask(patchDocument, this.taskEdit.id).subscribe
+        (task => this.saveSuccessHelper(), error => this.saveFailedHelper(error));
     }
 
   }
@@ -116,10 +121,11 @@ export class TaskEditComponent implements OnInit {
   private saveSuccessHelper(): void {
     this.refresh.emit();
     Object.assign(this.initialTask, this.taskEdit);
-    if (this.isNewTask)
+    if (this.isNewTask) {
       this.alertService.showMessage(this.gT('toasts.saved'), `Task added!`, MessageSeverity.success);
-    else
+    } else {
       this.alertService.showMessage(this.gT('toasts.saved'), `Task modified!`, MessageSeverity.success);
+    }
 
     this.submitBtnState = ClrLoadingState.SUCCESS;
     this.close();
@@ -152,8 +158,8 @@ export class TaskEditComponent implements OnInit {
         this.taskEdit = new TaskEdit();
         Object.assign(this.initialTask, response);
         Object.assign(this.taskEdit, response);
-        this.createdBy = this.users.filter(x => x.id == this.taskEdit.createdBy).map(x => x.fullName)[0];
-        this.updatedBy = this.users.filter(x => x.id == this.taskEdit.updatedBy).map(x => x.fullName)[0];
+        this.createdBy = this.users.filter(x => x.id === this.taskEdit.createdBy).map(x => x.fullName)[0];
+        this.updatedBy = this.users.filter(x => x.id === this.taskEdit.updatedBy).map(x => x.fullName)[0];
         this.submitBtnState = ClrLoadingState.DEFAULT;
         this.isNewTask = false;
         this.loadForm();
@@ -163,32 +169,30 @@ export class TaskEditComponent implements OnInit {
           console.log(error);
           this.Create();
         }
-      )
-    }
-    else {
+      );
+    } else {
       this.Create();
     }
   }
 
   MarkActive(task: TaskEdit) {
     if (task) {
-      if (task.status == Status.New) {
-        let taskEdit: TaskEdit = new TaskEdit();
+      if (task.status === Status.New) {
+        const taskEdit: TaskEdit = new TaskEdit();
         Object.assign(taskEdit, task);
         taskEdit.status = Status.Active;
-        let patchDocument = compare(task, taskEdit);
+        const patchDocument = compare(task, taskEdit);
         this.taskService.UpdateTask(patchDocument, task.id).subscribe(
           response => {
             this.alertService.showMessage(this.gT('toasts.saved'), `Task set as Active!`, MessageSeverity.success);
             this.updateData.emit(taskEdit);
           },
           error => this.alertService.showMessage(error, null, MessageSeverity.error));
-      }
-      else {
-        let taskEdit: TaskEdit = new TaskEdit();
+      } else {
+        const taskEdit: TaskEdit = new TaskEdit();
         Object.assign(taskEdit, task);
         taskEdit.status = Status.Active;
-        let patchDocument = compare(task, taskEdit);
+        const patchDocument = compare(task, taskEdit);
         this.taskService.UpdateTask(patchDocument, task.id).subscribe(
           response => {
             this.alertService.showMessage(this.gT('toasts.saved'), `Task set as Active!`, MessageSeverity.success);
@@ -202,10 +206,10 @@ export class TaskEditComponent implements OnInit {
 
   onResolved() {
     if (this.taskToUpdate) {
-      let taskEdit: TaskEdit = new TaskEdit();
+      const taskEdit: TaskEdit = new TaskEdit();
       Object.assign(taskEdit, this.taskToUpdate);
       taskEdit.status = Status.Resolved;
-      let patchDocument = compare(this.taskToUpdate, taskEdit);
+      const patchDocument = compare(this.taskToUpdate, taskEdit);
       this.taskService.UpdateTask(patchDocument, this.taskToUpdate.id).subscribe(
         response => {
           this.alertService.showMessage(this.gT('toasts.saved'), `Task ` + response.id.toString() + ` Resolved!`, MessageSeverity.success);
@@ -219,10 +223,10 @@ export class TaskEditComponent implements OnInit {
 
   onCompleted() {
     if (this.taskToUpdate) {
-      let taskEdit: TaskEdit = new TaskEdit();
+      const taskEdit: TaskEdit = new TaskEdit();
       Object.assign(taskEdit, this.taskToUpdate);
       taskEdit.status = Status.Completed;
-      let patchDocument = compare(this.taskToUpdate, taskEdit);
+      const patchDocument = compare(this.taskToUpdate, taskEdit);
       this.taskService.UpdateTask(patchDocument, this.taskToUpdate.id).subscribe(
         response => {
           this.alertService.showMessage(this.gT('toasts.saved'), `Task ` + response.id.toString() + ` Completed!`, MessageSeverity.success);
@@ -255,18 +259,18 @@ export class TaskEditComponent implements OnInit {
     this.releaseOpen = true;
   }
 
-  private onRelease() {
+  onRelease() {
     this.download(this.tasksToRelease);
     this.deleteBtnState = ClrLoadingState.LOADING;
     if (this.tasksToRelease) {
-      for (var i = 0; i < this.tasksToRelease.length; i++) {
-        let taskEdit = new TaskList();
+      for (let i = 0; i < this.tasksToRelease.length; i++) {
+        const taskEdit = new TaskList();
         Object.assign(taskEdit, this.tasksToRelease[i]);
         if (this.shouldArchive) {
           taskEdit.status = Status.Closed;
         }
         taskEdit.releaseId = this.releaseGroupname;
-        let patchDocument = compare(this.tasksToRelease[i], taskEdit);
+        const patchDocument = compare(this.tasksToRelease[i], taskEdit);
         this.taskService.UpdateTask(patchDocument, taskEdit.id).subscribe(response => {
         },
           error => this.alertService.showMessage(error, null, MessageSeverity.error));
@@ -276,44 +280,45 @@ export class TaskEditComponent implements OnInit {
     this.deleteBtnState = ClrLoadingState.SUCCESS;
     if (this.shouldArchive) {
       this.popSelected.emit(this.tasksToRelease);
-    }
-    else {
+    } else {
       this.tasksToRelease = [];
     }
     this.releaseOpen = false;
   }
 
   private download(selected: TaskEdit[]) {
-    let doc = new docx.Document();
-    let titleDoc = "Releasenote: " + this.curDate.toLocaleDateString() + "\n" + "\n" + "\n" + "\n" + "Az alkalmazás az alábbi fejlesztésekkel bővült: " + "\n" + "\n" + "\n";
-    var maintitle = new docx.Paragraph(titleDoc);
+    const doc = new docx.Document();
+    const titleDoc = 'Releasenote: ' + this.curDate.toLocaleDateString()
+      + '\n' + '\n' + '\n' + '\n' + 'Az alkalmazás az alábbi fejlesztésekkel bővült: '
+      + '\n' + '\n' + '\n';
+    const maintitle = new docx.Paragraph(titleDoc);
     doc.addParagraph(maintitle);
 
-    for (let task of selected) {
-      var paragraph = new docx.Paragraph(task.id.toString());
-      var mainTitle = new TextRun(task.title).tab().bold();
+    for (const task of selected) {
+      const paragraph = new docx.Paragraph(task.id.toString());
+      const mainTitle = new TextRun(task.title).tab().bold();
       paragraph.addRun(mainTitle);
       doc.addParagraph(paragraph);
     }
-    var packer = new Packer();
-    let title = this.curDate.toLocaleDateString() + "_releasenote.docx";
+    const packer = new Packer();
+    const title = this.curDate.toLocaleDateString() + '_releasenote.docx';
     packer.toBlob(doc).then(blob => {
       console.log(blob);
       saveAs(blob, title);
-      console.log("Document created successfully");
+      console.log('Document created successfully');
     });
     selected = [];
   }
 
-  private CloseTasks() {
+  CloseTasks() {
     this.deleteBtnState = ClrLoadingState.LOADING;
     if (this.tasksToClose) {
-      for (var i = 0; i < this.tasksToClose.length; i++) {
-        let taskEdit = new TaskEdit();
+      for (let i = 0; i < this.tasksToClose.length; i++) {
+        const taskEdit = new TaskEdit();
         Object.assign(taskEdit, this.tasksToClose[i]);
         taskEdit.releaseId = this.releaseGroupname;
         taskEdit.status = Status.Closed;
-        let patchDocument = compare(this.tasksToClose[i], taskEdit);
+        const patchDocument = compare(this.tasksToClose[i], taskEdit);
         this.taskService.UpdateTask(patchDocument, this.tasksToClose[i].id).subscribe(response => {
         },
           error => this.alertService.showMessage(error, null, MessageSeverity.error));
@@ -337,7 +342,7 @@ export class TaskEditComponent implements OnInit {
     this.tasksToDelete = null;
   }
 
-  private Delete() {
+  Delete() {
     this.deleteBtnState = ClrLoadingState.LOADING;
 
     if (this.tasksToDelete != null) {
@@ -354,7 +359,7 @@ export class TaskEditComponent implements OnInit {
       this.taskToUpdate.status = Status.Closed;
       Object.assign(this.initialTask, this.taskToUpdate);
       this.taskToUpdate.status = Status.Active;
-      let patchDocument = compare(this.initialTask, this.taskToUpdate);
+      const patchDocument = compare(this.initialTask, this.taskToUpdate);
       this.taskService.UpdateTask(patchDocument, this.taskToUpdate.id).subscribe(response => {
         this.alertService.showMessage(this.gT('toasts.saved'), `Record Deleted!`, MessageSeverity.success);
         this.popData.emit(this.taskToUpdate.id);
@@ -363,9 +368,5 @@ export class TaskEditComponent implements OnInit {
       },
         error => this.alertService.showMessage(error, null, MessageSeverity.error));
     }
-  }
-
-  get canSetStatus() {
-    return this.accountService.userHasPermission(Permission.setStatusTasksPremission);
   }
 }

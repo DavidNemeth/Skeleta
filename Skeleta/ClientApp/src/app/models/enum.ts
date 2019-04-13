@@ -1,8 +1,8 @@
 export enum CrudAction {
-  Create = "Create",
-  Read = "Read",
-  Update = "Update",
-  Delete = "Delete"
+  Create = 'Create',
+  Read = 'Read',
+  Update = 'Update',
+  Delete = 'Delete'
 }
 
 export enum Gender {
@@ -12,24 +12,24 @@ export enum Gender {
 }
 
 export enum Job {
-  None = "None",
-  Developer = "Developer",
-  Tester = "Tester",
-  Manager = "Manager"
+  None = 'None',
+  Developer = 'Developer',
+  Tester = 'Tester',
+  Manager = 'Manager'
 }
 
 export enum Priority {
-  Critical = "Critical",
-  High = "High",
-  Medium = "Medium",
-  Low = "Low"
+  Critical = 'Critical',
+  High = 'High',
+  Medium = 'Medium',
+  Low = 'Low'
 }
 
 export enum Status {
-  New = "New",
-  //Rejected = "Rejected",
-  Active = "Active",
-  Resolved = "Resolved",
-  Completed = "Completed",
-  Closed = "Closed"
+  New = 'New',
+  // Rejected = "Rejected",
+  Active = 'Active',
+  Resolved = 'Resolved',
+  Completed = 'Completed',
+  Closed = 'Closed'
 }

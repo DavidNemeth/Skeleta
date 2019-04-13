@@ -59,16 +59,18 @@ var AlertService = /** @class */ (function () {
         this._isLoading = false;
     }
     AlertService.prototype.showDialog = function (message, type, okCallback, cancelCallback, okLabel, cancelLabel, defaultValue) {
-        if (!type)
+        if (!type) {
             type = DialogType.alert;
+        }
         this.dialogs.next({
             message: message, type: type, okCallback: okCallback, cancelCallback: cancelCallback, okLabel: okLabel,
             cancelLabel: cancelLabel, defaultValue: defaultValue
         });
     };
     AlertService.prototype.showMessage = function (data, separatorOrDetail, severity) {
-        if (!severity)
+        if (!severity) {
             severity = MessageSeverity.default;
+        }
         if (data instanceof http_1.HttpResponseBase) {
             data = utilities_1.Utilities.getHttpResponseMessage(data);
             separatorOrDetail = utilities_1.Utilities.captionAndMessageSeparator;
@@ -85,8 +87,9 @@ var AlertService = /** @class */ (function () {
         }
     };
     AlertService.prototype.showStickyMessage = function (data, separatorOrDetail, severity, error) {
-        if (!severity)
+        if (!severity) {
             severity = MessageSeverity.default;
+        }
         if (data instanceof http_1.HttpResponseBase) {
             data = utilities_1.Utilities.getHttpResponseMessage(data);
             separatorOrDetail = utilities_1.Utilities.captionAndMessageSeparator;
@@ -127,10 +130,12 @@ var AlertService = /** @class */ (function () {
         }
     };
     AlertService.prototype.showMessageHelper = function (summary, detail, severity, isSticky) {
-        if (isSticky)
+        if (isSticky) {
             this.stickyMessages.next({ severity: severity, summary: summary, detail: detail });
-        else
+        }
+        else {
             this.messages.next({ severity: severity, summary: summary, detail: detail });
+        }
     };
     AlertService.prototype.startLoadingMessage = function (message, caption) {
         var _this = this;

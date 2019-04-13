@@ -23,6 +23,9 @@ var fast_json_patch_1 = require("fast-json-patch");
 var ngx_animate_1 = require("ngx-animate");
 var animations_2 = require("@angular/animations");
 var permission_model_1 = require("../../../../models/permission.model");
+var docx = require("docx");
+var docx_1 = require("docx");
+var file_saver_1 = require("file-saver");
 var TaskEditComponent = /** @class */ (function () {
     function TaskEditComponent(translationService, alertService, formBuilder, taskService, accountService) {
         var _this = this;
@@ -33,11 +36,12 @@ var TaskEditComponent = /** @class */ (function () {
         this.accountService = accountService;
         this.submitBtnState = angular_1.ClrLoadingState.DEFAULT;
         this.deleteBtnState = angular_1.ClrLoadingState.DEFAULT;
-        this.gT = function (key) { return _this.translationService.getTranslation(key); };
         this.deleteOpen = false;
         this.archiveOpen = false;
         this.resolveOpen = false;
         this.completeOpen = false;
+        this.releaseOpen = false;
+        this.shouldArchive = true;
         this.isNewTask = false;
         this.allStatus = Object.keys(enum_1.Status).slice();
         this.allPriority = Object.keys(enum_1.Priority).slice();
@@ -48,13 +52,22 @@ var TaskEditComponent = /** @class */ (function () {
         this.tasksToRelease = [];
         this.taskToUpdate = new task_model_1.TaskEdit();
         this.dataLoaded = false;
+        this.curDate = new Date();
         this.users = [];
         this.popData = new core_1.EventEmitter();
         this.popSelected = new core_1.EventEmitter();
         this.updateData = new core_1.EventEmitter();
         this.cancel = new core_1.EventEmitter();
         this.refresh = new core_1.EventEmitter();
+        this.gT = function (key) { return _this.translationService.getTranslation(key); };
     }
+    Object.defineProperty(TaskEditComponent.prototype, "canSetStatus", {
+        get: function () {
+            return this.accountService.userHasPermission(permission_model_1.Permission.setStatusTasksPremission);
+        },
+        enumerable: true,
+        configurable: true
+    });
     TaskEditComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.accountService.getActiveUsers().subscribe(function (users) { return _this.users = users; });
@@ -98,10 +111,12 @@ var TaskEditComponent = /** @class */ (function () {
     TaskEditComponent.prototype.saveSuccessHelper = function () {
         this.refresh.emit();
         Object.assign(this.initialTask, this.taskEdit);
-        if (this.isNewTask)
+        if (this.isNewTask) {
             this.alertService.showMessage(this.gT('toasts.saved'), "Task added!", alert_service_1.MessageSeverity.success);
-        else
+        }
+        else {
             this.alertService.showMessage(this.gT('toasts.saved'), "Task modified!", alert_service_1.MessageSeverity.success);
+        }
         this.submitBtnState = angular_1.ClrLoadingState.SUCCESS;
         this.close();
     };
@@ -129,8 +144,8 @@ var TaskEditComponent = /** @class */ (function () {
                 _this.taskEdit = new task_model_1.TaskEdit();
                 Object.assign(_this.initialTask, response);
                 Object.assign(_this.taskEdit, response);
-                _this.createdBy = _this.users.filter(function (x) { return x.id == _this.taskEdit.createdBy; }).map(function (x) { return x.fullName; })[0];
-                _this.updatedBy = _this.users.filter(function (x) { return x.id == _this.taskEdit.updatedBy; }).map(function (x) { return x.fullName; })[0];
+                _this.createdBy = _this.users.filter(function (x) { return x.id === _this.taskEdit.createdBy; }).map(function (x) { return x.fullName; })[0];
+                _this.updatedBy = _this.users.filter(function (x) { return x.id === _this.taskEdit.updatedBy; }).map(function (x) { return x.fullName; })[0];
                 _this.submitBtnState = angular_1.ClrLoadingState.DEFAULT;
                 _this.isNewTask = false;
                 _this.loadForm();
@@ -147,7 +162,7 @@ var TaskEditComponent = /** @class */ (function () {
     TaskEditComponent.prototype.MarkActive = function (task) {
         var _this = this;
         if (task) {
-            if (task.status == enum_1.Status.New) {
+            if (task.status === enum_1.Status.New) {
                 var taskEdit_1 = new task_model_1.TaskEdit();
                 Object.assign(taskEdit_1, task);
                 taskEdit_1.status = enum_1.Status.Active;
@@ -211,12 +226,17 @@ var TaskEditComponent = /** @class */ (function () {
         Object.assign(this.tasksToClose, tasks);
         this.archiveOpen = true;
     };
+    TaskEditComponent.prototype.MarkExport = function (tasks) {
+        Object.assign(this.tasksToRelease, tasks);
+        this.releaseOpen = true;
+    };
     TaskEditComponent.prototype.onRelease = function () {
         var _this = this;
+        this.download(this.tasksToRelease);
         this.deleteBtnState = angular_1.ClrLoadingState.LOADING;
         if (this.tasksToRelease) {
             for (var i = 0; i < this.tasksToRelease.length; i++) {
-                var taskEdit = new task_model_1.TaskEdit();
+                var taskEdit = new task_model_1.TaskList();
                 Object.assign(taskEdit, this.tasksToRelease[i]);
                 if (this.shouldArchive) {
                     taskEdit.status = enum_1.Status.Closed;
@@ -229,6 +249,36 @@ var TaskEditComponent = /** @class */ (function () {
         }
         this.alertService.showMessage(this.gT('toasts.saved'), "Release Note Generated, Tasks Archived!", alert_service_1.MessageSeverity.success);
         this.deleteBtnState = angular_1.ClrLoadingState.SUCCESS;
+        if (this.shouldArchive) {
+            this.popSelected.emit(this.tasksToRelease);
+        }
+        else {
+            this.tasksToRelease = [];
+        }
+        this.releaseOpen = false;
+    };
+    TaskEditComponent.prototype.download = function (selected) {
+        var doc = new docx.Document();
+        var titleDoc = 'Releasenote: ' + this.curDate.toLocaleDateString()
+            + '\n' + '\n' + '\n' + '\n' + 'Az alkalmazás az alábbi fejlesztésekkel bővült: '
+            + '\n' + '\n' + '\n';
+        var maintitle = new docx.Paragraph(titleDoc);
+        doc.addParagraph(maintitle);
+        for (var _i = 0, selected_1 = selected; _i < selected_1.length; _i++) {
+            var task = selected_1[_i];
+            var paragraph = new docx.Paragraph(task.id.toString());
+            var mainTitle = new docx_1.TextRun(task.title).tab().bold();
+            paragraph.addRun(mainTitle);
+            doc.addParagraph(paragraph);
+        }
+        var packer = new docx_1.Packer();
+        var title = this.curDate.toLocaleDateString() + '_releasenote.docx';
+        packer.toBlob(doc).then(function (blob) {
+            console.log(blob);
+            file_saver_1.saveAs(blob, title);
+            console.log('Document created successfully');
+        });
+        selected = [];
     };
     TaskEditComponent.prototype.CloseTasks = function () {
         var _this = this;
@@ -283,13 +333,6 @@ var TaskEditComponent = /** @class */ (function () {
             }, function (error) { return _this.alertService.showMessage(error, null, alert_service_1.MessageSeverity.error); });
         }
     };
-    Object.defineProperty(TaskEditComponent.prototype, "canSetStatus", {
-        get: function () {
-            return this.accountService.userHasPermission(permission_model_1.Permission.setStatusTasksPremission);
-        },
-        enumerable: true,
-        configurable: true
-    });
     __decorate([
         core_1.ViewChild(angular_1.ClrForm),
         __metadata("design:type", Object)

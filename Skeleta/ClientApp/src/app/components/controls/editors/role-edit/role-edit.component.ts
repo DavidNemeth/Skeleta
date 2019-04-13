@@ -15,13 +15,13 @@ export class RoleEditComponent implements OnInit {
   submitBtnState: ClrLoadingState = ClrLoadingState.DEFAULT;
   deleteBtnState: ClrLoadingState = ClrLoadingState.DEFAULT;
 
-  private deleteOpen = false;
-  private openModal = false;
+  deleteOpen = false;
+  openModal = false;
   private isNewRole = false;
   private roleEdit: Role = new Role();
   private rolesToDelete: Role[] = [];
-  private allPermissions: Permission[] = [];
-  private initialPremissions: Permission[] = [];
+  allPermissions: Permission[] = [];
+  initialPremissions: Permission[] = [];
   initialRole: Role = new Role();
   roleForm: FormGroup;
 
@@ -32,8 +32,8 @@ export class RoleEditComponent implements OnInit {
   ngOnInit() {
     this.accountService.getPermissions().subscribe(
       premissions => this.allPermissions = premissions
-    )
-    let permissions: Permission[] = [];
+    );
+    const permissions: Permission[] = [];
     this.roleForm = this.formBuilder.group({
       'name': ['', Validators.required],
       'description': [''],
@@ -41,11 +41,10 @@ export class RoleEditComponent implements OnInit {
     });
   }
 
-  private openChange(value: boolean) {
+  openChange(value: boolean) {
     if (value) {
-    }
-    else {
-      let permissions: Permission[] = [];
+    } else {
+      const permissions: Permission[] = [];
       this.isNewRole = false;
       this.openModal = false;
       this.initialPremissions = [];
@@ -57,15 +56,14 @@ export class RoleEditComponent implements OnInit {
     }
   }
 
-  private save() {
+  save() {
     this.submitBtnState = ClrLoadingState.LOADING;
 
     Object.assign(this.roleEdit, this.roleForm.value);
     if (this.isNewRole) {
       this.accountService.newRole(this.roleEdit)
         .subscribe(role => this.saveSuccessHelper(), error => this.saveFailedHelper(error));
-    }
-    else {
+    } else {
       this.accountService.updateRole(this.roleEdit)
         .subscribe(response => this.saveSuccessHelper(), error => this.saveFailedHelper(error));
     }
@@ -95,8 +93,8 @@ export class RoleEditComponent implements OnInit {
   editRole(role: Role) {
     if (Role) {
 
-      var premissions = [];
-      for (let premission of role.permissions) {
+      const premissions = [];
+      for (const premission of role.permissions) {
         premissions.push(premission);
       }
       this.openModal = true;
@@ -111,8 +109,7 @@ export class RoleEditComponent implements OnInit {
 
       this.initialPremissions = [];
       Object.assign(this.initialPremissions, role.permissions);
-    }
-    else {
+    } else {
       return this.newRole();
     }
   }
@@ -122,11 +119,11 @@ export class RoleEditComponent implements OnInit {
     this.rolesToDelete = roles;
   }
 
-  private Delete() {
+  Delete() {
     this.deleteBtnState = ClrLoadingState.LOADING;
 
-    let observables: Observable<any>[] = [];
-    for (let role of this.rolesToDelete) {
+    const observables: Observable<any>[] = [];
+    for (const role of this.rolesToDelete) {
       observables.push(this.accountService.deleteRole(role));
     }
 

@@ -60,7 +60,7 @@ export class BugItemEndpoint extends EndpointFactory {
   }
 
   getPendingEndpoint<T>(taskid?: number): Observable<T> {
-    console.log(taskid != null ? `${this.pendingUrl}/${taskid}` : this.pendingUrl)
+    console.log(taskid != null ? `${this.pendingUrl}/${taskid}` : this.pendingUrl);
 
     const endpointUrl = taskid != null ? `${this.pendingUrl}/${taskid}` : this.pendingUrl;
 

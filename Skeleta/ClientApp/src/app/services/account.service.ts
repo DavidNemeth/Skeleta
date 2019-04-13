@@ -69,8 +69,7 @@ export class AccountService {
   updateUser(user: UserEdit) {
     if (user.id) {
       return this.accountEndpoint.getUpdateUserEndpoint(user, user.id);
-    }
-    else {
+    } else {
       return this.accountEndpoint.getUserByUserNameEndpoint<User>(user.userName).pipe(
         mergeMap(foundUser => {
           user.id = foundUser.id;
@@ -99,13 +98,11 @@ export class AccountService {
     if (typeof userOrUserId === 'string' || userOrUserId instanceof String) {
       return this.accountEndpoint.getDeleteUserEndpoint<User>(<string>userOrUserId).pipe<User>(
         tap(data => this.onRolesUserCountChanged(data.roles)));
-    }
-    else {
+    } else {
 
       if (userOrUserId.id) {
         return this.deleteUser(userOrUserId.id);
-      }
-      else {
+      } else {
         return this.accountEndpoint.getUserByUserNameEndpoint<User>(userOrUserId.userName).pipe<User>(
           mergeMap(user => this.deleteUser(user.id)));
       }
@@ -119,7 +116,7 @@ export class AccountService {
 
 
   userHasPermission(permissionValue: PermissionValues): boolean {
-    return this.permissions.some(p => p == permissionValue);
+    return this.permissions.some(p => p === permissionValue);
   }
 
 
@@ -148,8 +145,7 @@ export class AccountService {
     if (role.id) {
       return this.accountEndpoint.getUpdateRoleEndpoint(role, role.id).pipe(
         tap(data => this.onRolesChanged([role], AccountService.roleModifiedOperation)));
-    }
-    else {
+    } else {
       return this.accountEndpoint.getRoleByRoleNameEndpoint<Role>(role.name).pipe(
         mergeMap(foundRole => {
           role.id = foundRole.id;
@@ -171,13 +167,11 @@ export class AccountService {
     if (typeof roleOrRoleId === 'string' || roleOrRoleId instanceof String) {
       return this.accountEndpoint.getDeleteRoleEndpoint<Role>(<string>roleOrRoleId).pipe<Role>(
         tap(data => this.onRolesChanged([data], AccountService.roleDeletedOperation)));
-    }
-    else {
+    } else {
 
       if (roleOrRoleId.id) {
         return this.deleteRole(roleOrRoleId.id);
-      }
-      else {
+      } else {
         return this.accountEndpoint.getRoleByRoleNameEndpoint<Role>(roleOrRoleId.name).pipe<Role>(
           mergeMap(role => this.deleteRole(role.id)));
       }
